@@ -6,7 +6,7 @@ install:
 - nuget install NUnit.ConsoleRunner -Version 3.7.0 -OutputDirectory testrunner
 
 script:
-- msbuild /p:Configuration=Release Misc-Beta-Test.sln
+- msbuild /p:Configuration=Travis Misc-Beta-Test.sln
 
 deploy:
   provider: pages
