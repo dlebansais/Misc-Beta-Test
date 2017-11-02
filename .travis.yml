@@ -1,0 +1,19 @@
+language: csharp
+solution: Misc-Beta-Test.sln
+
+install:
+- nuget restore Misc-Beta-Test.sln
+- nuget install NUnit.ConsoleRunner -Version 3.7.0 -OutputDirectory testrunner
+
+script:
+- msbuild /p:Configuration=Release Misc-Beta-Test.sln
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  local_dir: ./Misc-Beta-Test/bin/x64/Release
+  target_branch: gh-pages
+  email: "github-pages-deploy@travis-ci.org"
+  on:
+    branch: master
