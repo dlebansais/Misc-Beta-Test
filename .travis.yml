@@ -12,7 +12,7 @@ deploy:
   provider: pages
   skip_cleanup: true
   github_token: $GITHUB_TOKEN
-  local_dir: ./Misc-Beta-Test/bin/x64/Release
+  local_dir: ./Test-LargeList/bin/x64/Release
   target_branch: gh-pages
   email: "github-pages-deploy@travis-ci.org"
   on:
