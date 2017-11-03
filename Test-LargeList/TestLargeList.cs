@@ -272,7 +272,7 @@ namespace Test
                 }
                 catch (Exception e)
                 {
-                    return TestStatus.Failed("get[0] unknown exception: " + e.Message);
+                    return TestStatus.Failed("get[0] unknown exception: " + e.GetType() + " - " + e.Message);
                 }
             }
 
@@ -288,7 +288,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("get[-1] unknown exception: " + e.Message);
+                return TestStatus.Failed("get[-1] unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             if (Count > 0)
@@ -299,7 +299,7 @@ namespace Test
                 }
                 catch (Exception e)
                 {
-                    return TestStatus.Failed("get[Count - 1] unknown exception: " + e.Message);
+                    return TestStatus.Failed("get[Count - 1] unknown exception: " + e.GetType() + " - " + e.Message);
                 }
             }
 
@@ -315,7 +315,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("get[Count] unknown exception: " + e.Message);
+                return TestStatus.Failed("get[Count] unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             if (Count > 0)
@@ -326,7 +326,7 @@ namespace Test
                 }
                 catch (Exception e)
                 {
-                    return TestStatus.Failed("set[0] unknown exception: " + e.Message);
+                    return TestStatus.Failed("set[0] unknown exception: " + e.GetType() + " - " + e.Message);
                 }
             }
 
@@ -342,7 +342,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("set[-1] unknown exception: " + e.Message);
+                return TestStatus.Failed("set[-1] unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             if (Count > 0)
@@ -353,7 +353,7 @@ namespace Test
                 }
                 catch (Exception e)
                 {
-                    return TestStatus.Failed("set[Count - 1] unknown exception: " + e.Message);
+                    return TestStatus.Failed("set[Count - 1] unknown exception: " + e.GetType() + " - " + e.Message);
                 }
             }
 
@@ -369,7 +369,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("set[Count] unknown exception: " + e.Message);
+                return TestStatus.Failed("set[Count] unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             T[] TestArray = new T[1];
@@ -394,7 +394,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("CopyTo(null, -1) unknown exception: " + e.Message);
+                return TestStatus.Failed("CopyTo(null, -1) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -417,7 +417,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("CopyTo(null, 0) unknown exception: " + e.Message);
+                return TestStatus.Failed("CopyTo(null, 0) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -440,7 +440,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("CopyTo(null, 1) unknown exception: " + e.Message);
+                return TestStatus.Failed("CopyTo(null, 1) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             TestArray = new T[Count + 1];
@@ -451,7 +451,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("CopyTo(array, 0) unknown exception: " + e.Message);
+                return TestStatus.Failed("CopyTo(array, 0) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -474,7 +474,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("CopyTo(array, -1) unknown exception: " + e.Message);
+                return TestStatus.Failed("CopyTo(array, -1) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -483,7 +483,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("CopyTo(array, array length-count-1) unknown exception: " + e.Message);
+                return TestStatus.Failed("CopyTo(array, array length-count-1) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             if (Count > 0)
@@ -494,7 +494,7 @@ namespace Test
                 }
                 catch (Exception e)
                 {
-                    return TestStatus.Failed("CopyTo(array, array length-count) unknown exception: " + e.Message);
+                    return TestStatus.Failed("CopyTo(array, array length-count) unknown exception: " + e.GetType() + " - " + e.Message);
                 }
 
                 try
@@ -517,7 +517,7 @@ namespace Test
                 }
                 catch (Exception e)
                 {
-                    return TestStatus.Failed("CopyTo(array, array length-Count+1) unknown exception: " + e.Message);
+                    return TestStatus.Failed("CopyTo(array, array length-Count+1) unknown exception: " + e.GetType() + " - " + e.Message);
                 }
             }
             else
@@ -528,7 +528,7 @@ namespace Test
                 }
                 catch (Exception e)
                 {
-                    return TestStatus.Failed("CopyTo(array, array length) unknown exception: " + e.Message);
+                    return TestStatus.Failed("CopyTo(array, array length) unknown exception: " + e.GetType() + " - " + e.Message);
                 }
 
                 try
@@ -551,7 +551,7 @@ namespace Test
                 }
                 catch (Exception e)
                 {
-                    return TestStatus.Failed("CopyTo(array, array length + 1) unknown exception: " + e.Message);
+                    return TestStatus.Failed("CopyTo(array, array length + 1) unknown exception: " + e.GetType() + " - " + e.Message);
                 }
             }
 
@@ -562,7 +562,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("Insert(0, T) unknown exception: " + e.Message);
+                return TestStatus.Failed("Insert(0, T) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -577,7 +577,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("Insert(-1, 0) unknown exception: " + e.Message);
+                return TestStatus.Failed("Insert(-1, 0) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -587,7 +587,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("Insert(Count, T) unknown exception: " + e.Message);
+                return TestStatus.Failed("Insert(Count, T) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -602,7 +602,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("Insert(Count + 1, 0) unknown exception: " + e.Message);
+                return TestStatus.Failed("Insert(Count + 1, 0) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             if (Count > 0)
@@ -614,7 +614,7 @@ namespace Test
                 }
                 catch (Exception e)
                 {
-                    return TestStatus.Failed("RemoveAt(0) unknown exception: " + e.Message);
+                    return TestStatus.Failed("RemoveAt(0) unknown exception: " + e.GetType() + " - " + e.Message);
                 }
             }
 
@@ -630,7 +630,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("RemoveAt(-1) unknown exception: " + e.Message);
+                return TestStatus.Failed("RemoveAt(-1) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             if (Count > 0)
@@ -642,7 +642,7 @@ namespace Test
                 }
                 catch (Exception e)
                 {
-                    return TestStatus.Failed("RemoveAt(Count-1) unknown exception: " + e.Message);
+                    return TestStatus.Failed("RemoveAt(Count-1) unknown exception: " + e.GetType() + " - " + e.Message);
                 }
             }
 
@@ -658,7 +658,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("RemoveAt(Count) unknown exception: " + e.Message);
+                return TestStatus.Failed("RemoveAt(Count) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             return TestStatus.Success;
@@ -1066,7 +1066,7 @@ namespace Test
                 }
                 catch (Exception e)
                 {
-                    return TestStatus.Failed("get[0] unknown exception: " + e.Message);
+                    return TestStatus.Failed("get[0] unknown exception: " + e.GetType() + " - " + e.Message);
                 }
             }
 
@@ -1082,7 +1082,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("get[-1] unknown exception: " + e.Message);
+                return TestStatus.Failed("get[-1] unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             if (Count > 0)
@@ -1093,7 +1093,7 @@ namespace Test
                 }
                 catch (Exception e)
                 {
-                    return TestStatus.Failed("get[Count-1] unknown exception: " + e.Message);
+                    return TestStatus.Failed("get[Count-1] unknown exception: " + e.GetType() + " - " + e.Message);
                 }
             }
 
@@ -1109,7 +1109,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("get[Count] unknown exception: " + e.Message);
+                return TestStatus.Failed("get[Count] unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             if (Count > 0)
@@ -1120,7 +1120,7 @@ namespace Test
                 }
                 catch (Exception e)
                 {
-                    return TestStatus.Failed("set[0] unknown exception: " + e.Message);
+                    return TestStatus.Failed("set[0] unknown exception: " + e.GetType() + " - " + e.Message);
                 }
             }
 
@@ -1136,7 +1136,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("set[-1] unknown exception: " + e.Message);
+                return TestStatus.Failed("set[-1] unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             if (Count > 0)
@@ -1147,7 +1147,7 @@ namespace Test
                 }
                 catch (Exception e)
                 {
-                    return TestStatus.Failed("set[Count-1] unknown exception: " + e.Message);
+                    return TestStatus.Failed("set[Count-1] unknown exception: " + e.GetType() + " - " + e.Message);
                 }
             }
 
@@ -1163,7 +1163,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("set[Count] unknown exception: " + e.Message);
+                return TestStatus.Failed("set[Count] unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1172,7 +1172,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("Capacity=Count unknown exception: " + e.Message);
+                return TestStatus.Failed("Capacity=Count unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1187,7 +1187,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("Capacity=Count-1 unknown exception: " + e.Message);
+                return TestStatus.Failed("Capacity=Count-1 unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1196,7 +1196,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("BinarySearch(0, 0, T, null) unknown exception: " + e.Message);
+                return TestStatus.Failed("BinarySearch(0, 0, T, null) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1211,7 +1211,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("BinarySearch(-1, 0, 0, null) unknown exception: " + e.Message);
+                return TestStatus.Failed("BinarySearch(-1, 0, 0, null) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1226,7 +1226,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("BinarySearch(0, -1, 0, null) unknown exception: " + e.Message);
+                return TestStatus.Failed("BinarySearch(0, -1, 0, null) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1235,7 +1235,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("BinarySearch(0, Count, T, null) unknown exception: " + e.Message);
+                return TestStatus.Failed("BinarySearch(0, Count, T, null) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1250,7 +1250,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("BinarySearch(0, Count + 1, 0, null) unknown exception: " + e.Message);
+                return TestStatus.Failed("BinarySearch(0, Count + 1, 0, null) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1259,7 +1259,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("BinarySearch(Count, 0, T, null) unknown exception: " + e.Message);
+                return TestStatus.Failed("BinarySearch(Count, 0, T, null) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1274,7 +1274,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("BinarySearch(Count + 1, 0, 0, null) unknown exception: " + e.Message);
+                return TestStatus.Failed("BinarySearch(Count + 1, 0, 0, null) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1297,7 +1297,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("CopyTo(null) unknown exception: " + e.Message);
+                return TestStatus.Failed("CopyTo(null) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             T[] TestArray = new T[1];
@@ -1324,7 +1324,7 @@ namespace Test
                 }
                 catch (Exception e)
                 {
-                    return TestStatus.Failed("CopyTo(TestArray) unknown exception: " + e.Message);
+                    return TestStatus.Failed("CopyTo(TestArray) unknown exception: " + e.GetType() + " - " + e.Message);
                 }
             }
 
@@ -1348,7 +1348,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("CopyTo(null, 0) unknown exception: " + e.Message);
+                return TestStatus.Failed("CopyTo(null, 0) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             if (Count > 0)
@@ -1361,7 +1361,7 @@ namespace Test
                 }
                 catch (Exception e)
                 {
-                    return TestStatus.Failed("CopyTo(TestArray, 0) unknown exception: " + e.Message);
+                    return TestStatus.Failed("CopyTo(TestArray, 0) unknown exception: " + e.GetType() + " - " + e.Message);
                 }
 
                 try
@@ -1384,7 +1384,7 @@ namespace Test
                 }
                 catch (Exception e)
                 {
-                    return TestStatus.Failed("CopyTo(TestArray, 1) unknown exception: " + e.Message);
+                    return TestStatus.Failed("CopyTo(TestArray, 1) unknown exception: " + e.GetType() + " - " + e.Message);
                 }
             }
 
@@ -1408,7 +1408,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("CopyTo(TestArray, -1) unknown exception: " + e.Message);
+                return TestStatus.Failed("CopyTo(TestArray, -1) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1431,7 +1431,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("CopyTo(TestArray, TestArray.Length + 1) unknown exception: " + e.Message);
+                return TestStatus.Failed("CopyTo(TestArray, TestArray.Length + 1) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1454,7 +1454,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("CopyTo(0, null, 0, 0) unknown exception: " + e.Message);
+                return TestStatus.Failed("CopyTo(0, null, 0, 0) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1477,7 +1477,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("CopyTo(-1, TestArray, 0, 0) unknown exception: " + e.Message);
+                return TestStatus.Failed("CopyTo(-1, TestArray, 0, 0) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1500,7 +1500,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("CopyTo(0, TestArray, -1, 0) unknown exception: " + e.Message);
+                return TestStatus.Failed("CopyTo(0, TestArray, -1, 0) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1523,7 +1523,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("CopyTo(0, TestArray, 0, -1) unknown exception: " + e.Message);
+                return TestStatus.Failed("CopyTo(0, TestArray, 0, -1) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1538,7 +1538,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("CopyTo(Count + 1, TestArray, 0, 0) unknown exception: " + e.Message);
+                return TestStatus.Failed("CopyTo(Count + 1, TestArray, 0, 0) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1561,7 +1561,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("CopyTo(0, TestArray, TestArray.Length + 1, 0) unknown exception: " + e.Message);
+                return TestStatus.Failed("CopyTo(0, TestArray, TestArray.Length + 1, 0) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             if (Count > 1)
@@ -1580,7 +1580,7 @@ namespace Test
                 }
                 catch (Exception e)
                 {
-                    return TestStatus.Failed("CopyTo(0, TestArray, 0, TestArray.Length + 1) unknown exception: " + e.Message);
+                    return TestStatus.Failed("CopyTo(0, TestArray, 0, TestArray.Length + 1) unknown exception: " + e.GetType() + " - " + e.Message);
                 }
             }
             else
@@ -1597,7 +1597,7 @@ namespace Test
                 }
                 catch (Exception e)
                 {
-                    return TestStatus.Failed("CopyTo(0, TestArray, 0, TestArray.Length + 1) unknown exception: " + e.Message);
+                    return TestStatus.Failed("CopyTo(0, TestArray, 0, TestArray.Length + 1) unknown exception: " + e.GetType() + " - " + e.Message);
                 }
             }
 
@@ -1613,7 +1613,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("CopyTo(0, TestArray, 0, Count + 1) unknown exception: " + e.Message);
+                return TestStatus.Failed("CopyTo(0, TestArray, 0, Count + 1) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1628,7 +1628,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("Exists(null) unknown exception: " + e.Message);
+                return TestStatus.Failed("Exists(null) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1643,7 +1643,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("Find(null) unknown exception: " + e.Message);
+                return TestStatus.Failed("Find(null) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1658,7 +1658,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("FindAll(null) unknown exception: " + e.Message);
+                return TestStatus.Failed("FindAll(null) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1673,7 +1673,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("FindIndex(null) unknown exception: " + e.Message);
+                return TestStatus.Failed("FindIndex(null) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1688,7 +1688,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("FindIndex(0, null) unknown exception: " + e.Message);
+                return TestStatus.Failed("FindIndex(0, null) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1703,7 +1703,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("FindIndex(-1, null) unknown exception: " + e.Message);
+                return TestStatus.Failed("FindIndex(-1, null) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1718,7 +1718,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("FindIndex(-1,...) unknown exception: " + e.Message);
+                return TestStatus.Failed("FindIndex(-1,...) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1733,7 +1733,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("FindIndex(Count + 1, null) unknown exception: " + e.Message);
+                return TestStatus.Failed("FindIndex(Count + 1, null) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1748,7 +1748,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("FindIndex(Count + 1, ...) unknown exception: " + e.Message);
+                return TestStatus.Failed("FindIndex(Count + 1, ...) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1763,7 +1763,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("FindIndex(0, 0, null) unknown exception: " + e.Message);
+                return TestStatus.Failed("FindIndex(0, 0, null) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1778,7 +1778,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("FindIndex(-1, 0, null) unknown exception: " + e.Message);
+                return TestStatus.Failed("FindIndex(-1, 0, null) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1793,7 +1793,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("FindIndex(0, -1, null) unknown exception: " + e.Message);
+                return TestStatus.Failed("FindIndex(0, -1, null) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1808,7 +1808,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("FindIndex(Count + 1, 0, null) unknown exception: " + e.Message);
+                return TestStatus.Failed("FindIndex(Count + 1, 0, null) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1823,7 +1823,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("FindLast(null) unknown exception: " + e.Message);
+                return TestStatus.Failed("FindLast(null) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1838,7 +1838,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("FindLastIndex(null) unknown exception: " + e.Message);
+                return TestStatus.Failed("FindLastIndex(null) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1853,7 +1853,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("FindLastIndex(0, null) unknown exception: " + e.Message);
+                return TestStatus.Failed("FindLastIndex(0, null) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1868,7 +1868,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("FindLastIndex(-1, null) unknown exception: " + e.Message);
+                return TestStatus.Failed("FindLastIndex(-1, null) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1883,7 +1883,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("FindLastIndex(-2, ...) unknown exception: " + e.Message);
+                return TestStatus.Failed("FindLastIndex(-2, ...) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1898,7 +1898,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("FindLastIndex(Count, ...) unknown exception: " + e.Message);
+                return TestStatus.Failed("FindLastIndex(Count, ...) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1913,7 +1913,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("FindLastIndex(0, 0, null) unknown exception: " + e.Message);
+                return TestStatus.Failed("FindLastIndex(0, 0, null) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -1928,7 +1928,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("FindLastIndex(-2, 0, ...) unknown exception: " + e.Message);
+                return TestStatus.Failed("FindLastIndex(-2, 0, ...) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             if (Count > 1)
@@ -1945,7 +1945,7 @@ namespace Test
                 }
                 catch (Exception e)
                 {
-                    return TestStatus.Failed("FindLastIndex(0, -1, ...) with Count>1 unknown exception: " + e.Message);
+                    return TestStatus.Failed("FindLastIndex(0, -1, ...) with Count>1 unknown exception: " + e.GetType() + " - " + e.Message);
                 }
             }
             else
@@ -1962,7 +1962,7 @@ namespace Test
                 }
                 catch (Exception e)
                 {
-                    return TestStatus.Failed("FindLastIndex(0, -1, ...) with Count<=1 unknown exception: " + e.Message);
+                    return TestStatus.Failed("FindLastIndex(0, -1, ...) with Count<=1 unknown exception: " + e.GetType() + " - " + e.Message);
                 }
             }
 
@@ -1978,7 +1978,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("FindLastIndex(Count, 0, ...) unknown exception: " + e.Message);
+                return TestStatus.Failed("FindLastIndex(Count, 0, ...) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2001,7 +2001,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("ForEach(null) unknown exception: " + e.Message);
+                return TestStatus.Failed("ForEach(null) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2016,7 +2016,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("GetRange(-1, 0) unknown exception: " + e.Message);
+                return TestStatus.Failed("GetRange(-1, 0) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2031,7 +2031,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("GetRange(0, -1) unknown exception: " + e.Message);
+                return TestStatus.Failed("GetRange(0, -1) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2046,7 +2046,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("GetRange(Count + 1, 0) unknown exception: " + e.Message);
+                return TestStatus.Failed("GetRange(Count + 1, 0) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2061,7 +2061,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("GetRange(0, Count + 1) unknown exception: " + e.Message);
+                return TestStatus.Failed("GetRange(0, Count + 1) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2076,7 +2076,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("IndexOf(0, -1) unknown exception: " + e.Message);
+                return TestStatus.Failed("IndexOf(0, -1) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2099,7 +2099,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("IndexOf(0, Count + 1) unknown exception: " + e.Message);
+                return TestStatus.Failed("IndexOf(0, Count + 1) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2114,7 +2114,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("IndexOf(0, -1, 0) unknown exception: " + e.Message);
+                return TestStatus.Failed("IndexOf(0, -1, 0) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2137,7 +2137,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("IndexOf(0, Count + 1, 0) unknown exception: " + e.Message);
+                return TestStatus.Failed("IndexOf(0, Count + 1, 0) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2152,7 +2152,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("Insert(-1, 0) unknown exception: " + e.Message);
+                return TestStatus.Failed("Insert(-1, 0) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2167,7 +2167,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("Insert(Count + 1, 0) unknown exception: " + e.Message);
+                return TestStatus.Failed("Insert(Count + 1, 0) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2182,7 +2182,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("InsertRange(0, null) unknown exception: " + e.Message);
+                return TestStatus.Failed("InsertRange(0, null) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2197,7 +2197,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("InsertRange(-1, TestArray) unknown exception: " + e.Message);
+                return TestStatus.Failed("InsertRange(-1, TestArray) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2212,7 +2212,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("InsertRange(Count + 1, TestArray) unknown exception: " + e.Message);
+                return TestStatus.Failed("InsertRange(Count + 1, TestArray) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             if (!IsStrict)
@@ -2237,7 +2237,7 @@ namespace Test
                 }
                 catch (Exception e)
                 {
-                    return TestStatus.Failed("LastIndexOf(0, -1) unknown exception: " + e.Message);
+                    return TestStatus.Failed("LastIndexOf(0, -1) unknown exception: " + e.GetType() + " - " + e.Message);
                 }
             }
 
@@ -2249,7 +2249,7 @@ namespace Test
                 }
                 catch (Exception e)
                 {
-                    return TestStatus.Failed("LastIndexOf(T, Count-1) unknown exception: " + e.Message);
+                    return TestStatus.Failed("LastIndexOf(T, Count-1) unknown exception: " + e.GetType() + " - " + e.Message);
                 }
             }
 
@@ -2273,7 +2273,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("LastIndexOf(0, Count) unknown exception: " + e.Message);
+                return TestStatus.Failed("LastIndexOf(0, Count) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             if (Count > 0)
@@ -2284,7 +2284,7 @@ namespace Test
                 }
                 catch (Exception e)
                 {
-                    return TestStatus.Failed("LastIndexOf(T, Count - 1, 0) unknown exception: " + e.Message);
+                    return TestStatus.Failed("LastIndexOf(T, Count - 1, 0) unknown exception: " + e.GetType() + " - " + e.Message);
                 }
             }
 
@@ -2310,7 +2310,7 @@ namespace Test
                 }
                 catch (Exception e)
                 {
-                    return TestStatus.Failed("LastIndexOf(0, -1, 0) unknown exception: " + e.Message);
+                    return TestStatus.Failed("LastIndexOf(0, -1, 0) unknown exception: " + e.GetType() + " - " + e.Message);
                 }
 
                 try
@@ -2333,7 +2333,7 @@ namespace Test
                 }
                 catch (Exception e)
                 {
-                    return TestStatus.Failed("LastIndexOf(0, Count, 0) unknown exception: " + e.Message);
+                    return TestStatus.Failed("LastIndexOf(0, Count, 0) unknown exception: " + e.GetType() + " - " + e.Message);
                 }
             }
 
@@ -2349,7 +2349,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("RemoveAll(null) unknown exception: " + e.Message);
+                return TestStatus.Failed("RemoveAll(null) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             if (Count > 0)
@@ -2361,7 +2361,7 @@ namespace Test
                 }
                 catch (Exception e)
                 {
-                    return TestStatus.Failed("RemoveAt(0) unknown exception: " + e.Message);
+                    return TestStatus.Failed("RemoveAt(0) unknown exception: " + e.GetType() + " - " + e.Message);
                 }
             }
 
@@ -2377,7 +2377,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("RemoveAt(-1) unknown exception: " + e.Message);
+                return TestStatus.Failed("RemoveAt(-1) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             if (Count > 0)
@@ -2389,7 +2389,7 @@ namespace Test
                 }
                 catch (Exception e)
                 {
-                    return TestStatus.Failed("RemoveAt(Count-1) unknown exception: " + e.Message);
+                    return TestStatus.Failed("RemoveAt(Count-1) unknown exception: " + e.GetType() + " - " + e.Message);
                 }
             }
 
@@ -2405,7 +2405,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("RemoveAt(Count) unknown exception: " + e.Message);
+                return TestStatus.Failed("RemoveAt(Count) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2414,7 +2414,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("RemoveRange(0, 0) unknown exception: " + e.Message);
+                return TestStatus.Failed("RemoveRange(0, 0) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2429,7 +2429,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("RemoveRange(-1, 0) unknown exception: " + e.Message);
+                return TestStatus.Failed("RemoveRange(-1, 0) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2444,7 +2444,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("RemoveRange(0, -1) unknown exception: " + e.Message);
+                return TestStatus.Failed("RemoveRange(0, -1) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2453,7 +2453,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("RemoveRange(Count, 0) unknown exception: " + e.Message);
+                return TestStatus.Failed("RemoveRange(Count, 0) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2468,7 +2468,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("RemoveRange(Count + 1, 0) unknown exception: " + e.Message);
+                return TestStatus.Failed("RemoveRange(Count + 1, 0) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2477,7 +2477,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("Reverse(0, 0) unknown exception: " + e.Message);
+                return TestStatus.Failed("Reverse(0, 0) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2492,7 +2492,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("Reverse(-1, 0) unknown exception: " + e.Message);
+                return TestStatus.Failed("Reverse(-1, 0) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2507,7 +2507,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("Reverse(0, -1) unknown exception: " + e.Message);
+                return TestStatus.Failed("Reverse(0, -1) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2516,7 +2516,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("Reverse(Count, 0) unknown exception: " + e.Message);
+                return TestStatus.Failed("Reverse(Count, 0) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2531,7 +2531,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("Reverse(Count + 1, 0) unknown exception: " + e.Message);
+                return TestStatus.Failed("Reverse(Count + 1, 0) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2540,7 +2540,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("Reverse(0, Count) unknown exception: " + e.Message);
+                return TestStatus.Failed("Reverse(0, Count) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2555,7 +2555,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("Reverse(0, Count + 1) unknown exception: " + e.Message);
+                return TestStatus.Failed("Reverse(0, Count + 1) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             Comparison<T> comparison = null;
@@ -2580,7 +2580,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("Sort(comparison) unknown exception: " + e.Message);
+                return TestStatus.Failed("Sort(comparison) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             IComparer<T> comparer = null;
@@ -2591,7 +2591,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("Sort(0, 0, comparer) unknown exception: " + e.Message);
+                return TestStatus.Failed("Sort(0, 0, comparer) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2606,7 +2606,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("Sort(-1, 0, comparer) unknown exception: " + e.Message);
+                return TestStatus.Failed("Sort(-1, 0, comparer) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2621,7 +2621,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("Sort(0, -1, comparer) unknown exception: " + e.Message);
+                return TestStatus.Failed("Sort(0, -1, comparer) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2630,7 +2630,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("Sort(Count, 0, comparer) unknown exception: " + e.Message);
+                return TestStatus.Failed("Sort(Count, 0, comparer) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2645,7 +2645,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("Sort(Count + 1, 0, comparer) unknown exception: " + e.Message);
+                return TestStatus.Failed("Sort(Count + 1, 0, comparer) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2660,7 +2660,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("TrueForAll(null) unknown exception: " + e.Message);
+                return TestStatus.Failed("TrueForAll(null) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             return TestStatus.Success;
@@ -2856,7 +2856,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("get[-1] unknown exception: " + e.Message);
+                return TestStatus.Failed("get[-1] unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2871,7 +2871,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("get[Count] unknown exception: " + e.Message);
+                return TestStatus.Failed("get[Count] unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             T[] TestArray = new T[1];
@@ -2896,7 +2896,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("CopyTo(null, 0) unknown exception: " + e.Message);
+                return TestStatus.Failed("CopyTo(null, 0) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2919,7 +2919,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("CopyTo(TestArray, -1) unknown exception: " + e.Message);
+                return TestStatus.Failed("CopyTo(TestArray, -1) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             try
@@ -2942,7 +2942,7 @@ namespace Test
             }
             catch (Exception e)
             {
-                return TestStatus.Failed("CopyTo(TestArray, TestArray.Length + 1) unknown exception: " + e.Message);
+                return TestStatus.Failed("CopyTo(TestArray, TestArray.Length + 1) unknown exception: " + e.GetType() + " - " + e.Message);
             }
 
             return TestStatus.Success;
@@ -3134,6 +3134,7 @@ namespace Test
         public static void Init(bool AssemblyIsStrict, int DefaultMaxSegmentCapacity)
         {
             IsStrict = AssemblyIsStrict;
+            //IsStrict = true;
         }
 
         public static TestStatus TestAll(CreationHandler<T> handler)
@@ -3168,6 +3169,18 @@ namespace Test
         private static void InitSeed(int Loop, out Random rand)
         {
             rand = new Random(Loop);
+        }
+
+        private static int CompareTwoObjects(T o1, T o2)
+        {
+            if (o1 == null && o2 == null)
+                return 0;
+            else if (o1 == null && o2 != null)
+                return 1;
+            else if (o1 != null && o2 == null)
+                return -1;
+            else
+                return o1.CompareTo(o2);
         }
 
         private const int MaxIntValue = 100;
@@ -3278,7 +3291,7 @@ namespace Test
                         bool SmallRemoved = small_collection.Remove(Item);
                         bool LargeRemoved = large_collection.Remove(Item);
                         if (SmallRemoved != LargeRemoved)
-                            return TestStatus.Failed("Collection<T>, Remove, " + "Loop#" + Loop + ", Step#" + Step);
+                            return TestStatus.Failed("Collection<" + typeof(T).Name + ">, Remove, " + "Loop#" + Loop + ", Step#" + Step);
                     }
                     return TestStatus.Success;
 
@@ -3299,21 +3312,21 @@ namespace Test
         private static TestStatus IsEqual_collections(Collection<T> small_collection, LargeCollection<T> large_collection, int Loop, int Step)
         {
             if (small_collection.Count != large_collection.Count)
-                return TestStatus.Failed("Collection<T>, compare Count, " + "Loop#" + Loop + ", Step#" + Step);
+                return TestStatus.Failed("Collection<" + typeof(T).Name + ">, compare Count, " + "Loop#" + Loop + ", Step#" + Step);
 
             int Count = small_collection.Count;
 
             for (int i = 0; i < Count; i++)
-                if (!small_collection[i].Equals(large_collection[i]))
-                    return TestStatus.Failed("Collection<T>, compare getter, " + "Loop#" + Loop + ", Step#" + Step);
+                if (!Equals(small_collection[i], large_collection[i]))
+                    return TestStatus.Failed("Collection<" + typeof(T).Name + ">, compare getter, " + "Loop#" + Loop + ", Step#" + Step);
 
             for (int i = 0; i < Count; i++)
                 if (small_collection.Contains(small_collection[i]) != large_collection.Contains(large_collection[i]))
-                    return TestStatus.Failed("Collection<T>, compare Contains, " + "Loop#" + Loop + ", Step#" + Step);
+                    return TestStatus.Failed("Collection<" + typeof(T).Name + ">, compare Contains, " + "Loop#" + Loop + ", Step#" + Step);
 
             T t = default(T);
             if (small_collection.Contains(t) != large_collection.Contains(t))
-                return TestStatus.Failed("Collection<T>, compare Contains, " + "Loop#" + Loop + ", Step#" + Step);
+                return TestStatus.Failed("Collection<" + typeof(T).Name + ">, compare Contains, " + "Loop#" + Loop + ", Step#" + Step);
 
             T[] small_array = new T[Count];
             T[] large_array = new T[Count];
@@ -3321,12 +3334,12 @@ namespace Test
             large_collection.CopyTo(large_array, 0);
 
             for (int i = 0; i < Count; i++)
-                if (!small_array[i].Equals(large_array[i]))
-                    return TestStatus.Failed("Collection<T>, compare CopyTo, " + "Loop#" + Loop + ", Step#" + Step);
+                if (!Equals(small_array[i],large_array[i]))
+                    return TestStatus.Failed("Collection<" + typeof(T).Name + ">, compare CopyTo, " + "Loop#" + Loop + ", Step#" + Step);
 
             for (int i = 0; i < Count; i++)
-                if (!small_collection.IndexOf(small_collection[i]).Equals(large_collection.IndexOf(large_collection[i])))
-                    return TestStatus.Failed("Collection<T>, compare IndexOf, " + "Loop#" + Loop + ", Step#" + Step);
+                if (small_collection.IndexOf(small_collection[i]) != large_collection.IndexOf(large_collection[i]))
+                    return TestStatus.Failed("Collection<" + typeof(T).Name + ">, compare IndexOf, " + "Loop#" + Loop + ", Step#" + Step);
 
             return TestStatus.Success;
         }
@@ -3489,7 +3502,7 @@ namespace Test
                         bool SmallRemoved = small_list.Remove(Item);
                         bool LargeRemoved = large_list.Remove(Item);
                         if (SmallRemoved != LargeRemoved)
-                            return TestStatus.Failed("List<T>, Remove, " + "Loop#" + Loop + ", Step#" + Step);
+                            return TestStatus.Failed("List<" + typeof(T).Name + ">, Remove, " + "Loop#" + Loop + ", Step#" + Step);
                     }
                     return TestStatus.Success;
 
@@ -3497,10 +3510,10 @@ namespace Test
                     if (Count > 0)
                     {
                         T MaxItem = handler(rand, MaxSize);
-                        long SmallRemoved = small_list.RemoveAll((item) => { return item.CompareTo(MaxItem) > 0; });
-                        long LargeRemoved = large_list.RemoveAll((item) => { return item.CompareTo(MaxItem) > 0; });
+                        long SmallRemoved = small_list.RemoveAll((item) => { return CompareTwoObjects(item, MaxItem) > 0; });
+                        long LargeRemoved = large_list.RemoveAll((item) => { return CompareTwoObjects(item, MaxItem) > 0; });
                         if (SmallRemoved != LargeRemoved)
-                            return TestStatus.Failed("List<T>, RemoveAll, " + "Loop#" + Loop + ", Step#" + Step);
+                            return TestStatus.Failed("List<" + typeof(T).Name + ">, RemoveAll, " + "Loop#" + Loop + ", Step#" + Step);
                     }
                     return TestStatus.Success;
 
@@ -3556,9 +3569,9 @@ namespace Test
                     {
                         Comparer<T> comparer;
                         if (Odds > SortOperationOdds / 2)
-                            comparer = Comparer<T>.Create((T item1, T item2) => { return item2.CompareTo(item1); });
+                            comparer = Comparer<T>.Create((T item1, T item2) => { return CompareTwoObjects(item2, item1); });
                         else
-                            comparer = Comparer<T>.Create((T item1, T item2) => { return -item2.CompareTo(item1); });
+                            comparer = Comparer<T>.Create((T item1, T item2) => { return CompareTwoObjects(item1, item2); });
                         Index = rand.Next(Count);
                         Size = rand.Next(Count - Index);
                         if (Size > 0)
@@ -3582,16 +3595,16 @@ namespace Test
         private static TestStatus IsEqual_lists(List<T> small_list, LargeList<T> large_list, int Loop, int Step)
         {
             if (small_list.Capacity >= 4 && small_list.Capacity * 3 < large_list.Capacity)
-                return TestStatus.Failed("List<T>, compare Capacity, " + "Loop#" + Loop + ", Step#" + Step);
+                return TestStatus.Failed("List<" + typeof(T).Name + ">, compare Capacity, " + "Loop#" + Loop + ", Step#" + Step);
 
             if (small_list.Count != large_list.Count)
-                return TestStatus.Failed("List<T>, compare Count, " + "Loop#" + Loop + ", Step#" + Step);
+                return TestStatus.Failed("List<" + typeof(T).Name + ">, compare Count, " + "Loop#" + Loop + ", Step#" + Step);
 
             int Count = small_list.Count;
 
             for (int i = 0; i < Count; i++)
-                if (small_list[i].Equals(large_list[i]))
-                    return TestStatus.Failed("List<T>, compare getter, " + "Loop#" + Loop + ", Step#" + Step);
+                if (!Equals(small_list[i], large_list[i]))
+                    return TestStatus.Failed("List<" + typeof(T).Name + ">, compare getter, " + "Loop#" + Loop + ", Step#" + Step);
 
             List<T> small_sorted_list = new List<T>(small_list);
             LargeList<T> large_sorted_list = new LargeList<T>(large_list);
@@ -3602,52 +3615,52 @@ namespace Test
             long SmallSearchresult = small_sorted_list.BinarySearch(t);
             long LargeSearchresult = large_sorted_list.BinarySearch(t);
             if (SmallSearchresult != LargeSearchresult)
-                return TestStatus.Failed("List<T>, compare BinarySearch(item), " + "Loop#" + Loop + ", Step#" + Step);
+                return TestStatus.Failed("List<" + typeof(T).Name + ">, compare BinarySearch(item), " + "Loop#" + Loop + ", Step#" + Step);
 
             for (int i = 0; i < Count; i++)
             {
                 SmallSearchresult = small_sorted_list.BinarySearch(small_sorted_list[i]);
                 LargeSearchresult = large_sorted_list.BinarySearch(large_sorted_list[i]);
                 if (SmallSearchresult != LargeSearchresult)
-                    return TestStatus.Failed("List<T>, compare BinarySearch(item), " + "Loop#" + Loop + ", Step#" + Step);
+                    return TestStatus.Failed("List<" + typeof(T).Name + ">, compare BinarySearch(item), " + "Loop#" + Loop + ", Step#" + Step);
             }
 
             Comparer<T> comparer;
-            comparer = Comparer<T>.Create((T item1, T item2) => { return item2.CompareTo(item1); });
+            comparer = Comparer<T>.Create((T item1, T item2) => { return CompareTwoObjects(item2, item1); });
             small_sorted_list.Sort(comparer);
             large_sorted_list.Sort(comparer);
 
             if (small_list.BinarySearch(t, comparer) != large_list.BinarySearch(t, comparer))
-                return TestStatus.Failed("List<T>, compare BinarySearch(item, comparer), " + "Loop#" + Loop + ", Step#" + Step);
+                return TestStatus.Failed("List<" + typeof(T).Name + ">, compare BinarySearch(item, comparer), " + "Loop#" + Loop + ", Step#" + Step);
 
             for (int i = 0; i < Count; i++)
                 if (small_list.BinarySearch(small_list[i], comparer) != large_list.BinarySearch(large_list[i], comparer))
-                    return TestStatus.Failed("List<T>, compare BinarySearch(item, comparer), " + "Loop#" + Loop + ", Step#" + Step);
+                    return TestStatus.Failed("List<" + typeof(T).Name + ">, compare BinarySearch(item, comparer), " + "Loop#" + Loop + ", Step#" + Step);
 
             for (int j = 0; j < Count; j++)
                 for (int k = 0; j + k < Count; k++)
                     if (small_list.BinarySearch(j, k, t, comparer) != large_list.BinarySearch(j, k, t, comparer))
-                        return TestStatus.Failed("List<T>, compare BinarySearch(index, count, item, comparer), " + "Loop#" + Loop + ", Step#" + Step);
+                        return TestStatus.Failed("List<" + typeof(T).Name + ">, compare BinarySearch(index, count, item, comparer), " + "Loop#" + Loop + ", Step#" + Step);
 
             for (int i = 0; i < Count; i++)
                 for (int j = 0; j < Count; j++)
                     for (int k = 0; j + k < Count; k++)
                         if (small_list.BinarySearch(j, k, small_list[i], comparer) != large_list.BinarySearch(j, k, large_list[i], comparer))
-                            return TestStatus.Failed("List<T>, compare BinarySearch(index, count, item, comparer), " + "Loop#" + Loop + ", Step#" + Step);
+                            return TestStatus.Failed("List<" + typeof(T).Name + ">, compare BinarySearch(index, count, item, comparer), " + "Loop#" + Loop + ", Step#" + Step);
 
             if (small_list.Contains(t) != large_list.Contains(t))
-                return TestStatus.Failed("List<T>, compare Contains, " + "Loop#" + Loop + ", Step#" + Step);
+                return TestStatus.Failed("List<" + typeof(T).Name + ">, compare Contains, " + "Loop#" + Loop + ", Step#" + Step);
 
             for (int i = 0; i < Count; i++)
                 if (small_list.Contains(small_list[i]) != large_list.Contains(large_list[i]))
-                    return TestStatus.Failed("List<T>, compare Contains, " + "Loop#" + Loop + ", Step#" + Step);
+                    return TestStatus.Failed("List<" + typeof(T).Name + ">, compare Contains, " + "Loop#" + Loop + ", Step#" + Step);
 
             Converter<T, int> converter = (T item) => { return MaxSize - 1 - item.GetHashCode(); };
             List<int> small_converted = small_list.ConvertAll(converter);
             LargeList<int> large_converted = large_list.ConvertAll(converter);
             for (int i = 0; i < Count; i++)
                 if (small_converted[i] != large_converted[i])
-                    return TestStatus.Failed("List<T>, compare ConvertAll, " + "Loop#" + Loop + ", Step#" + Step);
+                    return TestStatus.Failed("List<" + typeof(T).Name + ">, compare ConvertAll, " + "Loop#" + Loop + ", Step#" + Step);
 
             T[] small_array;
             T[] large_array;
@@ -3658,8 +3671,8 @@ namespace Test
             large_list.CopyTo(large_array);
 
             for (int i = 0; i < Count; i++)
-                if (!small_array[i].Equals(large_array[i]))
-                    return TestStatus.Failed("List<T>, compare CopyTo(array), " + "Loop#" + Loop + ", Step#" + Step);
+                if (!Equals(small_array[i], large_array[i]))
+                    return TestStatus.Failed("List<" + typeof(T).Name + ">, compare CopyTo(array), " + "Loop#" + Loop + ", Step#" + Step);
 
             for (int j = 0; j < Count; j++)
             {
@@ -3669,8 +3682,8 @@ namespace Test
                 large_list.CopyTo(large_array, j);
 
                 for (int i = 0; i < Count; i++)
-                    if (!small_array[j + i].Equals(large_array[j + i]))
-                        return TestStatus.Failed("List<T>, compare CopyTo(array,index), " + "Loop#" + Loop + ", Step#" + Step);
+                    if (!Equals(small_array[j + i], large_array[j + i]))
+                        return TestStatus.Failed("List<" + typeof(T).Name + ">, compare CopyTo(array,index), " + "Loop#" + Loop + ", Step#" + Step);
             }
 
             for (int j = 0; j < Count; j++)
@@ -3683,8 +3696,8 @@ namespace Test
                         large_list.CopyTo(j, large_array, l, k);
 
                         for (int i = 0; i < k; i++)
-                            if (!small_array[l + i].Equals(large_array[l + i]))
-                                return TestStatus.Failed("List<T>, compare CopyTo(index,array,index,count), " + "Loop#" + Loop + ", Step#" + Step);
+                            if (!Equals(small_array[l + i], large_array[l + i]))
+                                return TestStatus.Failed("List<" + typeof(T).Name + ">, compare CopyTo(index,array,index,count), " + "Loop#" + Loop + ", Step#" + Step);
                     }
 
             Predicate<T> match;
@@ -3693,14 +3706,14 @@ namespace Test
             {
                 match = (item) => { return (item.GetHashCode() & 0xF) == i; };
                 if (small_list.Exists(match) != large_list.Exists(match))
-                    return TestStatus.Failed("List<T>, compare Exists, " + "Loop#" + Loop + ", Step#" + Step);
+                    return TestStatus.Failed("List<" + typeof(T).Name + ">, compare Exists, " + "Loop#" + Loop + ", Step#" + Step);
             }
 
             for (int i = 0; i < MaxIntValue; i++)
             {
-                match = (item) => { return (item.GetHashCode() % MaxIntValue) == i; };
-                if (!small_list.Find(match).Equals(large_list.Find(match)))
-                    return TestStatus.Failed("List<T>, compare Find, " + "Loop#" + Loop + ", Step#" + Step);
+                match = (item) => { return item != null && (item.GetHashCode() % MaxIntValue) == i; };
+                if (!Equals(small_list.Find(match), large_list.Find(match)))
+                    return TestStatus.Failed("List<" + typeof(T).Name + ">, compare Find, " + "Loop#" + Loop + ", Step#" + Step);
             }
 
             for (int j = 0; j < MaxIntValue; j++)
@@ -3710,13 +3723,13 @@ namespace Test
                 LargeList<T> large_find = large_list.FindAll(match);
 
                 if (small_find.Count != large_find.Count)
-                    return TestStatus.Failed("List<T>, compare FindAll, " + "Loop#" + Loop + ", Step#" + Step);
+                    return TestStatus.Failed("List<" + typeof(T).Name + ">, compare FindAll, " + "Loop#" + Loop + ", Step#" + Step);
                 else
                 {
                     int FindCount = small_find.Count;
                     for (int i = 0; i < FindCount; i++)
-                        if (!small_find[i].Equals(large_find[i]))
-                            return TestStatus.Failed("List<T>, compare FindAll, " + "Loop#" + Loop + ", Step#" + Step);
+                        if (!Equals(small_find[i], large_find[i]))
+                            return TestStatus.Failed("List<" + typeof(T).Name + ">, compare FindAll, " + "Loop#" + Loop + ", Step#" + Step);
                 }
             }
 
@@ -3724,7 +3737,7 @@ namespace Test
             {
                 match = (item) => { return (item.GetHashCode() % MaxIntValue) == i; };
                 if (small_list.FindIndex(match) != large_list.FindIndex(match))
-                    return TestStatus.Failed("List<T>, compare FindIndex, " + "Loop#" + Loop + ", Step#" + Step);
+                    return TestStatus.Failed("List<" + typeof(T).Name + ">, compare FindIndex, " + "Loop#" + Loop + ", Step#" + Step);
             }
 
             for (int j = 0; j < Count; j++)
@@ -3732,7 +3745,7 @@ namespace Test
                 {
                     match = (item) => { return (item.GetHashCode() % MaxIntValue) == i; };
                     if (small_list.FindIndex(j, match) != large_list.FindIndex(j, match))
-                        return TestStatus.Failed("List<T>, compare FindIndex(index,match), " + "Loop#" + Loop + ", Step#" + Step);
+                        return TestStatus.Failed("List<" + typeof(T).Name + ">, compare FindIndex(index,match), " + "Loop#" + Loop + ", Step#" + Step);
                 }
 
             for (int j = 0; j < Count; j++)
@@ -3741,21 +3754,21 @@ namespace Test
                     {
                         match = (item) => { return (item.GetHashCode() % MaxIntValue) == i; };
                         if (small_list.FindIndex(j, k, match) != large_list.FindIndex(j, k, match))
-                            return TestStatus.Failed("List<T>, compare FindIndex(index,count,match), " + "Loop#" + Loop + ", Step#" + Step);
+                            return TestStatus.Failed("List<" + typeof(T).Name + ">, compare FindIndex(index,count,match), " + "Loop#" + Loop + ", Step#" + Step);
                     }
 
             for (int i = 0; i < MaxIntValue; i++)
             {
                 match = (item) => { return (item.GetHashCode() % MaxIntValue) == i; };
-                if (!small_list.FindLast(match).Equals(large_list.FindLast(match)))
-                    return TestStatus.Failed("List<T>, compare FindLast, " + "Loop#" + Loop + ", Step#" + Step);
+                if (!Equals(small_list.FindLast(match), large_list.FindLast(match)))
+                    return TestStatus.Failed("List<" + typeof(T).Name + ">, compare FindLast, " + "Loop#" + Loop + ", Step#" + Step);
             }
 
             for (int i = 0; i < MaxIntValue; i++)
             {
                 match = (item) => { return (item.GetHashCode() % MaxIntValue) == i; };
                 if (small_list.FindLastIndex(match) != large_list.FindLastIndex(match))
-                    return TestStatus.Failed("List<T>, compare FindLastIndex, " + "Loop#" + Loop + ", Step#" + Step);
+                    return TestStatus.Failed("List<" + typeof(T).Name + ">, compare FindLastIndex, " + "Loop#" + Loop + ", Step#" + Step);
             }
 
             for (int j = 0; j < Count; j++)
@@ -3766,7 +3779,7 @@ namespace Test
                     long LargeFindResult = large_list.FindLastIndex(Count - 1 - j, match);
 
                     if (SmallFindResult != LargeFindResult)
-                        return TestStatus.Failed("List<T>, compare FindLastIndex(index,match), " + "Loop#" + Loop + ", Step#" + Step);
+                        return TestStatus.Failed("List<" + typeof(T).Name + ">, compare FindLastIndex(index,match), " + "Loop#" + Loop + ", Step#" + Step);
                 }
 
             for (int j = 0; j < Count; j++)
@@ -3775,7 +3788,7 @@ namespace Test
                     {
                         match = (item) => { return (item.GetHashCode() % MaxIntValue) == i; };
                         if (small_list.FindLastIndex(Count - 1 - j, k, match) != large_list.FindLastIndex(Count - 1 - j, k, match))
-                            return TestStatus.Failed("List<T>, compare FindLastIndex(index,count,match), " + "Loop#" + Loop + ", Step#" + Step);
+                            return TestStatus.Failed("List<" + typeof(T).Name + ">, compare FindLastIndex(index,count,match), " + "Loop#" + Loop + ", Step#" + Step);
                     }
 
             int Total;
@@ -3788,7 +3801,7 @@ namespace Test
             int LargeTotal = Total;
 
             if (SmallTotal != LargeTotal)
-                return TestStatus.Failed("List<T>, compare ForEach, " + "Loop#" + Loop + ", Step#" + Step);
+                return TestStatus.Failed("List<" + typeof(T).Name + ">, compare ForEach, " + "Loop#" + Loop + ", Step#" + Step);
 
             for (int j = 0; j < Count; j++)
                 for (int k = 0; j + k < Count; k++)
@@ -3797,87 +3810,87 @@ namespace Test
                     LargeList<T> large_range = large_list.GetRange(j, k);
 
                     if (small_range.Count != large_range.Count)
-                        return TestStatus.Failed("List<T>, compare GetRange, " + "Loop#" + Loop + ", Step#" + Step);
+                        return TestStatus.Failed("List<" + typeof(T).Name + ">, compare GetRange, " + "Loop#" + Loop + ", Step#" + Step);
                     else
                     {
                         int FindCount = small_range.Count;
                         for (int i = 0; i < FindCount; i++)
-                            if (!small_range[i].Equals(large_range[i]))
-                                return TestStatus.Failed("List<T>, compare GetRange, " + "Loop#" + Loop + ", Step#" + Step);
+                            if (!Equals(small_range[i], large_range[i]))
+                                return TestStatus.Failed("List<" + typeof(T).Name + ">, compare GetRange, " + "Loop#" + Loop + ", Step#" + Step);
                     }
                 }
 
             if (small_list.IndexOf(t) != large_list.IndexOf(t))
-                return TestStatus.Failed("List<T>, compare IndexOf, " + "Loop#" + Loop + ", Step#" + Step);
+                return TestStatus.Failed("List<" + typeof(T).Name + ">, compare IndexOf, " + "Loop#" + Loop + ", Step#" + Step);
 
             for (int i = 0; i < Count; i++)
                 if (small_list.IndexOf(small_list[i]) != large_list.IndexOf(large_list[i]))
-                    return TestStatus.Failed("List<T>, compare IndexOf, " + "Loop#" + Loop + ", Step#" + Step);
+                    return TestStatus.Failed("List<" + typeof(T).Name + ">, compare IndexOf, " + "Loop#" + Loop + ", Step#" + Step);
 
             for (int j = 0; j < Count; j++)
                 if (small_list.IndexOf(t, j) != large_list.IndexOf(t, j))
-                    return TestStatus.Failed("List<T>, compare IndexOf(item,index), " + "Loop#" + Loop + ", Step#" + Step);
+                    return TestStatus.Failed("List<" + typeof(T).Name + ">, compare IndexOf(item,index), " + "Loop#" + Loop + ", Step#" + Step);
 
             for (int i = 0; i < Count; i++)
                 for (int j = 0; j < Count; j++)
                     if (small_list.IndexOf(small_list[i], j) != large_list.IndexOf(large_list[i], j))
-                        return TestStatus.Failed("List<T>, compare IndexOf(item,index), " + "Loop#" + Loop + ", Step#" + Step);
+                        return TestStatus.Failed("List<" + typeof(T).Name + ">, compare IndexOf(item,index), " + "Loop#" + Loop + ", Step#" + Step);
 
             for (int j = 0; j < Count; j++)
                 for (int k = 0; j + k < Count; k++)
                     if (small_list.IndexOf(t, j, k) != large_list.IndexOf(t, j, k))
-                        return TestStatus.Failed("List<T>, compare IndexOf(item,index,count), " + "Loop#" + Loop + ", Step#" + Step);
+                        return TestStatus.Failed("List<" + typeof(T).Name + ">, compare IndexOf(item,index,count), " + "Loop#" + Loop + ", Step#" + Step);
 
             for (int i = 0; i < Count; i++)
                 for (int j = 0; j < Count; j++)
                     for (int k = 0; j + k < Count; k++)
                         if (small_list.IndexOf(small_list[i], j, k) != large_list.IndexOf(large_list[i], j, k))
-                            return TestStatus.Failed("List<T>, compare IndexOf(item,index,count), " + "Loop#" + Loop + ", Step#" + Step);
+                            return TestStatus.Failed("List<" + typeof(T).Name + ">, compare IndexOf(item,index,count), " + "Loop#" + Loop + ", Step#" + Step);
 
             if (small_list.LastIndexOf(t) != large_list.LastIndexOf(t))
-                return TestStatus.Failed("List<T>, compare LastIndexOf, " + "Loop#" + Loop + ", Step#" + Step);
+                return TestStatus.Failed("List<" + typeof(T).Name + ">, compare LastIndexOf, " + "Loop#" + Loop + ", Step#" + Step);
 
             for (int i = 0; i < Count; i++)
                 if (small_list.LastIndexOf(small_list[i]) != large_list.LastIndexOf(large_list[i]))
-                    return TestStatus.Failed("List<T>, compare LastIndexOf, " + "Loop#" + Loop + ", Step#" + Step);
+                    return TestStatus.Failed("List<" + typeof(T).Name + ">, compare LastIndexOf, " + "Loop#" + Loop + ", Step#" + Step);
 
             for (int j = 0; j < Count; j++)
                 if (small_list.LastIndexOf(t, Count - 1 - j) != large_list.LastIndexOf(t, Count - 1 - j))
-                    return TestStatus.Failed("List<T>, compare LastIndexOf(item,index), " + "Loop#" + Loop + ", Step#" + Step);
+                    return TestStatus.Failed("List<" + typeof(T).Name + ">, compare LastIndexOf(item,index), " + "Loop#" + Loop + ", Step#" + Step);
 
             for (int i = 0; i < Count; i++)
                 for (int j = 0; j < Count; j++)
                     if (small_list.LastIndexOf(small_list[i], Count - 1 - j) != large_list.LastIndexOf(large_list[i], Count - 1 - j))
-                        return TestStatus.Failed("List<T>, compare LastIndexOf(item,index), " + "Loop#" + Loop + ", Step#" + Step);
+                        return TestStatus.Failed("List<" + typeof(T).Name + ">, compare LastIndexOf(item,index), " + "Loop#" + Loop + ", Step#" + Step);
 
             for (int j = 0; j < Count; j++)
                 for (int k = 0; j + k < Count; k++)
                     if (small_list.LastIndexOf(t, Count - 1 - j, k) != large_list.LastIndexOf(t, Count - 1 - j, k))
-                        return TestStatus.Failed("List<T>, compare LastIndexOf(item,index,count), " + "Loop#" + Loop + ", Step#" + Step);
+                        return TestStatus.Failed("List<" + typeof(T).Name + ">, compare LastIndexOf(item,index,count), " + "Loop#" + Loop + ", Step#" + Step);
 
             for (int i = 0; i < Count; i++)
                 for (int j = 0; j < Count; j++)
                     for (int k = 0; j + k < Count; k++)
                         if (small_list.LastIndexOf(small_list[i], Count - 1 - j, k) != large_list.LastIndexOf(large_list[i], Count - 1 - j, k))
-                            return TestStatus.Failed("List<T>, compare LastIndexOf(item,index,count), " + "Loop#" + Loop + ", Step#" + Step);
+                            return TestStatus.Failed("List<" + typeof(T).Name + ">, compare LastIndexOf(item,index,count), " + "Loop#" + Loop + ", Step#" + Step);
 
             small_array = small_list.ToArray();
             large_array = large_list.ToArray();
             if (small_array.Length != large_array.Length)
-                return TestStatus.Failed("List<T>, compare ToArray, " + "Loop#" + Loop + ", Step#" + Step);
+                return TestStatus.Failed("List<" + typeof(T).Name + ">, compare ToArray, " + "Loop#" + Loop + ", Step#" + Step);
             else
             {
                 int ArrayLength = small_array.Length;
                 for (int i = 0; i < ArrayLength; i++)
-                    if (!small_array[i].Equals(large_array[i]))
-                        return TestStatus.Failed("List<T>, compare ToArray, " + "Loop#" + Loop + ", Step#" + Step);
+                    if (!Equals(small_array[i], large_array[i]))
+                        return TestStatus.Failed("List<" + typeof(T).Name + ">, compare ToArray, " + "Loop#" + Loop + ", Step#" + Step);
             }
 
             for (int i = 0; i < MaxIntValue; i++)
             {
                 match = (item) => { return (item.GetHashCode() % MaxIntValue) != i; };
                 if (small_list.TrueForAll(match) != large_list.TrueForAll(match))
-                    return TestStatus.Failed("List<T>, compare TrueForAll, " + "Loop#" + Loop + ", Step#" + Step);
+                    return TestStatus.Failed("List<" + typeof(T).Name + ">, compare TrueForAll, " + "Loop#" + Loop + ", Step#" + Step);
             }
 
             return TestStatus.Success;
