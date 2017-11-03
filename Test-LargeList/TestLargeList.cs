@@ -169,14 +169,14 @@ namespace Test
             {
                 if (IsStrict)
                 {
-                    if (e.Message == "Value cannot be null.\nParameter name: list")
+                    if (IsExceptionEqual(e, "Value cannot be null.\nParameter name: list"))
                         return TestStatus.Success;
                     else
                         return TestStatus.Failed(TestName);
                 }
                 else
                 {
-                    if (e.Message == "Value cannot be null.\nParameter name: collection")
+                    if (IsExceptionEqual(e, "Value cannot be null.\nParameter name: collection"))
                         return TestStatus.Success;
                     else
                         return TestStatus.Failed(TestName);
@@ -821,7 +821,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message == "Non-negative number required.\nParameter name: capacity")
+                if (IsExceptionEqual(e, "Non-negative number required.\nParameter name: capacity"))
                     return TestStatus.Success;
                 else
                     return TestStatus.Failed(TestName);
@@ -971,7 +971,7 @@ namespace Test
             }
             catch (ArgumentNullException e)
             {
-                if (e.Message == "Value cannot be null.\nParameter name: collection")
+                if (IsExceptionEqual(e, "Value cannot be null.\nParameter name: collection"))
                     return TestStatus.Success;
                 else
                     return TestStatus.Failed(TestName);
@@ -2757,7 +2757,7 @@ namespace Test
             }
             catch (ArgumentNullException e)
             {
-                if (e.Message == "Value cannot be null.\nParameter name: list")
+                if (IsExceptionEqual(e, "Value cannot be null.\nParameter name: list"))
                     return TestStatus.Success;
                 else
                     return TestStatus.Failed(TestName);
@@ -3035,7 +3035,7 @@ namespace Test
             }
             catch (ArgumentNullException e)
             {
-                if (e.Message == "Value cannot be null.\nParameter name: list")
+                if (IsExceptionEqual(e, "Value cannot be null.\nParameter name: list"))
                     return TestStatus.Success;
                 else
                     return TestStatus.Failed(TestName);
@@ -3191,7 +3191,7 @@ namespace Test
             Debug.Print("Comparing Collection<T> and LargeCollection<T>");
 
             TestStatus Status;
-            int MaxLoops = 1; // 100;
+            int MaxLoops = 100;
             int MaxSteps = 50;
 
             for (int Loop = 0; Loop < MaxLoops; Loop++)
@@ -3206,9 +3206,6 @@ namespace Test
 
                 for (int Step = 0; Step < MaxSteps; Step++)
                 {
-                    if (Loop == 10 && Step == 32)
-                        Step = 32;
-
                     if (!(Status = UpdateTest_collection(small_collection, large_collection, Loop, Step, rand)).Succeeded)
                         return Status;
 
@@ -3352,7 +3349,7 @@ namespace Test
             Debug.Print("Comparing List<T> and LargeList<T>");
 
             TestStatus Status;
-            int MaxLoops = 1; //100;
+            int MaxLoops = 30;
             int MaxSteps = 50;
 
             for (int Loop = 0; Loop < MaxLoops; Loop++)
@@ -3367,9 +3364,6 @@ namespace Test
 
                 for (int Step = 0; Step < MaxSteps; Step++)
                 {
-                    if (Loop == 53 && Step == 23)
-                        Step = 23;
-
                     if (!(Status = UpdateTest_list(small_list, large_list, Loop, Step, rand)).Succeeded)
                         return Status;
 

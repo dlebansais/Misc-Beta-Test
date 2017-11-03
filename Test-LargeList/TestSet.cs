@@ -7,7 +7,6 @@ using System.Threading;
 namespace Test
 {
     [TestFixture]
-    //[Culture("en-US")]
     public class TestSet
     {
         [OneTimeSetUp]
