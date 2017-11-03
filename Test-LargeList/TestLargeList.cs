@@ -169,14 +169,14 @@ namespace Test
             {
                 if (IsStrict)
                 {
-                    if (e.Message == "Value cannot be null.\r\nParameter name: list")
+                    if (e.Message == "Value cannot be null.\nParameter name: list")
                         return TestStatus.Success;
                     else
                         return TestStatus.Failed(TestName);
                 }
                 else
                 {
-                    if (e.Message == "Value cannot be null.\r\nParameter name: collection")
+                    if (e.Message == "Value cannot be null.\nParameter name: collection")
                         return TestStatus.Success;
                     else
                         return TestStatus.Failed(TestName);
@@ -281,7 +281,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index")
+                if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: index"))
                     return TestStatus.Failed("get[-1] exception: " + e.Message);
             }
             catch
@@ -308,7 +308,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index")
+                if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: index"))
                     return TestStatus.Failed("get[Count] exception: " + e.Message);
             }
             catch
@@ -335,7 +335,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index")
+                if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: index"))
                     return TestStatus.Failed("set[-1] exception: " + e.Message);
             }
             catch
@@ -362,7 +362,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index")
+                if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: index"))
                     return TestStatus.Failed("set[Count] exception: " + e.Message);
             }
             catch
@@ -381,12 +381,12 @@ namespace Test
             {
                 if (IsStrict)
                 {
-                    if (e.Message != "Value cannot be null.\r\nParameter name: dest")
+                    if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: dest"))
                         return TestStatus.Failed("CopyTo(null, -1) exception: " + e.Message);
                 }
                 else
                 {
-                    if (e.Message != "Value cannot be null.\r\nParameter name: array")
+                    if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: array"))
                         return TestStatus.Failed("CopyTo(null, -1) exception: " + e.Message);
                 }
             }
@@ -404,12 +404,12 @@ namespace Test
             {
                 if (IsStrict)
                 {
-                    if (e.Message != "Value cannot be null.\r\nParameter name: dest")
+                    if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: dest"))
                         return TestStatus.Failed("CopyTo(null, 0) exception: " + e.Message);
                 }
                 else
                 {
-                    if (e.Message != "Value cannot be null.\r\nParameter name: array")
+                    if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: array"))
                         return TestStatus.Failed("CopyTo(null, 0) exception: " + e.Message);
                 }
             }
@@ -427,12 +427,12 @@ namespace Test
             {
                 if (IsStrict)
                 {
-                    if (e.Message != "Value cannot be null.\r\nParameter name: dest")
+                    if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: dest"))
                         return TestStatus.Failed("CopyTo(null, 1) exception: " + e.Message);
                 }
                 else
                 {
-                    if (e.Message != "Value cannot be null.\r\nParameter name: array")
+                    if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: array"))
                         return TestStatus.Failed("CopyTo(null, 1) exception: " + e.Message);
                 }
             }
@@ -461,12 +461,12 @@ namespace Test
             {
                 if (IsStrict)
                 {
-                    if (e.Message != "Number was less than the array's lower bound in the first dimension.\r\nParameter name: dstIndex")
+                    if (!IsExceptionEqual(e, "Number was less than the array's lower bound in the first dimension.\nParameter name: dstIndex"))
                         return TestStatus.Failed("CopyTo(array, -1) exception: " + e.Message);
                 }
                 else
                 {
-                    if (e.Message != "Number was less than the array's lower bound in the first dimension.\r\nParameter name: arrayIndex")
+                    if (!IsExceptionEqual(e, "Number was less than the array's lower bound in the first dimension.\nParameter name: arrayIndex"))
                         return TestStatus.Failed("CopyTo(array, -1) exception: " + e.Message);
                 }
             }
@@ -504,12 +504,12 @@ namespace Test
                 {
                     if (IsStrict)
                     {
-                        if (e.Message != "Destination array was not long enough. Check destIndex and length, and the array's lower bounds.")
+                        if (!IsExceptionEqual(e, "Destination array was not long enough. Check destIndex and length, and the array's lower bounds."))
                             return TestStatus.Failed("CopyTo(array, array length-Count+1) exception: " + e.Message);
                     }
                     else
                     {
-                        if (e.Message != "Destination array was not long enough. Check arrayIndex and length, and the array's lower bounds.")
+                        if (!IsExceptionEqual(e, "Destination array was not long enough. Check arrayIndex and length, and the array's lower bounds."))
                             return TestStatus.Failed("CopyTo(array, array length-Count+1) exception: " + e.Message);
                     }
                 }
@@ -538,12 +538,12 @@ namespace Test
                 {
                     if (IsStrict)
                     {
-                        if (e.Message != "Destination array was not long enough. Check destIndex and length, and the array's lower bounds.")
+                        if (!IsExceptionEqual(e, "Destination array was not long enough. Check destIndex and length, and the array's lower bounds."))
                             return TestStatus.Failed("CopyTo(array, array length + 1) exception: " + e.Message);
                     }
                     else
                     {
-                        if (e.Message != "Destination array was not long enough. Check arrayIndex and length, and the array's lower bounds.")
+                        if (!IsExceptionEqual(e, "Destination array was not long enough. Check arrayIndex and length, and the array's lower bounds."))
                             return TestStatus.Failed("CopyTo(array, array length + 1) exception: " + e.Message);
                     }
                 }
@@ -570,7 +570,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index must be within the bounds of the L" + "ist.\r\nParameter name: index")
+                if (!IsExceptionEqual(e, "Index must be within the bounds of the L" + "ist.\nParameter name: index"))
                     return TestStatus.Failed("Insert(-1, 0) exception: " + e.Message);
             }
             catch
@@ -595,7 +595,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index must be within the bounds of the L" + "ist.\r\nParameter name: index")
+                if (!IsExceptionEqual(e, "Index must be within the bounds of the L" + "ist.\nParameter name: index"))
                     return TestStatus.Failed("Insert(Count + 1, 0) exception: " + e.Message);
             }
             catch
@@ -623,7 +623,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index")
+                if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: index"))
                     return TestStatus.Failed("RemoveAt(-1) exception: " + e.Message);
             }
             catch
@@ -651,7 +651,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index")
+                if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: index"))
                     return TestStatus.Failed("RemoveAt(Count) exception: " + e.Message);
             }
             catch
@@ -821,7 +821,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message == "Non-negative number required.\r\nParameter name: capacity")
+                if (e.Message == "Non-negative number required.\nParameter name: capacity")
                     return TestStatus.Success;
                 else
                     return TestStatus.Failed(TestName);
@@ -971,7 +971,7 @@ namespace Test
             }
             catch (ArgumentNullException e)
             {
-                if (e.Message == "Value cannot be null.\r\nParameter name: collection")
+                if (e.Message == "Value cannot be null.\nParameter name: collection")
                     return TestStatus.Success;
                 else
                     return TestStatus.Failed(TestName);
@@ -1075,7 +1075,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index")
+                if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: index"))
                     return TestStatus.Failed("get[-1] exception: " + e.Message);
             }
             catch
@@ -1102,7 +1102,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index")
+                if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: index"))
                     return TestStatus.Failed("get[Count] exception: " + e.Message);
             }
             catch
@@ -1129,7 +1129,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index")
+                if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: index"))
                     return TestStatus.Failed("set[-1] exception: " + e.Message);
             }
             catch
@@ -1156,7 +1156,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index")
+                if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: index"))
                     return TestStatus.Failed("set[Count] exception: " + e.Message);
             }
             catch
@@ -1180,7 +1180,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "capacity was less than the current size.\r\nParameter name: value")
+                if (!IsExceptionEqual(e, "capacity was less than the current size.\nParameter name: value"))
                     return TestStatus.Failed("Capacity=Count-1 exception: " + e.Message);
             }
             catch
@@ -1204,7 +1204,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Non-negative number required.\r\nParameter name: index")
+                if (!IsExceptionEqual(e, "Non-negative number required.\nParameter name: index"))
                     return TestStatus.Failed("BinarySearch(-1, 0, 0, null) exception: " + e.Message);
             }
             catch
@@ -1219,7 +1219,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Non-negative number required.\r\nParameter name: count")
+                if (!IsExceptionEqual(e, "Non-negative number required.\nParameter name: count"))
                     return TestStatus.Failed("BinarySearch(0, -1, 0, null) exception: " + e.Message);
             }
             catch
@@ -1243,7 +1243,7 @@ namespace Test
             }
             catch (ArgumentException e)
             {
-                if (e.Message != "Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.")
+                if (!IsExceptionEqual(e, "Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection."))
                     return TestStatus.Failed("BinarySearch(0, Count + 1, 0, null) exception: " + e.Message);
             }
             catch
@@ -1267,7 +1267,7 @@ namespace Test
             }
             catch (ArgumentException e)
             {
-                if (e.Message != "Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.")
+                if (!IsExceptionEqual(e, "Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection."))
                     return TestStatus.Failed("BinarySearch(Count + 1, 0, 0, null) exception: " + e.Message);
             }
             catch
@@ -1284,12 +1284,12 @@ namespace Test
             {
                 if (IsStrict)
                 {
-                    if (e.Message != "Value cannot be null.\r\nParameter name: dest")
+                    if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: dest"))
                         return TestStatus.Failed("CopyTo(null) exception: " + e.Message);
                 }
                 else
                 {
-                    if (e.Message != "Value cannot be null.\r\nParameter name: array")
+                    if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: array"))
                         return TestStatus.Failed("CopyTo(null) exception: " + e.Message);
                 }
             }
@@ -1311,12 +1311,12 @@ namespace Test
                 {
                     if (IsStrict)
                     {
-                        if (e.Message != "Destination array was not long enough. Check destIndex and length, and the array's lower bounds.")
+                        if (!IsExceptionEqual(e, "Destination array was not long enough. Check destIndex and length, and the array's lower bounds."))
                             return TestStatus.Failed("CopyTo(TestArray) exception: " + e.Message);
                     }
                     else
                     {
-                        if (e.Message != "Destination array was not long enough. Check index and count, and the array's lower bounds.")
+                        if (!IsExceptionEqual(e, "Destination array was not long enough. Check index and count, and the array's lower bounds."))
                             return TestStatus.Failed("CopyTo(TestArray) exception: " + e.Message);
                     }
                 }
@@ -1335,12 +1335,12 @@ namespace Test
             {
                 if (IsStrict)
                 {
-                    if (e.Message != "Value cannot be null.\r\nParameter name: dest")
+                    if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: dest"))
                         return TestStatus.Failed("CopyTo(null, 0) exception: " + e.Message);
                 }
                 else
                 {
-                    if (e.Message != "Value cannot be null.\r\nParameter name: array")
+                    if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: array"))
                         return TestStatus.Failed("CopyTo(null, 0) exception: " + e.Message);
                 }
             }
@@ -1371,12 +1371,12 @@ namespace Test
                 {
                     if (IsStrict)
                     {
-                        if (e.Message != "Destination array was not long enough. Check destIndex and length, and the array's lower bounds.")
+                        if (!IsExceptionEqual(e, "Destination array was not long enough. Check destIndex and length, and the array's lower bounds."))
                             return TestStatus.Failed("CopyTo(TestArray, 1) exception: " + e.Message);
                     }
                     else
                     {
-                        if (e.Message != "Destination array was not long enough. Check arrayIndex and length, and the array's lower bounds.")
+                        if (!IsExceptionEqual(e, "Destination array was not long enough. Check arrayIndex and length, and the array's lower bounds."))
                             return TestStatus.Failed("CopyTo(TestArray, 1) exception: " + e.Message);
                     }
                 }
@@ -1395,12 +1395,12 @@ namespace Test
             {
                 if (IsStrict)
                 {
-                    if (e.Message != "Number was less than the array's lower bound in the first dimension.\r\nParameter name: dstIndex")
+                    if (!IsExceptionEqual(e, "Number was less than the array's lower bound in the first dimension.\nParameter name: dstIndex"))
                         return TestStatus.Failed("CopyTo(TestArray, -1) exception: " + e.Message);
                 }
                 else
                 {
-                    if (e.Message != "Number was less than the array's lower bound in the first dimension.\r\nParameter name: arrayIndex")
+                    if (!IsExceptionEqual(e, "Number was less than the array's lower bound in the first dimension.\nParameter name: arrayIndex"))
                         return TestStatus.Failed("CopyTo(TestArray, -1) exception: " + e.Message);
                 }
             }
@@ -1418,12 +1418,12 @@ namespace Test
             {
                 if (IsStrict)
                 {
-                    if (e.Message != "Destination array was not long enough. Check destIndex and length, and the array's lower bounds.")
+                    if (!IsExceptionEqual(e, "Destination array was not long enough. Check destIndex and length, and the array's lower bounds."))
                         return TestStatus.Failed("CopyTo(TestArray, TestArray.Length + 1) exception: " + e.Message);
                 }
                 else
                 {
-                    if (e.Message != "Destination array was not long enough. Check arrayIndex and length, and the array's lower bounds.")
+                    if (!IsExceptionEqual(e, "Destination array was not long enough. Check arrayIndex and length, and the array's lower bounds."))
                         return TestStatus.Failed("CopyTo(TestArray, TestArray.Length + 1) exception: " + e.Message);
                 }
             }
@@ -1441,12 +1441,12 @@ namespace Test
             {
                 if (IsStrict)
                 {
-                    if (e.Message != "Value cannot be null.\r\nParameter name: dest")
+                    if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: dest"))
                         return TestStatus.Failed("CopyTo(0, null, 0, 0) exception: " + e.Message);
                 }
                 else
                 {
-                    if (e.Message != "Value cannot be null.\r\nParameter name: array")
+                    if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: array"))
                         return TestStatus.Failed("CopyTo(0, null, 0, 0) exception: " + e.Message);
                 }
             }
@@ -1464,12 +1464,12 @@ namespace Test
             {
                 if (IsStrict)
                 {
-                    if (e.Message != "Number was less than the array's lower bound in the first dimension.\r\nParameter name: srcIndex")
+                    if (!IsExceptionEqual(e, "Number was less than the array's lower bound in the first dimension.\nParameter name: srcIndex"))
                         return TestStatus.Failed("CopyTo(-1, TestArray, 0, 0) exception: " + e.Message);
                 }
                 else
                 {
-                    if (e.Message != "Number was less than the array's lower bound in the first dimension.\r\nParameter name: index")
+                    if (!IsExceptionEqual(e, "Number was less than the array's lower bound in the first dimension.\nParameter name: index"))
                         return TestStatus.Failed("CopyTo(-1, TestArray, 0, 0) exception: " + e.Message);
                 }
             }
@@ -1487,12 +1487,12 @@ namespace Test
             {
                 if (IsStrict)
                 {
-                    if (e.Message != "Number was less than the array's lower bound in the first dimension.\r\nParameter name: dstIndex")
+                    if (!IsExceptionEqual(e, "Number was less than the array's lower bound in the first dimension.\nParameter name: dstIndex"))
                         return TestStatus.Failed("CopyTo(0, TestArray, -1, 0) exception: " + e.Message);
                 }
                 else
                 {
-                    if (e.Message != "Number was less than the array's lower bound in the first dimension.\r\nParameter name: arrayIndex")
+                    if (!IsExceptionEqual(e, "Number was less than the array's lower bound in the first dimension.\nParameter name: arrayIndex"))
                         return TestStatus.Failed("CopyTo(0, TestArray, -1, 0) exception: " + e.Message);
                 }
             }
@@ -1510,12 +1510,12 @@ namespace Test
             {
                 if (IsStrict)
                 {
-                    if (e.Message != "Non-negative number required.\r\nParameter name: length")
+                    if (!IsExceptionEqual(e, "Non-negative number required.\nParameter name: length"))
                         return TestStatus.Failed("CopyTo(0, TestArray, 0, -1) exception: " + e.Message);
                 }
                 else
                 {
-                    if (e.Message != "Non-negative number required.\r\nParameter name: count")
+                    if (!IsExceptionEqual(e, "Non-negative number required.\nParameter name: count"))
                         return TestStatus.Failed("CopyTo(0, TestArray, 0, -1) exception: " + e.Message);
                 }
             }
@@ -1531,7 +1531,7 @@ namespace Test
             }
             catch (ArgumentException e)
             {
-                if (e.Message != "Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.")
+                if (!IsExceptionEqual(e, "Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection."))
                     return TestStatus.Failed("CopyTo(Count + 1, TestArray, 0, 0) exception: " + e.Message);
             }
             catch
@@ -1548,12 +1548,12 @@ namespace Test
             {
                 if (IsStrict)
                 {
-                    if (e.Message != "Destination array was not long enough. Check destIndex and length, and the array's lower bounds.")
+                    if (!IsExceptionEqual(e, "Destination array was not long enough. Check destIndex and length, and the array's lower bounds."))
                         return TestStatus.Failed("CopyTo(0, TestArray, TestArray.Length + 1, 0) exception: " + e.Message);
                 }
                 else
                 {
-                    if (e.Message != "Destination array was not long enough. Check index and count, and the array's lower bounds.")
+                    if (!IsExceptionEqual(e, "Destination array was not long enough. Check index and count, and the array's lower bounds."))
                         return TestStatus.Failed("CopyTo(0, TestArray, TestArray.Length + 1, 0) exception: " + e.Message);
                 }
             }
@@ -1571,9 +1571,9 @@ namespace Test
                 }
                 catch (ArgumentException e)
                 {
-                    //if (e.Message != "Destination array was not long enough. Check destIndex and length, and the array's lower bounds.")
+                    //if (!IsExceptionEqual(e, "Destination array was not long enough. Check destIndex and length, and the array's lower bounds."))
                     //    return TestStatus.Failed("CopyTo(0, TestArray, 0, TestArray.Length + 1) exception: " + e.Message);
-                    if (e.Message != "Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.")
+                    if (!IsExceptionEqual(e, "Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection."))
                         return TestStatus.Failed("CopyTo(0, TestArray, 0, TestArray.Length + 1) exception: " + e.Message);
                 }
                 catch
@@ -1590,7 +1590,7 @@ namespace Test
                 }
                 catch (ArgumentException e)
                 {
-                    if (e.Message != "Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.")
+                    if (!IsExceptionEqual(e, "Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection."))
                         return TestStatus.Failed("CopyTo(0, TestArray, 0, TestArray.Length + 1) exception: " + e.Message);
                 }
                 catch
@@ -1606,7 +1606,7 @@ namespace Test
             }
             catch (ArgumentException e)
             {
-                if (e.Message != "Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.")
+                if (!IsExceptionEqual(e, "Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection."))
                     return TestStatus.Failed("CopyTo(0, TestArray, 0, Count + 1) exception: " + e.Message);
             }
             catch
@@ -1621,7 +1621,7 @@ namespace Test
             }
             catch (ArgumentNullException e)
             {
-                if (e.Message != "Value cannot be null.\r\nParameter name: match")
+                if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: match"))
                     return TestStatus.Failed("Exists(null) exception: " + e.Message);
             }
             catch
@@ -1636,7 +1636,7 @@ namespace Test
             }
             catch (ArgumentNullException e)
             {
-                if (e.Message != "Value cannot be null.\r\nParameter name: match")
+                if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: match"))
                     return TestStatus.Failed("Find(null) exception: " + e.Message);
             }
             catch
@@ -1651,7 +1651,7 @@ namespace Test
             }
             catch (ArgumentNullException e)
             {
-                if (e.Message != "Value cannot be null.\r\nParameter name: match")
+                if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: match"))
                     return TestStatus.Failed("FindAll(null) exception: " + e.Message);
             }
             catch
@@ -1666,7 +1666,7 @@ namespace Test
             }
             catch (ArgumentNullException e)
             {
-                if (e.Message != "Value cannot be null.\r\nParameter name: match")
+                if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: match"))
                     return TestStatus.Failed("FindIndex(null) exception: " + e.Message);
             }
             catch
@@ -1681,7 +1681,7 @@ namespace Test
             }
             catch (ArgumentNullException e)
             {
-                if (e.Message != "Value cannot be null.\r\nParameter name: match")
+                if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: match"))
                     return TestStatus.Failed("FindIndex(0, null) exception: " + e.Message);
             }
             catch
@@ -1696,7 +1696,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: startIndex")
+                if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: startIndex"))
                     return TestStatus.Failed("FindIndex(-1, null) exception: " + e.Message);
             }
             catch
@@ -1711,7 +1711,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: startIndex")
+                if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: startIndex"))
                     return TestStatus.Failed("FindIndex(-1,...) exception: " + e.Message);
             }
             catch
@@ -1726,7 +1726,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: startIndex")
+                if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: startIndex"))
                     return TestStatus.Failed("FindIndex(Count + 1, null) exception: " + e.Message);
             }
             catch
@@ -1741,7 +1741,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: startIndex")
+                if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: startIndex"))
                     return TestStatus.Failed("FindIndex(Count + 1, ...) exception: " + e.Message);
             }
             catch
@@ -1756,7 +1756,7 @@ namespace Test
             }
             catch (ArgumentNullException e)
             {
-                if (e.Message != "Value cannot be null.\r\nParameter name: match")
+                if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: match"))
                     return TestStatus.Failed("FindIndex(0, 0, null) exception: " + e.Message);
             }
             catch
@@ -1771,7 +1771,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: startIndex")
+                if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: startIndex"))
                     return TestStatus.Failed("FindIndex(-1, 0, null) exception: " + e.Message);
             }
             catch
@@ -1786,7 +1786,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Count must be positive and count must refer to a location within the string/array/collection.\r\nParameter name: count")
+                if (!IsExceptionEqual(e, "Count must be positive and count must refer to a location within the string/array/collection.\nParameter name: count"))
                     return TestStatus.Failed("FindIndex(0, -1, null) exception: " + e.Message);
             }
             catch
@@ -1801,7 +1801,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: startIndex")
+                if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: startIndex"))
                     return TestStatus.Failed("FindIndex(Count + 1, 0, null) exception: " + e.Message);
             }
             catch
@@ -1816,7 +1816,7 @@ namespace Test
             }
             catch (ArgumentNullException e)
             {
-                if (e.Message != "Value cannot be null.\r\nParameter name: match")
+                if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: match"))
                     return TestStatus.Failed("FindLast(null) exception: " + e.Message);
             }
             catch
@@ -1831,7 +1831,7 @@ namespace Test
             }
             catch (ArgumentNullException e)
             {
-                if (e.Message != "Value cannot be null.\r\nParameter name: match")
+                if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: match"))
                     return TestStatus.Failed("FindLastIndex(null) exception: " + e.Message);
             }
             catch
@@ -1846,7 +1846,7 @@ namespace Test
             }
             catch (ArgumentNullException e)
             {
-                if (e.Message != "Value cannot be null.\r\nParameter name: match")
+                if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: match"))
                     return TestStatus.Failed("FindLastIndex(0, null) exception: " + e.Message);
             }
             catch
@@ -1861,7 +1861,7 @@ namespace Test
             }
             catch (ArgumentNullException e)
             {
-                if (e.Message != "Value cannot be null.\r\nParameter name: match")
+                if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: match"))
                     return TestStatus.Failed("FindLastIndex(-1, null) exception: " + e.Message);
             }
             catch
@@ -1876,7 +1876,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: startIndex")
+                if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: startIndex"))
                     return TestStatus.Failed("FindLastIndex(-2, ...) exception: " + e.Message);
             }
             catch
@@ -1891,7 +1891,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: startIndex")
+                if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: startIndex"))
                     return TestStatus.Failed("FindLastIndex(Count, ...) exception: " + e.Message);
             }
             catch
@@ -1906,7 +1906,7 @@ namespace Test
             }
             catch (ArgumentNullException e)
             {
-                if (e.Message != "Value cannot be null.\r\nParameter name: match")
+                if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: match"))
                     return TestStatus.Failed("FindLastIndex(0, 0, null) exception: " + e.Message);
             }
             catch
@@ -1921,7 +1921,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: startIndex")
+                if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: startIndex"))
                     return TestStatus.Failed("FindLastIndex(-2, 0, ...) exception: " + e.Message);
             }
             catch
@@ -1938,7 +1938,7 @@ namespace Test
                 }
                 catch (ArgumentOutOfRangeException e)
                 {
-                    if (e.Message != "Count must be positive and count must refer to a location within the string/array/collection.\r\nParameter name: count")
+                    if (!IsExceptionEqual(e, "Count must be positive and count must refer to a location within the string/array/collection.\nParameter name: count"))
                         return TestStatus.Failed("FindLastIndex(0, -1, ...) with Count>1 exception: " + e.Message);
                 }
                 catch
@@ -1955,7 +1955,7 @@ namespace Test
                 }
                 catch (ArgumentOutOfRangeException e)
                 {
-                    if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: startIndex")
+                    if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: startIndex"))
                         return TestStatus.Failed("FindLastIndex(0, -1, ...) with Count<=1 exception: " + e.Message);
                 }
                 catch
@@ -1971,7 +1971,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: startIndex")
+                if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: startIndex"))
                     return TestStatus.Failed("FindLastIndex(Count, 0, ...) exception: " + e.Message);
             }
             catch
@@ -1988,12 +1988,12 @@ namespace Test
             {
                 if (IsStrict)
                 {
-                    if (e.Message != "Value cannot be null.\r\nParameter name: match")
+                    if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: match"))
                         return TestStatus.Failed("ForEach(null) exception: " + e.Message);
                 }
                 else
                 {
-                    if (e.Message != "Value cannot be null.\r\nParameter name: action")
+                    if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: action"))
                         return TestStatus.Failed("ForEach(null) exception: " + e.Message);
                 }
             }
@@ -2009,7 +2009,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Non-negative number required.\r\nParameter name: index")
+                if (!IsExceptionEqual(e, "Non-negative number required.\nParameter name: index"))
                     return TestStatus.Failed("GetRange(-1, 0) exception: " + e.Message);
             }
             catch
@@ -2024,7 +2024,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Non-negative number required.\r\nParameter name: count")
+                if (!IsExceptionEqual(e, "Non-negative number required.\nParameter name: count"))
                     return TestStatus.Failed("GetRange(0, -1) exception: " + e.Message);
             }
             catch
@@ -2039,7 +2039,7 @@ namespace Test
             }
             catch (ArgumentException e)
             {
-                if (e.Message != "Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.")
+                if (!IsExceptionEqual(e, "Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection."))
                     return TestStatus.Failed("GetRange(Count + 1, 0) exception: " + e.Message);
             }
             catch
@@ -2054,7 +2054,7 @@ namespace Test
             }
             catch (ArgumentException e)
             {
-                if (e.Message != "Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.")
+                if (!IsExceptionEqual(e, "Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection."))
                     return TestStatus.Failed("GetRange(0, Count + 1) exception: " + e.Message);
             }
             catch
@@ -2069,7 +2069,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: startIndex")
+                if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: startIndex"))
                     return TestStatus.Failed("IndexOf(0, -1) exception: " + e.Message);
             }
             catch
@@ -2086,12 +2086,12 @@ namespace Test
             {
                 if (IsStrict)
                 {
-                    if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index")
+                    if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: index"))
                         return TestStatus.Failed("IndexOf(0, Count + 1) exception: " + e.Message);
                 }
                 else
                 {
-                    if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: startIndex")
+                    if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: startIndex"))
                         return TestStatus.Failed("IndexOf(0, Count + 1) exception: " + e.Message);
                 }
             }
@@ -2107,7 +2107,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: startIndex")
+                if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: startIndex"))
                     return TestStatus.Failed("IndexOf(0, -1, 0) exception: " + e.Message);
             }
             catch
@@ -2124,12 +2124,12 @@ namespace Test
             {
                 if (IsStrict)
                 {
-                    if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index")
+                    if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: index"))
                         return TestStatus.Failed("IndexOf(0, Count + 1, 0) exception: " + e.Message);
                 }
                 else
                 {
-                    if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: startIndex")
+                    if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: startIndex"))
                         return TestStatus.Failed("IndexOf(0, Count + 1, 0) exception: " + e.Message);
                 }
             }
@@ -2145,7 +2145,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index must be within the bounds of the L" + "ist.\r\nParameter name: index")
+                if (!IsExceptionEqual(e, "Index must be within the bounds of the L" + "ist.\nParameter name: index"))
                     return TestStatus.Failed("Insert(-1, 0) exception: " + e.Message);
             }
             catch
@@ -2160,7 +2160,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index must be within the bounds of the L" + "ist.\r\nParameter name: index")
+                if (!IsExceptionEqual(e, "Index must be within the bounds of the L" + "ist.\nParameter name: index"))
                     return TestStatus.Failed("Insert(Count + 1, 0) exception: " + e.Message);
             }
             catch
@@ -2175,7 +2175,7 @@ namespace Test
             }
             catch (ArgumentNullException e)
             {
-                if (e.Message != "Value cannot be null.\r\nParameter name: collection")
+                if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: collection"))
                     return TestStatus.Failed("InsertRange(0, null) exception: " + e.Message);
             }
             catch
@@ -2190,7 +2190,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index")
+                if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: index"))
                     return TestStatus.Failed("InsertRange(-1, TestArray) exception: " + e.Message);
             }
             catch
@@ -2205,7 +2205,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index")
+                if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: index"))
                     return TestStatus.Failed("InsertRange(Count + 1, TestArray) exception: " + e.Message);
             }
             catch
@@ -2224,12 +2224,12 @@ namespace Test
                 {
                     if (IsStrict)
                     {
-                        if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index")
+                        if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: index"))
                             return TestStatus.Failed("LastIndexOf(0, -1) exception: " + e.Message);
                     }
                     else
                     {
-                        if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: startIndex")
+                        if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: startIndex"))
                             return TestStatus.Failed("LastIndexOf(0, -1) exception: " + e.Message);
                     }
                 }
@@ -2260,12 +2260,12 @@ namespace Test
             {
                 if (IsStrict)
                 {
-                    if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index")
+                    if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: index"))
                         return TestStatus.Failed("LastIndexOf(0, Count) exception: " + e.Message);
                 }
                 else
                 {
-                    if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: startIndex")
+                    if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: startIndex"))
                         return TestStatus.Failed("LastIndexOf(0, Count) exception: " + e.Message);
                 }
             }
@@ -2297,12 +2297,12 @@ namespace Test
                 {
                     if (IsStrict)
                     {
-                        if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index")
+                        if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: index"))
                             return TestStatus.Failed("LastIndexOf(0, -1, 0) exception: " + e.Message);
                     }
                     else
                     {
-                        if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: startIndex")
+                        if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: startIndex"))
                             return TestStatus.Failed("LastIndexOf(0, -1, 0) exception: " + e.Message);
                     }
                 }
@@ -2320,12 +2320,12 @@ namespace Test
                 {
                     if (IsStrict)
                     {
-                        if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index")
+                        if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: index"))
                             return TestStatus.Failed("LastIndexOf(0, Count, 0) exception: " + e.Message);
                     }
                     else
                     {
-                        if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: startIndex")
+                        if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: startIndex"))
                             return TestStatus.Failed("LastIndexOf(0, Count, 0) exception: " + e.Message);
                     }
                 }
@@ -2342,7 +2342,7 @@ namespace Test
             }
             catch (ArgumentNullException e)
             {
-                if (e.Message != "Value cannot be null.\r\nParameter name: match")
+                if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: match"))
                     return TestStatus.Failed("RemoveAll(null) exception: " + e.Message);
             }
             catch
@@ -2370,7 +2370,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index")
+                if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: index"))
                     return TestStatus.Failed("RemoveAt(-1) exception: " + e.Message);
             }
             catch
@@ -2398,7 +2398,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index")
+                if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: index"))
                     return TestStatus.Failed("RemoveAt(Count) exception: " + e.Message);
             }
             catch
@@ -2422,7 +2422,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Non-negative number required.\r\nParameter name: index")
+                if (!IsExceptionEqual(e, "Non-negative number required.\nParameter name: index"))
                     return TestStatus.Failed("RemoveRange(-1, 0) exception: " + e.Message);
             }
             catch
@@ -2437,7 +2437,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Non-negative number required.\r\nParameter name: count")
+                if (!IsExceptionEqual(e, "Non-negative number required.\nParameter name: count"))
                     return TestStatus.Failed("RemoveRange(0, -1) exception: " + e.Message);
             }
             catch
@@ -2461,7 +2461,7 @@ namespace Test
             }
             catch (ArgumentException e)
             {
-                if (e.Message != "Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.")
+                if (!IsExceptionEqual(e, "Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection."))
                     return TestStatus.Failed("RemoveRange(Count + 1, 0) exception: " + e.Message);
             }
             catch
@@ -2485,7 +2485,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Non-negative number required.\r\nParameter name: index")
+                if (!IsExceptionEqual(e, "Non-negative number required.\nParameter name: index"))
                     return TestStatus.Failed("Reverse(-1, 0) exception: " + e.Message);
             }
             catch
@@ -2500,7 +2500,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Non-negative number required.\r\nParameter name: count")
+                if (!IsExceptionEqual(e, "Non-negative number required.\nParameter name: count"))
                     return TestStatus.Failed("Reverse(0, -1) exception: " + e.Message);
             }
             catch
@@ -2524,7 +2524,7 @@ namespace Test
             }
             catch (ArgumentException e)
             {
-                if (e.Message != "Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.")
+                if (!IsExceptionEqual(e, "Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection."))
                     return TestStatus.Failed("Reverse(Count + 1, 0) exception: " + e.Message);
             }
             catch
@@ -2548,7 +2548,7 @@ namespace Test
             }
             catch (ArgumentException e)
             {
-                if (e.Message != "Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.")
+                if (!IsExceptionEqual(e, "Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection."))
                     return TestStatus.Failed("Reverse(0, Count + 1) exception: " + e.Message);
             }
             catch
@@ -2567,12 +2567,12 @@ namespace Test
             {
                 if (IsStrict)
                 {
-                    if (e.Message != "Value cannot be null.\r\nParameter name: match")
+                    if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: match"))
                         return TestStatus.Failed("Sort(comparison) exception: " + e.Message);
                 }
                 else
                 {
-                    if (e.Message != "Value cannot be null.\r\nParameter name: comparison")
+                    if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: comparison"))
                         return TestStatus.Failed("Sort(comparison) exception: " + e.Message);
                 }
             }
@@ -2599,7 +2599,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Non-negative number required.\r\nParameter name: index")
+                if (!IsExceptionEqual(e, "Non-negative number required.\nParameter name: index"))
                     return TestStatus.Failed("Sort(-1, 0, comparer) exception: " + e.Message);
             }
             catch
@@ -2614,7 +2614,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Non-negative number required.\r\nParameter name: count")
+                if (!IsExceptionEqual(e, "Non-negative number required.\nParameter name: count"))
                     return TestStatus.Failed("Sort(0, -1, comparer) exception: " + e.Message);
             }
             catch
@@ -2638,7 +2638,7 @@ namespace Test
             }
             catch (ArgumentException e)
             {
-                if (e.Message != "Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.")
+                if (!IsExceptionEqual(e, "Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection."))
                     return TestStatus.Failed("Sort(Count + 1, 0, comparer) exception: " + e.Message);
             }
             catch
@@ -2653,7 +2653,7 @@ namespace Test
             }
             catch (ArgumentNullException e)
             {
-                if (e.Message != "Value cannot be null.\r\nParameter name: match")
+                if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: match"))
                     return TestStatus.Failed("TrueForAll(null) exception: " + e.Message);
             }
             catch
@@ -2757,7 +2757,7 @@ namespace Test
             }
             catch (ArgumentNullException e)
             {
-                if (e.Message == "Value cannot be null.\r\nParameter name: list")
+                if (e.Message == "Value cannot be null.\nParameter name: list")
                     return TestStatus.Success;
                 else
                     return TestStatus.Failed(TestName);
@@ -2849,7 +2849,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index")
+                if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: index"))
                     return TestStatus.Failed("get[-1] exception: " + e.Message);
             }
             catch
@@ -2864,7 +2864,7 @@ namespace Test
             }
             catch (ArgumentOutOfRangeException e)
             {
-                if (e.Message != "Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index")
+                if (!IsExceptionEqual(e, "Index was out of range. Must be non-negative and less than the size of the collection.\nParameter name: index"))
                     return TestStatus.Failed("get[Count] exception: " + e.Message);
             }
             catch
@@ -2883,12 +2883,12 @@ namespace Test
             {
                 if (IsStrict)
                 {
-                    if (e.Message != "Value cannot be null.\r\nParameter name: dest")
+                    if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: dest"))
                         return TestStatus.Failed("CopyTo(null, 0) exception: " + e.Message);
                 }
                 else
                 {
-                    if (e.Message != "Value cannot be null.\r\nParameter name: array")
+                    if (!IsExceptionEqual(e, "Value cannot be null.\nParameter name: array"))
                         return TestStatus.Failed("CopyTo(null, 0) exception: " + e.Message);
                 }
             }
@@ -2906,12 +2906,12 @@ namespace Test
             {
                 if (IsStrict)
                 {
-                    if (e.Message != "Number was less than the array's lower bound in the first dimension.\r\nParameter name: dstIndex")
+                    if (!IsExceptionEqual(e, "Number was less than the array's lower bound in the first dimension.\nParameter name: dstIndex"))
                         return TestStatus.Failed("CopyTo(TestArray, -1) exception: " + e.Message);
                 }
                 else
                 {
-                    if (e.Message != "Number was less than the array's lower bound in the first dimension.\r\nParameter name: index")
+                    if (!IsExceptionEqual(e, "Number was less than the array's lower bound in the first dimension.\nParameter name: index"))
                         return TestStatus.Failed("CopyTo(TestArray, -1) exception: " + e.Message);
                 }
             }
@@ -2929,12 +2929,12 @@ namespace Test
             {
                 if (IsStrict)
                 {
-                    if (e.Message != "Destination array was not long enough. Check destIndex and length, and the array's lower bounds.")
+                    if (!IsExceptionEqual(e, "Destination array was not long enough. Check destIndex and length, and the array's lower bounds."))
                         return TestStatus.Failed("CopyTo(TestArray, TestArray.Length + 1) exception: " + e.Message);
                 }
                 else
                 {
-                    if (e.Message != "Destination array was not long enough. Check index and length, and the array's lower bounds.")
+                    if (!IsExceptionEqual(e, "Destination array was not long enough. Check index and length, and the array's lower bounds."))
                         return TestStatus.Failed("CopyTo(TestArray, TestArray.Length + 1) exception: " + e.Message);
                 }
             }
@@ -3035,7 +3035,7 @@ namespace Test
             }
             catch (ArgumentNullException e)
             {
-                if (e.Message == "Value cannot be null.\r\nParameter name: list")
+                if (e.Message == "Value cannot be null.\nParameter name: list")
                     return TestStatus.Success;
                 else
                     return TestStatus.Failed(TestName);
@@ -3122,6 +3122,11 @@ namespace Test
         private static void FailTest(string TestName)
         {
             Debug.Print("Fail: " + TestName);
+        }
+
+        private static bool IsExceptionEqual(Exception e, string Message)
+        {
+            return e.Message.Replace("\r\n", "\n") == Message;
         }
 
         public static void Init(bool AssemblyIsStrict, int DefaultMaxSegmentCapacity)
