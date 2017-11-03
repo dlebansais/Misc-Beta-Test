@@ -1,5 +1,6 @@
 ﻿using LargeList;
 using NUnit.Framework;
+using System;
 using System.Globalization;
 using System.Reflection;
 using System.Threading;
@@ -35,16 +36,54 @@ namespace Test
 
             bool IsStrict = Attribute.IsStrict;
             int DefaultMaxSegmentCapacity = Attribute.DefaultMaxSegmentCapacity;
-            TestLargeList.Init(IsStrict, DefaultMaxSegmentCapacity);
+
+            TestLargeList<int>.Init(IsStrict, DefaultMaxSegmentCapacity);
+            TestLargeList<string>.Init(IsStrict, DefaultMaxSegmentCapacity);
+            TestLargeList<TestClass>.Init(IsStrict, DefaultMaxSegmentCapacity);
         }
 
         [Test]
-        public static void TestSession()
+        public static void TestSessionInteger()
         {
             TestStatus Status;
 
-            Status = TestLargeList.TestAll();
+            Status = TestLargeList<int>.TestAll(CreateInt);
             Assert.That(Status.Succeeded, Status.Name);
+        }
+
+        private static int CreateInt(Random rand, int MaxIntValue)
+        {
+            return rand.Next(MaxIntValue);
+        }
+
+        [Test]
+        public static void TestSessionString()
+        {
+            TestStatus Status;
+
+            Status = TestLargeList<string>.TestAll(CreateString);
+            Assert.That(Status.Succeeded, Status.Name);
+        }
+
+        private static string CreateString(Random rand, int MaxIntValue)
+        {
+            return rand.Next(MaxIntValue).ToString();
+        }
+
+        [Test]
+        public static void TestSessionGeneric()
+        {
+            TestStatus Status;
+
+            Status = TestLargeList<TestClass>.TestAll(CreateTestClass);
+            Assert.That(Status.Succeeded, Status.Name);
+        }
+
+        private static TestClass CreateTestClass(Random rand, int MaxIntValue)
+        {
+            int IntegerValue = rand.Next(MaxIntValue);
+            string StringValue = rand.Next(MaxIntValue).ToString();
+            return new TestClass(IntegerValue, StringValue);
         }
     }
 }
