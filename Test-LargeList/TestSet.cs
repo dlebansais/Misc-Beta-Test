@@ -93,7 +93,7 @@ namespace Test
 
         [Test, Combinatorial]
         public static void TestSessionIntegerSimultaneous_lists(
-            [Values(0, 1, 2)] int LoopDigit1,
+            [Values(0, 1)] int LoopDigit1,
             [Values(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)] int LoopDigit0)
         {
             TestStatus Status;
@@ -158,7 +158,7 @@ namespace Test
 
         [Test, Combinatorial]
         public static void TestSessionStringSimultaneous_lists(
-            [Values(0, 1, 2)] int LoopDigit1,
+            [Values(0, 1)] int LoopDigit1,
             [Values(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)] int LoopDigit0)
         {
             TestStatus Status;
@@ -223,7 +223,7 @@ namespace Test
 
         [Test, Combinatorial]
         public static void TestSessionTestClassSimultaneous_lists(
-            [Values(0, 1, 2)] int LoopDigit1,
+            [Values(0, 1)] int LoopDigit1,
             [Values(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)] int LoopDigit0)
         {
             TestStatus Status;
