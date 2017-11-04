@@ -14,7 +14,7 @@ namespace Test
         public static bool IsStrict = false;
 
         #region LargeCollection
-        private static TestStatus Test_collection()
+        public static TestStatus Test_collection()
         {
             TestStatus Status;
 
@@ -666,7 +666,7 @@ namespace Test
         #endregion
 
         #region LargeList
-        private static TestStatus Test_list()
+        public static TestStatus Test_list()
         {
             TestStatus Status;
 
@@ -2668,7 +2668,7 @@ namespace Test
         #endregion
 
         #region Read-only LargeCollection
-        private static TestStatus Test_readonly_collection()
+        public static TestStatus Test_readonly_collection()
         {
             TestStatus Status;
 
@@ -2950,7 +2950,7 @@ namespace Test
         #endregion
 
         #region Read-only List
-        private static TestStatus Test_readonly_list()
+        public static TestStatus Test_readonly_list()
         {
             TestStatus Status;
 
@@ -3116,14 +3116,25 @@ namespace Test
         #endregion
 
         #region Test
+        private static void PrintDiagnostic(string Line)
+        {
+#if DEBUG
+            Debug.Print(Line);
+#else
+            Debug.WriteLine(Line);
+            //Console.Write(Line);
+            //Console.WriteLine();
+#endif
+        }
+
         private static void PassTest(string TestName)
         {
-            Debug.Print("Pass: " + TestName);
+            PrintDiagnostic("Pass: " + TestName);
         }
 
         private static void FailTest(string TestName)
         {
-            Debug.Print("Fail: " + TestName);
+            PrintDiagnostic("Fail: " + TestName);
         }
 
         private static bool IsExceptionEqual(Exception e, string Message)
@@ -3158,9 +3169,9 @@ namespace Test
                 return Status;
             else if (!(Status = Test_readonly_list()).Succeeded)
                 return Status;
-            else if (!(Status = SimultaneousTest_collections(handler)).Succeeded)
+            else if (!(Status = SimultaneousTest_collections(100, handler)).Succeeded)
                 return Status;
-            else if (!(Status = SimultaneousTest_lists(handler)).Succeeded)
+            else if (!(Status = SimultaneousTest_lists(30, handler)).Succeeded)
                 return Status;
             else
                 return TestStatus.Success;
@@ -3201,32 +3212,41 @@ namespace Test
             RemoveAt,
         }
 
-        public static TestStatus SimultaneousTest_collections(CreationHandler<T> handler)
+        private static TestStatus SimultaneousTest_collections(int MaxLoops, CreationHandler<T> handler)
         {
-            Debug.Print("Comparing Collection<T> and LargeCollection<T>");
+            PrintDiagnostic("Comparing Collection<T> and LargeCollection<T>");
 
             TestStatus Status;
-            int MaxLoops = 100;
+            for (int Loop = 0; Loop < MaxLoops; Loop++)
+                if (!(Status = SimultaneousTest_collections(Loop, MaxLoops, handler)).Succeeded)
+                    return Status;
+
+            return TestStatus.Success;
+        }
+
+        public static TestStatus SimultaneousTest_collections(int Loop, int MaxLoops, CreationHandler<T> handler)
+        {
+            TestStatus Status;
             int MaxSteps = 50;
 
-            for (int Loop = 0; Loop < MaxLoops; Loop++)
+            if (MaxLoops > 0)
+                PrintDiagnostic("Loop #" + (Loop + 1) + "/" + MaxLoops);
+            else
+                PrintDiagnostic("Loop #" + (Loop + 1));
+
+            Collection<T> small_collection = new Collection<T>();
+            LargeCollection<T> large_collection = new LargeCollection<T>();
+
+            Random rand;
+            InitSeed(Loop, out rand);
+
+            for (int Step = 0; Step < MaxSteps; Step++)
             {
-                Debug.Print("Loop #" + (Loop + 1) + "/" + MaxLoops);
+                if (!(Status = UpdateTest_collection(small_collection, large_collection, Loop, Step, rand, handler)).Succeeded)
+                    return Status;
 
-                Collection<T> small_collection = new Collection<T>();
-                LargeCollection<T> large_collection = new LargeCollection<T>();
-
-                Random rand;
-                InitSeed(Loop, out rand);
-
-                for (int Step = 0; Step < MaxSteps; Step++)
-                {
-                    if (!(Status = UpdateTest_collection(small_collection, large_collection, Loop, Step, rand, handler)).Succeeded)
-                        return Status;
-
-                    if (!(Status = IsEqual_collections(small_collection, large_collection, Loop, Step)).Succeeded)
-                        return Status;
-                }
+                if (!(Status = IsEqual_collections(small_collection, large_collection, Loop, Step)).Succeeded)
+                    return Status;
             }
 
             return TestStatus.Success;
@@ -3364,32 +3384,42 @@ namespace Test
             TrimExcess,
         }
 
-        public static TestStatus SimultaneousTest_lists(CreationHandler<T> handler)
+        private static TestStatus SimultaneousTest_lists(int MaxLoops, CreationHandler<T> handler)
         {
-            Debug.Print("Comparing List<T> and LargeList<T>");
+            PrintDiagnostic("Comparing List<T> and LargeList<T>");
 
             TestStatus Status;
-            int MaxLoops = 30;
-            int MaxSteps = 50;
 
             for (int Loop = 0; Loop < MaxLoops; Loop++)
+                if (!(Status = SimultaneousTest_lists(Loop, MaxLoops, handler)).Succeeded)
+                    return Status;
+
+            return TestStatus.Success;
+        }
+
+        public static TestStatus SimultaneousTest_lists(int Loop, int MaxLoops, CreationHandler<T> handler)
+        {
+            TestStatus Status;
+            int MaxSteps = 50;
+
+            if (MaxLoops > 0)
+                PrintDiagnostic("Loop #" + (Loop + 1) + "/" + MaxLoops);
+            else
+                PrintDiagnostic("Loop #" + (Loop + 1));
+
+            List<T> small_list = new List<T>();
+            LargeList<T> large_list = new LargeList<T>();
+
+            Random rand;
+            InitSeed(Loop, out rand);
+
+            for (int Step = 0; Step < MaxSteps; Step++)
             {
-                Debug.Print("Loop #" + (Loop + 1) + "/" + MaxLoops);
+                if (!(Status = UpdateTest_list(small_list, large_list, Loop, Step, rand, handler)).Succeeded)
+                    return Status;
 
-                List<T> small_list = new List<T>();
-                LargeList<T> large_list = new LargeList<T>();
-
-                Random rand;
-                InitSeed(Loop, out rand);
-
-                for (int Step = 0; Step < MaxSteps; Step++)
-                {
-                    if (!(Status = UpdateTest_list(small_list, large_list, Loop, Step, rand, handler)).Succeeded)
-                        return Status;
-
-                    if (!(Status = IsEqual_lists(small_list, large_list, Loop, Step)).Succeeded)
-                        return Status;
-                }
+                if (!(Status = IsEqual_lists(small_list, large_list, Loop, Step)).Succeeded)
+                    return Status;
             }
 
             return TestStatus.Success;
@@ -3403,7 +3433,7 @@ namespace Test
             T Item;
             int Odds, Index, Size;
 
-            //Debug.Print("Executing: " + Operation);
+            //PrintDiagnostic("Executing: " + Operation);
 
             switch (Operation)
             {

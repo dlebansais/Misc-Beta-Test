@@ -1,6 +1,7 @@
 ﻿using LargeList;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using System.Threading;
@@ -42,12 +43,62 @@ namespace Test
             TestLargeList<TestClass>.Init(IsStrict, DefaultMaxSegmentCapacity);
         }
 
+        #region int
         [Test]
-        public static void TestSessionInteger()
+        public static void TestSessionInteger_collection()
         {
             TestStatus Status;
 
-            Status = TestLargeList<int>.TestAll(CreateInt);
+            Status = TestLargeList<int>.Test_collection();
+            Assert.That(Status.Succeeded, Status.Name);
+        }
+
+        [Test]
+        public static void TestSessionInteger_list()
+        {
+            TestStatus Status;
+
+            Status = TestLargeList<int>.Test_list();
+            Assert.That(Status.Succeeded, Status.Name);
+        }
+
+        [Test]
+        public static void TestSessionInteger_readonly_collection()
+        {
+            TestStatus Status;
+
+            Status = TestLargeList<int>.Test_readonly_collection();
+            Assert.That(Status.Succeeded, Status.Name);
+        }
+
+        [Test]
+        public static void TestSessionInteger_readonly_list()
+        {
+            TestStatus Status;
+
+            Status = TestLargeList<int>.Test_readonly_list();
+            Assert.That(Status.Succeeded, Status.Name);
+        }
+
+        [Test, Combinatorial]
+        public static void TestSessionIntegerSimultaneous_collections(
+            [Values(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)] int LoopDigit1, 
+            [Values(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)] int LoopDigit0)
+        {
+            TestStatus Status;
+
+            Status = TestLargeList<int>.SimultaneousTest_collections(LoopDigit1 * 10 + LoopDigit0, 0, CreateInt);
+            Assert.That(Status.Succeeded, Status.Name);
+        }
+
+        [Test, Combinatorial]
+        public static void TestSessionIntegerSimultaneous_lists(
+            [Values(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)] int LoopDigit1,
+            [Values(0, 1, 2)] int LoopDigit0)
+        {
+            TestStatus Status;
+
+            Status = TestLargeList<int>.SimultaneousTest_lists(LoopDigit1 * 10 + LoopDigit0, 0, CreateInt);
             Assert.That(Status.Succeeded, Status.Name);
         }
 
@@ -55,13 +106,64 @@ namespace Test
         {
             return rand.Next(MaxIntValue);
         }
+        #endregion
 
+        #region string
         [Test]
-        public static void TestSessionString()
+        public static void TestSessionString_collection()
         {
             TestStatus Status;
 
-            Status = TestLargeList<string>.TestAll(CreateString);
+            Status = TestLargeList<string>.Test_collection();
+            Assert.That(Status.Succeeded, Status.Name);
+        }
+
+        [Test]
+        public static void TestSessionString_list()
+        {
+            TestStatus Status;
+
+            Status = TestLargeList<string>.Test_list();
+            Assert.That(Status.Succeeded, Status.Name);
+        }
+
+        [Test]
+        public static void TestSessionString_readonly_collection()
+        {
+            TestStatus Status;
+
+            Status = TestLargeList<string>.Test_readonly_collection();
+            Assert.That(Status.Succeeded, Status.Name);
+        }
+
+        [Test]
+        public static void TestSessionString_readonly_list()
+        {
+            TestStatus Status;
+
+            Status = TestLargeList<string>.Test_readonly_list();
+            Assert.That(Status.Succeeded, Status.Name);
+        }
+
+        [Test, Combinatorial]
+        public static void TestSessionStringSimultaneous_collections(
+            [Values(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)] int LoopDigit1,
+            [Values(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)] int LoopDigit0)
+        {
+            TestStatus Status;
+
+            Status = TestLargeList<string>.SimultaneousTest_collections(LoopDigit1 * 10 + LoopDigit0, 0, CreateString);
+            Assert.That(Status.Succeeded, Status.Name);
+        }
+
+        [Test, Combinatorial]
+        public static void TestSessionStringSimultaneous_lists(
+            [Values(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)] int LoopDigit1,
+            [Values(0, 1, 2)] int LoopDigit0)
+        {
+            TestStatus Status;
+
+            Status = TestLargeList<string>.SimultaneousTest_lists(LoopDigit1 * 10 + LoopDigit0, 0, CreateString);
             Assert.That(Status.Succeeded, Status.Name);
         }
 
@@ -69,13 +171,64 @@ namespace Test
         {
             return rand.Next(MaxIntValue).ToString();
         }
+        #endregion
 
+        #region Generic
         [Test]
-        public static void TestSessionGeneric()
+        public static void TestSessionGeneric_collection()
         {
             TestStatus Status;
 
-            Status = TestLargeList<TestClass>.TestAll(CreateTestClass);
+            Status = TestLargeList<TestClass>.Test_collection();
+            Assert.That(Status.Succeeded, Status.Name);
+        }
+
+        [Test]
+        public static void TestSessionGeneric_list()
+        {
+            TestStatus Status;
+
+            Status = TestLargeList<TestClass>.Test_list();
+            Assert.That(Status.Succeeded, Status.Name);
+        }
+
+        [Test]
+        public static void TestSessionGeneric_readonly_collection()
+        {
+            TestStatus Status;
+
+            Status = TestLargeList<TestClass>.Test_readonly_collection();
+            Assert.That(Status.Succeeded, Status.Name);
+        }
+
+        [Test]
+        public static void TestSessionGeneric_readonly_list()
+        {
+            TestStatus Status;
+
+            Status = TestLargeList<TestClass>.Test_readonly_list();
+            Assert.That(Status.Succeeded, Status.Name);
+        }
+
+        [Test, Combinatorial]
+        public static void TestSessionTestClassSimultaneous_collections(
+            [Values(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)] int LoopDigit1,
+            [Values(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)] int LoopDigit0)
+        {
+            TestStatus Status;
+
+            Status = TestLargeList<TestClass>.SimultaneousTest_collections(LoopDigit1 * 10 + LoopDigit0, 0, CreateTestClass);
+            Assert.That(Status.Succeeded, Status.Name);
+        }
+
+        [Test, Combinatorial]
+        public static void TestSessionTestClassSimultaneous_lists(
+            [Values(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)] int LoopDigit1,
+            [Values(0, 1, 2)] int LoopDigit0)
+        {
+            TestStatus Status;
+
+            Status = TestLargeList<TestClass>.SimultaneousTest_lists(LoopDigit1 * 10 + LoopDigit0, 0, CreateTestClass);
             Assert.That(Status.Succeeded, Status.Name);
         }
 
@@ -85,5 +238,6 @@ namespace Test
             string StringValue = rand.Next(MaxIntValue).ToString();
             return new TestClass(IntegerValue, StringValue);
         }
+        #endregion
     }
 }
