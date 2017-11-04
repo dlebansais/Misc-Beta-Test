@@ -3615,14 +3615,14 @@ namespace Test
             long SmallSearchresult = small_sorted_list.BinarySearch(t);
             long LargeSearchresult = large_sorted_list.BinarySearch(t);
             if (SmallSearchresult != LargeSearchresult)
-                return TestStatus.Failed("List<" + typeof(T).Name + ">, compare BinarySearch(item), " + "Loop#" + Loop + ", Step#" + Step);
+                return TestStatus.Failed("List<" + typeof(T).Name + ">, compare BinarySearch(item) (" + SmallSearchresult + ", " + LargeSearchresult + "), " + "Loop#" + Loop + ", Step#" + Step);
 
             for (int i = 0; i < Count; i++)
             {
                 SmallSearchresult = small_sorted_list.BinarySearch(small_sorted_list[i]);
                 LargeSearchresult = large_sorted_list.BinarySearch(large_sorted_list[i]);
                 if (SmallSearchresult != LargeSearchresult)
-                    return TestStatus.Failed("List<" + typeof(T).Name + ">, compare BinarySearch(item), " + "Loop#" + Loop + ", Step#" + Step);
+                    return TestStatus.Failed("List<" + typeof(T).Name + ">, compare BinarySearch(item#" + i +") (" + SmallSearchresult + ", " + LargeSearchresult + "), " + "Loop#" + Loop + ", Step#" + Step);
             }
 
             Comparer<T> comparer;
@@ -3630,12 +3630,18 @@ namespace Test
             small_sorted_list.Sort(comparer);
             large_sorted_list.Sort(comparer);
 
-            if (small_list.BinarySearch(t, comparer) != large_list.BinarySearch(t, comparer))
-                return TestStatus.Failed("List<" + typeof(T).Name + ">, compare BinarySearch(item, comparer), " + "Loop#" + Loop + ", Step#" + Step);
+            SmallSearchresult = small_list.BinarySearch(t, comparer);
+            LargeSearchresult = large_list.BinarySearch(t, comparer);
+            if (SmallSearchresult != LargeSearchresult)
+                return TestStatus.Failed("List<" + typeof(T).Name + ">, compare BinarySearch(item, comparer) (" + SmallSearchresult + ", " + LargeSearchresult + "), " + "Loop#" + Loop + ", Step#" + Step);
 
             for (int i = 0; i < Count; i++)
-                if (small_list.BinarySearch(small_list[i], comparer) != large_list.BinarySearch(large_list[i], comparer))
-                    return TestStatus.Failed("List<" + typeof(T).Name + ">, compare BinarySearch(item, comparer), " + "Loop#" + Loop + ", Step#" + Step);
+            {
+                SmallSearchresult = small_list.BinarySearch(small_list[i], comparer);
+                LargeSearchresult = large_list.BinarySearch(large_list[i], comparer);
+                if (SmallSearchresult != LargeSearchresult)
+                    return TestStatus.Failed("List<" + typeof(T).Name + ">, compare BinarySearch(item#" + i + ", comparer) (" + SmallSearchresult + ", " + LargeSearchresult + "), " + "Loop#" + Loop + ", Step#" + Step);
+            }
 
             for (int j = 0; j < Count; j++)
                 for (int k = 0; j + k < Count; k++)
