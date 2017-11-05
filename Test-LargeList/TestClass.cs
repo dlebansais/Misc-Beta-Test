@@ -2,7 +2,7 @@
 
 namespace Test
 {
-    public class TestClass : IComparable
+    public class TestClass : IComparable, IComparable<TestClass>
     {
         public TestClass(int IntegerValue, string StringValue)
         {
@@ -19,15 +19,28 @@ namespace Test
 
             if (Other == null)
                 return 1;
+            else
+                return CompareTo(Other);
+        }
 
-            else if (IntegerValue > Other.IntegerValue)
+        public int CompareTo(TestClass other)
+        {
+            if (other == null)
                 return 1;
 
-            else if (IntegerValue < Other.IntegerValue)
+            else if (IntegerValue > other.IntegerValue)
+                return 1;
+
+            else if (IntegerValue < other.IntegerValue)
                 return -1;
 
             else
-                return StringValue.CompareTo(Other.StringValue);
+                return StringValue.CompareTo(other.StringValue);
+        }
+
+        public override string ToString()
+        {
+            return IntegerValue.ToString() + StringValue;
         }
     }
 }

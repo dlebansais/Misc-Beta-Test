@@ -3194,6 +3194,15 @@ namespace Test
                 return o1.CompareTo(o2);
         }
 
+        private static int ItemToInt(T item)
+        {
+            string s = item.ToString();
+
+            int n = int.Parse(s);
+
+            return n;
+        }
+
         private const int MaxIntValue = 100;
         private const int MaxSize = 50;
         private const int ClearOperationOdds = 10;
@@ -3337,7 +3346,7 @@ namespace Test
             int Count = small_collection.Count;
 
             for (int i = 0; i < Count; i++)
-                if (!Equals(small_collection[i], large_collection[i]))
+                if (CompareTwoObjects(small_collection[i], large_collection[i]) != 0)
                     return TestStatus.Failed("Collection<" + typeof(T).Name + ">, compare getter, " + "Loop#" + Loop + ", Step#" + Step);
 
             for (int i = 0; i < Count; i++)
@@ -3354,7 +3363,7 @@ namespace Test
             large_collection.CopyTo(large_array, 0);
 
             for (int i = 0; i < Count; i++)
-                if (!Equals(small_array[i],large_array[i]))
+                if (CompareTwoObjects(small_array[i],large_array[i]) != 0)
                     return TestStatus.Failed("Collection<" + typeof(T).Name + ">, compare CopyTo, " + "Loop#" + Loop + ", Step#" + Step);
 
             for (int i = 0; i < Count; i++)
@@ -3633,7 +3642,7 @@ namespace Test
             int Count = small_list.Count;
 
             for (int i = 0; i < Count; i++)
-                if (!Equals(small_list[i], large_list[i]))
+                if (CompareTwoObjects(small_list[i], large_list[i]) != 0)
                     return TestStatus.Failed("List<" + typeof(T).Name + ">, compare getter, " + "Loop#" + Loop + ", Step#" + Step);
 
             List<T> small_sorted_list = new List<T>(small_list);
@@ -3691,7 +3700,7 @@ namespace Test
                 if (small_list.Contains(small_list[i]) != large_list.Contains(large_list[i]))
                     return TestStatus.Failed("List<" + typeof(T).Name + ">, compare Contains, " + "Loop#" + Loop + ", Step#" + Step);
 
-            Converter<T, int> converter = (T item) => { return MaxSize - 1 - item.GetHashCode(); };
+            Converter<T, int> converter = (T item) => { return MaxSize - 1 - ItemToInt(item); };
             List<int> small_converted = small_list.ConvertAll(converter);
             LargeList<int> large_converted = large_list.ConvertAll(converter);
             for (int i = 0; i < Count; i++)
@@ -3707,7 +3716,7 @@ namespace Test
             large_list.CopyTo(large_array);
 
             for (int i = 0; i < Count; i++)
-                if (!Equals(small_array[i], large_array[i]))
+                if (CompareTwoObjects(small_array[i], large_array[i]) != 0)
                     return TestStatus.Failed("List<" + typeof(T).Name + ">, compare CopyTo(array), " + "Loop#" + Loop + ", Step#" + Step);
 
             for (int j = 0; j < Count; j++)
@@ -3718,7 +3727,7 @@ namespace Test
                 large_list.CopyTo(large_array, j);
 
                 for (int i = 0; i < Count; i++)
-                    if (!Equals(small_array[j + i], large_array[j + i]))
+                    if (CompareTwoObjects(small_array[j + i], large_array[j + i]) != 0)
                         return TestStatus.Failed("List<" + typeof(T).Name + ">, compare CopyTo(array,index), " + "Loop#" + Loop + ", Step#" + Step);
             }
 
@@ -3732,7 +3741,7 @@ namespace Test
                         large_list.CopyTo(j, large_array, l, k);
 
                         for (int i = 0; i < k; i++)
-                            if (!Equals(small_array[l + i], large_array[l + i]))
+                            if (CompareTwoObjects(small_array[l + i], large_array[l + i]) != 0)
                                 return TestStatus.Failed("List<" + typeof(T).Name + ">, compare CopyTo(index,array,index,count), " + "Loop#" + Loop + ", Step#" + Step);
                     }
 
@@ -3740,21 +3749,21 @@ namespace Test
 
             for (int i = 0; i < MaxIntValue; i++)
             {
-                match = (item) => { return (item.GetHashCode() & 0xF) == i; };
+                match = (item) => { return (ItemToInt(item) & 0xF) == i; };
                 if (small_list.Exists(match) != large_list.Exists(match))
                     return TestStatus.Failed("List<" + typeof(T).Name + ">, compare Exists, " + "Loop#" + Loop + ", Step#" + Step);
             }
 
             for (int i = 0; i < MaxIntValue; i++)
             {
-                match = (item) => { return item != null && (item.GetHashCode() % MaxIntValue) == i; };
-                if (!Equals(small_list.Find(match), large_list.Find(match)))
+                match = (item) => { return item != null && (ItemToInt(item) % MaxIntValue) == i; };
+                if (CompareTwoObjects(small_list.Find(match), large_list.Find(match)) != 0)
                     return TestStatus.Failed("List<" + typeof(T).Name + ">, compare Find, " + "Loop#" + Loop + ", Step#" + Step);
             }
 
             for (int j = 0; j < MaxIntValue; j++)
             {
-                match = (item) => { return (item.GetHashCode() % MaxIntValue) == j; };
+                match = (item) => { return (ItemToInt(item) % MaxIntValue) == j; };
                 List<T> small_find = small_list.FindAll(match);
                 LargeList<T> large_find = large_list.FindAll(match);
 
@@ -3764,14 +3773,14 @@ namespace Test
                 {
                     int FindCount = small_find.Count;
                     for (int i = 0; i < FindCount; i++)
-                        if (!Equals(small_find[i], large_find[i]))
+                        if (CompareTwoObjects(small_find[i], large_find[i]) != 0)
                             return TestStatus.Failed("List<" + typeof(T).Name + ">, compare FindAll, " + "Loop#" + Loop + ", Step#" + Step);
                 }
             }
 
             for (int i = 0; i < MaxIntValue; i++)
             {
-                match = (item) => { return (item.GetHashCode() % MaxIntValue) == i; };
+                match = (item) => { return (ItemToInt(item) % MaxIntValue) == i; };
                 if (small_list.FindIndex(match) != large_list.FindIndex(match))
                     return TestStatus.Failed("List<" + typeof(T).Name + ">, compare FindIndex, " + "Loop#" + Loop + ", Step#" + Step);
             }
@@ -3779,7 +3788,7 @@ namespace Test
             for (int j = 0; j < Count; j++)
                 for (int i = 0; i < MaxIntValue; i++)
                 {
-                    match = (item) => { return (item.GetHashCode() % MaxIntValue) == i; };
+                    match = (item) => { return (ItemToInt(item) % MaxIntValue) == i; };
                     if (small_list.FindIndex(j, match) != large_list.FindIndex(j, match))
                         return TestStatus.Failed("List<" + typeof(T).Name + ">, compare FindIndex(index,match), " + "Loop#" + Loop + ", Step#" + Step);
                 }
@@ -3788,21 +3797,21 @@ namespace Test
                 for (int k = 0; j + k < Count; k++)
                     for (int i = 0; i < MaxIntValue; i++)
                     {
-                        match = (item) => { return (item.GetHashCode() % MaxIntValue) == i; };
+                        match = (item) => { return (ItemToInt(item) % MaxIntValue) == i; };
                         if (small_list.FindIndex(j, k, match) != large_list.FindIndex(j, k, match))
                             return TestStatus.Failed("List<" + typeof(T).Name + ">, compare FindIndex(index,count,match), " + "Loop#" + Loop + ", Step#" + Step);
                     }
 
             for (int i = 0; i < MaxIntValue; i++)
             {
-                match = (item) => { return (item.GetHashCode() % MaxIntValue) == i; };
-                if (!Equals(small_list.FindLast(match), large_list.FindLast(match)))
+                match = (item) => { return (ItemToInt(item) % MaxIntValue) == i; };
+                if (CompareTwoObjects(small_list.FindLast(match), large_list.FindLast(match)) != 0)
                     return TestStatus.Failed("List<" + typeof(T).Name + ">, compare FindLast, " + "Loop#" + Loop + ", Step#" + Step);
             }
 
             for (int i = 0; i < MaxIntValue; i++)
             {
-                match = (item) => { return (item.GetHashCode() % MaxIntValue) == i; };
+                match = (item) => { return (ItemToInt(item) % MaxIntValue) == i; };
                 if (small_list.FindLastIndex(match) != large_list.FindLastIndex(match))
                     return TestStatus.Failed("List<" + typeof(T).Name + ">, compare FindLastIndex, " + "Loop#" + Loop + ", Step#" + Step);
             }
@@ -3810,7 +3819,7 @@ namespace Test
             for (int j = 0; j < Count; j++)
                 for (int i = 0; i < MaxIntValue; i++)
                 {
-                    match = (item) => { return (item.GetHashCode() % MaxIntValue) == i; };
+                    match = (item) => { return (ItemToInt(item) % MaxIntValue) == i; };
                     long SmallFindResult = small_list.FindLastIndex(Count - 1 - j, match);
                     long LargeFindResult = large_list.FindLastIndex(Count - 1 - j, match);
 
@@ -3822,13 +3831,13 @@ namespace Test
                 for (int k = 0; j + k < Count; k++)
                     for (int i = 0; i < MaxIntValue; i++)
                     {
-                        match = (item) => { return (item.GetHashCode() % MaxIntValue) == i; };
+                        match = (item) => { return (ItemToInt(item) % MaxIntValue) == i; };
                         if (small_list.FindLastIndex(Count - 1 - j, k, match) != large_list.FindLastIndex(Count - 1 - j, k, match))
                             return TestStatus.Failed("List<" + typeof(T).Name + ">, compare FindLastIndex(index,count,match), " + "Loop#" + Loop + ", Step#" + Step);
                     }
 
             int Total;
-            Action<T> action = (item) => { Total = (item.GetHashCode() % MaxIntValue) * 1103515245 + 12345; };
+            Action<T> action = (item) => { Total = (ItemToInt(item) % MaxIntValue) * 1103515245 + 12345; };
             Total = 1;
             small_list.ForEach(action);
             int SmallTotal = Total;
@@ -3851,7 +3860,7 @@ namespace Test
                     {
                         int FindCount = small_range.Count;
                         for (int i = 0; i < FindCount; i++)
-                            if (!Equals(small_range[i], large_range[i]))
+                            if (CompareTwoObjects(small_range[i], large_range[i]) != 0)
                                 return TestStatus.Failed("List<" + typeof(T).Name + ">, compare GetRange, " + "Loop#" + Loop + ", Step#" + Step);
                     }
                 }
@@ -3918,13 +3927,13 @@ namespace Test
             {
                 int ArrayLength = small_array.Length;
                 for (int i = 0; i < ArrayLength; i++)
-                    if (!Equals(small_array[i], large_array[i]))
+                    if (CompareTwoObjects(small_array[i], large_array[i]) != 0)
                         return TestStatus.Failed("List<" + typeof(T).Name + ">, compare ToArray, " + "Loop#" + Loop + ", Step#" + Step);
             }
 
             for (int i = 0; i < MaxIntValue; i++)
             {
-                match = (item) => { return (item.GetHashCode() % MaxIntValue) != i; };
+                match = (item) => { return (ItemToInt(item) % MaxIntValue) != i; };
                 if (small_list.TrueForAll(match) != large_list.TrueForAll(match))
                     return TestStatus.Failed("List<" + typeof(T).Name + ">, compare TrueForAll, " + "Loop#" + Loop + ", Step#" + Step);
             }
