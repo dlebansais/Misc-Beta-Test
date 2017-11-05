@@ -47,7 +47,7 @@ namespace Test
 #if DEBUG
         const int MaxListLoops = 100;
 #else
-        const int MaxListLoops = 10;
+        const int MaxListLoops = 7;
 #endif
 
         #region int
