@@ -57,6 +57,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BasicTests\ChildAA.cs" />
+    <Compile Include="BasicTests\ChildAB.cs" />
+    <Compile Include="BasicTests\ParentA.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestPolySerializer.cs" />
     <Compile Include="TestSet.cs" />
