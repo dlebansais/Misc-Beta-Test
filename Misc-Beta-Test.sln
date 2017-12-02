@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Misc-Beta-Test", "Misc-Beta
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test-LargeList", "Test-LargeList\Test-LargeList.csproj", "{C9B82DA8-7D2B-4DB9-8BE5-E4A475C38787}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test-PolySerializer", "Test-PolySerializer\Test-PolySerializer.csproj", "{936CFBFD-1F5F-49C8-A238-182AD6246E70}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -26,6 +28,12 @@ Global
 		{C9B82DA8-7D2B-4DB9-8BE5-E4A475C38787}.Release|x64.Build.0 = Release|x64
 		{C9B82DA8-7D2B-4DB9-8BE5-E4A475C38787}.Travis|x64.ActiveCfg = Travis|x64
 		{C9B82DA8-7D2B-4DB9-8BE5-E4A475C38787}.Travis|x64.Build.0 = Travis|x64
+		{936CFBFD-1F5F-49C8-A238-182AD6246E70}.Debug|x64.ActiveCfg = Debug|x64
+		{936CFBFD-1F5F-49C8-A238-182AD6246E70}.Debug|x64.Build.0 = Debug|x64
+		{936CFBFD-1F5F-49C8-A238-182AD6246E70}.Release|x64.ActiveCfg = Release|x64
+		{936CFBFD-1F5F-49C8-A238-182AD6246E70}.Release|x64.Build.0 = Release|x64
+		{936CFBFD-1F5F-49C8-A238-182AD6246E70}.Travis|x64.ActiveCfg = Travis|x64
+		{936CFBFD-1F5F-49C8-A238-182AD6246E70}.Travis|x64.Build.0 = Travis|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
