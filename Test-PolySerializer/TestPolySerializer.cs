@@ -14,12 +14,19 @@ namespace Test
             Serializer s = new Serializer();
 
             ChildAA childAA = new ChildAA();
-            MemoryStream ms = new MemoryStream();
 
-            s.Serialize(ms, childAA);
+            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            {
+                s.Serialize(fs, childAA);
+            }
+
             s.RootType = typeof(ChildAB);
 
-            ChildAB childAB = s.Deserialize(ms) as ChildAB;
+            ChildAB childAB;
+            using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
+            {
+                childAB = s.Deserialize(fs) as ChildAB;
+            }
 
             return childAB != null;
         }
