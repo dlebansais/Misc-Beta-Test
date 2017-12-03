@@ -7,12 +7,14 @@ install:
 
 script:
 - msbuild /p:Configuration=Travis Misc-Beta-Test.sln
+- cp ./Test-LargeList/bin/x64/Travis/Test-LargeList.dll ./Misc-Beta-Test/bin/x64/Travis
+- cp ./Test-PolySerializer/bin/x64/Travis/Test-PolySerializer.dll ./Misc-Beta-Test/bin/x64/Travis
 
 deploy:
   provider: pages
   skip_cleanup: true
   github_token: $GITHUB_TOKEN
-  local_dir: ./Test-LargeList/bin/x64/Travis
+  local_dir: ./Misc-Beta-Test/bin/x64/Travis
   target_branch: gh-pages
   email: "github-pages-deploy@travis-ci.org"
   on:
