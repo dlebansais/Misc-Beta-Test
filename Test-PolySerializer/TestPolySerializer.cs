@@ -1,4 +1,5 @@
-﻿using PolySerializer;
+﻿using DeepEqual.Syntax;
+using PolySerializer;
 using System.IO;
 
 namespace Test
@@ -14,6 +15,7 @@ namespace Test
             Serializer s = new Serializer();
 
             ChildAA childAA = new ChildAA();
+            childAA.Test = "test";
 
             using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
             {
@@ -28,7 +30,7 @@ namespace Test
                 childAB = s.Deserialize(fs) as ChildAB;
             }
 
-            return childAB != null;
+            return childAA.IsDeepEqual(childAB);
         }
     }
 }

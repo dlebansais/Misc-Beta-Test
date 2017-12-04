@@ -1,4 +1,5 @@
 @echo off
+del *.log > nul
 
 if not exist "..\packages\NUnit.ConsoleRunner.3.7.0\tools\nunit3-console.exe" goto error_console
 if not exist "..\Test-PolySerializer\bin\x64\Debug\Test-PolySerializer.dll" goto error_PolySerializer
