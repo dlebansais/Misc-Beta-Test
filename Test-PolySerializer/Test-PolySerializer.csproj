@@ -70,9 +70,12 @@
   <ItemGroup>
     <Compile Include="BasicTests\ChildAA.cs" />
     <Compile Include="BasicTests\ChildAB.cs" />
+    <Compile Include="BasicTests\GrandChildAA.cs" />
+    <Compile Include="BasicTests\GrandChildAB.cs" />
     <Compile Include="BasicTests\ParentA.cs" />
+    <Compile Include="BasicTests\ParentB.cs" />
+    <Compile Include="BasicTests\ParentC.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestPolySerializer.cs" />
     <Compile Include="TestSet.cs" />
   </ItemGroup>
   <ItemGroup>
