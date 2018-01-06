@@ -608,6 +608,7 @@ namespace Test
         #endregion
 
         #region Test Struct
+        [System.Serializable]
         public struct Struct0
         {
         }
@@ -633,6 +634,7 @@ namespace Test
             Assert.That(test0.IsDeepEqual(test1), "Basic serializing of empty struct");
         }
 
+        [System.Serializable]
         public struct Struct1
         {
             public bool field0;
@@ -655,7 +657,7 @@ namespace Test
         [Test]
         public static void TestStruct1()
         {
-            //Serializer s = new Serializer();
+            Serializer s = new Serializer();
 
             Struct1 test0 = new Struct1();
 
