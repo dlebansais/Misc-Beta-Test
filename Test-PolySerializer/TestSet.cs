@@ -37,9 +37,23 @@ namespace Test
 
         #region Basic Tests
         [Test]
-        public static void TestBasic0()
+        [TestCase(0, 0)]
+        [TestCase(0, 1)]
+        [TestCase(0, 2)]
+        [TestCase(0, 3)]
+        [TestCase(1, 0)]
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(1, 3)]
+        [TestCase(2, 0)]
+        [TestCase(2, 1)]
+        [TestCase(2, 2)]
+        [TestCase(2, 3)]
+        public static void TestBasic0(int mode, int format)
         {
             Serializer s = new Serializer();
+            s.Mode = (SerializationMode)mode;
+            s.FileFormat = (SerializationFormat)format;
 
             ParentA parentA0 = new ParentA();
             parentA0.Test = "test";
