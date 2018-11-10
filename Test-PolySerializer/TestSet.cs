@@ -63,7 +63,7 @@ namespace Test
                 s.Serialize(fs, parentA0);
             }
 
-            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
             {
                 Assert.That(s.Check(fs), "Basic check");
             }
@@ -105,7 +105,7 @@ namespace Test
                 s.Serialize(fs, childAA0);
             }
 
-            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
             {
                 Assert.That(s.Check(fs), "Basic check of parent");
             }
@@ -149,7 +149,7 @@ namespace Test
 
             s.TypeOverrideTable = new Dictionary<Type, Type>() { { typeof(ChildAA), typeof(ChildAB) } };
 
-            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
             {
                 Assert.That(s.Check(fs), "Basic polymorphic check");
             }
@@ -192,7 +192,7 @@ namespace Test
 
             s.TypeOverrideTable = new Dictionary<Type, Type>() { { typeof(ChildAA), typeof(ParentA) } };
 
-            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
             {
                 Assert.That(s.Check(fs), "Basic polymorphic check child to parent");
             }
@@ -235,7 +235,7 @@ namespace Test
 
             s.TypeOverrideTable = new Dictionary<Type, Type>() { { typeof(ParentA), typeof(ChildAA) } };
 
-            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
             {
                 Assert.That(s.Check(fs), "Basic polymorphic check parent to child");
             }
@@ -276,7 +276,7 @@ namespace Test
                 s.Serialize(fs, grandChildAA0);
             }
 
-            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
             {
                 Assert.That(s.Check(fs), "Basic deep check of parent");
             }
@@ -319,7 +319,7 @@ namespace Test
 
             s.TypeOverrideTable = new Dictionary<Type, Type>() { { typeof(GrandChildAA), typeof(GrandChildAB) } };
 
-            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
             {
                 Assert.That(s.Check(fs), "Basic deep polymorphic check");
             }
@@ -362,7 +362,7 @@ namespace Test
 
             s.TypeOverrideTable = new Dictionary<Type, Type>() { { typeof(GrandChildAA), typeof(ParentA) } };
 
-            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
             {
                 Assert.That(s.Check(fs), "Basic deep polymorphic check child to parent");
             }
@@ -405,7 +405,7 @@ namespace Test
 
             s.TypeOverrideTable = new Dictionary<Type, Type>() { { typeof(ParentA), typeof(GrandChildAA) } };
 
-            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
             {
                 Assert.That(s.Check(fs), "Basic deep polymorphic check parent to child");
             }
@@ -446,7 +446,7 @@ namespace Test
                 s.Serialize(fs, parentB0);
             }
 
-            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
             {
                 Assert.That(s.Check(fs), "Basic check of built-in types");
             }
@@ -490,7 +490,7 @@ namespace Test
                 s.Serialize(fs, parentC0);
             }
 
-            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
             {
                 Assert.That(!s.Check(fs), "Basic check of readonly properties (should fail)");
             }
@@ -539,7 +539,7 @@ namespace Test
                 s.Serialize(fs, test0);
             }
 
-            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
             {
                 Assert.That(s.Check(fs), "Basic check of enum type");
             }
@@ -586,7 +586,7 @@ namespace Test
                 s.Serialize(fs, test0);
             }
 
-            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
             {
                 Assert.That(s.Check(fs), "Basic check of enum type with value");
             }
@@ -634,7 +634,7 @@ namespace Test
                 s.Serialize(fs, test0);
             }
 
-            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
             {
                 Assert.That(s.Check(fs), "Basic check of enum type with flag value");
             }
@@ -681,7 +681,7 @@ namespace Test
                 s.Serialize(fs, test0);
             }
 
-            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
             {
                 Assert.That(s.Check(fs), "Basic check of enum type (byte)");
             }
@@ -728,7 +728,7 @@ namespace Test
                 s.Serialize(fs, test0);
             }
 
-            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
             {
                 Assert.That(s.Check(fs), "Basic check of enum type (sbyte)");
             }
@@ -775,7 +775,7 @@ namespace Test
                 s.Serialize(fs, test0);
             }
 
-            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
             {
                 Assert.That(s.Check(fs), "Basic check of enum type (short)");
             }
@@ -822,7 +822,7 @@ namespace Test
                 s.Serialize(fs, test0);
             }
 
-            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
             {
                 Assert.That(s.Check(fs), "Basic check of enum type (ushort)");
             }
@@ -869,7 +869,7 @@ namespace Test
                 s.Serialize(fs, test0);
             }
 
-            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
             {
                 Assert.That(s.Check(fs), "Basic check of enum type (int)");
             }
@@ -916,7 +916,7 @@ namespace Test
                 s.Serialize(fs, test0);
             }
 
-            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
             {
                 Assert.That(s.Check(fs), "Basic check of enum type (uint)");
             }
@@ -963,7 +963,7 @@ namespace Test
                 s.Serialize(fs, test0);
             }
 
-            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
             {
                 Assert.That(s.Check(fs), "Basic check of enum type (long)");
             }
@@ -1010,7 +1010,7 @@ namespace Test
                 s.Serialize(fs, test0);
             }
 
-            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
             {
                 Assert.That(s.Check(fs), "Basic check of enum type (ulong)");
             }
@@ -1057,7 +1057,7 @@ namespace Test
                 s.Serialize(fs, test0);
             }
 
-            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
             {
                 Assert.That(s.Check(fs), "Basic check of empty struct");
             }
@@ -1117,7 +1117,7 @@ namespace Test
                 s.Serialize(fs, test0);
             }
 
-            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
             {
                 Assert.That(s.Check(fs), "Basic check of empty struct");
             }
