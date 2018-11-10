@@ -63,6 +63,11 @@ namespace Test
                 s.Serialize(fs, parentA0);
             }
 
+            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            {
+                Assert.That(s.Check(fs), "Basic check");
+            }
+
             ParentA parentA1;
 
             using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
@@ -74,9 +79,23 @@ namespace Test
         }
 
         [Test]
-        public static void TestBasic1()
+        [TestCase(0, 0)]
+        [TestCase(0, 1)]
+        [TestCase(0, 2)]
+        [TestCase(0, 3)]
+        [TestCase(1, 0)]
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(1, 3)]
+        [TestCase(2, 0)]
+        [TestCase(2, 1)]
+        [TestCase(2, 2)]
+        [TestCase(2, 3)]
+        public static void TestBasic1(int mode, int format)
         {
             Serializer s = new Serializer();
+            s.Mode = (SerializationMode)mode;
+            s.FileFormat = (SerializationFormat)format;
 
             ChildAA childAA0 = new ChildAA();
             childAA0.Test = "test";
@@ -84,6 +103,11 @@ namespace Test
             using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
             {
                 s.Serialize(fs, childAA0);
+            }
+
+            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            {
+                Assert.That(s.Check(fs), "Basic check of parent");
             }
 
             ChildAA childAA1;
@@ -97,9 +121,23 @@ namespace Test
         }
 
         [Test]
-        public static void TestBasic2()
+        [TestCase(0, 0)]
+        [TestCase(0, 1)]
+        [TestCase(0, 2)]
+        [TestCase(0, 3)]
+        [TestCase(1, 0)]
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(1, 3)]
+        [TestCase(2, 0)]
+        [TestCase(2, 1)]
+        [TestCase(2, 2)]
+        [TestCase(2, 3)]
+        public static void TestBasic2(int mode, int format)
         {
             Serializer s = new Serializer();
+            s.Mode = (SerializationMode)mode;
+            s.FileFormat = (SerializationFormat)format;
 
             ChildAA childAA = new ChildAA();
             childAA.Test = "test";
@@ -111,6 +149,11 @@ namespace Test
 
             s.TypeOverrideTable = new Dictionary<Type, Type>() { { typeof(ChildAA), typeof(ChildAB) } };
 
+            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            {
+                Assert.That(s.Check(fs), "Basic polymorphic check");
+            }
+
             ChildAB childAB;
             using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
             {
@@ -121,9 +164,23 @@ namespace Test
         }
 
         [Test]
-        public static void TestBasic3()
+        [TestCase(0, 0)]
+        [TestCase(0, 1)]
+        [TestCase(0, 2)]
+        [TestCase(0, 3)]
+        [TestCase(1, 0)]
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(1, 3)]
+        [TestCase(2, 0)]
+        [TestCase(2, 1)]
+        [TestCase(2, 2)]
+        [TestCase(2, 3)]
+        public static void TestBasic3(int mode, int format)
         {
             Serializer s = new Serializer();
+            s.Mode = (SerializationMode)mode;
+            s.FileFormat = (SerializationFormat)format;
 
             ChildAA childAA = new ChildAA();
             childAA.Test = "test";
@@ -135,6 +192,11 @@ namespace Test
 
             s.TypeOverrideTable = new Dictionary<Type, Type>() { { typeof(ChildAA), typeof(ParentA) } };
 
+            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            {
+                Assert.That(s.Check(fs), "Basic polymorphic check child to parent");
+            }
+
             ParentA parentA;
             using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
             {
@@ -145,9 +207,23 @@ namespace Test
         }
 
         [Test]
-        public static void TestBasic4()
+        [TestCase(0, 0)]
+        [TestCase(0, 1)]
+        [TestCase(0, 2)]
+        [TestCase(0, 3)]
+        [TestCase(1, 0)]
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(1, 3)]
+        [TestCase(2, 0)]
+        [TestCase(2, 1)]
+        [TestCase(2, 2)]
+        [TestCase(2, 3)]
+        public static void TestBasic4(int mode, int format)
         {
             Serializer s = new Serializer();
+            s.Mode = (SerializationMode)mode;
+            s.FileFormat = (SerializationFormat)format;
 
             ParentA parentA = new ParentA();
             parentA.Test = "test";
@@ -159,6 +235,11 @@ namespace Test
 
             s.TypeOverrideTable = new Dictionary<Type, Type>() { { typeof(ParentA), typeof(ChildAA) } };
 
+            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            {
+                Assert.That(s.Check(fs), "Basic polymorphic check parent to child");
+            }
+
             ChildAA childAA;
             using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
             {
@@ -169,9 +250,23 @@ namespace Test
         }
 
         [Test]
-        public static void TestBasic5()
+        [TestCase(0, 0)]
+        [TestCase(0, 1)]
+        [TestCase(0, 2)]
+        [TestCase(0, 3)]
+        [TestCase(1, 0)]
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(1, 3)]
+        [TestCase(2, 0)]
+        [TestCase(2, 1)]
+        [TestCase(2, 2)]
+        [TestCase(2, 3)]
+        public static void TestBasic5(int mode, int format)
         {
             Serializer s = new Serializer();
+            s.Mode = (SerializationMode)mode;
+            s.FileFormat = (SerializationFormat)format;
 
             GrandChildAA grandChildAA0 = new GrandChildAA();
             grandChildAA0.Test = "test";
@@ -179,6 +274,11 @@ namespace Test
             using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
             {
                 s.Serialize(fs, grandChildAA0);
+            }
+
+            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            {
+                Assert.That(s.Check(fs), "Basic deep check of parent");
             }
 
             GrandChildAA grandChildAA1;
@@ -191,9 +291,23 @@ namespace Test
         }
 
         [Test]
-        public static void TestBasic6()
+        [TestCase(0, 0)]
+        [TestCase(0, 1)]
+        [TestCase(0, 2)]
+        [TestCase(0, 3)]
+        [TestCase(1, 0)]
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(1, 3)]
+        [TestCase(2, 0)]
+        [TestCase(2, 1)]
+        [TestCase(2, 2)]
+        [TestCase(2, 3)]
+        public static void TestBasic6(int mode, int format)
         {
             Serializer s = new Serializer();
+            s.Mode = (SerializationMode)mode;
+            s.FileFormat = (SerializationFormat)format;
 
             GrandChildAA grandChildAA = new GrandChildAA();
             grandChildAA.Test = "test";
@@ -205,6 +319,11 @@ namespace Test
 
             s.TypeOverrideTable = new Dictionary<Type, Type>() { { typeof(GrandChildAA), typeof(GrandChildAB) } };
 
+            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            {
+                Assert.That(s.Check(fs), "Basic deep polymorphic check");
+            }
+
             GrandChildAB grandChildAB;
             using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
             {
@@ -215,9 +334,23 @@ namespace Test
         }
 
         [Test]
-        public static void TestBasic7()
+        [TestCase(0, 0)]
+        [TestCase(0, 1)]
+        [TestCase(0, 2)]
+        [TestCase(0, 3)]
+        [TestCase(1, 0)]
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(1, 3)]
+        [TestCase(2, 0)]
+        [TestCase(2, 1)]
+        [TestCase(2, 2)]
+        [TestCase(2, 3)]
+        public static void TestBasic7(int mode, int format)
         {
             Serializer s = new Serializer();
+            s.Mode = (SerializationMode)mode;
+            s.FileFormat = (SerializationFormat)format;
 
             GrandChildAA grandChildAA = new GrandChildAA();
             grandChildAA.Test = "test";
@@ -229,6 +362,11 @@ namespace Test
 
             s.TypeOverrideTable = new Dictionary<Type, Type>() { { typeof(GrandChildAA), typeof(ParentA) } };
 
+            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            {
+                Assert.That(s.Check(fs), "Basic deep polymorphic check child to parent");
+            }
+
             ParentA parentA;
             using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
             {
@@ -239,9 +377,23 @@ namespace Test
         }
 
         [Test]
-        public static void TestBasic8()
+        [TestCase(0, 0)]
+        [TestCase(0, 1)]
+        [TestCase(0, 2)]
+        [TestCase(0, 3)]
+        [TestCase(1, 0)]
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(1, 3)]
+        [TestCase(2, 0)]
+        [TestCase(2, 1)]
+        [TestCase(2, 2)]
+        [TestCase(2, 3)]
+        public static void TestBasic8(int mode, int format)
         {
             Serializer s = new Serializer();
+            s.Mode = (SerializationMode)mode;
+            s.FileFormat = (SerializationFormat)format;
 
             ParentA parentA = new ParentA();
             parentA.Test = "test";
@@ -253,6 +405,11 @@ namespace Test
 
             s.TypeOverrideTable = new Dictionary<Type, Type>() { { typeof(ParentA), typeof(GrandChildAA) } };
 
+            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            {
+                Assert.That(s.Check(fs), "Basic deep polymorphic check parent to child");
+            }
+
             GrandChildAA grandChildAA;
             using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
             {
@@ -263,9 +420,23 @@ namespace Test
         }
 
         [Test]
-        public static void TestBasic9()
+        [TestCase(0, 0)]
+        [TestCase(0, 1)]
+        [TestCase(0, 2)]
+        [TestCase(0, 3)]
+        [TestCase(1, 0)]
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(1, 3)]
+        [TestCase(2, 0)]
+        [TestCase(2, 1)]
+        [TestCase(2, 2)]
+        [TestCase(2, 3)]
+        public static void TestBasic9(int mode, int format)
         {
             Serializer s = new Serializer();
+            s.Mode = (SerializationMode)mode;
+            s.FileFormat = (SerializationFormat)format;
 
             ParentB parentB0 = new ParentB();
             parentB0.Init();
@@ -273,6 +444,11 @@ namespace Test
             using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
             {
                 s.Serialize(fs, parentB0);
+            }
+
+            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            {
+                Assert.That(s.Check(fs), "Basic check of built-in types");
             }
 
             ParentB parentB1;
@@ -286,9 +462,23 @@ namespace Test
         }
 
         [Test]
-        public static void TestBasic10()
+        [TestCase(0, 0)]
+        [TestCase(0, 1)]
+        [TestCase(0, 2)]
+        [TestCase(0, 3)]
+        [TestCase(1, 0)]
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(1, 3)]
+        [TestCase(2, 0)]
+        [TestCase(2, 1)]
+        [TestCase(2, 2)]
+        [TestCase(2, 3)]
+        public static void TestBasic10(int mode, int format)
         {
             Serializer s = new Serializer();
+            s.Mode = (SerializationMode)mode;
+            s.FileFormat = (SerializationFormat)format;
 
             ParentC parentC0 = new ParentC();
             parentC0.InitInt(50);
@@ -298,6 +488,11 @@ namespace Test
             using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
             {
                 s.Serialize(fs, parentC0);
+            }
+
+            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            {
+                Assert.That(!s.Check(fs), "Basic check of readonly properties (should fail)");
             }
 
             ParentC parentC1 = new ParentC();
@@ -319,15 +514,34 @@ namespace Test
         }
 
         [Test]
-        public static void TestEnum0()
+        [TestCase(0, 0)]
+        [TestCase(0, 1)]
+        [TestCase(0, 2)]
+        [TestCase(0, 3)]
+        [TestCase(1, 0)]
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(1, 3)]
+        [TestCase(2, 0)]
+        [TestCase(2, 1)]
+        [TestCase(2, 2)]
+        [TestCase(2, 3)]
+        public static void TestEnum0(int mode, int format)
         {
             Serializer s = new Serializer();
+            s.Mode = (SerializationMode)mode;
+            s.FileFormat = (SerializationFormat)format;
 
             Enum0 test0 = Enum0.test1;
 
             using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
             {
                 s.Serialize(fs, test0);
+            }
+
+            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            {
+                Assert.That(s.Check(fs), "Basic check of enum type");
             }
 
             Enum0 test1;
@@ -347,15 +561,34 @@ namespace Test
         }
 
         [Test]
-        public static void TestEnum1()
+        [TestCase(0, 0)]
+        [TestCase(0, 1)]
+        [TestCase(0, 2)]
+        [TestCase(0, 3)]
+        [TestCase(1, 0)]
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(1, 3)]
+        [TestCase(2, 0)]
+        [TestCase(2, 1)]
+        [TestCase(2, 2)]
+        [TestCase(2, 3)]
+        public static void TestEnum1(int mode, int format)
         {
             Serializer s = new Serializer();
+            s.Mode = (SerializationMode)mode;
+            s.FileFormat = (SerializationFormat)format;
 
             Enum1 test0 = Enum1.test1;
 
             using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
             {
                 s.Serialize(fs, test0);
+            }
+
+            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            {
+                Assert.That(s.Check(fs), "Basic check of enum type with value");
             }
 
             Enum1 test1;
@@ -376,15 +609,34 @@ namespace Test
         }
 
         [Test]
-        public static void TestEnum2()
+        [TestCase(0, 0)]
+        [TestCase(0, 1)]
+        [TestCase(0, 2)]
+        [TestCase(0, 3)]
+        [TestCase(1, 0)]
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(1, 3)]
+        [TestCase(2, 0)]
+        [TestCase(2, 1)]
+        [TestCase(2, 2)]
+        [TestCase(2, 3)]
+        public static void TestEnum2(int mode, int format)
         {
             Serializer s = new Serializer();
+            s.Mode = (SerializationMode)mode;
+            s.FileFormat = (SerializationFormat)format;
 
             Enum2 test0 = Enum2.test1;
 
             using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
             {
                 s.Serialize(fs, test0);
+            }
+
+            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            {
+                Assert.That(s.Check(fs), "Basic check of enum type with flag value");
             }
 
             Enum2 test1;
@@ -404,15 +656,34 @@ namespace Test
         }
 
         [Test]
-        public static void TestEnum3()
+        [TestCase(0, 0)]
+        [TestCase(0, 1)]
+        [TestCase(0, 2)]
+        [TestCase(0, 3)]
+        [TestCase(1, 0)]
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(1, 3)]
+        [TestCase(2, 0)]
+        [TestCase(2, 1)]
+        [TestCase(2, 2)]
+        [TestCase(2, 3)]
+        public static void TestEnum3(int mode, int format)
         {
             Serializer s = new Serializer();
+            s.Mode = (SerializationMode)mode;
+            s.FileFormat = (SerializationFormat)format;
 
             Enum3 test0 = Enum3.test1;
 
             using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
             {
                 s.Serialize(fs, test0);
+            }
+
+            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            {
+                Assert.That(s.Check(fs), "Basic check of enum type (byte)");
             }
 
             Enum3 test1;
@@ -432,15 +703,34 @@ namespace Test
         }
 
         [Test]
-        public static void TestEnum4()
+        [TestCase(0, 0)]
+        [TestCase(0, 1)]
+        [TestCase(0, 2)]
+        [TestCase(0, 3)]
+        [TestCase(1, 0)]
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(1, 3)]
+        [TestCase(2, 0)]
+        [TestCase(2, 1)]
+        [TestCase(2, 2)]
+        [TestCase(2, 3)]
+        public static void TestEnum4(int mode, int format)
         {
             Serializer s = new Serializer();
+            s.Mode = (SerializationMode)mode;
+            s.FileFormat = (SerializationFormat)format;
 
             Enum4 test0 = Enum4.test1;
 
             using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
             {
                 s.Serialize(fs, test0);
+            }
+
+            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            {
+                Assert.That(s.Check(fs), "Basic check of enum type (sbyte)");
             }
 
             Enum4 test1;
@@ -460,15 +750,34 @@ namespace Test
         }
 
         [Test]
-        public static void TestEnum5()
+        [TestCase(0, 0)]
+        [TestCase(0, 1)]
+        [TestCase(0, 2)]
+        [TestCase(0, 3)]
+        [TestCase(1, 0)]
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(1, 3)]
+        [TestCase(2, 0)]
+        [TestCase(2, 1)]
+        [TestCase(2, 2)]
+        [TestCase(2, 3)]
+        public static void TestEnum5(int mode, int format)
         {
             Serializer s = new Serializer();
+            s.Mode = (SerializationMode)mode;
+            s.FileFormat = (SerializationFormat)format;
 
             Enum5 test0 = Enum5.test1;
 
             using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
             {
                 s.Serialize(fs, test0);
+            }
+
+            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            {
+                Assert.That(s.Check(fs), "Basic check of enum type (short)");
             }
 
             Enum5 test1;
@@ -488,15 +797,34 @@ namespace Test
         }
 
         [Test]
-        public static void TestEnum6()
+        [TestCase(0, 0)]
+        [TestCase(0, 1)]
+        [TestCase(0, 2)]
+        [TestCase(0, 3)]
+        [TestCase(1, 0)]
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(1, 3)]
+        [TestCase(2, 0)]
+        [TestCase(2, 1)]
+        [TestCase(2, 2)]
+        [TestCase(2, 3)]
+        public static void TestEnum6(int mode, int format)
         {
             Serializer s = new Serializer();
+            s.Mode = (SerializationMode)mode;
+            s.FileFormat = (SerializationFormat)format;
 
             Enum6 test0 = Enum6.test1;
 
             using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
             {
                 s.Serialize(fs, test0);
+            }
+
+            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            {
+                Assert.That(s.Check(fs), "Basic check of enum type (ushort)");
             }
 
             Enum6 test1;
@@ -516,15 +844,34 @@ namespace Test
         }
 
         [Test]
-        public static void TestEnum7()
+        [TestCase(0, 0)]
+        [TestCase(0, 1)]
+        [TestCase(0, 2)]
+        [TestCase(0, 3)]
+        [TestCase(1, 0)]
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(1, 3)]
+        [TestCase(2, 0)]
+        [TestCase(2, 1)]
+        [TestCase(2, 2)]
+        [TestCase(2, 3)]
+        public static void TestEnum7(int mode, int format)
         {
             Serializer s = new Serializer();
+            s.Mode = (SerializationMode)mode;
+            s.FileFormat = (SerializationFormat)format;
 
             Enum7 test0 = Enum7.test1;
 
             using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
             {
                 s.Serialize(fs, test0);
+            }
+
+            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            {
+                Assert.That(s.Check(fs), "Basic check of enum type (int)");
             }
 
             Enum7 test1;
@@ -544,15 +891,34 @@ namespace Test
         }
 
         [Test]
-        public static void TestEnum8()
+        [TestCase(0, 0)]
+        [TestCase(0, 1)]
+        [TestCase(0, 2)]
+        [TestCase(0, 3)]
+        [TestCase(1, 0)]
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(1, 3)]
+        [TestCase(2, 0)]
+        [TestCase(2, 1)]
+        [TestCase(2, 2)]
+        [TestCase(2, 3)]
+        public static void TestEnum8(int mode, int format)
         {
             Serializer s = new Serializer();
+            s.Mode = (SerializationMode)mode;
+            s.FileFormat = (SerializationFormat)format;
 
             Enum8 test0 = Enum8.test1;
 
             using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
             {
                 s.Serialize(fs, test0);
+            }
+
+            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            {
+                Assert.That(s.Check(fs), "Basic check of enum type (uint)");
             }
 
             Enum8 test1;
@@ -572,15 +938,34 @@ namespace Test
         }
 
         [Test]
-        public static void TestEnum10()
+        [TestCase(0, 0)]
+        [TestCase(0, 1)]
+        [TestCase(0, 2)]
+        [TestCase(0, 3)]
+        [TestCase(1, 0)]
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(1, 3)]
+        [TestCase(2, 0)]
+        [TestCase(2, 1)]
+        [TestCase(2, 2)]
+        [TestCase(2, 3)]
+        public static void TestEnum10(int mode, int format)
         {
             Serializer s = new Serializer();
+            s.Mode = (SerializationMode)mode;
+            s.FileFormat = (SerializationFormat)format;
 
             Enum10 test0 = Enum10.test1;
 
             using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
             {
                 s.Serialize(fs, test0);
+            }
+
+            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            {
+                Assert.That(s.Check(fs), "Basic check of enum type (long)");
             }
 
             Enum10 test1;
@@ -600,15 +985,34 @@ namespace Test
         }
 
         [Test]
-        public static void TestEnum11()
+        [TestCase(0, 0)]
+        [TestCase(0, 1)]
+        [TestCase(0, 2)]
+        [TestCase(0, 3)]
+        [TestCase(1, 0)]
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(1, 3)]
+        [TestCase(2, 0)]
+        [TestCase(2, 1)]
+        [TestCase(2, 2)]
+        [TestCase(2, 3)]
+        public static void TestEnum11(int mode, int format)
         {
             Serializer s = new Serializer();
+            s.Mode = (SerializationMode)mode;
+            s.FileFormat = (SerializationFormat)format;
 
             Enum11 test0 = Enum11.test1;
 
             using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
             {
                 s.Serialize(fs, test0);
+            }
+
+            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            {
+                Assert.That(s.Check(fs), "Basic check of enum type (ulong)");
             }
 
             Enum11 test1;
@@ -628,15 +1032,34 @@ namespace Test
         }
 
         [Test]
-        public static void TestStruct0()
+        [TestCase(0, 0)]
+        [TestCase(0, 1)]
+        [TestCase(0, 2)]
+        [TestCase(0, 3)]
+        [TestCase(1, 0)]
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(1, 3)]
+        [TestCase(2, 0)]
+        [TestCase(2, 1)]
+        [TestCase(2, 2)]
+        [TestCase(2, 3)]
+        public static void TestStruct0(int mode, int format)
         {
             Serializer s = new Serializer();
+            s.Mode = (SerializationMode)mode;
+            s.FileFormat = (SerializationFormat)format;
 
             Struct0 test0 = new Struct0();
 
             using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
             {
                 s.Serialize(fs, test0);
+            }
+
+            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            {
+                Assert.That(s.Check(fs), "Basic check of empty struct");
             }
 
             Struct0 test1;
@@ -669,15 +1092,34 @@ namespace Test
         }
 
         [Test]
-        public static void TestStruct1()
+        [TestCase(0, 0)]
+        [TestCase(0, 1)]
+        [TestCase(0, 2)]
+        [TestCase(0, 3)]
+        [TestCase(1, 0)]
+        [TestCase(1, 1)]
+        [TestCase(1, 2)]
+        [TestCase(1, 3)]
+        [TestCase(2, 0)]
+        [TestCase(2, 1)]
+        [TestCase(2, 2)]
+        [TestCase(2, 3)]
+        public static void TestStruct1(int mode, int format)
         {
             Serializer s = new Serializer();
+            s.Mode = (SerializationMode)mode;
+            s.FileFormat = (SerializationFormat)format;
 
             Struct1 test0 = new Struct1();
 
             using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
             {
                 s.Serialize(fs, test0);
+            }
+
+            using (FileStream fs = new FileStream("test.log", FileMode.Create, FileAccess.Write))
+            {
+                Assert.That(s.Check(fs), "Basic check of empty struct");
             }
 
             Struct1 test1;
