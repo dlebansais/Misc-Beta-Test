@@ -53,7 +53,7 @@ namespace Test
         {
             Serializer s = new Serializer();
             s.Mode = (SerializationMode)mode;
-            s.FileFormat = (SerializationFormat)format;
+            s.Format = (SerializationFormat)format;
 
             ParentA parentA0 = new ParentA();
             parentA0.Test = "test";
@@ -95,7 +95,7 @@ namespace Test
         {
             Serializer s = new Serializer();
             s.Mode = (SerializationMode)mode;
-            s.FileFormat = (SerializationFormat)format;
+            s.Format = (SerializationFormat)format;
 
             ChildAA childAA0 = new ChildAA();
             childAA0.Test = "test";
@@ -137,7 +137,7 @@ namespace Test
         {
             Serializer s = new Serializer();
             s.Mode = (SerializationMode)mode;
-            s.FileFormat = (SerializationFormat)format;
+            s.Format = (SerializationFormat)format;
 
             ChildAA childAA = new ChildAA();
             childAA.Test = "test";
@@ -180,7 +180,7 @@ namespace Test
         {
             Serializer s = new Serializer();
             s.Mode = (SerializationMode)mode;
-            s.FileFormat = (SerializationFormat)format;
+            s.Format = (SerializationFormat)format;
 
             ChildAA childAA = new ChildAA();
             childAA.Test = "test";
@@ -223,7 +223,7 @@ namespace Test
         {
             Serializer s = new Serializer();
             s.Mode = (SerializationMode)mode;
-            s.FileFormat = (SerializationFormat)format;
+            s.Format = (SerializationFormat)format;
 
             ParentA parentA = new ParentA();
             parentA.Test = "test";
@@ -266,7 +266,7 @@ namespace Test
         {
             Serializer s = new Serializer();
             s.Mode = (SerializationMode)mode;
-            s.FileFormat = (SerializationFormat)format;
+            s.Format = (SerializationFormat)format;
 
             GrandChildAA grandChildAA0 = new GrandChildAA();
             grandChildAA0.Test = "test";
@@ -307,7 +307,7 @@ namespace Test
         {
             Serializer s = new Serializer();
             s.Mode = (SerializationMode)mode;
-            s.FileFormat = (SerializationFormat)format;
+            s.Format = (SerializationFormat)format;
 
             GrandChildAA grandChildAA = new GrandChildAA();
             grandChildAA.Test = "test";
@@ -350,7 +350,7 @@ namespace Test
         {
             Serializer s = new Serializer();
             s.Mode = (SerializationMode)mode;
-            s.FileFormat = (SerializationFormat)format;
+            s.Format = (SerializationFormat)format;
 
             GrandChildAA grandChildAA = new GrandChildAA();
             grandChildAA.Test = "test";
@@ -393,7 +393,7 @@ namespace Test
         {
             Serializer s = new Serializer();
             s.Mode = (SerializationMode)mode;
-            s.FileFormat = (SerializationFormat)format;
+            s.Format = (SerializationFormat)format;
 
             ParentA parentA = new ParentA();
             parentA.Test = "test";
@@ -436,7 +436,7 @@ namespace Test
         {
             Serializer s = new Serializer();
             s.Mode = (SerializationMode)mode;
-            s.FileFormat = (SerializationFormat)format;
+            s.Format = (SerializationFormat)format;
 
             ParentB parentB0 = new ParentB();
             parentB0.Init();
@@ -478,7 +478,7 @@ namespace Test
         {
             Serializer s = new Serializer();
             s.Mode = (SerializationMode)mode;
-            s.FileFormat = (SerializationFormat)format;
+            s.Format = (SerializationFormat)format;
 
             ParentC parentC0 = new ParentC();
             parentC0.InitInt(50);
@@ -530,7 +530,7 @@ namespace Test
         {
             Serializer s = new Serializer();
             s.Mode = (SerializationMode)mode;
-            s.FileFormat = (SerializationFormat)format;
+            s.Format = (SerializationFormat)format;
 
             Enum0 test0 = Enum0.test1;
 
@@ -577,7 +577,7 @@ namespace Test
         {
             Serializer s = new Serializer();
             s.Mode = (SerializationMode)mode;
-            s.FileFormat = (SerializationFormat)format;
+            s.Format = (SerializationFormat)format;
 
             Enum1 test0 = Enum1.test1;
 
@@ -625,7 +625,7 @@ namespace Test
         {
             Serializer s = new Serializer();
             s.Mode = (SerializationMode)mode;
-            s.FileFormat = (SerializationFormat)format;
+            s.Format = (SerializationFormat)format;
 
             Enum2 test0 = Enum2.test1;
 
@@ -672,7 +672,7 @@ namespace Test
         {
             Serializer s = new Serializer();
             s.Mode = (SerializationMode)mode;
-            s.FileFormat = (SerializationFormat)format;
+            s.Format = (SerializationFormat)format;
 
             Enum3 test0 = Enum3.test1;
 
@@ -719,7 +719,7 @@ namespace Test
         {
             Serializer s = new Serializer();
             s.Mode = (SerializationMode)mode;
-            s.FileFormat = (SerializationFormat)format;
+            s.Format = (SerializationFormat)format;
 
             Enum4 test0 = Enum4.test1;
 
@@ -766,7 +766,7 @@ namespace Test
         {
             Serializer s = new Serializer();
             s.Mode = (SerializationMode)mode;
-            s.FileFormat = (SerializationFormat)format;
+            s.Format = (SerializationFormat)format;
 
             Enum5 test0 = Enum5.test1;
 
@@ -813,7 +813,7 @@ namespace Test
         {
             Serializer s = new Serializer();
             s.Mode = (SerializationMode)mode;
-            s.FileFormat = (SerializationFormat)format;
+            s.Format = (SerializationFormat)format;
 
             Enum6 test0 = Enum6.test1;
 
@@ -860,7 +860,7 @@ namespace Test
         {
             Serializer s = new Serializer();
             s.Mode = (SerializationMode)mode;
-            s.FileFormat = (SerializationFormat)format;
+            s.Format = (SerializationFormat)format;
 
             Enum7 test0 = Enum7.test1;
 
@@ -907,7 +907,7 @@ namespace Test
         {
             Serializer s = new Serializer();
             s.Mode = (SerializationMode)mode;
-            s.FileFormat = (SerializationFormat)format;
+            s.Format = (SerializationFormat)format;
 
             Enum8 test0 = Enum8.test1;
 
@@ -954,7 +954,7 @@ namespace Test
         {
             Serializer s = new Serializer();
             s.Mode = (SerializationMode)mode;
-            s.FileFormat = (SerializationFormat)format;
+            s.Format = (SerializationFormat)format;
 
             Enum10 test0 = Enum10.test1;
 
@@ -1001,7 +1001,7 @@ namespace Test
         {
             Serializer s = new Serializer();
             s.Mode = (SerializationMode)mode;
-            s.FileFormat = (SerializationFormat)format;
+            s.Format = (SerializationFormat)format;
 
             Enum11 test0 = Enum11.test1;
 
@@ -1048,7 +1048,7 @@ namespace Test
         {
             Serializer s = new Serializer();
             s.Mode = (SerializationMode)mode;
-            s.FileFormat = (SerializationFormat)format;
+            s.Format = (SerializationFormat)format;
 
             Struct0 test0 = new Struct0();
 
@@ -1108,7 +1108,7 @@ namespace Test
         {
             Serializer s = new Serializer();
             s.Mode = (SerializationMode)mode;
-            s.FileFormat = (SerializationFormat)format;
+            s.Format = (SerializationFormat)format;
 
             Struct1 test0 = new Struct1();
 
