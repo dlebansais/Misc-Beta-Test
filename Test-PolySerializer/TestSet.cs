@@ -492,7 +492,7 @@ namespace Test
 
             using (FileStream fs = new FileStream("test.log", FileMode.Open, FileAccess.Read))
             {
-                Assert.That(!s.Check(fs), "Basic check of readonly properties (should fail)");
+                Assert.That(s.Check(fs), "Basic check of readonly properties (check should succeed)");
             }
 
             ParentC parentC1 = new ParentC();
