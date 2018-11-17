@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2041
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Misc-Beta-Test", "Misc-Beta-Test\Misc-Beta-Test.csproj", "{292FE848-A9D6-45EC-87B6-D8BB4435BB11}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test-LargeList", "Test-LargeList\Test-LargeList.csproj", "{C9B82DA8-7D2B-4DB9-8BE5-E4A475C38787}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test-PolySerializer", "Test-PolySerializer\Test-PolySerializer.csproj", "{936CFBFD-1F5F-49C8-A238-182AD6246E70}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test-SimpleDatabase", "Test-SimpleDatabase\Test-SimpleDatabase.csproj", "{C9B82DA8-7D2B-4DB9-8BE5-FFFF75C38787}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,8 +36,17 @@ Global
 		{936CFBFD-1F5F-49C8-A238-182AD6246E70}.Release|x64.Build.0 = Release|x64
 		{936CFBFD-1F5F-49C8-A238-182AD6246E70}.Travis|x64.ActiveCfg = Travis|x64
 		{936CFBFD-1F5F-49C8-A238-182AD6246E70}.Travis|x64.Build.0 = Travis|x64
+		{C9B82DA8-7D2B-4DB9-8BE5-FFFF75C38787}.Debug|x64.ActiveCfg = Debug|x64
+		{C9B82DA8-7D2B-4DB9-8BE5-FFFF75C38787}.Debug|x64.Build.0 = Debug|x64
+		{C9B82DA8-7D2B-4DB9-8BE5-FFFF75C38787}.Release|x64.ActiveCfg = Release|x64
+		{C9B82DA8-7D2B-4DB9-8BE5-FFFF75C38787}.Release|x64.Build.0 = Release|x64
+		{C9B82DA8-7D2B-4DB9-8BE5-FFFF75C38787}.Travis|x64.ActiveCfg = Travis|x64
+		{C9B82DA8-7D2B-4DB9-8BE5-FFFF75C38787}.Travis|x64.Build.0 = Travis|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B457074B-E503-49B7-84B0-9CE61C7F8A9F}
 	EndGlobalSection
 EndGlobal
