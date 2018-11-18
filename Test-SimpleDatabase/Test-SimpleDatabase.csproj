@@ -37,14 +37,9 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
-  <ItemGroup Condition="'$(Configuration)|$(Platform)' != 'Travis|x64'">
+  <ItemGroup>
     <Reference Include="SimpleDatabase">
       <HintPath>..\SimpleDatabase\x64\$(Configuration)\SimpleDatabase.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)|$(Platform)' == 'Travis|x64'">
-    <Reference Include="SimpleDatabase">
-      <HintPath>..\SimpleDatabase\x64\Release\SimpleDatabase.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

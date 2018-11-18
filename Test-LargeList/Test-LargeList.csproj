@@ -37,14 +37,9 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
-  <ItemGroup Condition="'$(Configuration)|$(Platform)' != 'Travis|x64'">
+  <ItemGroup>
     <Reference Include="LargeList">
       <HintPath>..\LargeList\x64\$(Configuration)\LargeList.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)|$(Platform)' == 'Travis|x64'">
-    <Reference Include="LargeList">
-      <HintPath>..\LargeList\x64\Release\LargeList.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
