@@ -132,6 +132,7 @@ namespace Test
 
             Database.DeleteTables(Credential);
 
+
             Database.DeleteCredential(RootId, RootPassword, Credential);
 
             Assert.That(!Database.IsCredentialValid(Credential), "Create Tables 7");
