@@ -46,8 +46,8 @@ namespace Test
             }
             else
             {
-                RootId = "root";
-                RootPassword = "root";
+                RootId = "travis";
+                RootPassword = "";
             }
 
             try
