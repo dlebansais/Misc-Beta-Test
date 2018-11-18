@@ -13,7 +13,7 @@ namespace Test
         public IColumnDescriptorGuid Test0_Guid;
 
         public TestSchema()
-            : base("test")
+            : base("mytest")
         {
             Test0 = new TableDescriptor(this, "Test0");
             Test0_Guid = new ColumnDescriptorGuid(Test0, "guid");
