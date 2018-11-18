@@ -130,20 +130,7 @@ namespace Test
             Assert.That(Database.CreateCredential(RootId, RootPassword, Credential), "Create Tables 2");
             Assert.That(Database.CreateTables(Credential), "Create Tables 3");
 
-            /*
-            ISingleInsertResult InsertResult = Database.Run(new SingleInsertContext(TestSchema.Test0, new List<ColumnValuePair<Guid>>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, Guid.Empty) }));
-            Assert.That(InsertResult.Success, "Create Tables 4");
-
-            ISingleRowDeleteResult DeleteResult = Database.Run(new SingleRowDeleteContext(TestSchema.Test0));
-            Assert.That(DeleteResult.Success, "Create Tables 5");
-            */
-
             Database.DeleteTables(Credential);
-
-            /*
-            InsertResult = Database.Run(new SingleInsertContext(TestSchema.Test0, new List<ColumnValuePair<Guid>>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, Guid.Empty) }));
-            Assert.That(!InsertResult.Success, "Create Tables 6");
-            */
 
             Database.DeleteCredential(RootId, RootPassword, Credential);
 
