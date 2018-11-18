@@ -33,13 +33,21 @@ namespace Test
             }
             Assume.That(SimpleDatabaseAssembly != null);
 
-            using (FileStream fs = new FileStream("passwords.txt", FileMode.Open, FileAccess.Read))
+            if (File.Exists("passwords.txt"))
             {
-                using (StreamReader sr = new StreamReader(fs))
+                using (FileStream fs = new FileStream("passwords.txt", FileMode.Open, FileAccess.Read))
                 {
-                    RootId = sr.ReadLine();
-                    RootPassword = sr.ReadLine();
+                    using (StreamReader sr = new StreamReader(fs))
+                    {
+                        RootId = sr.ReadLine();
+                        RootPassword = sr.ReadLine();
+                    }
                 }
+            }
+            else
+            {
+                RootId = "root";
+                RootPassword = "root";
             }
 
             try
