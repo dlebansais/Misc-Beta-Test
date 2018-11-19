@@ -374,6 +374,9 @@ namespace Test
             UpdateResult = Database.Run(new UpdateContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 10) }));
             Assert.That(UpdateResult.Success, $"{TestName} - 0: Update third keys");
 
+            UpdateResult = Database.Run(new UpdateContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new ColumnValuePair<int>(TestSchema.Test0_Int, 10) }, new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 20) }));
+            Assert.That(UpdateResult.Success, $"{TestName} - 0: Update second and third keys");
+
             SelectResult = Database.Run(new MultiQueryContext(TestSchema.Test0.All));
             Assert.That(SelectResult.Success, $"{TestName} - 0: Read table");
             Assert.That(SelectResult.RowList != null, $"{TestName} - 0: Read table result");
@@ -386,7 +389,7 @@ namespace Test
             Assert.That(TestSchema.Test0_Guid.TryParseRow(RowList[1], out Guid Test0_Row_1_0) && Test0_Row_1_0 == guidKey0, $"{TestName} - 0: Check row 1, column 0");
             Assert.That(!TestSchema.Test0_Int.TryParseRow(RowList[1], out int Test0_Row_1_1), $"{TestName} - 0: Check row 1, column 1");
             Assert.That(TestSchema.Test0_Guid.TryParseRow(RowList[2], out Guid Test0_Row_2_0) && Test0_Row_2_0 == guidKey1, $"{TestName} - 0: Check row 2, column 0");
-            Assert.That(TestSchema.Test0_Int.TryParseRow(RowList[2], out int Test0_Row_2_1) && Test0_Row_2_1 == 10, $"{TestName} - 0: Check row 2, column 1");
+            Assert.That(TestSchema.Test0_Int.TryParseRow(RowList[2], out int Test0_Row_2_1) && Test0_Row_2_1 == 20, $"{TestName} - 0: Check row 2, column 1");
 
             UninstallDatabase(TestName, ref Credential, ref Database);
         }
