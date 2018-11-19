@@ -67,7 +67,7 @@ if not exist "$(SolutionDir)SimpleDatabase\x64" mkdir "$(SolutionDir)SimpleDatab
 if not exist "$(SolutionDir)SimpleDatabase\x64\$(Configuration)" mkdir "$(SolutionDir)SimpleDatabase\x64\$(Configuration)"
 copy /Y "$(SolutionDir)..\SimpleDatabase\SimpleDatabase\bin\x64\$(Configuration)\SimpleDatabase.dll" "$(SolutionDir)SimpleDatabase\x64\$(Configuration)"
 if exist "$(SolutionDir)..\SimpleDatabase\SimpleDatabase\bin\x64\$(Configuration)\SimpleDatabase.pdb" copy /Y "$(SolutionDir)..\SimpleDatabase\SimpleDatabase\bin\x64\$(Configuration)\SimpleDatabase.pdb" "$(SolutionDir)SimpleDatabase\x64\$(Configuration)"
-if exist "$(SolutionDir)..\SimpleDatabase\SimpleDatabase\bin\x64\$(Configuration)\SimpleDatabase.xml"copy /Y "$(SolutionDir)..\SimpleDatabase\SimpleDatabase\bin\x64\$(Configuration)\SimpleDatabase.xml" "$(SolutionDir)SimpleDatabase\x64\$(Configuration)"
+if exist "$(SolutionDir)..\SimpleDatabase\SimpleDatabase\bin\x64\$(Configuration)\SimpleDatabase.xml" copy /Y "$(SolutionDir)..\SimpleDatabase\SimpleDatabase\bin\x64\$(Configuration)\SimpleDatabase.xml" "$(SolutionDir)SimpleDatabase\x64\$(Configuration)"
 if exist "$(SolutionDir)..\SimpleDatabase\SimpleDatabase\bin\x64\$(Configuration)\Google.Protobuf.dll" copy /Y "$(SolutionDir)..\SimpleDatabase\SimpleDatabase\bin\x64\$(Configuration)\Google.Protobuf.dll" "$(SolutionDir)SimpleDatabase\x64\$(Configuration)"
 if exist "$(SolutionDir)..\SimpleDatabase\SimpleDatabase\bin\x64\$(Configuration)\MySql.Data.dll" copy /Y "$(SolutionDir)..\SimpleDatabase\SimpleDatabase\bin\x64\$(Configuration)\MySql.Data.dll" "$(SolutionDir)SimpleDatabase\x64\$(Configuration)"
 </PreBuildEvent>

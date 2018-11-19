@@ -139,8 +139,6 @@ namespace Test
             Assert.That(Database.CreateTables(Credential), "Create Tables 3");
 
             Database.DeleteTables(Credential);
-
-
             Database.DeleteCredential(RootId, RootPassword, Credential);
 
             Assert.That(!Database.IsCredentialValid(Credential), "Create Tables 7");
@@ -212,6 +210,101 @@ namespace Test
             Database.DeleteCredential(RootId, RootPassword, Credential);
 
             Assert.That(!Database.IsCredentialValid(Credential), "Delete Non Empty 9");
+        }
+        #endregion
+
+        #region Queries
+        private static Guid guidKey0 = new Guid("{1BA0D7E9-039F-44E6-A966-CC67AC01A65D}");
+        private static Guid guidKey1 = new Guid("{2FA55A73-0311-4818-8B34-1492308ADBF1}");
+        private static Guid guidKey2 = new Guid("{16DC914E-CDED-41DD-AE23-43B62676159D}");
+
+        private static void InstallDatabase(string testName, out ICredential credential, out ISimpleDatabase database)
+        {
+            ConnectorType ConnectorType = ConnectorType.MySql;
+            ConnectionOption ConnectionOption = ConnectionOption.KeepAlive;
+
+            credential = new Credential(Server, UserId, UserPassword, TestSchema);
+            Assert.That(credential != null, $"{testName} - Create Credential Object");
+
+            database = new SimpleDatabase();
+            Assert.That(database != null, $"{testName} - Create Database Object");
+
+            database.Initialize(ConnectorType, ConnectionOption);
+            Assert.That(!database.IsCredentialValid(credential), $"{testName} - Verify Credential Invalid");
+            Assert.That(database.CreateCredential(RootId, RootPassword, credential), $"{testName} - Create Credential");
+            Assert.That(database.IsCredentialValid(credential), $"{testName} - Verify Credential Valid");
+            Assert.That(database.CreateTables(credential), $"{testName} - Create Tables");
+            Assert.That(database.Open(credential), $"{testName} - Open");
+        }
+
+        private static void UninstallDatabase(string testName, ref ICredential credential, ref ISimpleDatabase database)
+        {
+            IMultiRowDeleteResult DeleteResult;
+            DeleteResult = database.Run(new MultiRowDeleteContext(TestSchema.Test0, 0));
+            DeleteResult = database.Run(new MultiRowDeleteContext(TestSchema.Test1, 0));
+
+            database.Close();
+            database.DeleteTables(credential);
+            database.DeleteCredential(RootId, RootPassword, credential);
+
+            Assert.That(!database.IsCredentialValid(credential), $"{testName} - Verify Credential Invalid (after close)");
+        }
+
+        [Test]
+        public static void TestSingleInsert()
+        {
+            string TestName = "Single Insert";
+
+            InstallDatabase(TestName, out ICredential Credential, out ISimpleDatabase Database);
+
+            ISingleInsertResult InsertResult;
+            IMultiQueryResult SelectResult;
+            List<IResultRow> RowList;
+
+            InsertResult = Database.Run(new SingleInsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey0) }));
+            Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first key");
+
+            InsertResult = Database.Run(new SingleInsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 1) }));
+            Assert.That(!InsertResult.Success, $"{TestName} - 0: Insert with no key (must fail)");
+
+            InsertResult = Database.Run(new SingleInsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey0) }));
+            Assert.That(!InsertResult.Success, $"{TestName} - 0: Insert same key (must fail)");
+
+            InsertResult = Database.Run(new SingleInsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new ColumnValuePair<int>(TestSchema.Test0_Int, 1) }));
+            Assert.That(InsertResult.Success, $"{TestName} - 0: Insert new key and int");
+
+            SelectResult = Database.Run(new MultiQueryContext(TestSchema.Test0.All));
+            Assert.That(SelectResult.Success, $"{TestName} - 0: Read table");
+            Assert.That(SelectResult.RowList != null, $"{TestName} - 0: Read table result");
+
+            RowList = new List<IResultRow>(SelectResult.RowList);
+            Assert.That(RowList != null && RowList.Count == 2, $"{TestName} - 0: Count rows");
+            Assert.That(TestSchema.Test0_Guid.TryParseRow(RowList[0], out Guid Test0_Row_0_0) && Test0_Row_0_0 == guidKey0, $"{TestName} - 0: Check row 0, column 0 X0");
+            Assert.That(!TestSchema.Test0_Int.TryParseRow(RowList[0], out int Test0_Row_0_1), $"{TestName} - 0: Check row 0, column 1 X1");
+            Assert.That(TestSchema.Test0_Guid.TryParseRow(RowList[1], out Guid Test0_Row_1_0) && Test0_Row_1_0 == guidKey1, $"{TestName} - 0: Check row 1, column 0 X2");
+            Assert.That(TestSchema.Test0_Int.TryParseRow(RowList[1], out int Test0_Row_1_1) && Test0_Row_1_1 == 1, $"{TestName} - 0: Check row 1, column 1 X3");
+
+            InsertResult = Database.Run(new SingleInsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<string>(TestSchema.Test1_String, "row 0") }));
+            Assert.That(InsertResult.Success, $"{TestName} - 1: Insert first row");
+
+            InsertResult = Database.Run(new SingleInsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<string>(TestSchema.Test1_String, "row 1") }));
+            Assert.That(InsertResult.Success, $"{TestName} - 1: Insert second row");
+
+            InsertResult = Database.Run(new SingleInsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test1_Int, 1), new ColumnValuePair<string>(TestSchema.Test1_String, "row 2") }));
+            Assert.That(!InsertResult.Success, $"{TestName} - 1: Insert with key (must fail)");
+
+            SelectResult = Database.Run(new MultiQueryContext(TestSchema.Test1.All));
+            Assert.That(SelectResult.Success, $"{TestName} - 1: Read table");
+            Assert.That(SelectResult.RowList != null, $"{TestName} - 1: Read table result");
+
+            RowList = new List<IResultRow>(SelectResult.RowList);
+            Assert.That(RowList != null && RowList.Count == 2, $"{TestName} - 1: Count rows");
+            Assert.That(TestSchema.Test1_Int.TryParseRow(RowList[0], out int Test1_Row_0_0) && Test1_Row_0_0 == 1, $"{TestName} - 1: Check row 0, column 0");
+            Assert.That(TestSchema.Test1_String.TryParseRow(RowList[0], out string Test1_Row_0_1) && Test1_Row_0_1 == "row 0", $"{TestName} - 1: Check row 0, column 1");
+            Assert.That(TestSchema.Test1_Int.TryParseRow(RowList[1], out int Test1_Row_1_0) && Test1_Row_1_0 == 2, $"{TestName} - 1: Check row 1, column 0");
+            Assert.That(TestSchema.Test1_String.TryParseRow(RowList[1], out string Test1_Row_1_1) && Test1_Row_1_1 == "row 1", $"{TestName} - 1: Check row 1, column 1");
+
+            UninstallDatabase(TestName, ref Credential, ref Database);
         }
         #endregion
     }
