@@ -12,6 +12,7 @@ namespace Test
     [TestFixture]
     public class TestSet
     {
+        #region Setup
         [OneTimeSetUp]
         public static void InitTestSession()
         {
@@ -69,6 +70,7 @@ namespace Test
         private static string UserId = "test";
         private static string UserPassword = "test";
         private static TestSchema TestSchema;
+        #endregion
 
         #region Init
         [Test]
@@ -279,10 +281,10 @@ namespace Test
 
             RowList = new List<IResultRow>(SelectResult.RowList);
             Assert.That(RowList != null && RowList.Count == 2, $"{TestName} - 0: Count rows");
-            Assert.That(TestSchema.Test0_Guid.TryParseRow(RowList[0], out Guid Test0_Row_0_0) && Test0_Row_0_0 == guidKey0, $"{TestName} - 0: Check row 0, column 0 X0");
-            Assert.That(!TestSchema.Test0_Int.TryParseRow(RowList[0], out int Test0_Row_0_1), $"{TestName} - 0: Check row 0, column 1 X1");
-            Assert.That(TestSchema.Test0_Guid.TryParseRow(RowList[1], out Guid Test0_Row_1_0) && Test0_Row_1_0 == guidKey1, $"{TestName} - 0: Check row 1, column 0 X2");
-            Assert.That(TestSchema.Test0_Int.TryParseRow(RowList[1], out int Test0_Row_1_1) && Test0_Row_1_1 == 1, $"{TestName} - 0: Check row 1, column 1 X3");
+            Assert.That(TestSchema.Test0_Guid.TryParseRow(RowList[0], out Guid Test0_Row_0_0) && Test0_Row_0_0 == guidKey0, $"{TestName} - 0: Check row 0, column 0");
+            Assert.That(!TestSchema.Test0_Int.TryParseRow(RowList[0], out int Test0_Row_0_1), $"{TestName} - 0: Check row 0, column 1");
+            Assert.That(TestSchema.Test0_Guid.TryParseRow(RowList[1], out Guid Test0_Row_1_0) && Test0_Row_1_0 == guidKey1, $"{TestName} - 0: Check row 1, column 0");
+            Assert.That(TestSchema.Test0_Int.TryParseRow(RowList[1], out int Test0_Row_1_1) && Test0_Row_1_1 == 1, $"{TestName} - 0: Check row 1, column 1");
 
             InsertResult = Database.Run(new SingleInsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<string>(TestSchema.Test1_String, "row 0") }));
             Assert.That(InsertResult.Success, $"{TestName} - 1: Insert first row");
@@ -303,6 +305,151 @@ namespace Test
             Assert.That(TestSchema.Test1_String.TryParseRow(RowList[0], out string Test1_Row_0_1) && Test1_Row_0_1 == "row 0", $"{TestName} - 1: Check row 0, column 1");
             Assert.That(TestSchema.Test1_Int.TryParseRow(RowList[1], out int Test1_Row_1_0) && Test1_Row_1_0 == 2, $"{TestName} - 1: Check row 1, column 0");
             Assert.That(TestSchema.Test1_String.TryParseRow(RowList[1], out string Test1_Row_1_1) && Test1_Row_1_1 == "row 1", $"{TestName} - 1: Check row 1, column 1");
+
+            UninstallDatabase(TestName, ref Credential, ref Database);
+        }
+
+        [Test]
+        public static void TestMultiInsert()
+        {
+            string TestName = "Multi Insert";
+
+            InstallDatabase(TestName, out ICredential Credential, out ISimpleDatabase Database);
+
+            IMultiInsertResult InsertResult;
+            IMultiQueryResult SelectResult;
+            List<IResultRow> RowList;
+
+            InsertResult = Database.Run(new MultiInsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
+            Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first 3 keys");
+
+            SelectResult = Database.Run(new MultiQueryContext(TestSchema.Test0.All));
+            Assert.That(SelectResult.Success, $"{TestName} - 0: Read table");
+            Assert.That(SelectResult.RowList != null, $"{TestName} - 0: Read table result");
+
+            // Columns are reordered by Guid
+            RowList = new List<IResultRow>(SelectResult.RowList);
+            Assert.That(RowList != null && RowList.Count == 3, $"{TestName} - 0: Count rows");
+            Assert.That(TestSchema.Test0_Guid.TryParseRow(RowList[0], out Guid Test0_Row_0_0) && Test0_Row_0_0 == guidKey2, $"{TestName} - 0: Check row 0, column 0");
+            Assert.That(!TestSchema.Test0_Int.TryParseRow(RowList[0], out int Test0_Row_0_1), $"{TestName} - 0: Check row 0, column 1");
+            Assert.That(TestSchema.Test0_Guid.TryParseRow(RowList[1], out Guid Test0_Row_1_0) && Test0_Row_1_0 == guidKey0, $"{TestName} - 0: Check row 1, column 0");
+            Assert.That(!TestSchema.Test0_Int.TryParseRow(RowList[1], out int Test0_Row_1_1), $"{TestName} - 0: Check row 1, column 1");
+            Assert.That(TestSchema.Test0_Guid.TryParseRow(RowList[2], out Guid Test0_Row_2_0) && Test0_Row_2_0 == guidKey1, $"{TestName} - 0: Check row 2, column 0");
+            Assert.That(!TestSchema.Test0_Int.TryParseRow(RowList[2], out int Test0_Row_2_1), $"{TestName} - 0: Check row 2, column 1");
+
+            InsertResult = Database.Run(new MultiInsertContext(TestSchema.Test1, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<string>(TestSchema.Test1_String, new List<string>() { "row 0", "row 1", "row 2" }) }));
+            Assert.That(InsertResult.Success, $"{TestName} - 1: Insert first row");
+
+            SelectResult = Database.Run(new MultiQueryContext(TestSchema.Test1.All));
+            Assert.That(SelectResult.Success, $"{TestName} - 1: Read table");
+            Assert.That(SelectResult.RowList != null, $"{TestName} - 1: Read table result");
+
+            RowList = new List<IResultRow>(SelectResult.RowList);
+            Assert.That(RowList != null && RowList.Count == 3, $"{TestName} - 1: Count rows");
+            Assert.That(TestSchema.Test1_Int.TryParseRow(RowList[0], out int Test1_Row_0_0) && Test1_Row_0_0 == 1, $"{TestName} - 1: Check row 0, column 0");
+            Assert.That(TestSchema.Test1_String.TryParseRow(RowList[0], out string Test1_Row_0_1) && Test1_Row_0_1 == "row 0", $"{TestName} - 1: Check row 0, column 1");
+            Assert.That(TestSchema.Test1_Int.TryParseRow(RowList[1], out int Test1_Row_1_0) && Test1_Row_1_0 == 2, $"{TestName} - 1: Check row 1, column 0");
+            Assert.That(TestSchema.Test1_String.TryParseRow(RowList[1], out string Test1_Row_1_1) && Test1_Row_1_1 == "row 1", $"{TestName} - 1: Check row 1, column 1");
+            Assert.That(TestSchema.Test1_Int.TryParseRow(RowList[2], out int Test1_Row_2_0) && Test1_Row_2_0 == 3, $"{TestName} - 2: Check row 2, column 0");
+            Assert.That(TestSchema.Test1_String.TryParseRow(RowList[2], out string Test1_Row_2_1) && Test1_Row_2_1 == "row 2", $"{TestName} - 2: Check row 2, column 2");
+
+            UninstallDatabase(TestName, ref Credential, ref Database);
+        }
+
+        [Test]
+        public static void TestUpdate()
+        {
+            string TestName = "Update";
+
+            InstallDatabase(TestName, out ICredential Credential, out ISimpleDatabase Database);
+
+            IMultiInsertResult InsertResult;
+            IUpdateResult UpdateResult;
+            IMultiQueryResult SelectResult;
+            List<IResultRow> RowList;
+
+            InsertResult = Database.Run(new MultiInsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
+            Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first 3 keys");
+
+            UpdateResult = Database.Run(new UpdateContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 10) }));
+            Assert.That(UpdateResult.Success, $"{TestName} - 0: Update third keys");
+
+            SelectResult = Database.Run(new MultiQueryContext(TestSchema.Test0.All));
+            Assert.That(SelectResult.Success, $"{TestName} - 0: Read table");
+            Assert.That(SelectResult.RowList != null, $"{TestName} - 0: Read table result");
+
+            // Columns are reordered by Guid
+            RowList = new List<IResultRow>(SelectResult.RowList);
+            Assert.That(RowList != null && RowList.Count == 3, $"{TestName} - 0: Count rows");
+            Assert.That(TestSchema.Test0_Guid.TryParseRow(RowList[0], out Guid Test0_Row_0_0) && Test0_Row_0_0 == guidKey2, $"{TestName} - 0: Check row 0, column 0");
+            Assert.That(!TestSchema.Test0_Int.TryParseRow(RowList[0], out int Test0_Row_0_1), $"{TestName} - 0: Check row 0, column 1");
+            Assert.That(TestSchema.Test0_Guid.TryParseRow(RowList[1], out Guid Test0_Row_1_0) && Test0_Row_1_0 == guidKey0, $"{TestName} - 0: Check row 1, column 0");
+            Assert.That(!TestSchema.Test0_Int.TryParseRow(RowList[1], out int Test0_Row_1_1), $"{TestName} - 0: Check row 1, column 1");
+            Assert.That(TestSchema.Test0_Guid.TryParseRow(RowList[2], out Guid Test0_Row_2_0) && Test0_Row_2_0 == guidKey1, $"{TestName} - 0: Check row 2, column 0");
+            Assert.That(TestSchema.Test0_Int.TryParseRow(RowList[2], out int Test0_Row_2_1) && Test0_Row_2_1 == 10, $"{TestName} - 0: Check row 2, column 1");
+
+            UninstallDatabase(TestName, ref Credential, ref Database);
+        }
+
+        [Test]
+        public static void TestSingleDelete()
+        {
+            string TestName = "Single Delete";
+
+            InstallDatabase(TestName, out ICredential Credential, out ISimpleDatabase Database);
+
+            IMultiInsertResult InsertResult;
+            ISingleRowDeleteResult DeleteResult;
+            IMultiQueryResult SelectResult;
+            List<IResultRow> RowList;
+
+            InsertResult = Database.Run(new MultiInsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
+            Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first 3 keys");
+
+            DeleteResult = Database.Run(new SingleRowDeleteContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey2) }));
+            Assert.That(DeleteResult.Success, $"{TestName} - 0: Delete first key");
+
+            SelectResult = Database.Run(new MultiQueryContext(TestSchema.Test0.All));
+            Assert.That(SelectResult.Success, $"{TestName} - 0: Read table");
+            Assert.That(SelectResult.RowList != null, $"{TestName} - 0: Read table result");
+
+            RowList = new List<IResultRow>(SelectResult.RowList);
+            Assert.That(RowList != null && RowList.Count == 2, $"{TestName} - 0: Count rows");
+            Assert.That(TestSchema.Test0_Guid.TryParseRow(RowList[0], out Guid Test0_Row_0_0) && Test0_Row_0_0 == guidKey0, $"{TestName} - 0: Check row 0, column 0");
+            Assert.That(!TestSchema.Test0_Int.TryParseRow(RowList[0], out int Test0_Row_0_1), $"{TestName} - 0: Check row 0, column 1");
+            Assert.That(TestSchema.Test0_Guid.TryParseRow(RowList[1], out Guid Test0_Row_1_0) && Test0_Row_1_0 == guidKey1, $"{TestName} - 0: Check row 1, column 0");
+            Assert.That(!TestSchema.Test0_Int.TryParseRow(RowList[1], out int Test0_Row_1_1), $"{TestName} - 0: Check row 1, column 1");
+
+            UninstallDatabase(TestName, ref Credential, ref Database);
+        }
+
+        [Test]
+        public static void TestMultiDelete()
+        {
+            string TestName = "Multi Delete";
+
+            InstallDatabase(TestName, out ICredential Credential, out ISimpleDatabase Database);
+
+            IMultiInsertResult InsertResult;
+            IMultiRowDeleteResult DeleteResult;
+            IMultiQueryResult SelectResult;
+            List<IResultRow> RowList;
+
+            InsertResult = Database.Run(new MultiInsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
+            Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first 3 keys");
+
+            DeleteResult = Database.Run(new MultiRowDeleteContext(TestSchema.Test0, new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1 }), 2));
+            Assert.That(DeleteResult.Success, $"{TestName} - 0: Delete first 3 keys");
+
+            SelectResult = Database.Run(new MultiQueryContext(TestSchema.Test0.All));
+            Assert.That(SelectResult.Success, $"{TestName} - 0: Read table");
+            Assert.That(SelectResult.RowList != null, $"{TestName} - 0: Read table result");
+
+            // Columns are reordered by Guid
+            RowList = new List<IResultRow>(SelectResult.RowList);
+            Assert.That(RowList != null && RowList.Count == 1, $"{TestName} - 0: Count rows");
+            Assert.That(TestSchema.Test0_Guid.TryParseRow(RowList[0], out Guid Test0_Row_0_0) && Test0_Row_0_0 == guidKey2, $"{TestName} - 0: Check row 0, column 0");
+            Assert.That(!TestSchema.Test0_Int.TryParseRow(RowList[0], out int Test0_Row_0_1), $"{TestName} - 0: Check row 0, column 1");
 
             UninstallDatabase(TestName, ref Credential, ref Database);
         }
