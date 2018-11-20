@@ -293,6 +293,7 @@ namespace Test
             InsertResult = Database.Run(new SingleInsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<string>(TestSchema.Test1_String, "row 1") }));
             Assert.That(InsertResult.Success, $"{TestName} - 1: Insert second row");
 
+            ((SimpleDatabase)Database).IgnoreErrorCode = 1062;
             InsertResult = Database.Run(new SingleInsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test1_Int, 1), new ColumnValuePair<string>(TestSchema.Test1_String, "row 2") }));
             Assert.That(!InsertResult.Success, $"{TestName} - 1: Insert with key (must fail)");
 
