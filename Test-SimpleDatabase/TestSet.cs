@@ -1,4 +1,5 @@
 ﻿using Database;
+using Database.Types;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -417,8 +418,12 @@ namespace Test
             InsertResult = Database.Run(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first 3 keys");
 
-            DeleteResult = Database.Run(new DeleteContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey2) }, 1));
+            DeleteResult = Database.Run(new DeleteContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey2), new ColumnValuePair<int>(TestSchema.Test0_Int, 10) }, 0));
             Assert.That(DeleteResult.Success, $"{TestName} - 0: Delete first key");
+            Assert.That(DeleteResult.DeletedRowCount == 0, $"{TestName} - 0: Delete first key (no row)");
+
+            DeleteResult = Database.Run(new DeleteContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey2) }, 0));
+            Assert.That(DeleteResult.Success, $"{TestName} - 0: Delete first key again");
             Assert.That(DeleteResult.DeletedRowCount == 1, $"{TestName} - 0: Delete first key (one row)");
 
             SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
@@ -463,6 +468,122 @@ namespace Test
             Assert.That(RowList != null && RowList.Count == 1, $"{TestName} - 0: Count rows");
             Assert.That(TestSchema.Test0_Guid.TryParseRow(RowList[0], out Guid Test0_Row_0_0) && Test0_Row_0_0 == guidKey2, $"{TestName} - 0: Check row 0, column 0");
             Assert.That(!TestSchema.Test0_Int.TryParseRow(RowList[0], out int Test0_Row_0_1), $"{TestName} - 0: Check row 0, column 1");
+
+            UninstallDatabase(TestName, ref Credential, ref Database);
+        }
+
+        [Test]
+        public static void TestSingleQuery()
+        {
+            string TestName = "Single Query";
+
+            InstallDatabase(TestName, out ICredential Credential, out ISimpleDatabase Database);
+
+            IInsertResult InsertResult;
+            ISingleQueryResult SelectResult;
+            List<IResultRow> RowList;
+            IUpdateResult UpdateResult;
+
+            InsertResult = Database.Run(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }) }));
+            Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first 3 keys");
+
+            SelectResult = Database.Run(new SingleQueryContext(TestSchema.Test0));
+            Assert.That(SelectResult.Success, $"{TestName} - 0: Read table");
+            Assert.That(SelectResult.RowList != null, $"{TestName} - 0: Read table result");
+            Assert.That(SelectResult.RowList.Count == 3, $"{TestName} - 0: Read table result count");
+            RowList = new List<IResultRow>(SelectResult.RowList);
+            Assert.That(RowList[2].HasColumn(TestSchema.Test0_Guid), $"{TestName} - 0: Read table last row, guid");
+            Assert.That(!RowList[2].HasColumn(TestSchema.Test0_Int), $"{TestName} - 0: Read table last row, int (must fail)");
+
+            UpdateResult = Database.Run(new UpdateContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 2) }));
+            UpdateResult = Database.Run(new UpdateContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey2), new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 3) }));
+
+            SelectResult = Database.Run(new SingleQueryContext(TestSchema.Test0, new List<IColumnDescriptor>() { TestSchema.Test0_Guid, TestSchema.Test0_Int }));
+            Assert.That(SelectResult.Success, $"{TestName} - 1: Read table");
+            Assert.That(SelectResult.RowList != null, $"{TestName} - 1: Read table result");
+            Assert.That(SelectResult.RowList.Count == 3, $"{TestName} - 1: Read table result count");
+            RowList = new List<IResultRow>(SelectResult.RowList);
+            Assert.That(RowList[1].HasColumn(TestSchema.Test0_Guid), $"{TestName} - 1: Read table middle row, guid");
+            Assert.That(!RowList[1].HasColumn(TestSchema.Test0_Int), $"{TestName} - 1: Read table middle row, int");
+
+            SelectResult = Database.Run(new SingleQueryContext(TestSchema.Test0, new ColumnValueCollectionPair<int>(TestSchema.Test0_Int, new List<int>() { 3 }), new List<IColumnDescriptor>() { TestSchema.Test0_Guid, TestSchema.Test0_Int }));
+            Assert.That(SelectResult.Success, $"{TestName} - 1: Read table");
+            Assert.That(SelectResult.RowList != null, $"{TestName} - 1: Read table result");
+            Assert.That(SelectResult.RowList.Count == 1, $"{TestName} - 1: Read table result count");
+            RowList = new List<IResultRow>(SelectResult.RowList);
+            Assert.That(TestSchema.Test0_Int.TryParseRow(RowList[0], out int Test0_Row_0_1) && Test0_Row_0_1 == 3, $"{TestName} - 0: Check row 0, column 1");
+
+            UninstallDatabase(TestName, ref Credential, ref Database);
+        }
+
+        [Test]
+        public static void TestJoinQuery()
+        {
+            string TestName = "Join Query";
+
+            InstallDatabase(TestName, out ICredential Credential, out ISimpleDatabase Database);
+
+            IInsertResult InsertResult;
+            IJoinQueryResult SelectResult;
+            List<IResultRow> RowList;
+            IUpdateResult UpdateResult;
+
+            InsertResult = Database.Run(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }) }));
+            Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first 3 keys");
+
+            SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
+            Assert.That(SelectResult.Success, $"{TestName} - 0: Read table");
+            Assert.That(SelectResult.RowList != null, $"{TestName} - 0: Read table result");
+            Assert.That(SelectResult.RowList.Count == 3, $"{TestName} - 0: Read table result count");
+            RowList = new List<IResultRow>(SelectResult.RowList);
+            Assert.That(RowList[2].HasColumn(TestSchema.Test0_Guid), $"{TestName} - 0: Read table last row, guid");
+            Assert.That(!RowList[2].HasColumn(TestSchema.Test0_Int), $"{TestName} - 0: Read table last row, int (must fail)");
+
+            InsertResult = Database.Run(new InsertContext(TestSchema.Test1, 4, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<string>(TestSchema.Test1_String, new List<string>() { "row 0", "row 1", "row 2", "row 3" }) }));
+            Assert.That(InsertResult.Success, $"{TestName} - 1: Insert first row");
+
+            SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test1.All));
+            Assert.That(SelectResult.Success, $"{TestName} - 1: Read table");
+            Assert.That(SelectResult.RowList != null, $"{TestName} - 1: Read table result");
+            Assert.That(SelectResult.RowList.Count == 4, $"{TestName} - 1: Read table result count");
+            RowList = new List<IResultRow>(SelectResult.RowList);
+            Assert.That(RowList[3].HasColumn(TestSchema.Test1_Int), $"{TestName} - 1: Read table last row, int");
+            Assert.That(RowList[3].HasColumn(TestSchema.Test1_String), $"{TestName} - 1: Read table last row, string");
+
+            SelectResult = Database.Run(new JoinQueryContext(new List<IColumnDescriptor>() { TestSchema.Test0_Guid }));
+            Assert.That(SelectResult.Success, $"{TestName} - 0: Read table, one column");
+            Assert.That(SelectResult.RowList != null, $"{TestName} - 0: Read table result, one column");
+            Assert.That(SelectResult.RowList.Count == 3, $"{TestName} - 0: Read table result count, one column");
+            RowList = new List<IResultRow>(SelectResult.RowList);
+            Assert.That(RowList[2].HasColumn(TestSchema.Test0_Guid), $"{TestName} - 0: Read table last row, guid");
+            Assert.That(!RowList[2].HasColumn(TestSchema.Test0_Int), $"{TestName} - 0: Read table last row, int (must fail)");
+
+            SelectResult = Database.Run(new JoinQueryContext(new List<IColumnDescriptor>() { TestSchema.Test1_String }));
+            Assert.That(SelectResult.Success, $"{TestName} - 1: Read table");
+            Assert.That(SelectResult.RowList != null, $"{TestName} - 1: Read table result");
+            Assert.That(SelectResult.RowList.Count == 4, $"{TestName} - 1: Read table result count");
+            RowList = new List<IResultRow>(SelectResult.RowList);
+            Assert.That(!RowList[3].HasColumn(TestSchema.Test1_Int), $"{TestName} - 1: Read table last row, int (must fail)");
+            Assert.That(RowList[3].HasColumn(TestSchema.Test1_String), $"{TestName} - 1: Read table last row, string");
+
+            UpdateResult = Database.Run(new UpdateContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 2) }));
+            UpdateResult = Database.Run(new UpdateContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey2), new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 3) }));
+
+            Dictionary<IColumnDescriptor, IColumnDescriptor> Join = new Dictionary<IColumnDescriptor, IColumnDescriptor>()
+            {
+                { TestSchema.Test1_Int, TestSchema.Test0_Int },
+            };
+            SelectResult = Database.Run(new JoinQueryContext(Join, new List<IColumnDescriptor>() { TestSchema.Test1_String, TestSchema.Test0_Guid }));
+            Assert.That(SelectResult.Success, $"{TestName} - Join: Read table");
+            Assert.That(SelectResult.RowList != null, $"{TestName} - Join: Read table result");
+            RowList = new List<IResultRow>(SelectResult.RowList);
+            Assert.That(RowList.Count == 3, $"{TestName} - Join: Read table result count");
+            Assert.That(RowList[0].HasColumn(TestSchema.Test0_Guid), $"{TestName} - Join: Read table row 0 column 0");
+            Assert.That(RowList[0].HasColumn(TestSchema.Test1_String), $"{TestName} - Join: Read table row 0 column 1");
+            Assert.That(RowList[1].HasColumn(TestSchema.Test0_Guid), $"{TestName} - Join: Read table row 1 column 0");
+            Assert.That(!RowList[1].HasColumn(TestSchema.Test1_String), $"{TestName} - Join: Read table row 1 column 1 (must fail)");
+            Assert.That(RowList[2].HasColumn(TestSchema.Test0_Guid), $"{TestName} - Join: Read table row 2 column 0");
+            Assert.That(RowList[2].HasColumn(TestSchema.Test1_String), $"{TestName} - Join: Read table row 2 column 1");
 
             UninstallDatabase(TestName, ref Credential, ref Database);
         }
