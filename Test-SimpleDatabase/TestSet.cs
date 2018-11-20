@@ -269,6 +269,7 @@ namespace Test
             InsertResult = Database.Run(new SingleInsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 1) }));
             Assert.That(!InsertResult.Success, $"{TestName} - 0: Insert with no key (must fail)");
 
+            ((SimpleDatabase)Database).IgnoreErrorCode = 1062;
             InsertResult = Database.Run(new SingleInsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey0) }));
             Assert.That(!InsertResult.Success, $"{TestName} - 0: Insert same key (must fail)");
 

@@ -2,6 +2,7 @@
 
 if not exist "..\packages\NUnit.ConsoleRunner.3.7.0\tools\nunit3-console.exe" goto error_console
 if not exist "..\Test-SimpleDatabase\bin\x64\Debug\Test-SimpleDatabase.dll" goto error_SimpleDatabase
+del *.log
 "..\packages\NUnit.ConsoleRunner.3.7.0\tools\nunit3-console.exe" --trace=Debug --labels=All "..\Test-SimpleDatabase\bin\x64\Debug\Test-SimpleDatabase.dll"
 pause
 goto end
