@@ -71,7 +71,7 @@ namespace Test
         private static string UserPassword = "test";
         private static TestSchema TestSchema;
         #endregion
-/*
+
         #region Init
         [Test]
         public static void TestInitCredential()
@@ -193,10 +193,10 @@ namespace Test
             Assert.That(Database.CreateTables(Credential), "Delete Non Empty 3");
             Assert.That(Database.Open(Credential), "Delete Non Empty 4");
 
-            IMultiInsertResult InsertResult;
+            IInsertResult InsertResult;
             IDeleteResult DeleteResult;
 
-            InsertResult = Database.Run(new MultiInsertContext(TestSchema.Test0, new List<ColumnValuePair<Guid>>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, Guid.Empty) }));
+            InsertResult = Database.Run(new InsertContext(TestSchema.Test0, new List<ColumnValuePair<Guid>>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, Guid.Empty) }));
             Assert.That(InsertResult.Success, "Delete Non Empty 5");
 
             Database.Close();
@@ -265,21 +265,21 @@ namespace Test
 
             InstallDatabase(TestName, out ICredential Credential, out ISimpleDatabase Database);
 
-            IMultiInsertResult InsertResult;
+            IInsertResult InsertResult;
             IMultiQueryResult SelectResult;
             List<IResultRow> RowList;
 
-            InsertResult = Database.Run(new MultiInsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey0) }));
+            InsertResult = Database.Run(new InsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey0) }));
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first key");
 
-            InsertResult = Database.Run(new MultiInsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 1) }));
+            InsertResult = Database.Run(new InsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 1) }));
             Assert.That(!InsertResult.Success, $"{TestName} - 0: Insert with no key (must fail)");
 
             ((SimpleDatabase)Database).IgnoreErrorCode = 1062;
-            InsertResult = Database.Run(new MultiInsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey0) }));
+            InsertResult = Database.Run(new InsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey0) }));
             Assert.That(!InsertResult.Success, $"{TestName} - 0: Insert same key (must fail)");
 
-            InsertResult = Database.Run(new MultiInsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new ColumnValuePair<int>(TestSchema.Test0_Int, 1) }));
+            InsertResult = Database.Run(new InsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new ColumnValuePair<int>(TestSchema.Test0_Int, 1) }));
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert new key and int");
 
             SelectResult = Database.Run(new MultiQueryContext(TestSchema.Test0.All));
@@ -293,14 +293,14 @@ namespace Test
             Assert.That(TestSchema.Test0_Guid.TryParseRow(RowList[1], out Guid Test0_Row_1_0) && Test0_Row_1_0 == guidKey1, $"{TestName} - 0: Check row 1, column 0");
             Assert.That(TestSchema.Test0_Int.TryParseRow(RowList[1], out int Test0_Row_1_1) && Test0_Row_1_1 == 1, $"{TestName} - 0: Check row 1, column 1");
 
-            InsertResult = Database.Run(new MultiInsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<string>(TestSchema.Test1_String, "row 0") }));
+            InsertResult = Database.Run(new InsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<string>(TestSchema.Test1_String, "row 0") }));
             Assert.That(InsertResult.Success, $"{TestName} - 1: Insert first row");
 
-            InsertResult = Database.Run(new MultiInsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<string>(TestSchema.Test1_String, "row 1") }));
+            InsertResult = Database.Run(new InsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<string>(TestSchema.Test1_String, "row 1") }));
             Assert.That(InsertResult.Success, $"{TestName} - 1: Insert second row");
 
             ((SimpleDatabase)Database).IgnoreErrorCode = 1062;
-            InsertResult = Database.Run(new MultiInsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test1_Int, 1), new ColumnValuePair<string>(TestSchema.Test1_String, "row 2") }));
+            InsertResult = Database.Run(new InsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test1_Int, 1), new ColumnValuePair<string>(TestSchema.Test1_String, "row 2") }));
             Assert.That(!InsertResult.Success, $"{TestName} - 1: Insert with key (must fail)");
 
             SelectResult = Database.Run(new MultiQueryContext(TestSchema.Test1.All));
@@ -318,17 +318,17 @@ namespace Test
         }
 
         [Test]
-        public static void TestMultiInsert()
+        public static void TestInsert()
         {
             string TestName = "Multi Insert";
 
             InstallDatabase(TestName, out ICredential Credential, out ISimpleDatabase Database);
 
-            IMultiInsertResult InsertResult;
+            IInsertResult InsertResult;
             IMultiQueryResult SelectResult;
             List<IResultRow> RowList;
 
-            InsertResult = Database.Run(new MultiInsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
+            InsertResult = Database.Run(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first 3 keys");
 
             SelectResult = Database.Run(new MultiQueryContext(TestSchema.Test0.All));
@@ -345,7 +345,7 @@ namespace Test
             Assert.That(TestSchema.Test0_Guid.TryParseRow(RowList[2], out Guid Test0_Row_2_0) && Test0_Row_2_0 == guidKey1, $"{TestName} - 0: Check row 2, column 0");
             Assert.That(!TestSchema.Test0_Int.TryParseRow(RowList[2], out int Test0_Row_2_1), $"{TestName} - 0: Check row 2, column 1");
 
-            InsertResult = Database.Run(new MultiInsertContext(TestSchema.Test1, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<string>(TestSchema.Test1_String, new List<string>() { "row 0", "row 1", "row 2" }) }));
+            InsertResult = Database.Run(new InsertContext(TestSchema.Test1, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<string>(TestSchema.Test1_String, new List<string>() { "row 0", "row 1", "row 2" }) }));
             Assert.That(InsertResult.Success, $"{TestName} - 1: Insert first row");
 
             SelectResult = Database.Run(new MultiQueryContext(TestSchema.Test1.All));
@@ -371,12 +371,12 @@ namespace Test
 
             InstallDatabase(TestName, out ICredential Credential, out ISimpleDatabase Database);
 
-            IMultiInsertResult InsertResult;
+            IInsertResult InsertResult;
             IUpdateResult UpdateResult;
             IMultiQueryResult SelectResult;
             List<IResultRow> RowList;
 
-            InsertResult = Database.Run(new MultiInsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
+            InsertResult = Database.Run(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first 3 keys");
 
             UpdateResult = Database.Run(new UpdateContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 10) }));
@@ -409,12 +409,12 @@ namespace Test
 
             InstallDatabase(TestName, out ICredential Credential, out ISimpleDatabase Database);
 
-            IMultiInsertResult InsertResult;
+            IInsertResult InsertResult;
             IDeleteResult DeleteResult;
             IMultiQueryResult SelectResult;
             List<IResultRow> RowList;
 
-            InsertResult = Database.Run(new MultiInsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
+            InsertResult = Database.Run(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first 3 keys");
 
             DeleteResult = Database.Run(new DeleteContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey2) }, 1));
@@ -442,12 +442,12 @@ namespace Test
 
             InstallDatabase(TestName, out ICredential Credential, out ISimpleDatabase Database);
 
-            IMultiInsertResult InsertResult;
+            IInsertResult InsertResult;
             IDeleteResult DeleteResult;
             IMultiQueryResult SelectResult;
             List<IResultRow> RowList;
 
-            InsertResult = Database.Run(new MultiInsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
+            InsertResult = Database.Run(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first 3 keys");
 
             DeleteResult = Database.Run(new DeleteContext(TestSchema.Test0, new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1 }), 2));
@@ -467,6 +467,6 @@ namespace Test
             UninstallDatabase(TestName, ref Credential, ref Database);
         }
         #endregion
-*/
+
     }
 }
