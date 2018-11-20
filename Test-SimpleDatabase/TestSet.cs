@@ -193,10 +193,10 @@ namespace Test
             Assert.That(Database.CreateTables(Credential), "Delete Non Empty 3");
             Assert.That(Database.Open(Credential), "Delete Non Empty 4");
 
-            ISingleInsertResult InsertResult;
+            IMultiInsertResult InsertResult;
             IDeleteResult DeleteResult;
 
-            InsertResult = Database.Run(new SingleInsertContext(TestSchema.Test0, new List<ColumnValuePair<Guid>>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, Guid.Empty) }));
+            InsertResult = Database.Run(new MultiInsertContext(TestSchema.Test0, new List<ColumnValuePair<Guid>>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, Guid.Empty) }));
             Assert.That(InsertResult.Success, "Delete Non Empty 5");
 
             Database.Close();
@@ -265,21 +265,21 @@ namespace Test
 
             InstallDatabase(TestName, out ICredential Credential, out ISimpleDatabase Database);
 
-            ISingleInsertResult InsertResult;
+            IMultiInsertResult InsertResult;
             IMultiQueryResult SelectResult;
             List<IResultRow> RowList;
 
-            InsertResult = Database.Run(new SingleInsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey0) }));
+            InsertResult = Database.Run(new MultiInsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey0) }));
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first key");
 
-            InsertResult = Database.Run(new SingleInsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 1) }));
+            InsertResult = Database.Run(new MultiInsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 1) }));
             Assert.That(!InsertResult.Success, $"{TestName} - 0: Insert with no key (must fail)");
 
             ((SimpleDatabase)Database).IgnoreErrorCode = 1062;
-            InsertResult = Database.Run(new SingleInsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey0) }));
+            InsertResult = Database.Run(new MultiInsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey0) }));
             Assert.That(!InsertResult.Success, $"{TestName} - 0: Insert same key (must fail)");
 
-            InsertResult = Database.Run(new SingleInsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new ColumnValuePair<int>(TestSchema.Test0_Int, 1) }));
+            InsertResult = Database.Run(new MultiInsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new ColumnValuePair<int>(TestSchema.Test0_Int, 1) }));
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert new key and int");
 
             SelectResult = Database.Run(new MultiQueryContext(TestSchema.Test0.All));
@@ -293,14 +293,14 @@ namespace Test
             Assert.That(TestSchema.Test0_Guid.TryParseRow(RowList[1], out Guid Test0_Row_1_0) && Test0_Row_1_0 == guidKey1, $"{TestName} - 0: Check row 1, column 0");
             Assert.That(TestSchema.Test0_Int.TryParseRow(RowList[1], out int Test0_Row_1_1) && Test0_Row_1_1 == 1, $"{TestName} - 0: Check row 1, column 1");
 
-            InsertResult = Database.Run(new SingleInsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<string>(TestSchema.Test1_String, "row 0") }));
+            InsertResult = Database.Run(new MultiInsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<string>(TestSchema.Test1_String, "row 0") }));
             Assert.That(InsertResult.Success, $"{TestName} - 1: Insert first row");
 
-            InsertResult = Database.Run(new SingleInsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<string>(TestSchema.Test1_String, "row 1") }));
+            InsertResult = Database.Run(new MultiInsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<string>(TestSchema.Test1_String, "row 1") }));
             Assert.That(InsertResult.Success, $"{TestName} - 1: Insert second row");
 
             ((SimpleDatabase)Database).IgnoreErrorCode = 1062;
-            InsertResult = Database.Run(new SingleInsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test1_Int, 1), new ColumnValuePair<string>(TestSchema.Test1_String, "row 2") }));
+            InsertResult = Database.Run(new MultiInsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test1_Int, 1), new ColumnValuePair<string>(TestSchema.Test1_String, "row 2") }));
             Assert.That(!InsertResult.Success, $"{TestName} - 1: Insert with key (must fail)");
 
             SelectResult = Database.Run(new MultiQueryContext(TestSchema.Test1.All));
