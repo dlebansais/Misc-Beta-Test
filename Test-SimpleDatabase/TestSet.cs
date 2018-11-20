@@ -563,7 +563,7 @@ namespace Test
             Assert.That(SelectResult.RowList != null, $"{TestName} - 1: Read table result");
             Assert.That(SelectResult.RowList.Count == 4, $"{TestName} - 1: Read table result count");
             RowList = new List<IResultRow>(SelectResult.RowList);
-            Assert.That(!RowList[3].HasColumn(TestSchema.Test1_Int), $"{TestName} - 1: Read table last row, int (must fail)");
+            Assert.That(!RowList[3].HasColumn(TestSchema.Test1_Int) || !(((SimpleDatabase)Database).CanIntBeNULL), $"{TestName} - 1: Read table last row, int (must fail)");
             Assert.That(RowList[3].HasColumn(TestSchema.Test1_String), $"{TestName} - 1: Read table last row, string");
 
             UpdateResult = Database.Run(new UpdateContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 2) }));
