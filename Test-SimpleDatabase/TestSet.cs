@@ -71,7 +71,7 @@ namespace Test
         private static string UserPassword = "test";
         private static TestSchema TestSchema;
         #endregion
-
+/*
         #region Init
         [Test]
         public static void TestInitCredential()
@@ -204,7 +204,7 @@ namespace Test
 
             Assert.That(Database.Open(Credential), "Delete Non Empty 7");
 
-            ISingleRowDeleteResult DeleteResult = Database.Run(new SingleRowDeleteContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, Guid.Empty)));
+            IDeleteResult DeleteResult = Database.Run(new DeleteContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, Guid.Empty), 0));
             Assert.That(DeleteResult.Success, "Delete Non Empty 8");
 
             Database.Close();
@@ -241,9 +241,9 @@ namespace Test
 
         private static void UninstallDatabase(string testName, ref ICredential credential, ref ISimpleDatabase database)
         {
-            IMultiRowDeleteResult DeleteResult;
-            DeleteResult = database.Run(new MultiRowDeleteContext(TestSchema.Test0, 0));
-            DeleteResult = database.Run(new MultiRowDeleteContext(TestSchema.Test1, 0));
+            IDeleteResult DeleteResult;
+            DeleteResult = database.Run(new DeleteContext(TestSchema.Test0, 0));
+            DeleteResult = database.Run(new DeleteContext(TestSchema.Test1, 0));
 
             database.Close();
             database.DeleteTables(credential);
@@ -404,14 +404,14 @@ namespace Test
             InstallDatabase(TestName, out ICredential Credential, out ISimpleDatabase Database);
 
             IMultiInsertResult InsertResult;
-            ISingleRowDeleteResult DeleteResult;
+            IDeleteResult DeleteResult;
             IMultiQueryResult SelectResult;
             List<IResultRow> RowList;
 
             InsertResult = Database.Run(new MultiInsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first 3 keys");
 
-            DeleteResult = Database.Run(new SingleRowDeleteContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey2) }));
+            DeleteResult = Database.Run(new DeleteContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey2) }, 0));
             Assert.That(DeleteResult.Success, $"{TestName} - 0: Delete first key");
 
             SelectResult = Database.Run(new MultiQueryContext(TestSchema.Test0.All));
@@ -436,14 +436,14 @@ namespace Test
             InstallDatabase(TestName, out ICredential Credential, out ISimpleDatabase Database);
 
             IMultiInsertResult InsertResult;
-            IMultiRowDeleteResult DeleteResult;
+            IDeleteResult DeleteResult;
             IMultiQueryResult SelectResult;
             List<IResultRow> RowList;
 
             InsertResult = Database.Run(new MultiInsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first 3 keys");
 
-            DeleteResult = Database.Run(new MultiRowDeleteContext(TestSchema.Test0, new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1 }), 2));
+            DeleteResult = Database.Run(new DeleteContext(TestSchema.Test0, new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1 }), 2));
             Assert.That(DeleteResult.Success, $"{TestName} - 0: Delete first 3 keys");
 
             SelectResult = Database.Run(new MultiQueryContext(TestSchema.Test0.All));
@@ -459,5 +459,6 @@ namespace Test
             UninstallDatabase(TestName, ref Credential, ref Database);
         }
         #endregion
+*/
     }
 }
