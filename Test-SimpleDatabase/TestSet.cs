@@ -193,7 +193,10 @@ namespace Test
             Assert.That(Database.CreateTables(Credential), "Delete Non Empty 3");
             Assert.That(Database.Open(Credential), "Delete Non Empty 4");
 
-            ISingleInsertResult InsertResult = Database.Run(new SingleInsertContext(TestSchema.Test0, new List<ColumnValuePair<Guid>>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, Guid.Empty) }));
+            ISingleInsertResult InsertResult;
+            IDeleteResult DeleteResult;
+
+            InsertResult = Database.Run(new SingleInsertContext(TestSchema.Test0, new List<ColumnValuePair<Guid>>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, Guid.Empty) }));
             Assert.That(InsertResult.Success, "Delete Non Empty 5");
 
             Database.Close();
@@ -204,7 +207,10 @@ namespace Test
 
             Assert.That(Database.Open(Credential), "Delete Non Empty 7");
 
-            IDeleteResult DeleteResult = Database.Run(new DeleteContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, Guid.Empty), 0));
+            DeleteResult = Database.Run(new DeleteContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, Guid.Empty), 2));
+            Assert.That(!DeleteResult.Success, "Delete Non Empty 8 (must fail)");
+
+            DeleteResult = Database.Run(new DeleteContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, Guid.Empty), 0));
             Assert.That(DeleteResult.Success, "Delete Non Empty 8");
 
             Database.Close();
@@ -411,8 +417,9 @@ namespace Test
             InsertResult = Database.Run(new MultiInsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first 3 keys");
 
-            DeleteResult = Database.Run(new DeleteContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey2) }, 0));
+            DeleteResult = Database.Run(new DeleteContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey2) }, 1));
             Assert.That(DeleteResult.Success, $"{TestName} - 0: Delete first key");
+            Assert.That(DeleteResult.DeletedRowCount == 1, $"{TestName} - 0: Delete first key (one row)");
 
             SelectResult = Database.Run(new MultiQueryContext(TestSchema.Test0.All));
             Assert.That(SelectResult.Success, $"{TestName} - 0: Read table");
@@ -444,7 +451,8 @@ namespace Test
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first 3 keys");
 
             DeleteResult = Database.Run(new DeleteContext(TestSchema.Test0, new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1 }), 2));
-            Assert.That(DeleteResult.Success, $"{TestName} - 0: Delete first 3 keys");
+            Assert.That(DeleteResult.Success, $"{TestName} - 0: Delete two keys");
+            Assert.That(DeleteResult.DeletedRowCount == 2, $"{TestName} - 0: Delete two keys (row count)");
 
             SelectResult = Database.Run(new MultiQueryContext(TestSchema.Test0.All));
             Assert.That(SelectResult.Success, $"{TestName} - 0: Read table");
