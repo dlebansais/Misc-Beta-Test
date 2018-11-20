@@ -251,7 +251,7 @@ namespace Test
 
             Assert.That(!database.IsCredentialValid(credential), $"{testName} - Verify Credential Invalid (after close)");
         }
-/*
+
         [Test]
         public static void TestSingleInsert()
         {
@@ -456,7 +456,7 @@ namespace Test
             Assert.That(!TestSchema.Test0_Int.TryParseRow(RowList[0], out int Test0_Row_0_1), $"{TestName} - 0: Check row 0, column 1");
 
             UninstallDatabase(TestName, ref Credential, ref Database);
-        }*/
+        }
         #endregion
     }
 }
