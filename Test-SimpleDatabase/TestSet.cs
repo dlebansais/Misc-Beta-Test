@@ -266,7 +266,7 @@ namespace Test
             InstallDatabase(TestName, out ICredential Credential, out ISimpleDatabase Database);
 
             IInsertResult InsertResult;
-            IMultiQueryResult SelectResult;
+            IJoinQueryResult SelectResult;
             List<IResultRow> RowList;
 
             InsertResult = Database.Run(new InsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey0) }));
@@ -282,7 +282,7 @@ namespace Test
             InsertResult = Database.Run(new InsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new ColumnValuePair<int>(TestSchema.Test0_Int, 1) }));
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert new key and int");
 
-            SelectResult = Database.Run(new MultiQueryContext(TestSchema.Test0.All));
+            SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
             Assert.That(SelectResult.Success, $"{TestName} - 0: Read table");
             Assert.That(SelectResult.RowList != null, $"{TestName} - 0: Read table result");
 
@@ -303,7 +303,7 @@ namespace Test
             InsertResult = Database.Run(new InsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test1_Int, 1), new ColumnValuePair<string>(TestSchema.Test1_String, "row 2") }));
             Assert.That(!InsertResult.Success, $"{TestName} - 1: Insert with key (must fail)");
 
-            SelectResult = Database.Run(new MultiQueryContext(TestSchema.Test1.All));
+            SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test1.All));
             Assert.That(SelectResult.Success, $"{TestName} - 1: Read table");
             Assert.That(SelectResult.RowList != null, $"{TestName} - 1: Read table result");
 
@@ -325,13 +325,13 @@ namespace Test
             InstallDatabase(TestName, out ICredential Credential, out ISimpleDatabase Database);
 
             IInsertResult InsertResult;
-            IMultiQueryResult SelectResult;
+            IJoinQueryResult SelectResult;
             List<IResultRow> RowList;
 
             InsertResult = Database.Run(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first 3 keys");
 
-            SelectResult = Database.Run(new MultiQueryContext(TestSchema.Test0.All));
+            SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
             Assert.That(SelectResult.Success, $"{TestName} - 0: Read table");
             Assert.That(SelectResult.RowList != null, $"{TestName} - 0: Read table result");
 
@@ -348,7 +348,7 @@ namespace Test
             InsertResult = Database.Run(new InsertContext(TestSchema.Test1, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<string>(TestSchema.Test1_String, new List<string>() { "row 0", "row 1", "row 2" }) }));
             Assert.That(InsertResult.Success, $"{TestName} - 1: Insert first row");
 
-            SelectResult = Database.Run(new MultiQueryContext(TestSchema.Test1.All));
+            SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test1.All));
             Assert.That(SelectResult.Success, $"{TestName} - 1: Read table");
             Assert.That(SelectResult.RowList != null, $"{TestName} - 1: Read table result");
 
@@ -373,7 +373,7 @@ namespace Test
 
             IInsertResult InsertResult;
             IUpdateResult UpdateResult;
-            IMultiQueryResult SelectResult;
+            IJoinQueryResult SelectResult;
             List<IResultRow> RowList;
 
             InsertResult = Database.Run(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
@@ -385,7 +385,7 @@ namespace Test
             UpdateResult = Database.Run(new UpdateContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new ColumnValuePair<int>(TestSchema.Test0_Int, 10) }, new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 20) }));
             Assert.That(UpdateResult.Success, $"{TestName} - 0: Update second and third keys");
 
-            SelectResult = Database.Run(new MultiQueryContext(TestSchema.Test0.All));
+            SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
             Assert.That(SelectResult.Success, $"{TestName} - 0: Read table");
             Assert.That(SelectResult.RowList != null, $"{TestName} - 0: Read table result");
 
@@ -411,7 +411,7 @@ namespace Test
 
             IInsertResult InsertResult;
             IDeleteResult DeleteResult;
-            IMultiQueryResult SelectResult;
+            IJoinQueryResult SelectResult;
             List<IResultRow> RowList;
 
             InsertResult = Database.Run(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
@@ -421,7 +421,7 @@ namespace Test
             Assert.That(DeleteResult.Success, $"{TestName} - 0: Delete first key");
             Assert.That(DeleteResult.DeletedRowCount == 1, $"{TestName} - 0: Delete first key (one row)");
 
-            SelectResult = Database.Run(new MultiQueryContext(TestSchema.Test0.All));
+            SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
             Assert.That(SelectResult.Success, $"{TestName} - 0: Read table");
             Assert.That(SelectResult.RowList != null, $"{TestName} - 0: Read table result");
 
@@ -444,7 +444,7 @@ namespace Test
 
             IInsertResult InsertResult;
             IDeleteResult DeleteResult;
-            IMultiQueryResult SelectResult;
+            IJoinQueryResult SelectResult;
             List<IResultRow> RowList;
 
             InsertResult = Database.Run(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
@@ -454,7 +454,7 @@ namespace Test
             Assert.That(DeleteResult.Success, $"{TestName} - 0: Delete two keys");
             Assert.That(DeleteResult.DeletedRowCount == 2, $"{TestName} - 0: Delete two keys (row count)");
 
-            SelectResult = Database.Run(new MultiQueryContext(TestSchema.Test0.All));
+            SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
             Assert.That(SelectResult.Success, $"{TestName} - 0: Read table");
             Assert.That(SelectResult.RowList != null, $"{TestName} - 0: Read table result");
 
