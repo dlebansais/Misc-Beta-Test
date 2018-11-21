@@ -599,7 +599,7 @@ namespace Test
             Assert.That(RowList[0].HasColumn(TestSchema.Test0_Guid), $"{TestName} - Join: Read table row 0 column 0");
             Assert.That(RowList[0].HasColumn(TestSchema.Test1_String), $"{TestName} - Join: Read table row 0 column 1");
             Assert.That(RowList[1].HasColumn(TestSchema.Test0_Guid), $"{TestName} - Join: Read table row 1 column 0");
-            Assert.That(!RowList[1].HasColumn(TestSchema.Test1_String), $"{TestName} - Join: Read table row 1 column 1 (must fail)");
+            Assert.That(!RowList[1].HasColumn(TestSchema.Test1_String) || !(((SimpleDatabase)Database).CanIntBeNULL), $"{TestName} - Join: Read table row 1 column 1 (must fail)");
             Assert.That(RowList[2].HasColumn(TestSchema.Test0_Guid), $"{TestName} - Join: Read table row 2 column 0");
             Assert.That(RowList[2].HasColumn(TestSchema.Test1_String), $"{TestName} - Join: Read table row 2 column 1");
 
