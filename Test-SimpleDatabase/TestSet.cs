@@ -54,7 +54,7 @@ namespace Test
 
             try
             {
-                TestSchema = new TestSchema();
+                TestSchema TestSchema = new TestSchema(false);
                 ISimpleDatabase Database = new SimpleDatabase();
                 ICredential Credential = new Credential(Server, UserId, UserPassword, TestSchema);
                 Database.DeleteTables(Credential);
@@ -70,13 +70,13 @@ namespace Test
         private static string Server = "localhost";
         private static string UserId = "test";
         private static string UserPassword = "test";
-        private static TestSchema TestSchema;
         #endregion
 
         #region Init
         [Test]
         public static void TestInitCredential()
         {
+            TestSchema TestSchema = new TestSchema(false);
             ICredential Credential = new Credential(Server, UserId, UserPassword, TestSchema);
             Assert.That(Credential != null, "Init Credential 0");
             Assert.That(Credential.Server == Server, "Init Credential 1");
@@ -88,6 +88,7 @@ namespace Test
         [Test]
         public static void TestInitDatabase()
         {
+            TestSchema TestSchema = new TestSchema(false);
             ICredential Credential = new Credential(Server, UserId, UserPassword, TestSchema);
             Assert.That(Credential != null, "Init Database 0");
 
@@ -105,6 +106,7 @@ namespace Test
         [Test]
         public static void TestVerifyCredential()
         {
+            TestSchema TestSchema = new TestSchema(false);
             ConnectorType ConnectorType = ConnectorType.MySql;
             ConnectionOption ConnectionOption = ConnectionOption.KeepAlive;
 
@@ -128,6 +130,7 @@ namespace Test
         [Test]
         public static void TestCreateTables()
         {
+            TestSchema TestSchema = new TestSchema(false);
             ConnectorType ConnectorType = ConnectorType.MySql;
             ConnectionOption ConnectionOption = ConnectionOption.KeepAlive;
 
@@ -150,6 +153,7 @@ namespace Test
         [Test]
         public static void TestOpen()
         {
+            TestSchema TestSchema = new TestSchema(false);
             ConnectorType ConnectorType = ConnectorType.MySql;
             ConnectionOption ConnectionOption = ConnectionOption.KeepAlive;
 
@@ -180,6 +184,7 @@ namespace Test
         [Test]
         public static void TestDeleteNonEmpty()
         {
+            TestSchema TestSchema = new TestSchema(false);
             ConnectorType ConnectorType = ConnectorType.MySql;
             ConnectionOption ConnectionOption = ConnectionOption.KeepAlive;
 
@@ -227,12 +232,13 @@ namespace Test
         private static Guid guidKey1 = new Guid("{2FA55A73-0311-4818-8B34-1492308ADBF1}");
         private static Guid guidKey2 = new Guid("{16DC914E-CDED-41DD-AE23-43B62676159D}");
 
-        private static void InstallDatabase(string testName, out ICredential credential, out ISimpleDatabase database)
+        private static void InstallDatabase(string testName, bool dateTimeAsTick, out ICredential credential, out ISimpleDatabase database, out TestSchema testSchema)
         {
+            testSchema = new TestSchema(dateTimeAsTick);
             ConnectorType ConnectorType = ConnectorType.MySql;
             ConnectionOption ConnectionOption = ConnectionOption.KeepAlive;
 
-            credential = new Credential(Server, UserId, UserPassword, TestSchema);
+            credential = new Credential(Server, UserId, UserPassword, testSchema);
             Assert.That(credential != null, $"{testName} - Create Credential Object");
 
             database = new SimpleDatabase();
@@ -246,17 +252,22 @@ namespace Test
             Assert.That(database.Open(credential), $"{testName} - Open");
         }
 
-        private static void UninstallDatabase(string testName, ref ICredential credential, ref ISimpleDatabase database)
+        private static void UninstallDatabase(string testName, ref ICredential credential, ref ISimpleDatabase database, ref TestSchema testSchema)
         {
             IDeleteResult DeleteResult;
-            DeleteResult = database.Run(new DeleteContext(TestSchema.Test0, 0));
-            DeleteResult = database.Run(new DeleteContext(TestSchema.Test1, 0));
+            DeleteResult = database.Run(new DeleteContext(testSchema.Test0, 0));
+            DeleteResult = database.Run(new DeleteContext(testSchema.Test1, 0));
+            DeleteResult = database.Run(new DeleteContext(testSchema.Test2, 0));
 
             database.Close();
             database.DeleteTables(credential);
             database.DeleteCredential(RootId, RootPassword, credential);
 
             Assert.That(!database.IsCredentialValid(credential), $"{testName} - Verify Credential Invalid (after close)");
+
+            credential = null;
+            database = null;
+            testSchema = null;
         }
 
         [Test]
@@ -264,7 +275,8 @@ namespace Test
         {
             string TestName = "Single Insert";
 
-            InstallDatabase(TestName, out ICredential Credential, out ISimpleDatabase Database);
+            TestSchema TestSchema;
+            InstallDatabase(TestName, false, out ICredential Credential, out ISimpleDatabase Database, out TestSchema);
 
             IInsertResult InsertResult;
             IJoinQueryResult SelectResult;
@@ -315,7 +327,7 @@ namespace Test
             Assert.That(TestSchema.Test1_Int.TryParseRow(RowList[1], out int Test1_Row_1_0) && Test1_Row_1_0 == 2, $"{TestName} - 1: Check row 1, column 0");
             Assert.That(TestSchema.Test1_String.TryParseRow(RowList[1], out string Test1_Row_1_1) && Test1_Row_1_1 == "row 1", $"{TestName} - 1: Check row 1, column 1");
 
-            UninstallDatabase(TestName, ref Credential, ref Database);
+            UninstallDatabase(TestName, ref Credential, ref Database, ref TestSchema);
         }
 
         [Test]
@@ -323,7 +335,8 @@ namespace Test
         {
             string TestName = "Multi Insert";
 
-            InstallDatabase(TestName, out ICredential Credential, out ISimpleDatabase Database);
+            TestSchema TestSchema;
+            InstallDatabase(TestName, false, out ICredential Credential, out ISimpleDatabase Database, out TestSchema);
 
             IInsertResult InsertResult;
             IJoinQueryResult SelectResult;
@@ -362,7 +375,7 @@ namespace Test
             Assert.That(TestSchema.Test1_Int.TryParseRow(RowList[2], out int Test1_Row_2_0) && Test1_Row_2_0 == 3, $"{TestName} - 2: Check row 2, column 0");
             Assert.That(TestSchema.Test1_String.TryParseRow(RowList[2], out string Test1_Row_2_1) && Test1_Row_2_1 == "row 2", $"{TestName} - 2: Check row 2, column 2");
 
-            UninstallDatabase(TestName, ref Credential, ref Database);
+            UninstallDatabase(TestName, ref Credential, ref Database, ref TestSchema);
         }
 
         [Test]
@@ -370,7 +383,8 @@ namespace Test
         {
             string TestName = "Update";
 
-            InstallDatabase(TestName, out ICredential Credential, out ISimpleDatabase Database);
+            TestSchema TestSchema;
+            InstallDatabase(TestName, false, out ICredential Credential, out ISimpleDatabase Database, out TestSchema);
 
             IInsertResult InsertResult;
             IUpdateResult UpdateResult;
@@ -400,7 +414,7 @@ namespace Test
             Assert.That(TestSchema.Test0_Guid.TryParseRow(RowList[2], out Guid Test0_Row_2_0) && Test0_Row_2_0 == guidKey1, $"{TestName} - 0: Check row 2, column 0");
             Assert.That(TestSchema.Test0_Int.TryParseRow(RowList[2], out int Test0_Row_2_1) && Test0_Row_2_1 == 20, $"{TestName} - 0: Check row 2, column 1");
 
-            UninstallDatabase(TestName, ref Credential, ref Database);
+            UninstallDatabase(TestName, ref Credential, ref Database, ref TestSchema);
         }
 
         [Test]
@@ -408,7 +422,8 @@ namespace Test
         {
             string TestName = "Single Delete";
 
-            InstallDatabase(TestName, out ICredential Credential, out ISimpleDatabase Database);
+            TestSchema TestSchema;
+            InstallDatabase(TestName, false, out ICredential Credential, out ISimpleDatabase Database, out TestSchema);
 
             IInsertResult InsertResult;
             IDeleteResult DeleteResult;
@@ -437,7 +452,7 @@ namespace Test
             Assert.That(TestSchema.Test0_Guid.TryParseRow(RowList[1], out Guid Test0_Row_1_0) && Test0_Row_1_0 == guidKey1, $"{TestName} - 0: Check row 1, column 0");
             Assert.That(!TestSchema.Test0_Int.TryParseRow(RowList[1], out int Test0_Row_1_1), $"{TestName} - 0: Check row 1, column 1");
 
-            UninstallDatabase(TestName, ref Credential, ref Database);
+            UninstallDatabase(TestName, ref Credential, ref Database, ref TestSchema);
         }
 
         [Test]
@@ -445,7 +460,8 @@ namespace Test
         {
             string TestName = "Multi Delete";
 
-            InstallDatabase(TestName, out ICredential Credential, out ISimpleDatabase Database);
+            TestSchema TestSchema;
+            InstallDatabase(TestName, false, out ICredential Credential, out ISimpleDatabase Database, out TestSchema);
 
             IInsertResult InsertResult;
             IDeleteResult DeleteResult;
@@ -469,7 +485,7 @@ namespace Test
             Assert.That(TestSchema.Test0_Guid.TryParseRow(RowList[0], out Guid Test0_Row_0_0) && Test0_Row_0_0 == guidKey2, $"{TestName} - 0: Check row 0, column 0");
             Assert.That(!TestSchema.Test0_Int.TryParseRow(RowList[0], out int Test0_Row_0_1), $"{TestName} - 0: Check row 0, column 1");
 
-            UninstallDatabase(TestName, ref Credential, ref Database);
+            UninstallDatabase(TestName, ref Credential, ref Database, ref TestSchema);
         }
 
         [Test]
@@ -477,7 +493,8 @@ namespace Test
         {
             string TestName = "Single Query";
 
-            InstallDatabase(TestName, out ICredential Credential, out ISimpleDatabase Database);
+            TestSchema TestSchema;
+            InstallDatabase(TestName, false, out ICredential Credential, out ISimpleDatabase Database, out TestSchema);
 
             IInsertResult InsertResult;
             ISingleQueryResult SelectResult;
@@ -513,7 +530,7 @@ namespace Test
             RowList = new List<IResultRow>(SelectResult.RowList);
             Assert.That(TestSchema.Test0_Int.TryParseRow(RowList[0], out int Test0_Row_0_1) && Test0_Row_0_1 == 3, $"{TestName} - 0: Check row 0, column 1");
 
-            UninstallDatabase(TestName, ref Credential, ref Database);
+            UninstallDatabase(TestName, ref Credential, ref Database, ref TestSchema);
         }
 
         [Test]
@@ -521,7 +538,8 @@ namespace Test
         {
             string TestName = "Join Query";
 
-            InstallDatabase(TestName, out ICredential Credential, out ISimpleDatabase Database);
+            TestSchema TestSchema;
+            InstallDatabase(TestName, false, out ICredential Credential, out ISimpleDatabase Database, out TestSchema);
 
             IInsertResult InsertResult;
             IJoinQueryResult SelectResult;
@@ -585,9 +603,55 @@ namespace Test
             Assert.That(RowList[2].HasColumn(TestSchema.Test0_Guid), $"{TestName} - Join: Read table row 2 column 0");
             Assert.That(RowList[2].HasColumn(TestSchema.Test1_String), $"{TestName} - Join: Read table row 2 column 1");
 
-            UninstallDatabase(TestName, ref Credential, ref Database);
+            UninstallDatabase(TestName, ref Credential, ref Database, ref TestSchema);
         }
         #endregion
 
+        #region DateTime
+        [Test]
+        [TestCase(0)]
+        [TestCase(1)]
+        public static void TestDateTime(int n)
+        {
+            string TestName = (n == 0 ? "DATETIME" : "BIGINT");
+
+            TestSchema TestSchema;
+            InstallDatabase(TestName, n != 0, out ICredential Credential, out ISimpleDatabase Database, out TestSchema);
+
+            IInsertResult InsertResult;
+            IUpdateResult UpdateResult;
+            ISingleQueryResult SelectResult;
+            List<IResultRow> RowList;
+
+            List<DateTime> Dates0 = new List<DateTime>()
+            {
+                new DateTime(2000, 10, 15, 10, 9, 58, 244, DateTimeKind.Utc),
+                DateTime.UtcNow,
+                new DateTime(2012, 2, 22, 7, 54, 32, 687, DateTimeKind.Utc),
+            };
+            List<DateTime> Dates1 = new List<DateTime>()
+            {
+                new DateTime(2034, 1, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            };
+            InsertResult = Database.Run(new InsertContext(TestSchema.Test2, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<DateTime>(TestSchema.Test2_DateTime, Dates0), }));
+            Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first 3 keys");
+
+            UpdateResult = Database.Run(new UpdateContext(TestSchema.Test2, new ColumnValuePair<DateTime>(TestSchema.Test2_DateTime, Dates0[2]), new List<IColumnValuePair>() { new ColumnValuePair<DateTime>(TestSchema.Test2_DateTime, Dates1[0]) }));
+            Assert.That(UpdateResult.Success, $"{TestName} - 0: Update third keys");
+
+            SelectResult = Database.Run(new SingleQueryContext(TestSchema.Test2, TestSchema.Test2.All));
+            Assert.That(SelectResult.Success, $"{TestName} - 0: Read table");
+            Assert.That(SelectResult.RowList != null, $"{TestName} - 0: Read table result");
+
+            RowList = new List<IResultRow>(SelectResult.RowList);
+            Assert.That(RowList != null && RowList.Count == 3, $"{TestName} - 0: Count rows");
+            Assert.That(TestSchema.Test2_DateTime.TryParseRow(RowList[0], out DateTime Test0_Row_0_1) && Test0_Row_0_1 == Dates0[0], $"{TestName} - 0: Check row 0, column 1");
+            if (TestSchema.DateTimeAsTicks)
+                Assert.That(TestSchema.Test2_DateTime.TryParseRow(RowList[1], out DateTime Test0_Row_1_1) && Test0_Row_1_1 == Dates0[1], $"{TestName} - 0: Check row 1, column 1");
+            Assert.That(TestSchema.Test2_DateTime.TryParseRow(RowList[2], out DateTime Test0_Row_2_1) && Test0_Row_2_1 == Dates1[0], $"{TestName} - 0: Check row 2, column 1");
+
+            UninstallDatabase(TestName, ref Credential, ref Database, ref TestSchema);
+        }
+        #endregion
     }
 }
