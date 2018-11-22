@@ -456,9 +456,9 @@ namespace Test
         [Test]
         [TestCase(0)]
         [TestCase(1)]
-        public static async Task TestInsert(int isAsync)
+        public static async Task TestJoinInsert(int isAsync)
         {
-            string TestName = "Insert";
+            string TestName = "Join Insert";
 
             TestSchema TestSchema;
             InstallDatabase(TestName, false, out ICredential Credential, out ISimpleDatabase Database, out TestSchema);
