@@ -71,7 +71,7 @@ namespace Test
         private static string UserId = "test";
         private static string UserPassword = "test";
         #endregion
-/*
+
         #region Init
         [Test]
         public static void TestInitCredential()
@@ -650,6 +650,6 @@ namespace Test
             UninstallDatabase(TestName, ref Credential, ref Database, ref TestSchema);
         }
         #endregion
-*/
+
     }
 }
