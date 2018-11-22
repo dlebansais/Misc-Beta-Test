@@ -71,7 +71,7 @@ namespace Test
         private static string UserId = "test";
         private static string UserPassword = "test";
         #endregion
-
+/*
         #region Init
         [Test]
         public static void TestInitCredential()
@@ -587,10 +587,7 @@ namespace Test
             UpdateResult = Database.Run(new UpdateContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 2) }));
             UpdateResult = Database.Run(new UpdateContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey2), new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 3) }));
 
-            Dictionary<IColumnDescriptor, IColumnDescriptor> Join = new Dictionary<IColumnDescriptor, IColumnDescriptor>()
-            {
-                { TestSchema.Test1_Int, TestSchema.Test0_Int },
-            };
+            IJoin Join = new LeftJoin(TestSchema.Test1_Int, TestSchema.Test0_Int);
             SelectResult = Database.Run(new JoinQueryContext(Join, new List<IColumnDescriptor>() { TestSchema.Test1_String, TestSchema.Test0_Guid }));
             Assert.That(SelectResult.Success, $"{TestName} - Join: Read table");
             Assert.That(SelectResult.RowList != null, $"{TestName} - Join: Read table result");
@@ -653,5 +650,6 @@ namespace Test
             UninstallDatabase(TestName, ref Credential, ref Database, ref TestSchema);
         }
         #endregion
+*/
     }
 }
