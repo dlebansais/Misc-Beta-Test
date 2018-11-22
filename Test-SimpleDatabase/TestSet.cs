@@ -106,7 +106,7 @@ namespace Test
 
         [Test]
         [TestCase(0)]
-        //[TestCase(1)]
+        [TestCase(1)]
         public static async Task TestVerifyCredential(int isAsync)
         {
             TestSchema TestSchema = new TestSchema(false);
@@ -141,7 +141,7 @@ namespace Test
 
         [Test]
         [TestCase(0)]
-        //[TestCase(1)]
+        [TestCase(1)]
         public static async Task TestCreateTables(int isAsync)
         {
             TestSchema TestSchema = new TestSchema(false);
@@ -179,7 +179,7 @@ namespace Test
 
         [Test]
         [TestCase(0)]
-        //[TestCase(1)]
+        [TestCase(1)]
         public static async Task TestOpen(int isAsync)
         {
             TestSchema TestSchema = new TestSchema(false);
@@ -229,7 +229,7 @@ namespace Test
 
         [Test]
         [TestCase(0)]
-        //[TestCase(1)]
+        [TestCase(1)]
         public static async Task TestDeleteNonEmpty(int isAsync)
         {
             TestSchema TestSchema = new TestSchema(false);
@@ -365,7 +365,7 @@ namespace Test
         #region Queries
         [Test]
         [TestCase(0)]
-        //[TestCase(1)]
+        [TestCase(1)]
         public static async Task TestSingleInsert(int isAsync)
         {
             string TestName = "Single Insert";
@@ -454,7 +454,9 @@ namespace Test
         }
 
         [Test]
-        public static void TestInsert()
+        [TestCase(0)]
+        [TestCase(1)]
+        public static async Task TestInsert(int isAsync)
         {
             string TestName = "Multi Insert";
 
@@ -465,10 +467,16 @@ namespace Test
             IJoinQueryResult SelectResult;
             List<IResultRow> RowList;
 
-            InsertResult = Database.Run(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
+            if (isAsync == 0)
+                InsertResult = Database.Run(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
+            else
+                InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first 3 keys");
 
-            SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
+            if (isAsync == 0)
+                SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
+            else
+                SelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test0.All));
             Assert.That(SelectResult.Success, $"{TestName} - 0: Read table");
             Assert.That(SelectResult.RowList != null, $"{TestName} - 0: Read table result");
 
@@ -482,10 +490,16 @@ namespace Test
             Assert.That(TestSchema.Test0_Guid.TryParseRow(RowList[2], out Guid Test0_Row_2_0) && Test0_Row_2_0 == guidKey1, $"{TestName} - 0: Check row 2, column 0");
             Assert.That(!TestSchema.Test0_Int.TryParseRow(RowList[2], out int Test0_Row_2_1), $"{TestName} - 0: Check row 2, column 1");
 
-            InsertResult = Database.Run(new InsertContext(TestSchema.Test1, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<string>(TestSchema.Test1_String, new List<string>() { "row 0", "row 1", "row 2" }) }));
+            if (isAsync == 0)
+                InsertResult = Database.Run(new InsertContext(TestSchema.Test1, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<string>(TestSchema.Test1_String, new List<string>() { "row 0", "row 1", "row 2" }) }));
+            else
+                InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test1, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<string>(TestSchema.Test1_String, new List<string>() { "row 0", "row 1", "row 2" }) }));
             Assert.That(InsertResult.Success, $"{TestName} - 1: Insert first row");
 
-            SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test1.All));
+            if (isAsync == 0)
+                SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test1.All));
+            else
+                SelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test1.All));
             Assert.That(SelectResult.Success, $"{TestName} - 1: Read table");
             Assert.That(SelectResult.RowList != null, $"{TestName} - 1: Read table result");
 
@@ -502,7 +516,9 @@ namespace Test
         }
 
         [Test]
-        public static void TestUpdate()
+        [TestCase(0)]
+        [TestCase(1)]
+        public static async Task TestUpdate(int isAsync)
         {
             string TestName = "Update";
 
@@ -514,16 +530,28 @@ namespace Test
             IJoinQueryResult SelectResult;
             List<IResultRow> RowList;
 
-            InsertResult = Database.Run(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
+            if (isAsync == 0)
+                InsertResult = Database.Run(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
+            else
+                InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first 3 keys");
 
-            UpdateResult = Database.Run(new UpdateContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 10) }));
+            if (isAsync == 0)
+                UpdateResult = Database.Run(new UpdateContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 10) }));
+            else
+                UpdateResult = await Database.RunAsync(new UpdateContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 10) }));
             Assert.That(UpdateResult.Success, $"{TestName} - 0: Update third keys");
 
-            UpdateResult = Database.Run(new UpdateContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new ColumnValuePair<int>(TestSchema.Test0_Int, 10) }, new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 20) }));
+            if (isAsync == 0)
+                UpdateResult = Database.Run(new UpdateContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new ColumnValuePair<int>(TestSchema.Test0_Int, 10) }, new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 20) }));
+            else
+                UpdateResult = await Database.RunAsync(new UpdateContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new ColumnValuePair<int>(TestSchema.Test0_Int, 10) }, new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 20) }));
             Assert.That(UpdateResult.Success, $"{TestName} - 0: Update second and third keys");
 
-            SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
+            if (isAsync == 0)
+                SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
+            else
+                SelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test0.All));
             Assert.That(SelectResult.Success, $"{TestName} - 0: Read table");
             Assert.That(SelectResult.RowList != null, $"{TestName} - 0: Read table result");
 
@@ -541,7 +569,9 @@ namespace Test
         }
 
         [Test]
-        public static void TestSingleDelete()
+        [TestCase(0)]
+        [TestCase(1)]
+        public static async Task TestSingleDelete(int isAsync)
         {
             string TestName = "Single Delete";
 
@@ -553,18 +583,30 @@ namespace Test
             IJoinQueryResult SelectResult;
             List<IResultRow> RowList;
 
-            InsertResult = Database.Run(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
+            if (isAsync == 0)
+                InsertResult = Database.Run(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
+            else
+                InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first 3 keys");
 
-            DeleteResult = Database.Run(new DeleteContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey2), new ColumnValuePair<int>(TestSchema.Test0_Int, 10) }, 0));
+            if (isAsync == 0)
+                DeleteResult = Database.Run(new DeleteContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey2), new ColumnValuePair<int>(TestSchema.Test0_Int, 10) }, 0));
+            else
+                DeleteResult = await Database.RunAsync(new DeleteContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey2), new ColumnValuePair<int>(TestSchema.Test0_Int, 10) }, 0));
             Assert.That(DeleteResult.Success, $"{TestName} - 0: Delete first key");
             Assert.That(DeleteResult.DeletedRowCount == 0, $"{TestName} - 0: Delete first key (no row)");
 
-            DeleteResult = Database.Run(new DeleteContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey2) }, 0));
+            if (isAsync == 0)
+                DeleteResult = Database.Run(new DeleteContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey2) }, 0));
+            else
+                DeleteResult = await Database.RunAsync(new DeleteContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey2) }, 0));
             Assert.That(DeleteResult.Success, $"{TestName} - 0: Delete first key again");
             Assert.That(DeleteResult.DeletedRowCount == 1, $"{TestName} - 0: Delete first key (one row)");
 
-            SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
+            if (isAsync == 0)
+                SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
+            else
+                SelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test0.All));
             Assert.That(SelectResult.Success, $"{TestName} - 0: Read table");
             Assert.That(SelectResult.RowList != null, $"{TestName} - 0: Read table result");
 
@@ -579,7 +621,9 @@ namespace Test
         }
 
         [Test]
-        public static void TestMultiDelete()
+        [TestCase(0)]
+        [TestCase(1)]
+        public static async Task TestMultiDelete(int isAsync)
         {
             string TestName = "Multi Delete";
 
@@ -591,14 +635,23 @@ namespace Test
             IJoinQueryResult SelectResult;
             List<IResultRow> RowList;
 
-            InsertResult = Database.Run(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
+            if (isAsync == 0)
+                InsertResult = Database.Run(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
+            else
+                InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first 3 keys");
 
-            DeleteResult = Database.Run(new DeleteContext(TestSchema.Test0, new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1 }), 2));
+            if (isAsync == 0)
+                DeleteResult = Database.Run(new DeleteContext(TestSchema.Test0, new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1 }), 2));
+            else
+                DeleteResult = await Database.RunAsync(new DeleteContext(TestSchema.Test0, new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1 }), 2));
             Assert.That(DeleteResult.Success, $"{TestName} - 0: Delete two keys");
             Assert.That(DeleteResult.DeletedRowCount == 2, $"{TestName} - 0: Delete two keys (row count)");
 
-            SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
+            if (isAsync == 0)
+                SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
+            else
+                SelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test0.All));
             Assert.That(SelectResult.Success, $"{TestName} - 0: Read table");
             Assert.That(SelectResult.RowList != null, $"{TestName} - 0: Read table result");
 
@@ -612,7 +665,9 @@ namespace Test
         }
 
         [Test]
-        public static void TestSingleQuery()
+        [TestCase(0)]
+        [TestCase(1)]
+        public static async Task TestSingleQuery(int isAsync)
         {
             string TestName = "Single Query";
 
@@ -624,10 +679,16 @@ namespace Test
             List<IResultRow> RowList;
             IUpdateResult UpdateResult;
 
-            InsertResult = Database.Run(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }) }));
+            if (isAsync == 0)
+                InsertResult = Database.Run(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }) }));
+            else
+                InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }) }));
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first 3 keys");
 
-            SelectResult = Database.Run(new SingleQueryContext(TestSchema.Test0));
+            if (isAsync == 0)
+                SelectResult = Database.Run(new SingleQueryContext(TestSchema.Test0));
+            else
+                SelectResult = await Database.RunAsync(new SingleQueryContext(TestSchema.Test0));
             Assert.That(SelectResult.Success, $"{TestName} - 0: Read table");
             Assert.That(SelectResult.RowList != null, $"{TestName} - 0: Read table result");
             Assert.That(SelectResult.RowList.Count == 3, $"{TestName} - 0: Read table result count");
@@ -635,10 +696,21 @@ namespace Test
             Assert.That(RowList[2].HasColumn(TestSchema.Test0_Guid), $"{TestName} - 0: Read table last row, guid");
             Assert.That(!RowList[2].HasColumn(TestSchema.Test0_Int), $"{TestName} - 0: Read table last row, int (must fail)");
 
-            UpdateResult = Database.Run(new UpdateContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 2) }));
-            UpdateResult = Database.Run(new UpdateContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey2), new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 3) }));
+            if (isAsync == 0)
+            {
+                UpdateResult = Database.Run(new UpdateContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 2) }));
+                UpdateResult = Database.Run(new UpdateContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey2), new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 3) }));
+            }
+            else
+            {
+                UpdateResult = await Database.RunAsync(new UpdateContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 2) }));
+                UpdateResult = await Database.RunAsync(new UpdateContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey2), new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 3) }));
+            }
 
-            SelectResult = Database.Run(new SingleQueryContext(TestSchema.Test0, new List<IColumnDescriptor>() { TestSchema.Test0_Guid, TestSchema.Test0_Int }));
+            if (isAsync == 0)
+                SelectResult = Database.Run(new SingleQueryContext(TestSchema.Test0, new List<IColumnDescriptor>() { TestSchema.Test0_Guid, TestSchema.Test0_Int }));
+            else
+                SelectResult = await Database.RunAsync(new SingleQueryContext(TestSchema.Test0, new List<IColumnDescriptor>() { TestSchema.Test0_Guid, TestSchema.Test0_Int }));
             Assert.That(SelectResult.Success, $"{TestName} - 1: Read table");
             Assert.That(SelectResult.RowList != null, $"{TestName} - 1: Read table result");
             Assert.That(SelectResult.RowList.Count == 3, $"{TestName} - 1: Read table result count");
@@ -646,7 +718,10 @@ namespace Test
             Assert.That(RowList[1].HasColumn(TestSchema.Test0_Guid), $"{TestName} - 1: Read table middle row, guid");
             Assert.That(!RowList[1].HasColumn(TestSchema.Test0_Int), $"{TestName} - 1: Read table middle row, int");
 
-            SelectResult = Database.Run(new SingleQueryContext(TestSchema.Test0, new ColumnValueCollectionPair<int>(TestSchema.Test0_Int, new List<int>() { 3 }), new List<IColumnDescriptor>() { TestSchema.Test0_Guid, TestSchema.Test0_Int }));
+            if (isAsync == 0)
+                SelectResult = Database.Run(new SingleQueryContext(TestSchema.Test0, new ColumnValueCollectionPair<int>(TestSchema.Test0_Int, new List<int>() { 3 }), new List<IColumnDescriptor>() { TestSchema.Test0_Guid, TestSchema.Test0_Int }));
+            else
+                SelectResult = await Database.RunAsync(new SingleQueryContext(TestSchema.Test0, new ColumnValueCollectionPair<int>(TestSchema.Test0_Int, new List<int>() { 3 }), new List<IColumnDescriptor>() { TestSchema.Test0_Guid, TestSchema.Test0_Int }));
             Assert.That(SelectResult.Success, $"{TestName} - 1: Read table");
             Assert.That(SelectResult.RowList != null, $"{TestName} - 1: Read table result");
             Assert.That(SelectResult.RowList.Count == 1, $"{TestName} - 1: Read table result count");
@@ -657,7 +732,9 @@ namespace Test
         }
 
         [Test]
-        public static void TestJoinQuery()
+        [TestCase(0)]
+        [TestCase(1)]
+        public static async Task TestJoinQuery(int isAsync)
         {
             string TestName = "Join Query";
 
@@ -669,10 +746,16 @@ namespace Test
             List<IResultRow> RowList;
             IUpdateResult UpdateResult;
 
-            InsertResult = Database.Run(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }) }));
+            if (isAsync == 0)
+                InsertResult = Database.Run(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }) }));
+            else
+                InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }) }));
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first 3 keys");
 
-            SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
+            if (isAsync == 0)
+                SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
+            else
+                SelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test0.All));
             Assert.That(SelectResult.Success, $"{TestName} - 0: Read table");
             Assert.That(SelectResult.RowList != null, $"{TestName} - 0: Read table result");
             Assert.That(SelectResult.RowList.Count == 3, $"{TestName} - 0: Read table result count");
@@ -680,10 +763,16 @@ namespace Test
             Assert.That(RowList[2].HasColumn(TestSchema.Test0_Guid), $"{TestName} - 0: Read table last row, guid");
             Assert.That(!RowList[2].HasColumn(TestSchema.Test0_Int), $"{TestName} - 0: Read table last row, int (must fail)");
 
-            InsertResult = Database.Run(new InsertContext(TestSchema.Test1, 4, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<string>(TestSchema.Test1_String, new List<string>() { "row 0", "row 1", "row 2", "row 3" }) }));
+            if (isAsync == 0)
+                InsertResult = Database.Run(new InsertContext(TestSchema.Test1, 4, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<string>(TestSchema.Test1_String, new List<string>() { "row 0", "row 1", "row 2", "row 3" }) }));
+            else
+                InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test1, 4, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<string>(TestSchema.Test1_String, new List<string>() { "row 0", "row 1", "row 2", "row 3" }) }));
             Assert.That(InsertResult.Success, $"{TestName} - 1: Insert first row");
 
-            SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test1.All));
+            if (isAsync == 0)
+                SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test1.All));
+            else
+                SelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test1.All));
             Assert.That(SelectResult.Success, $"{TestName} - 1: Read table");
             Assert.That(SelectResult.RowList != null, $"{TestName} - 1: Read table result");
             Assert.That(SelectResult.RowList.Count == 4, $"{TestName} - 1: Read table result count");
@@ -691,7 +780,10 @@ namespace Test
             Assert.That(RowList[3].HasColumn(TestSchema.Test1_Int), $"{TestName} - 1: Read table last row, int");
             Assert.That(RowList[3].HasColumn(TestSchema.Test1_String), $"{TestName} - 1: Read table last row, string");
 
-            SelectResult = Database.Run(new JoinQueryContext(new List<IColumnDescriptor>() { TestSchema.Test0_Guid }));
+            if (isAsync == 0)
+                SelectResult = Database.Run(new JoinQueryContext(new List<IColumnDescriptor>() { TestSchema.Test0_Guid }));
+            else
+                SelectResult = await Database.RunAsync(new JoinQueryContext(new List<IColumnDescriptor>() { TestSchema.Test0_Guid }));
             Assert.That(SelectResult.Success, $"{TestName} - 0: Read table, one column");
             Assert.That(SelectResult.RowList != null, $"{TestName} - 0: Read table result, one column");
             Assert.That(SelectResult.RowList.Count == 3, $"{TestName} - 0: Read table result count, one column");
@@ -699,7 +791,10 @@ namespace Test
             Assert.That(RowList[2].HasColumn(TestSchema.Test0_Guid), $"{TestName} - 0: Read table last row, guid");
             Assert.That(!RowList[2].HasColumn(TestSchema.Test0_Int), $"{TestName} - 0: Read table last row, int (must fail)");
 
-            SelectResult = Database.Run(new JoinQueryContext(new List<IColumnDescriptor>() { TestSchema.Test1_String }));
+            if (isAsync == 0)
+                SelectResult = Database.Run(new JoinQueryContext(new List<IColumnDescriptor>() { TestSchema.Test1_String }));
+            else
+                SelectResult = await Database.RunAsync(new JoinQueryContext(new List<IColumnDescriptor>() { TestSchema.Test1_String }));
             Assert.That(SelectResult.Success, $"{TestName} - 1: Read table");
             Assert.That(SelectResult.RowList != null, $"{TestName} - 1: Read table result");
             Assert.That(SelectResult.RowList.Count == 4, $"{TestName} - 1: Read table result count");
@@ -707,11 +802,22 @@ namespace Test
             Assert.That(!RowList[3].HasColumn(TestSchema.Test1_Int) || !(((SimpleDatabase)Database).CanIntBeNULL), $"{TestName} - 1: Read table last row, int (must fail)");
             Assert.That(RowList[3].HasColumn(TestSchema.Test1_String), $"{TestName} - 1: Read table last row, string");
 
-            UpdateResult = Database.Run(new UpdateContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 2) }));
-            UpdateResult = Database.Run(new UpdateContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey2), new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 3) }));
+            if (isAsync == 0)
+            {
+                UpdateResult = Database.Run(new UpdateContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 2) }));
+                UpdateResult = Database.Run(new UpdateContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey2), new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 3) }));
+            }
+            else
+            {
+                UpdateResult = await Database.RunAsync(new UpdateContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 2) }));
+                UpdateResult = await Database.RunAsync(new UpdateContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey2), new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 3) }));
+            }
 
             IJoin Join = new LeftJoin(TestSchema.Test1_Int, TestSchema.Test0_Int);
-            SelectResult = Database.Run(new JoinQueryContext(Join, new List<IColumnDescriptor>() { TestSchema.Test1_String, TestSchema.Test0_Guid }));
+            if (isAsync == 0)
+                SelectResult = Database.Run(new JoinQueryContext(Join, new List<IColumnDescriptor>() { TestSchema.Test1_String, TestSchema.Test0_Guid }));
+            else
+                SelectResult = await Database.RunAsync(new JoinQueryContext(Join, new List<IColumnDescriptor>() { TestSchema.Test1_String, TestSchema.Test0_Guid }));
             Assert.That(SelectResult.Success, $"{TestName} - Join: Read table");
             Assert.That(SelectResult.RowList != null, $"{TestName} - Join: Read table result");
             RowList = new List<IResultRow>(SelectResult.RowList);
