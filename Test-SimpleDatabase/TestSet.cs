@@ -7,6 +7,7 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Test
 {
@@ -104,11 +105,14 @@ namespace Test
         }
 
         [Test]
-        public static void TestVerifyCredential()
+        [TestCase(0)]
+        //[TestCase(1)]
+        public static async Task TestVerifyCredential(int isAsync)
         {
             TestSchema TestSchema = new TestSchema(false);
             ConnectorType ConnectorType = ConnectorType.MySql;
             ConnectionOption ConnectionOption = ConnectionOption.KeepAlive;
+            bool Success;
 
             ICredential Credential = new Credential(Server, UserId, UserPassword, TestSchema);
             Assert.That(Credential != null, "Verify Credential 0");
@@ -119,20 +123,31 @@ namespace Test
             Database.Initialize(ConnectorType, ConnectionOption);
 
             Assert.That(!Database.IsCredentialValid(Credential), "Verify Credential 2");
-            Assert.That(Database.CreateCredential(RootId, RootPassword, Credential), "Verify Credential 3");
-            Assert.That(Database.IsCredentialValid(Credential), "Verify Credential  4");
+            Success = isAsync == 0 ? Database.CreateCredential(RootId, RootPassword, Credential) : await Database.CreateCredentialAsync(RootId, RootPassword, Credential);
+            Assert.That(Success, "Verify Credential 3");
+            Success = isAsync == 0 ? Database.IsCredentialValid(Credential) : await Database.IsCredentialValidAsync(Credential);
+            Assert.That(Success, "Verify Credential  4");
 
-            Database.DeleteCredential(RootId, RootPassword, Credential);
+            if (isAsync == 0)
+                Database.DeleteCredential(RootId, RootPassword, Credential);
+            else
+                await Database.DeleteCredentialAsync(RootId, RootPassword, Credential);
 
-            Assert.That(!Database.IsCredentialValid(Credential), "Verify Credential 5");
+            Success = isAsync == 0 ? Database.IsCredentialValid(Credential) : await Database.IsCredentialValidAsync(Credential);
+            Assert.That(!Success, "Verify Credential 5");
+
+            Thread.Sleep(1000);
         }
 
         [Test]
-        public static void TestCreateTables()
+        [TestCase(0)]
+        //[TestCase(1)]
+        public static async Task TestCreateTables(int isAsync)
         {
             TestSchema TestSchema = new TestSchema(false);
             ConnectorType ConnectorType = ConnectorType.MySql;
             ConnectionOption ConnectionOption = ConnectionOption.KeepAlive;
+            bool Success;
 
             ICredential Credential = new Credential(Server, UserId, UserPassword, TestSchema);
             Assert.That(Credential != null, "Create Tables 0");
@@ -141,21 +156,36 @@ namespace Test
             Assert.That(Database != null, "Create Tables 1");
 
             Database.Initialize(ConnectorType, ConnectionOption);
-            Assert.That(Database.CreateCredential(RootId, RootPassword, Credential), "Create Tables 2");
-            Assert.That(Database.CreateTables(Credential), "Create Tables 3");
+            Success = isAsync == 0 ? Database.CreateCredential(RootId, RootPassword, Credential) : await Database.CreateCredentialAsync(RootId, RootPassword, Credential);
+            Assert.That(Success, "Create Tables 2");
+            Success = isAsync == 0 ? Database.CreateTables(Credential) : await Database.CreateTablesAsync(Credential);
+            Assert.That(Success, "Create Tables 3");
 
-            Database.DeleteTables(Credential);
-            Database.DeleteCredential(RootId, RootPassword, Credential);
+            if (isAsync == 0)
+                Database.DeleteTables(Credential);
+            else
+                await Database.DeleteTablesAsync(Credential);
 
-            Assert.That(!Database.IsCredentialValid(Credential), "Create Tables 7");
+            if (isAsync == 0)
+                Database.DeleteCredential(RootId, RootPassword, Credential);
+            else
+                await Database.DeleteCredentialAsync(RootId, RootPassword, Credential);
+
+            Success = isAsync == 0 ? Database.IsCredentialValid(Credential) : await Database.IsCredentialValidAsync(Credential);
+            Assert.That(!Success, "Create Tables 7");
+
+            Thread.Sleep(1000);
         }
 
         [Test]
-        public static void TestOpen()
+        [TestCase(0)]
+        //[TestCase(1)]
+        public static async Task TestOpen(int isAsync)
         {
             TestSchema TestSchema = new TestSchema(false);
             ConnectorType ConnectorType = ConnectorType.MySql;
             ConnectionOption ConnectionOption = ConnectionOption.KeepAlive;
+            bool Success;
 
             ICredential Credential = new Credential(Server, UserId, UserPassword, TestSchema);
             Assert.That(Credential != null, "Open 0");
@@ -164,29 +194,48 @@ namespace Test
             Assert.That(Database != null, "Open 1");
 
             Database.Initialize(ConnectorType, ConnectionOption);
-            Assert.That(Database.CreateCredential(RootId, RootPassword, Credential), "Open 2");
-            Assert.That(Database.CreateTables(Credential), "Open 3");
+            Success = isAsync == 0 ? Database.CreateCredential(RootId, RootPassword, Credential) : await Database.CreateCredentialAsync(RootId, RootPassword, Credential);
+            Assert.That(Success, "Open 2");
+            Success = isAsync == 0 ? Database.CreateTables(Credential) : await Database.CreateTablesAsync(Credential);
+            Assert.That(Success, "Open 3");
 
             Assert.That(!Database.IsOpen, "Open 4");
-            Assert.That(Database.Open(Credential), "Open 5");
+            Success = isAsync == 0 ? Database.Open(Credential) : await Database.OpenAsync(Credential);
+            Assert.That(Success, "Open 5");
             Assert.That(Database.IsOpen, "Open 6");
 
-            Database.Close();
+            if (isAsync == 0)
+                Database.Close();
+            else
+                await Database.CloseAsync();
 
             Assert.That(!Database.IsOpen, "Open 7");
 
-            Database.DeleteTables(Credential);
-            Database.DeleteCredential(RootId, RootPassword, Credential);
+            if (isAsync == 0)
+                Database.DeleteTables(Credential);
+            else
+                await Database.DeleteTablesAsync(Credential);
 
-            Assert.That(!Database.IsCredentialValid(Credential), "Open 8");
+            if (isAsync == 0)
+                Database.DeleteCredential(RootId, RootPassword, Credential);
+            else
+                await Database.DeleteCredentialAsync(RootId, RootPassword, Credential);
+
+            Success = isAsync == 0 ? Database.IsCredentialValid(Credential) : await Database.IsCredentialValidAsync(Credential);
+            Assert.That(!Success, "Open 8");
+
+            Thread.Sleep(1000);
         }
 
         [Test]
-        public static void TestDeleteNonEmpty()
+        [TestCase(0)]
+        //[TestCase(1)]
+        public static async Task TestDeleteNonEmpty(int isAsync)
         {
             TestSchema TestSchema = new TestSchema(false);
             ConnectorType ConnectorType = ConnectorType.MySql;
             ConnectionOption ConnectionOption = ConnectionOption.KeepAlive;
+            bool Success;
 
             ICredential Credential = new Credential(Server, UserId, UserPassword, TestSchema);
             Assert.That(Credential != null, "Delete Non Empty 0");
@@ -195,39 +244,79 @@ namespace Test
             Assert.That(Database != null, "Delete Non Empty 1");
 
             Database.Initialize(ConnectorType, ConnectionOption);
-            Assert.That(Database.CreateCredential(RootId, RootPassword, Credential), "Delete Non Empty 2");
-            Assert.That(Database.CreateTables(Credential), "Delete Non Empty 3");
-            Assert.That(Database.Open(Credential), "Delete Non Empty 4");
+            Success = isAsync == 0 ? Database.CreateCredential(RootId, RootPassword, Credential) : await Database.CreateCredentialAsync(RootId, RootPassword, Credential);
+            Assert.That(Success, "Delete Non Empty 2");
+            Success = isAsync == 0 ? Database.CreateTables(Credential) : await Database.CreateTablesAsync(Credential);
+            Assert.That(Success, "Delete Non Empty 3");
+            Success = isAsync == 0 ? Database.Open(Credential) : await Database.OpenAsync(Credential);
+            Assert.That(Success, "Delete Non Empty 4");
 
             IInsertResult InsertResult;
             IDeleteResult DeleteResult;
 
-            InsertResult = Database.Run(new InsertContext(TestSchema.Test0, new List<ColumnValuePair<Guid>>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, Guid.Empty) }));
+            if (isAsync == 0)
+                InsertResult = Database.Run(new InsertContext(TestSchema.Test0, new List<ColumnValuePair<Guid>>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, Guid.Empty) }));
+            else
+                InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test0, new List<ColumnValuePair<Guid>>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, Guid.Empty) }));
+
             Assert.That(InsertResult.Success, "Delete Non Empty 5");
 
-            Database.Close();
-            Database.DeleteTables(Credential);
-            Database.DeleteCredential(RootId, RootPassword, Credential);
+            if (isAsync == 0)
+                Database.Close();
+            else
+                await Database.CloseAsync();
 
-            Assert.That(Database.IsCredentialValid(Credential), "Delete Non Empty 6");
+            if (isAsync == 0)
+                Database.DeleteTables(Credential);
+            else
+                await Database.DeleteTablesAsync(Credential);
 
-            Assert.That(Database.Open(Credential), "Delete Non Empty 7");
+            if (isAsync == 0)
+                Database.DeleteCredential(RootId, RootPassword, Credential);
+            else
+                await Database.DeleteCredentialAsync(RootId, RootPassword, Credential);
 
-            DeleteResult = Database.Run(new DeleteContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, Guid.Empty), 2));
+            Success = isAsync == 0 ? Database.IsCredentialValid(Credential) : await Database.IsCredentialValidAsync(Credential);
+            Assert.That(Success, "Delete Non Empty 6");
+
+            Success = isAsync == 0 ? Database.Open(Credential) : await Database.OpenAsync(Credential);
+            Assert.That(Success, "Delete Non Empty 7");
+
+            if (isAsync == 0)
+                DeleteResult = Database.Run(new DeleteContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, Guid.Empty), 2));
+            else
+                DeleteResult = await Database.RunAsync(new DeleteContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, Guid.Empty), 2));
             Assert.That(!DeleteResult.Success, "Delete Non Empty 8 (must fail)");
 
-            DeleteResult = Database.Run(new DeleteContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, Guid.Empty), 0));
+            if (isAsync == 0)
+                DeleteResult = Database.Run(new DeleteContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, Guid.Empty), 0));
+            else
+                DeleteResult = await Database.RunAsync(new DeleteContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, Guid.Empty), 0));
             Assert.That(DeleteResult.Success, "Delete Non Empty 8");
 
-            Database.Close();
-            Database.DeleteTables(Credential);
-            Database.DeleteCredential(RootId, RootPassword, Credential);
+            if (isAsync == 0)
+                Database.Close();
+            else
+                await Database.CloseAsync();
 
-            Assert.That(!Database.IsCredentialValid(Credential), "Delete Non Empty 9");
+            if (isAsync == 0)
+                Database.DeleteTables(Credential);
+            else
+                await Database.DeleteTablesAsync(Credential);
+
+            if (isAsync == 0)
+                Database.DeleteCredential(RootId, RootPassword, Credential);
+            else
+                await Database.DeleteCredentialAsync(RootId, RootPassword, Credential);
+
+            Success = isAsync == 0 ? Database.IsCredentialValid(Credential) : await Database.IsCredentialValidAsync(Credential);
+            Assert.That(!Success, "Delete Non Empty 9");
+
+            Thread.Sleep(1000);
         }
         #endregion
 
-        #region Queries
+        #region Tools
         private static Guid guidKey0 = new Guid("{1BA0D7E9-039F-44E6-A966-CC67AC01A65D}");
         private static Guid guidKey1 = new Guid("{2FA55A73-0311-4818-8B34-1492308ADBF1}");
         private static Guid guidKey2 = new Guid("{16DC914E-CDED-41DD-AE23-43B62676159D}");
@@ -268,10 +357,16 @@ namespace Test
             credential = null;
             database = null;
             testSchema = null;
-        }
 
+            Thread.Sleep(1000);
+        }
+        #endregion
+
+        #region Queries
         [Test]
-        public static void TestSingleInsert()
+        [TestCase(0)]
+        //[TestCase(1)]
+        public static async Task TestSingleInsert(int isAsync)
         {
             string TestName = "Single Insert";
 
@@ -282,20 +377,36 @@ namespace Test
             IJoinQueryResult SelectResult;
             List<IResultRow> RowList;
 
-            InsertResult = Database.Run(new InsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey0) }));
+            if (isAsync == 0)
+                InsertResult = Database.Run(new InsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey0) }));
+            else
+                InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey0) }));
+
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first key");
 
-            InsertResult = Database.Run(new InsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 1) }));
+            if (isAsync == 0)
+                InsertResult = Database.Run(new InsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 1) }));
+            else
+                InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 1) }));
             Assert.That(!InsertResult.Success, $"{TestName} - 0: Insert with no key (must fail)");
 
             ((SimpleDatabase)Database).IgnoreErrorCode = 1062;
-            InsertResult = Database.Run(new InsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey0) }));
+            if (isAsync == 0)
+                InsertResult = Database.Run(new InsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey0) }));
+            else
+                InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey0) }));
             Assert.That(!InsertResult.Success, $"{TestName} - 0: Insert same key (must fail)");
 
-            InsertResult = Database.Run(new InsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new ColumnValuePair<int>(TestSchema.Test0_Int, 1) }));
+            if (isAsync == 0)
+                InsertResult = Database.Run(new InsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new ColumnValuePair<int>(TestSchema.Test0_Int, 1) }));
+            else
+                InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new ColumnValuePair<int>(TestSchema.Test0_Int, 1) }));
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert new key and int");
 
-            SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
+            if (isAsync == 0)
+                SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
+            else
+                SelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test0.All));
             Assert.That(SelectResult.Success, $"{TestName} - 0: Read table");
             Assert.That(SelectResult.RowList != null, $"{TestName} - 0: Read table result");
 
@@ -306,17 +417,29 @@ namespace Test
             Assert.That(TestSchema.Test0_Guid.TryParseRow(RowList[1], out Guid Test0_Row_1_0) && Test0_Row_1_0 == guidKey1, $"{TestName} - 0: Check row 1, column 0");
             Assert.That(TestSchema.Test0_Int.TryParseRow(RowList[1], out int Test0_Row_1_1) && Test0_Row_1_1 == 1, $"{TestName} - 0: Check row 1, column 1");
 
-            InsertResult = Database.Run(new InsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<string>(TestSchema.Test1_String, "row 0") }));
+            if (isAsync == 0)
+                InsertResult = Database.Run(new InsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<string>(TestSchema.Test1_String, "row 0") }));
+            else
+                InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<string>(TestSchema.Test1_String, "row 0") }));
             Assert.That(InsertResult.Success, $"{TestName} - 1: Insert first row");
 
-            InsertResult = Database.Run(new InsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<string>(TestSchema.Test1_String, "row 1") }));
+            if (isAsync == 0)
+                InsertResult = Database.Run(new InsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<string>(TestSchema.Test1_String, "row 1") }));
+            else
+                InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<string>(TestSchema.Test1_String, "row 1") }));
             Assert.That(InsertResult.Success, $"{TestName} - 1: Insert second row");
 
             ((SimpleDatabase)Database).IgnoreErrorCode = 1062;
-            InsertResult = Database.Run(new InsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test1_Int, 1), new ColumnValuePair<string>(TestSchema.Test1_String, "row 2") }));
+            if (isAsync == 0)
+                InsertResult = Database.Run(new InsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test1_Int, 1), new ColumnValuePair<string>(TestSchema.Test1_String, "row 2") }));
+            else
+                InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test1_Int, 1), new ColumnValuePair<string>(TestSchema.Test1_String, "row 2") }));
             Assert.That(!InsertResult.Success, $"{TestName} - 1: Insert with key (must fail)");
 
-            SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test1.All));
+            if (isAsync == 0)
+                SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test1.All));
+            else
+                SelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test1.All));
             Assert.That(SelectResult.Success, $"{TestName} - 1: Read table");
             Assert.That(SelectResult.RowList != null, $"{TestName} - 1: Read table result");
 
