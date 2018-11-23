@@ -958,6 +958,5 @@ namespace Test
             UninstallDatabase(TestName, ref Credential, ref Database, ref TestSchema);
         }
         #endregion
-
     }
 }
