@@ -124,16 +124,21 @@ namespace Test
 
             Assert.That(!Database.IsCredentialValid(Credential), "Verify Credential 2");
             Success = isAsync == 0 ? Database.CreateCredential(RootId, RootPassword, Credential) : await Database.CreateCredentialAsync(RootId, RootPassword, Credential);
+            Wait(isAsync);
             Assert.That(Success, "Verify Credential 3");
+
             Success = isAsync == 0 ? Database.IsCredentialValid(Credential) : await Database.IsCredentialValidAsync(Credential);
+            Wait(isAsync);
             Assert.That(Success, "Verify Credential  4");
 
             if (isAsync == 0)
                 Database.DeleteCredential(RootId, RootPassword, Credential);
             else
                 await Database.DeleteCredentialAsync(RootId, RootPassword, Credential);
+            Wait(isAsync);
 
             Success = isAsync == 0 ? Database.IsCredentialValid(Credential) : await Database.IsCredentialValidAsync(Credential);
+            Wait(isAsync);
             Assert.That(!Success, "Verify Credential 5");
 
             Thread.Sleep(1000);
@@ -157,21 +162,26 @@ namespace Test
 
             Database.Initialize(ConnectorType, ConnectionOption);
             Success = isAsync == 0 ? Database.CreateCredential(RootId, RootPassword, Credential) : await Database.CreateCredentialAsync(RootId, RootPassword, Credential);
+            Wait(isAsync);
             Assert.That(Success, "Create Tables 2");
             Success = isAsync == 0 ? Database.CreateTables(Credential) : await Database.CreateTablesAsync(Credential);
+            Wait(isAsync);
             Assert.That(Success, "Create Tables 3");
 
             if (isAsync == 0)
                 Database.DeleteTables(Credential);
             else
                 await Database.DeleteTablesAsync(Credential);
+            Wait(isAsync);
 
             if (isAsync == 0)
                 Database.DeleteCredential(RootId, RootPassword, Credential);
             else
                 await Database.DeleteCredentialAsync(RootId, RootPassword, Credential);
+            Wait(isAsync);
 
             Success = isAsync == 0 ? Database.IsCredentialValid(Credential) : await Database.IsCredentialValidAsync(Credential);
+            Wait(isAsync);
             Assert.That(!Success, "Create Tables 7");
 
             Thread.Sleep(1000);
@@ -195,12 +205,15 @@ namespace Test
 
             Database.Initialize(ConnectorType, ConnectionOption);
             Success = isAsync == 0 ? Database.CreateCredential(RootId, RootPassword, Credential) : await Database.CreateCredentialAsync(RootId, RootPassword, Credential);
+            Wait(isAsync);
             Assert.That(Success, "Open 2");
             Success = isAsync == 0 ? Database.CreateTables(Credential) : await Database.CreateTablesAsync(Credential);
+            Wait(isAsync);
             Assert.That(Success, "Open 3");
 
             Assert.That(!Database.IsOpen, "Open 4");
             Success = isAsync == 0 ? Database.Open(Credential) : await Database.OpenAsync(Credential);
+            Wait(isAsync);
             Assert.That(Success, "Open 5");
             Assert.That(Database.IsOpen, "Open 6");
 
@@ -208,6 +221,7 @@ namespace Test
                 Database.Close();
             else
                 await Database.CloseAsync();
+            Wait(isAsync);
 
             Assert.That(!Database.IsOpen, "Open 7");
 
@@ -215,13 +229,16 @@ namespace Test
                 Database.DeleteTables(Credential);
             else
                 await Database.DeleteTablesAsync(Credential);
+            Wait(isAsync);
 
             if (isAsync == 0)
                 Database.DeleteCredential(RootId, RootPassword, Credential);
             else
                 await Database.DeleteCredentialAsync(RootId, RootPassword, Credential);
+            Wait(isAsync);
 
             Success = isAsync == 0 ? Database.IsCredentialValid(Credential) : await Database.IsCredentialValidAsync(Credential);
+            Wait(isAsync);
             Assert.That(!Success, "Open 8");
 
             Thread.Sleep(1000);
@@ -245,10 +262,13 @@ namespace Test
 
             Database.Initialize(ConnectorType, ConnectionOption);
             Success = isAsync == 0 ? Database.CreateCredential(RootId, RootPassword, Credential) : await Database.CreateCredentialAsync(RootId, RootPassword, Credential);
+            Wait(isAsync);
             Assert.That(Success, "Delete Non Empty 2");
             Success = isAsync == 0 ? Database.CreateTables(Credential) : await Database.CreateTablesAsync(Credential);
+            Wait(isAsync);
             Assert.That(Success, "Delete Non Empty 3");
             Success = isAsync == 0 ? Database.Open(Credential) : await Database.OpenAsync(Credential);
+            Wait(isAsync);
             Assert.That(Success, "Delete Non Empty 4");
 
             IInsertResult InsertResult;
@@ -258,6 +278,7 @@ namespace Test
                 InsertResult = Database.Run(new InsertContext(TestSchema.Test0, new List<ColumnValuePair<Guid>>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, Guid.Empty) }));
             else
                 InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test0, new List<ColumnValuePair<Guid>>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, Guid.Empty) }));
+            Wait(isAsync);
 
             Assert.That(InsertResult.Success, $"Delete Non Empty 5 ({InsertResult.ErrorCode})");
 
@@ -265,51 +286,62 @@ namespace Test
                 Database.Close();
             else
                 await Database.CloseAsync();
+            Wait(isAsync);
 
             if (isAsync == 0)
                 Database.DeleteTables(Credential);
             else
                 await Database.DeleteTablesAsync(Credential);
+            Wait(isAsync);
 
             if (isAsync == 0)
                 Database.DeleteCredential(RootId, RootPassword, Credential);
             else
                 await Database.DeleteCredentialAsync(RootId, RootPassword, Credential);
+            Wait(isAsync);
 
             Success = isAsync == 0 ? Database.IsCredentialValid(Credential) : await Database.IsCredentialValidAsync(Credential);
+            Wait(isAsync);
             Assert.That(Success, "Delete Non Empty 6");
 
             Success = isAsync == 0 ? Database.Open(Credential) : await Database.OpenAsync(Credential);
+            Wait(isAsync);
             Assert.That(Success, "Delete Non Empty 7");
 
             if (isAsync == 0)
                 DeleteResult = Database.Run(new DeleteContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, Guid.Empty), 2));
             else
                 DeleteResult = await Database.RunAsync(new DeleteContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, Guid.Empty), 2));
+            Wait(isAsync);
             Assert.That(!DeleteResult.Success, "Delete Non Empty 8 (must fail)");
 
             if (isAsync == 0)
                 DeleteResult = Database.Run(new DeleteContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, Guid.Empty), 0));
             else
                 DeleteResult = await Database.RunAsync(new DeleteContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, Guid.Empty), 0));
+            Wait(isAsync);
             Assert.That(DeleteResult.Success, $"Delete Non Empty 8 ({DeleteResult.ErrorCode})");
 
             if (isAsync == 0)
                 Database.Close();
             else
                 await Database.CloseAsync();
+            Wait(isAsync);
 
             if (isAsync == 0)
                 Database.DeleteTables(Credential);
             else
                 await Database.DeleteTablesAsync(Credential);
+            Wait(isAsync);
 
             if (isAsync == 0)
                 Database.DeleteCredential(RootId, RootPassword, Credential);
             else
                 await Database.DeleteCredentialAsync(RootId, RootPassword, Credential);
+            Wait(isAsync);
 
             Success = isAsync == 0 ? Database.IsCredentialValid(Credential) : await Database.IsCredentialValidAsync(Credential);
+            Wait(isAsync);
             Assert.That(!Success, "Delete Non Empty 9");
 
             Thread.Sleep(1000);
@@ -320,6 +352,12 @@ namespace Test
         private static Guid guidKey0 = new Guid("{1BA0D7E9-039F-44E6-A966-CC67AC01A65D}");
         private static Guid guidKey1 = new Guid("{2FA55A73-0311-4818-8B34-1492308ADBF1}");
         private static Guid guidKey2 = new Guid("{16DC914E-CDED-41DD-AE23-43B62676159D}");
+
+        private static void Wait(int isAsync)
+        {
+            if (isAsync != 0)
+                Thread.Sleep(1000);
+        }
 
         private static void InstallDatabase(string testName, bool dateTimeAsTick, out ICredential credential, out ISimpleDatabase database, out TestSchema testSchema)
         {
@@ -381,6 +419,7 @@ namespace Test
                 InsertResult = Database.Run(new InsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey0) }));
             else
                 InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey0) }));
+            Wait(isAsync);
 
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first key ({InsertResult.ErrorCode})");
 
@@ -388,6 +427,7 @@ namespace Test
                 InsertResult = Database.Run(new InsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 1) }));
             else
                 InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 1) }));
+            Wait(isAsync);
             Assert.That(!InsertResult.Success, $"{TestName} - 0: Insert with no key (must fail)");
 
             ((SimpleDatabase)Database).IgnoreErrorCode = 1062;
@@ -395,18 +435,21 @@ namespace Test
                 InsertResult = Database.Run(new InsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey0) }));
             else
                 InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey0) }));
+            Wait(isAsync);
             Assert.That(!InsertResult.Success, $"{TestName} - 0: Insert same key (must fail)");
 
             if (isAsync == 0)
                 InsertResult = Database.Run(new InsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new ColumnValuePair<int>(TestSchema.Test0_Int, 1) }));
             else
                 InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new ColumnValuePair<int>(TestSchema.Test0_Int, 1) }));
+            Wait(isAsync);
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert new key and int ({InsertResult.ErrorCode})");
 
             if (isAsync == 0)
                 JoinSelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
             else
                 JoinSelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test0.All));
+            Wait(isAsync);
             Assert.That(JoinSelectResult.Success, $"{TestName} - 0: Read table ({JoinSelectResult.ErrorCode})");
             Assert.That(JoinSelectResult.RowList != null, $"{TestName} - 0: Read table result");
 
@@ -421,12 +464,14 @@ namespace Test
                 InsertResult = Database.Run(new InsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<string>(TestSchema.Test1_String, "row 0") }));
             else
                 InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<string>(TestSchema.Test1_String, "row 0") }));
+            Wait(isAsync);
             Assert.That(InsertResult.Success, $"{TestName} - 1: Insert first row ({InsertResult.ErrorCode}) ... {InsertResult.Traces}");
 
             if (isAsync == 0)
                 InsertResult = Database.Run(new InsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<string>(TestSchema.Test1_String, "row 1") }));
             else
                 InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<string>(TestSchema.Test1_String, "row 1") }));
+            Wait(isAsync);
             Assert.That(InsertResult.Success, $"{TestName} - 1: Insert second row ({InsertResult.ErrorCode})");
 
             ((SimpleDatabase)Database).IgnoreErrorCode = 1062;
@@ -434,12 +479,14 @@ namespace Test
                 InsertResult = Database.Run(new InsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test1_Int, 1), new ColumnValuePair<string>(TestSchema.Test1_String, "row 2") }));
             else
                 InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test1_Int, 1), new ColumnValuePair<string>(TestSchema.Test1_String, "row 2") }));
+            Wait(isAsync);
             Assert.That(!InsertResult.Success, $"{TestName} - 1: Insert with key (must fail)");
 
             if (isAsync == 0)
                 JoinSelectResult = Database.Run(new JoinQueryContext(TestSchema.Test1.All));
             else
                 JoinSelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test1.All));
+            Wait(isAsync);
             Assert.That(JoinSelectResult.Success, $"{TestName} - 1: Read table ({JoinSelectResult.ErrorCode})");
             Assert.That(JoinSelectResult.RowList != null, $"{TestName} - 1: Read table result");
 
@@ -471,12 +518,14 @@ namespace Test
                 InsertResult = Database.Run(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
             else
                 InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
+            Wait(isAsync);
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first 3 keys ({InsertResult.ErrorCode})");
 
             if (isAsync == 0)
                 JoinSelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
             else
                 JoinSelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test0.All));
+            Wait(isAsync);
             Assert.That(JoinSelectResult.Success, $"{TestName} - 0: Read table ({JoinSelectResult.ErrorCode})");
             Assert.That(JoinSelectResult.RowList != null, $"{TestName} - 0: Read table result");
 
@@ -494,12 +543,14 @@ namespace Test
                 InsertResult = Database.Run(new InsertContext(TestSchema.Test1, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<string>(TestSchema.Test1_String, new List<string>() { "row 0", "row 1", "row 2" }) }));
             else
                 InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test1, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<string>(TestSchema.Test1_String, new List<string>() { "row 0", "row 1", "row 2" }) }));
+            Wait(isAsync);
             Assert.That(InsertResult.Success, $"{TestName} - 1: Insert first row ({InsertResult.ErrorCode} ... {InsertResult.Traces})");
 
             if (isAsync == 0)
                 JoinSelectResult = Database.Run(new JoinQueryContext(TestSchema.Test1.All));
             else
                 JoinSelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test1.All));
+            Wait(isAsync);
             Assert.That(JoinSelectResult.Success, $"{TestName} - 1: Read table ({JoinSelectResult.ErrorCode})");
             Assert.That(JoinSelectResult.RowList != null, $"{TestName} - 1: Read table result");
 
@@ -534,24 +585,28 @@ namespace Test
                 InsertResult = Database.Run(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
             else
                 InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
+            Wait(isAsync);
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first 3 keys ({InsertResult.ErrorCode})");
 
             if (isAsync == 0)
                 UpdateResult = Database.Run(new UpdateContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 10) }));
             else
                 UpdateResult = await Database.RunAsync(new UpdateContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 10) }));
+            Wait(isAsync);
             Assert.That(UpdateResult.Success, $"{TestName} - 0: Update third keys ({UpdateResult.ErrorCode})");
 
             if (isAsync == 0)
                 UpdateResult = Database.Run(new UpdateContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new ColumnValuePair<int>(TestSchema.Test0_Int, 10) }, new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 20) }));
             else
                 UpdateResult = await Database.RunAsync(new UpdateContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new ColumnValuePair<int>(TestSchema.Test0_Int, 10) }, new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 20) }));
+            Wait(isAsync);
             Assert.That(UpdateResult.Success, $"{TestName} - 0: Update second and third keys ({UpdateResult.ErrorCode})");
 
             if (isAsync == 0)
                 JoinSelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
             else
                 JoinSelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test0.All));
+            Wait(isAsync);
             Assert.That(JoinSelectResult.Success, $"{TestName} - 0: Read table ({JoinSelectResult.ErrorCode})");
             Assert.That(JoinSelectResult.RowList != null, $"{TestName} - 0: Read table result");
 
@@ -587,12 +642,14 @@ namespace Test
                 InsertResult = Database.Run(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
             else
                 InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
+            Wait(isAsync);
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first 3 keys ({InsertResult.ErrorCode})");
 
             if (isAsync == 0)
                 DeleteResult = Database.Run(new DeleteContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey2), new ColumnValuePair<int>(TestSchema.Test0_Int, 10) }, 0));
             else
                 DeleteResult = await Database.RunAsync(new DeleteContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey2), new ColumnValuePair<int>(TestSchema.Test0_Int, 10) }, 0));
+            Wait(isAsync);
             Assert.That(DeleteResult.Success, $"{TestName} - 0: Delete first key ({DeleteResult.ErrorCode})");
             Assert.That(DeleteResult.DeletedRowCount == 0, $"{TestName} - 0: Delete first key (no row) ({DeleteResult.DeletedRowCount})");
 
@@ -600,6 +657,7 @@ namespace Test
                 DeleteResult = Database.Run(new DeleteContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey2) }, 0));
             else
                 DeleteResult = await Database.RunAsync(new DeleteContext(TestSchema.Test0, new List<IColumnValuePair>() { new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey2) }, 0));
+            Wait(isAsync);
             Assert.That(DeleteResult.Success, $"{TestName} - 0: Delete first key again ({DeleteResult.ErrorCode})");
             Assert.That(DeleteResult.DeletedRowCount == 1, $"{TestName} - 0: Delete first key (one row) ({DeleteResult.DeletedRowCount})");
 
@@ -607,6 +665,7 @@ namespace Test
                 JoinSelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
             else
                 JoinSelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test0.All));
+            Wait(isAsync);
             Assert.That(JoinSelectResult.Success, $"{TestName} - 0: Read table ({JoinSelectResult.ErrorCode})");
             Assert.That(JoinSelectResult.RowList != null, $"{TestName} - 0: Read table result");
 
@@ -639,12 +698,14 @@ namespace Test
                 InsertResult = Database.Run(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
             else
                 InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }), }));
+            Wait(isAsync);
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first 3 keys ({InsertResult.ErrorCode})");
 
             if (isAsync == 0)
                 DeleteResult = Database.Run(new DeleteContext(TestSchema.Test0, new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1 }), 2));
             else
                 DeleteResult = await Database.RunAsync(new DeleteContext(TestSchema.Test0, new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1 }), 2));
+            Wait(isAsync);
             Assert.That(DeleteResult.Success, $"{TestName} - 0: Delete two keys ({DeleteResult.ErrorCode})");
             Assert.That(DeleteResult.DeletedRowCount == 2, $"{TestName} - 0: Delete two keys (row count) ({DeleteResult.DeletedRowCount})");
 
@@ -652,6 +713,7 @@ namespace Test
                 JoinSelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
             else
                 JoinSelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test0.All));
+            Wait(isAsync);
             Assert.That(JoinSelectResult.Success, $"{TestName} - 0: Read table ({JoinSelectResult.ErrorCode})");
             Assert.That(JoinSelectResult.RowList != null, $"{TestName} - 0: Read table result");
 
@@ -683,12 +745,14 @@ namespace Test
                 InsertResult = Database.Run(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }) }));
             else
                 InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }) }));
+            Wait(isAsync);
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first 3 keys ({InsertResult.ErrorCode})");
 
             if (isAsync == 0)
                 SelectResult = Database.Run(new SingleQueryContext(TestSchema.Test0));
             else
                 SelectResult = await Database.RunAsync(new SingleQueryContext(TestSchema.Test0));
+            Wait(isAsync);
             Assert.That(SelectResult.Success, $"{TestName} - 0: Read table ({SelectResult.ErrorCode})");
             Assert.That(SelectResult.RowList != null, $"{TestName} - 0: Read table result");
             Assert.That(SelectResult.RowList.Count == 3, $"{TestName} - 0: Read table result count ({SelectResult.RowList.Count})");
@@ -704,13 +768,16 @@ namespace Test
             else
             {
                 UpdateResult = await Database.RunAsync(new UpdateContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 2) }));
+                Wait(isAsync);
                 UpdateResult = await Database.RunAsync(new UpdateContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey2), new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 3) }));
+                Wait(isAsync);
             }
 
             if (isAsync == 0)
                 SelectResult = Database.Run(new SingleQueryContext(TestSchema.Test0, new List<IColumnDescriptor>() { TestSchema.Test0_Guid, TestSchema.Test0_Int }));
             else
                 SelectResult = await Database.RunAsync(new SingleQueryContext(TestSchema.Test0, new List<IColumnDescriptor>() { TestSchema.Test0_Guid, TestSchema.Test0_Int }));
+            Wait(isAsync);
             Assert.That(SelectResult.Success, $"{TestName} - 1: Read table ({SelectResult.ErrorCode})");
             Assert.That(SelectResult.RowList != null, $"{TestName} - 1: Read table result");
             Assert.That(SelectResult.RowList.Count == 3, $"{TestName} - 1: Read table result count ({SelectResult.RowList.Count})");
@@ -722,6 +789,7 @@ namespace Test
                 SelectResult = Database.Run(new SingleQueryContext(TestSchema.Test0, new ColumnValueCollectionPair<int>(TestSchema.Test0_Int, new List<int>() { 3 }), new List<IColumnDescriptor>() { TestSchema.Test0_Guid, TestSchema.Test0_Int }));
             else
                 SelectResult = await Database.RunAsync(new SingleQueryContext(TestSchema.Test0, new ColumnValueCollectionPair<int>(TestSchema.Test0_Int, new List<int>() { 3 }), new List<IColumnDescriptor>() { TestSchema.Test0_Guid, TestSchema.Test0_Int }));
+            Wait(isAsync);
             Assert.That(SelectResult.Success, $"{TestName} - 1: Read table ({SelectResult.ErrorCode})");
             Assert.That(SelectResult.RowList != null, $"{TestName} - 1: Read table result");
             Assert.That(SelectResult.RowList.Count == 1, $"{TestName} - 1: Read table result count ({SelectResult.RowList.Count})");
@@ -750,12 +818,14 @@ namespace Test
                 InsertResult = Database.Run(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }) }));
             else
                 InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test0, 3, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<Guid>(TestSchema.Test0_Guid, new List<Guid>() { guidKey0, guidKey1, guidKey2 }) }));
+            Wait(isAsync);
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first 3 keys ({InsertResult.ErrorCode})");
 
             if (isAsync == 0)
                 JoinSelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
             else
                 JoinSelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test0.All));
+            Wait(isAsync);
             Assert.That(JoinSelectResult.Success, $"{TestName} - 0: Read table ({JoinSelectResult.ErrorCode})");
             Assert.That(JoinSelectResult.RowList != null, $"{TestName} - 0: Read table result");
             Assert.That(JoinSelectResult.RowList.Count == 3, $"{TestName} - 0: Read table result count ({JoinSelectResult.RowList.Count})");
@@ -767,12 +837,14 @@ namespace Test
                 InsertResult = Database.Run(new InsertContext(TestSchema.Test1, 4, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<string>(TestSchema.Test1_String, new List<string>() { "row 0", "row 1", "row 2", "row 3" }) }));
             else
                 InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test1, 4, new List<IColumnValueCollectionPair>() { new ColumnValueCollectionPair<string>(TestSchema.Test1_String, new List<string>() { "row 0", "row 1", "row 2", "row 3" }) }));
+            Wait(isAsync);
             Assert.That(InsertResult.Success, $"{TestName} - 1: Insert first row ({InsertResult.ErrorCode})");
 
             if (isAsync == 0)
                 JoinSelectResult = Database.Run(new JoinQueryContext(TestSchema.Test1.All));
             else
                 JoinSelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test1.All));
+            Wait(isAsync);
             Assert.That(JoinSelectResult.Success, $"{TestName} - 1: Read table ({JoinSelectResult.ErrorCode})");
             Assert.That(JoinSelectResult.RowList != null, $"{TestName} - 1: Read table result");
             Assert.That(JoinSelectResult.RowList.Count == 4, $"{TestName} - 1: Read table result count ({JoinSelectResult.RowList.Count})");
@@ -784,6 +856,7 @@ namespace Test
                 JoinSelectResult = Database.Run(new JoinQueryContext(new List<IColumnDescriptor>() { TestSchema.Test0_Guid }));
             else
                 JoinSelectResult = await Database.RunAsync(new JoinQueryContext(new List<IColumnDescriptor>() { TestSchema.Test0_Guid }));
+            Wait(isAsync);
             Assert.That(JoinSelectResult.Success, $"{TestName} - 0: Read table, one column ({JoinSelectResult.ErrorCode})");
             Assert.That(JoinSelectResult.RowList != null, $"{TestName} - 0: Read table result, one column");
             Assert.That(JoinSelectResult.RowList.Count == 3, $"{TestName} - 0: Read table result count, one column ({JoinSelectResult.RowList.Count})");
@@ -795,6 +868,7 @@ namespace Test
                 JoinSelectResult = Database.Run(new JoinQueryContext(new List<IColumnDescriptor>() { TestSchema.Test1_String }));
             else
                 JoinSelectResult = await Database.RunAsync(new JoinQueryContext(new List<IColumnDescriptor>() { TestSchema.Test1_String }));
+            Wait(isAsync);
             Assert.That(JoinSelectResult.Success, $"{TestName} - 1: Read table ({JoinSelectResult.ErrorCode})");
             Assert.That(JoinSelectResult.RowList != null, $"{TestName} - 1: Read table result");
             Assert.That(JoinSelectResult.RowList.Count == 4, $"{TestName} - 1: Read table result count ({JoinSelectResult.RowList.Count})");
@@ -810,7 +884,9 @@ namespace Test
             else
             {
                 UpdateResult = await Database.RunAsync(new UpdateContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey1), new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 2) }));
+                Wait(isAsync);
                 UpdateResult = await Database.RunAsync(new UpdateContext(TestSchema.Test0, new ColumnValuePair<Guid>(TestSchema.Test0_Guid, guidKey2), new List<IColumnValuePair>() { new ColumnValuePair<int>(TestSchema.Test0_Int, 3) }));
+                Wait(isAsync);
             }
 
             IJoin Join = new LeftJoin(TestSchema.Test1_Int, TestSchema.Test0_Int);
@@ -818,6 +894,7 @@ namespace Test
                 JoinSelectResult = Database.Run(new JoinQueryContext(Join, new List<IColumnDescriptor>() { TestSchema.Test1_String, TestSchema.Test0_Guid }));
             else
                 JoinSelectResult = await Database.RunAsync(new JoinQueryContext(Join, new List<IColumnDescriptor>() { TestSchema.Test1_String, TestSchema.Test0_Guid }));
+            Wait(isAsync);
             Assert.That(JoinSelectResult.Success, $"{TestName} - Join: Read table ({JoinSelectResult.ErrorCode})");
             Assert.That(JoinSelectResult.RowList != null, $"{TestName} - Join: Read table result");
             RowList = new List<IResultRow>(JoinSelectResult.RowList);
