@@ -72,7 +72,7 @@ namespace Test
         private static string UserId = "test";
         private static string UserPassword = "test";
         #endregion
-
+/*
         #region Init
         [Test]
         public static void TestInitCredential()
@@ -374,7 +374,7 @@ namespace Test
             InstallDatabase(TestName, false, out ICredential Credential, out ISimpleDatabase Database, out TestSchema);
 
             IInsertResult InsertResult;
-            IJoinQueryResult SelectResult;
+            IJoinQueryResult JoinSelectResult;
             List<IResultRow> RowList;
 
             if (isAsync == 0)
@@ -404,13 +404,13 @@ namespace Test
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert new key and int ({InsertResult.ErrorCode})");
 
             if (isAsync == 0)
-                SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
+                JoinSelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
             else
-                SelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test0.All));
-            Assert.That(SelectResult.Success, $"{TestName} - 0: Read table ({SelectResult.ErrorCode})");
-            Assert.That(SelectResult.RowList != null, $"{TestName} - 0: Read table result");
+                JoinSelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test0.All));
+            Assert.That(JoinSelectResult.Success, $"{TestName} - 0: Read table ({JoinSelectResult.ErrorCode})");
+            Assert.That(JoinSelectResult.RowList != null, $"{TestName} - 0: Read table result");
 
-            RowList = new List<IResultRow>(SelectResult.RowList);
+            RowList = new List<IResultRow>(JoinSelectResult.RowList);
             Assert.That(RowList != null && RowList.Count == 2, $"{TestName} - 0: Count rows ({RowList.Count})");
             Assert.That(TestSchema.Test0_Guid.TryParseRow(RowList[0], out Guid Test0_Row_0_0) && Test0_Row_0_0 == guidKey0, $"{TestName} - 0: Check row 0, column 0");
             Assert.That(!TestSchema.Test0_Int.TryParseRow(RowList[0], out int Test0_Row_0_1), $"{TestName} - 0: Check row 0, column 1");
@@ -421,7 +421,7 @@ namespace Test
                 InsertResult = Database.Run(new InsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<string>(TestSchema.Test1_String, "row 0") }));
             else
                 InsertResult = await Database.RunAsync(new InsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<string>(TestSchema.Test1_String, "row 0") }));
-            Assert.That(InsertResult.Success, $"{TestName} - 1: Insert first row ({InsertResult.ErrorCode})");
+            Assert.That(InsertResult.Success, $"{TestName} - 1: Insert first row ({InsertResult.ErrorCode}) ... {InsertResult.Traces}");
 
             if (isAsync == 0)
                 InsertResult = Database.Run(new InsertContext(TestSchema.Test1, new List<IColumnValuePair>() { new ColumnValuePair<string>(TestSchema.Test1_String, "row 1") }));
@@ -437,13 +437,13 @@ namespace Test
             Assert.That(!InsertResult.Success, $"{TestName} - 1: Insert with key (must fail)");
 
             if (isAsync == 0)
-                SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test1.All));
+                JoinSelectResult = Database.Run(new JoinQueryContext(TestSchema.Test1.All));
             else
-                SelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test1.All));
-            Assert.That(SelectResult.Success, $"{TestName} - 1: Read table ({SelectResult.ErrorCode})");
-            Assert.That(SelectResult.RowList != null, $"{TestName} - 1: Read table result");
+                JoinSelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test1.All));
+            Assert.That(JoinSelectResult.Success, $"{TestName} - 1: Read table ({JoinSelectResult.ErrorCode})");
+            Assert.That(JoinSelectResult.RowList != null, $"{TestName} - 1: Read table result");
 
-            RowList = new List<IResultRow>(SelectResult.RowList);
+            RowList = new List<IResultRow>(JoinSelectResult.RowList);
             Assert.That(RowList != null && RowList.Count == 2, $"{TestName} - 1: Count rows ({RowList.Count})");
             Assert.That(TestSchema.Test1_Int.TryParseRow(RowList[0], out int Test1_Row_0_0) && Test1_Row_0_0 == 1, $"{TestName} - 1: Check row 0, column 0");
             Assert.That(TestSchema.Test1_String.TryParseRow(RowList[0], out string Test1_Row_0_1) && Test1_Row_0_1 == "row 0", $"{TestName} - 1: Check row 0, column 1");
@@ -464,7 +464,7 @@ namespace Test
             InstallDatabase(TestName, false, out ICredential Credential, out ISimpleDatabase Database, out TestSchema);
 
             IInsertResult InsertResult;
-            IJoinQueryResult SelectResult;
+            IJoinQueryResult JoinSelectResult;
             List<IResultRow> RowList;
 
             if (isAsync == 0)
@@ -474,14 +474,14 @@ namespace Test
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first 3 keys ({InsertResult.ErrorCode})");
 
             if (isAsync == 0)
-                SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
+                JoinSelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
             else
-                SelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test0.All));
-            Assert.That(SelectResult.Success, $"{TestName} - 0: Read table ({SelectResult.ErrorCode})");
-            Assert.That(SelectResult.RowList != null, $"{TestName} - 0: Read table result");
+                JoinSelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test0.All));
+            Assert.That(JoinSelectResult.Success, $"{TestName} - 0: Read table ({JoinSelectResult.ErrorCode})");
+            Assert.That(JoinSelectResult.RowList != null, $"{TestName} - 0: Read table result");
 
             // Columns are reordered by Guid
-            RowList = new List<IResultRow>(SelectResult.RowList);
+            RowList = new List<IResultRow>(JoinSelectResult.RowList);
             Assert.That(RowList != null && RowList.Count == 3, $"{TestName} - 0: Count rows ({RowList.Count})");
             Assert.That(TestSchema.Test0_Guid.TryParseRow(RowList[0], out Guid Test0_Row_0_0) && Test0_Row_0_0 == guidKey2, $"{TestName} - 0: Check row 0, column 0");
             Assert.That(!TestSchema.Test0_Int.TryParseRow(RowList[0], out int Test0_Row_0_1), $"{TestName} - 0: Check row 0, column 1");
@@ -497,13 +497,13 @@ namespace Test
             Assert.That(InsertResult.Success, $"{TestName} - 1: Insert first row ({InsertResult.ErrorCode})");
 
             if (isAsync == 0)
-                SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test1.All));
+                JoinSelectResult = Database.Run(new JoinQueryContext(TestSchema.Test1.All));
             else
-                SelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test1.All));
-            Assert.That(SelectResult.Success, $"{TestName} - 1: Read table ({SelectResult.ErrorCode})");
-            Assert.That(SelectResult.RowList != null, $"{TestName} - 1: Read table result");
+                JoinSelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test1.All));
+            Assert.That(JoinSelectResult.Success, $"{TestName} - 1: Read table ({JoinSelectResult.ErrorCode})");
+            Assert.That(JoinSelectResult.RowList != null, $"{TestName} - 1: Read table result");
 
-            RowList = new List<IResultRow>(SelectResult.RowList);
+            RowList = new List<IResultRow>(JoinSelectResult.RowList);
             Assert.That(RowList != null && RowList.Count == 3, $"{TestName} - 1: Count rows ({RowList.Count})");
             Assert.That(TestSchema.Test1_Int.TryParseRow(RowList[0], out int Test1_Row_0_0) && Test1_Row_0_0 == 1, $"{TestName} - 1: Check row 0, column 0");
             Assert.That(TestSchema.Test1_String.TryParseRow(RowList[0], out string Test1_Row_0_1) && Test1_Row_0_1 == "row 0", $"{TestName} - 1: Check row 0, column 1");
@@ -527,7 +527,7 @@ namespace Test
 
             IInsertResult InsertResult;
             IUpdateResult UpdateResult;
-            IJoinQueryResult SelectResult;
+            IJoinQueryResult JoinSelectResult;
             List<IResultRow> RowList;
 
             if (isAsync == 0)
@@ -549,14 +549,14 @@ namespace Test
             Assert.That(UpdateResult.Success, $"{TestName} - 0: Update second and third keys ({UpdateResult.ErrorCode})");
 
             if (isAsync == 0)
-                SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
+                JoinSelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
             else
-                SelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test0.All));
-            Assert.That(SelectResult.Success, $"{TestName} - 0: Read table ({SelectResult.ErrorCode})");
-            Assert.That(SelectResult.RowList != null, $"{TestName} - 0: Read table result");
+                JoinSelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test0.All));
+            Assert.That(JoinSelectResult.Success, $"{TestName} - 0: Read table ({JoinSelectResult.ErrorCode})");
+            Assert.That(JoinSelectResult.RowList != null, $"{TestName} - 0: Read table result");
 
             // Columns are reordered by Guid
-            RowList = new List<IResultRow>(SelectResult.RowList);
+            RowList = new List<IResultRow>(JoinSelectResult.RowList);
             Assert.That(RowList != null && RowList.Count == 3, $"{TestName} - 0: Count rows ({RowList.Count})");
             Assert.That(TestSchema.Test0_Guid.TryParseRow(RowList[0], out Guid Test0_Row_0_0) && Test0_Row_0_0 == guidKey2, $"{TestName} - 0: Check row 0, column 0");
             Assert.That(!TestSchema.Test0_Int.TryParseRow(RowList[0], out int Test0_Row_0_1), $"{TestName} - 0: Check row 0, column 1");
@@ -580,7 +580,7 @@ namespace Test
 
             IInsertResult InsertResult;
             IDeleteResult DeleteResult;
-            IJoinQueryResult SelectResult;
+            IJoinQueryResult JoinSelectResult;
             List<IResultRow> RowList;
 
             if (isAsync == 0)
@@ -604,13 +604,13 @@ namespace Test
             Assert.That(DeleteResult.DeletedRowCount == 1, $"{TestName} - 0: Delete first key (one row) ({DeleteResult.DeletedRowCount})");
 
             if (isAsync == 0)
-                SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
+                JoinSelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
             else
-                SelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test0.All));
-            Assert.That(SelectResult.Success, $"{TestName} - 0: Read table ({SelectResult.ErrorCode})");
-            Assert.That(SelectResult.RowList != null, $"{TestName} - 0: Read table result");
+                JoinSelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test0.All));
+            Assert.That(JoinSelectResult.Success, $"{TestName} - 0: Read table ({JoinSelectResult.ErrorCode})");
+            Assert.That(JoinSelectResult.RowList != null, $"{TestName} - 0: Read table result");
 
-            RowList = new List<IResultRow>(SelectResult.RowList);
+            RowList = new List<IResultRow>(JoinSelectResult.RowList);
             Assert.That(RowList != null && RowList.Count == 2, $"{TestName} - 0: Count rows ({RowList.Count})");
             Assert.That(TestSchema.Test0_Guid.TryParseRow(RowList[0], out Guid Test0_Row_0_0) && Test0_Row_0_0 == guidKey0, $"{TestName} - 0: Check row 0, column 0");
             Assert.That(!TestSchema.Test0_Int.TryParseRow(RowList[0], out int Test0_Row_0_1), $"{TestName} - 0: Check row 0, column 1");
@@ -632,7 +632,7 @@ namespace Test
 
             IInsertResult InsertResult;
             IDeleteResult DeleteResult;
-            IJoinQueryResult SelectResult;
+            IJoinQueryResult JoinSelectResult;
             List<IResultRow> RowList;
 
             if (isAsync == 0)
@@ -649,14 +649,14 @@ namespace Test
             Assert.That(DeleteResult.DeletedRowCount == 2, $"{TestName} - 0: Delete two keys (row count) ({DeleteResult.DeletedRowCount})");
 
             if (isAsync == 0)
-                SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
+                JoinSelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
             else
-                SelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test0.All));
-            Assert.That(SelectResult.Success, $"{TestName} - 0: Read table ({SelectResult.ErrorCode})");
-            Assert.That(SelectResult.RowList != null, $"{TestName} - 0: Read table result");
+                JoinSelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test0.All));
+            Assert.That(JoinSelectResult.Success, $"{TestName} - 0: Read table ({JoinSelectResult.ErrorCode})");
+            Assert.That(JoinSelectResult.RowList != null, $"{TestName} - 0: Read table result");
 
             // Columns are reordered by Guid
-            RowList = new List<IResultRow>(SelectResult.RowList);
+            RowList = new List<IResultRow>(JoinSelectResult.RowList);
             Assert.That(RowList != null && RowList.Count == 1, $"{TestName} - 0: Count rows ({RowList.Count})");
             Assert.That(TestSchema.Test0_Guid.TryParseRow(RowList[0], out Guid Test0_Row_0_0) && Test0_Row_0_0 == guidKey2, $"{TestName} - 0: Check row 0, column 0");
             Assert.That(!TestSchema.Test0_Int.TryParseRow(RowList[0], out int Test0_Row_0_1), $"{TestName} - 0: Check row 0, column 1");
@@ -742,7 +742,7 @@ namespace Test
             InstallDatabase(TestName, false, out ICredential Credential, out ISimpleDatabase Database, out TestSchema);
 
             IInsertResult InsertResult;
-            IJoinQueryResult SelectResult;
+            IJoinQueryResult JoinSelectResult;
             List<IResultRow> RowList;
             IUpdateResult UpdateResult;
 
@@ -753,13 +753,13 @@ namespace Test
             Assert.That(InsertResult.Success, $"{TestName} - 0: Insert first 3 keys ({InsertResult.ErrorCode})");
 
             if (isAsync == 0)
-                SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
+                JoinSelectResult = Database.Run(new JoinQueryContext(TestSchema.Test0.All));
             else
-                SelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test0.All));
-            Assert.That(SelectResult.Success, $"{TestName} - 0: Read table ({SelectResult.ErrorCode})");
-            Assert.That(SelectResult.RowList != null, $"{TestName} - 0: Read table result");
-            Assert.That(SelectResult.RowList.Count == 3, $"{TestName} - 0: Read table result count ({SelectResult.RowList.Count})");
-            RowList = new List<IResultRow>(SelectResult.RowList);
+                JoinSelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test0.All));
+            Assert.That(JoinSelectResult.Success, $"{TestName} - 0: Read table ({JoinSelectResult.ErrorCode})");
+            Assert.That(JoinSelectResult.RowList != null, $"{TestName} - 0: Read table result");
+            Assert.That(JoinSelectResult.RowList.Count == 3, $"{TestName} - 0: Read table result count ({JoinSelectResult.RowList.Count})");
+            RowList = new List<IResultRow>(JoinSelectResult.RowList);
             Assert.That(RowList[2].HasColumn(TestSchema.Test0_Guid), $"{TestName} - 0: Read table last row, guid");
             Assert.That(!RowList[2].HasColumn(TestSchema.Test0_Int), $"{TestName} - 0: Read table last row, int (must fail)");
 
@@ -770,35 +770,35 @@ namespace Test
             Assert.That(InsertResult.Success, $"{TestName} - 1: Insert first row ({InsertResult.ErrorCode})");
 
             if (isAsync == 0)
-                SelectResult = Database.Run(new JoinQueryContext(TestSchema.Test1.All));
+                JoinSelectResult = Database.Run(new JoinQueryContext(TestSchema.Test1.All));
             else
-                SelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test1.All));
-            Assert.That(SelectResult.Success, $"{TestName} - 1: Read table ({SelectResult.ErrorCode})");
-            Assert.That(SelectResult.RowList != null, $"{TestName} - 1: Read table result");
-            Assert.That(SelectResult.RowList.Count == 4, $"{TestName} - 1: Read table result count ({SelectResult.RowList.Count})");
-            RowList = new List<IResultRow>(SelectResult.RowList);
+                JoinSelectResult = await Database.RunAsync(new JoinQueryContext(TestSchema.Test1.All));
+            Assert.That(JoinSelectResult.Success, $"{TestName} - 1: Read table ({JoinSelectResult.ErrorCode})");
+            Assert.That(JoinSelectResult.RowList != null, $"{TestName} - 1: Read table result");
+            Assert.That(JoinSelectResult.RowList.Count == 4, $"{TestName} - 1: Read table result count ({JoinSelectResult.RowList.Count})");
+            RowList = new List<IResultRow>(JoinSelectResult.RowList);
             Assert.That(RowList[3].HasColumn(TestSchema.Test1_Int), $"{TestName} - 1: Read table last row, int");
             Assert.That(RowList[3].HasColumn(TestSchema.Test1_String), $"{TestName} - 1: Read table last row, string");
 
             if (isAsync == 0)
-                SelectResult = Database.Run(new JoinQueryContext(new List<IColumnDescriptor>() { TestSchema.Test0_Guid }));
+                JoinSelectResult = Database.Run(new JoinQueryContext(new List<IColumnDescriptor>() { TestSchema.Test0_Guid }));
             else
-                SelectResult = await Database.RunAsync(new JoinQueryContext(new List<IColumnDescriptor>() { TestSchema.Test0_Guid }));
-            Assert.That(SelectResult.Success, $"{TestName} - 0: Read table, one column ({SelectResult.ErrorCode})");
-            Assert.That(SelectResult.RowList != null, $"{TestName} - 0: Read table result, one column");
-            Assert.That(SelectResult.RowList.Count == 3, $"{TestName} - 0: Read table result count, one column ({SelectResult.RowList.Count})");
-            RowList = new List<IResultRow>(SelectResult.RowList);
+                JoinSelectResult = await Database.RunAsync(new JoinQueryContext(new List<IColumnDescriptor>() { TestSchema.Test0_Guid }));
+            Assert.That(JoinSelectResult.Success, $"{TestName} - 0: Read table, one column ({JoinSelectResult.ErrorCode})");
+            Assert.That(JoinSelectResult.RowList != null, $"{TestName} - 0: Read table result, one column");
+            Assert.That(JoinSelectResult.RowList.Count == 3, $"{TestName} - 0: Read table result count, one column ({JoinSelectResult.RowList.Count})");
+            RowList = new List<IResultRow>(JoinSelectResult.RowList);
             Assert.That(RowList[2].HasColumn(TestSchema.Test0_Guid), $"{TestName} - 0: Read table last row, guid");
             Assert.That(!RowList[2].HasColumn(TestSchema.Test0_Int), $"{TestName} - 0: Read table last row, int (must fail)");
 
             if (isAsync == 0)
-                SelectResult = Database.Run(new JoinQueryContext(new List<IColumnDescriptor>() { TestSchema.Test1_String }));
+                JoinSelectResult = Database.Run(new JoinQueryContext(new List<IColumnDescriptor>() { TestSchema.Test1_String }));
             else
-                SelectResult = await Database.RunAsync(new JoinQueryContext(new List<IColumnDescriptor>() { TestSchema.Test1_String }));
-            Assert.That(SelectResult.Success, $"{TestName} - 1: Read table ({SelectResult.ErrorCode})");
-            Assert.That(SelectResult.RowList != null, $"{TestName} - 1: Read table result");
-            Assert.That(SelectResult.RowList.Count == 4, $"{TestName} - 1: Read table result count ({SelectResult.RowList.Count})");
-            RowList = new List<IResultRow>(SelectResult.RowList);
+                JoinSelectResult = await Database.RunAsync(new JoinQueryContext(new List<IColumnDescriptor>() { TestSchema.Test1_String }));
+            Assert.That(JoinSelectResult.Success, $"{TestName} - 1: Read table ({JoinSelectResult.ErrorCode})");
+            Assert.That(JoinSelectResult.RowList != null, $"{TestName} - 1: Read table result");
+            Assert.That(JoinSelectResult.RowList.Count == 4, $"{TestName} - 1: Read table result count ({JoinSelectResult.RowList.Count})");
+            RowList = new List<IResultRow>(JoinSelectResult.RowList);
             Assert.That(!RowList[3].HasColumn(TestSchema.Test1_Int) || !(((SimpleDatabase)Database).CanIntBeNULL), $"{TestName} - 1: Read table last row, int (must fail)");
             Assert.That(RowList[3].HasColumn(TestSchema.Test1_String), $"{TestName} - 1: Read table last row, string");
 
@@ -815,12 +815,12 @@ namespace Test
 
             IJoin Join = new LeftJoin(TestSchema.Test1_Int, TestSchema.Test0_Int);
             if (isAsync == 0)
-                SelectResult = Database.Run(new JoinQueryContext(Join, new List<IColumnDescriptor>() { TestSchema.Test1_String, TestSchema.Test0_Guid }));
+                JoinSelectResult = Database.Run(new JoinQueryContext(Join, new List<IColumnDescriptor>() { TestSchema.Test1_String, TestSchema.Test0_Guid }));
             else
-                SelectResult = await Database.RunAsync(new JoinQueryContext(Join, new List<IColumnDescriptor>() { TestSchema.Test1_String, TestSchema.Test0_Guid }));
-            Assert.That(SelectResult.Success, $"{TestName} - Join: Read table ({SelectResult.ErrorCode})");
-            Assert.That(SelectResult.RowList != null, $"{TestName} - Join: Read table result");
-            RowList = new List<IResultRow>(SelectResult.RowList);
+                JoinSelectResult = await Database.RunAsync(new JoinQueryContext(Join, new List<IColumnDescriptor>() { TestSchema.Test1_String, TestSchema.Test0_Guid }));
+            Assert.That(JoinSelectResult.Success, $"{TestName} - Join: Read table ({JoinSelectResult.ErrorCode})");
+            Assert.That(JoinSelectResult.RowList != null, $"{TestName} - Join: Read table result");
+            RowList = new List<IResultRow>(JoinSelectResult.RowList);
             Assert.That(RowList.Count == 3, $"{TestName} - Join: Read table result count ({RowList.Count})");
             Assert.That(RowList[0].HasColumn(TestSchema.Test0_Guid), $"{TestName} - Join: Read table row 0 column 0");
             Assert.That(RowList[0].HasColumn(TestSchema.Test1_String), $"{TestName} - Join: Read table row 0 column 1");
@@ -879,6 +879,6 @@ namespace Test
             UninstallDatabase(TestName, ref Credential, ref Database, ref TestSchema);
         }
         #endregion
-
+*/
     }
 }
