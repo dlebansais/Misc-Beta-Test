@@ -1,8 +1,8 @@
 @echo off
 
-if not exist "..\packages\NUnit.ConsoleRunner.3.7.0\tools\nunit3-console.exe" goto error_console
+if not exist "..\packages\NUnit.ConsoleRunner.3.9.0\tools\nunit3-console.exe" goto error_console
 if not exist "..\Test-PolySerializer\bin\x64\Release\Test-PolySerializer.dll" goto error_PolySerializer
-"..\packages\NUnit.ConsoleRunner.3.7.0\tools\nunit3-console.exe" --trace=Debug --labels=All "..\Test-PolySerializer\bin\x64\Release\Test-PolySerializer.dll"
+"..\packages\NUnit.ConsoleRunner.3.9.0\tools\nunit3-console.exe" --trace=Debug --labels=All "..\Test-PolySerializer\bin\x64\Release\Test-PolySerializer.dll"
 pause
 goto end
 
