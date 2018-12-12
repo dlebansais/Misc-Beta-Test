@@ -2,7 +2,7 @@
 
 if not exist "..\packages\NUnit.ConsoleRunner.3.9.0\tools\nunit3-console.exe" goto error_console
 if not exist "..\Test-Easly-Controller\bin\x64\Release\Test-Easly-Controller.dll" goto error_EaslyController
-"..\packages\NUnit.ConsoleRunner.3.9.0\tools\nunit3-console.exe" --trace=Debug --labels=All "..\Test-Easly-Controller\bin\x64\Release\Test-Easly-Controller.dll"
+"..\packages\NUnit.ConsoleRunner.3.9.0\tools\nunit3-console.exe" --trace=Debug --labels=All "./bin/x64/Release/Test-Easly-Controller.dll"
 pause
 goto end
 

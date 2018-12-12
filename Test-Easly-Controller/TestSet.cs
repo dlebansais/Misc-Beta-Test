@@ -49,6 +49,17 @@ namespace Test
                     }
                 }
             }
+            else if (File.Exists("./Easly-Controller/bin/x64/Travis/test.easly"))
+            {
+                using (FileStream fs = new FileStream("./Easly-Controller/bin/x64/Travis/test.easly", FileMode.Open, FileAccess.Read))
+                {
+                    Serializer Serializer = new Serializer();
+                    RootNode = Serializer.Deserialize(fs) as INode;
+                    using (StreamReader sr = new StreamReader(fs))
+                    {
+                    }
+                }
+            }
             else
             {
                 RootNode = NodeHelper.CreateEmptyName();
