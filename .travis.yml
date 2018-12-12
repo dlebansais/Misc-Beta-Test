@@ -10,6 +10,7 @@ script:
 - cp ./Test-LargeList/bin/x64/Travis/Test-LargeList.dll ./Misc-Beta-Test/bin/x64/Travis
 - cp ./Test-PolySerializer/bin/x64/Travis/Test-PolySerializer.dll ./Misc-Beta-Test/bin/x64/Travis
 - cp ./Test-SimpleDatabase/bin/x64/Travis/Test-SimpleDatabase.dll ./Misc-Beta-Test/bin/x64/Travis
+- cp ./Test-Easly-Controller/bin/x64/Travis/Test-Easly-Controller.dll ./Misc-Beta-Test/bin/x64/Travis
 
 deploy:
   provider: pages
