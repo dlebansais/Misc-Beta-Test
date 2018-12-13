@@ -62,7 +62,7 @@ namespace Test
 
         static INode RootNode;
         #endregion
-
+        /*
         #region Sanity Check
         [Test]
         public static void TestInit()
@@ -74,8 +74,8 @@ namespace Test
             Assert.That(Controller.RootIndex == RootIndex, "Sanity Check #1");
             Assert.That(Controller.RootState != null, "Sanity Check #2");
             Assert.That(Controller.RootState.Node == RootNode, "Sanity Check #3");
-            Assert.That(Controller.ContainsNode(RootNode), "Sanity Check #4");
-            Assert.That(Controller.NodeToState(RootNode) == Controller.RootState, "Sanity Check #5");
+            Assert.That(Controller.Contains(RootIndex), "Sanity Check #4");
+            Assert.That(Controller.ToState(RootIndex) == Controller.RootState, "Sanity Check #5");
         }
         #endregion
 
@@ -87,14 +87,14 @@ namespace Test
             IReadOnlyController Controller = ReadOnlyController.Create(RootIndex);
 
             Stats Stats = new Stats();
-            BrowseNode(Controller, RootNode, Stats);
+            BrowseNode(Controller, RootIndex, Stats);
 
-            const int ExpectedNodeCount = 170;
-            const int ExpectedPlaceholderNodeCount = 157;
+            const int ExpectedNodeCount = 155;
+            const int ExpectedPlaceholderNodeCount = 142;
             const int ExpectedOptionalNodeCount = 12;
             const int ExpectedAssignedOptionalNodeCount = 4;
-            const int ExpectedListCount = 12;
-            const int ExpectedBlockListCount = 103;
+            const int ExpectedListCount = 5;
+            const int ExpectedBlockListCount = 96;
 
             Assert.That(Stats.NodeCount == ExpectedNodeCount, $"Failed to browse tree. Expected: {ExpectedNodeCount} node(s), Found: {Stats.NodeCount}");
             Assert.That(Stats.PlaceholderNodeCount == ExpectedPlaceholderNodeCount, $"Failed to browse tree. Expected: {ExpectedPlaceholderNodeCount} placeholder node(s), Found: {Stats.PlaceholderNodeCount}");
@@ -111,79 +111,110 @@ namespace Test
             Assert.That(Controller.Stats.BlockListCount == ExpectedBlockListCount, $"Invalid controller state. Expected: {ExpectedBlockListCount} block list(s), Found: {Controller.Stats.BlockListCount}");
         }
 
-        static void BrowseNode(IReadOnlyController controller, INode node, Stats stats)
+        static void BrowseNode(IReadOnlyController controller, IReadOnlyIndex index, Stats stats)
         {
-            Assert.That(node != null, "State Tree #0");
-            Assert.That(controller.ContainsNode(node), "State Tree #1");
-            IReadOnlyNodeState State = controller.NodeToState(node);
+            Assert.That(index != null, "State Tree #0");
+            Assert.That(controller.Contains(index), "State Tree #1");
+            IReadOnlyNodeState State = controller.ToState(index);
             Assert.That(State != null, "State Tree #2");
-            Assert.That(State.Node == node, "State Tree #3");
+            Assert.That(State.ParentIndex == index, "State Tree #4");
+
+            INode Node;
+
+            if (State is IReadOnlyPlaceholderNodeState AsPlaceholderState)
+                Node = AsPlaceholderState.Node;
+            else
+            {
+                Assert.That(State is IReadOnlyOptionalNodeState, "State Tree #5");
+                IReadOnlyOptionalNodeState AsOptionalState = (IReadOnlyOptionalNodeState)State;
+                IReadOnlyOptionalInner ParentInner = AsOptionalState.ParentInner;
+
+                Assert.That(ParentInner.IsAssigned, "State Tree #6");
+
+                Node = AsOptionalState.Node;
+            }
 
             stats.NodeCount++;
 
             Type ChildNodeType;
-            IList<string> PropertyNames = NodeTreeHelper.EnumChildNodeProperties(node);
+            IList<string> PropertyNames = NodeTreeHelper.EnumChildNodeProperties(Node);
 
             foreach (string PropertyName in PropertyNames)
             {
-                if (NodeTreeHelper.IsChildNodeProperty(node, PropertyName))
+                if (NodeTreeHelper.IsChildNodeProperty(Node, PropertyName, out ChildNodeType))
                 {
                     stats.PlaceholderNodeCount++;
 
-                    NodeTreeHelper.GetChildNode(node, PropertyName, out bool IsAssigned, out INode ChildNode);
-                    Assert.That(IsAssigned, "State Tree #4");
-
-                    BrowseNode(controller, ChildNode, stats);
+                    IReadOnlyPlaceholderInner Inner = (IReadOnlyPlaceholderInner)State.PropertyToInner(PropertyName);
+                    IReadOnlyNodeState ChildState = Inner.ChildState;
+                    IReadOnlyIndex ChildIndex = ChildState.ParentIndex;
+                    BrowseNode(controller, ChildIndex, stats);
                 }
 
-                else if (NodeTreeHelper.IsOptionalChildNodeProperty(node, PropertyName))
+                else if (NodeTreeHelper.IsOptionalChildNodeProperty(Node, PropertyName, out ChildNodeType))
                 {
                     stats.OptionalNodeCount++;
 
-                    NodeTreeHelper.GetChildNode(node, PropertyName, out bool IsAssigned, out INode ChildNode);
+                    NodeTreeHelper.GetChildNode(Node, PropertyName, out bool IsAssigned, out INode ChildNode);
                     if (IsAssigned)
+                    {
                         stats.AssignedOptionalNodeCount++;
 
-                    BrowseNode(controller, ChildNode, stats);
+                        IReadOnlyOptionalInner Inner = (IReadOnlyOptionalInner)State.PropertyToInner(PropertyName);
+                        IReadOnlyNodeState ChildState = Inner.ChildState;
+                        IReadOnlyIndex ChildIndex = ChildState.ParentIndex;
+                        BrowseNode(controller, ChildIndex, stats);
+                    }
+                    else
+                        stats.NodeCount++;
                 }
 
-                else if (NodeTreeHelper.IsChildNodeList(node, PropertyName, out ChildNodeType))
+                else if (NodeTreeHelper.IsChildNodeList(Node, PropertyName, out ChildNodeType))
                 {
                     stats.ListCount++;
-                    NodeTreeHelper.GetChildNodeList(node, PropertyName, out IReadOnlyList<INode> ChildNodeList);
 
-                    foreach (INode ChildNode in ChildNodeList)
+                    IReadOnlyListInner Inner = (IReadOnlyListInner)State.PropertyToInner(PropertyName);
+
+                    for (int i = 0; i < Inner.StateList.Count; i++)
                     {
                         stats.PlaceholderNodeCount++;
-                        BrowseNode(controller, ChildNode, stats);
+
+                        IReadOnlyPlaceholderNodeState ChildState = Inner.StateList[i];
+                        IReadOnlyIndex ChildIndex = ChildState.ParentIndex;
+                        BrowseNode(controller, ChildIndex, stats);
                     }
                 }
 
-                else if (NodeTreeHelper.IsChildBlockList(node, PropertyName, out Type ChildInterfaceType, out ChildNodeType))
+                else if (NodeTreeHelper.IsChildBlockList(Node, PropertyName, out Type ChildInterfaceType, out ChildNodeType))
                 {
                     stats.BlockListCount++;
 
-                    NodeTreeHelper.GetChildBlockList(node, PropertyName, out IReadOnlyList<INodeTreeBlock> ChildBlockNodeList);
+                    IReadOnlyBlockListInner Inner = (IReadOnlyBlockListInner)State.PropertyToInner(PropertyName);
 
-                    foreach (INodeTreeBlock ChildBlockNode in ChildBlockNodeList)
+                    for (int BlockIndex = 0; BlockIndex < Inner.BlockStateList.Count; BlockIndex++)
                     {
-                        stats.PlaceholderNodeCount++;
-                        BrowseNode(controller, ChildBlockNode.ReplicationPattern, stats);
+                        IReadOnlyBlockState BlockState = Inner.BlockStateList[BlockIndex];
 
                         stats.PlaceholderNodeCount++;
-                        BrowseNode(controller, ChildBlockNode.SourceIdentifier, stats);
+                        BrowseNode(controller, BlockState.PatternIndex, stats);
 
-                        foreach (INode ChildNode in ChildBlockNode.NodeList)
+                        stats.PlaceholderNodeCount++;
+                        BrowseNode(controller, BlockState.SourceIndex, stats);
+
+                        for (int i = 0; i < BlockState.StateList.Count; i++)
                         {
                             stats.PlaceholderNodeCount++;
-                            BrowseNode(controller, ChildNode, stats);
+
+                            IReadOnlyPlaceholderNodeState ChildState = BlockState.StateList[i];
+                            IReadOnlyIndex ChildIndex = ChildState.ParentIndex;
+                            BrowseNode(controller, ChildIndex, stats);
                         }
                     }
                 }
 
                 else
                 {
-                    Type NodeType = node.GetType();
+                    Type NodeType = Node.GetType();
                     PropertyInfo Info = NodeType.GetProperty(PropertyName);
 
                     if (Info.PropertyType == typeof(IDocument))
@@ -209,5 +240,6 @@ namespace Test
             }
         }
         #endregion
+    */
     }
 }
