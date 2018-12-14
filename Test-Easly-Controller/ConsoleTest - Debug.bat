@@ -4,7 +4,6 @@ if not exist "..\packages\NUnit.ConsoleRunner.3.9.0\tools\nunit3-console.exe" go
 if not exist "..\Test-Easly-Controller\bin\x64\Debug\Test-Easly-Controller.dll" goto error_EaslyController
 del *.log
 "..\packages\NUnit.ConsoleRunner.3.9.0\tools\nunit3-console.exe" --trace=Debug --labels=All "./bin/x64/Debug/Test-Easly-Controller.dll"
-pause
 goto end
 
 :error_console

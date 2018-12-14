@@ -63,6 +63,8 @@ namespace Test
         static INode RootNode;
         #endregion
 
+/*
+
         #region Sanity Check
         [Test]
         public static void TestInit()
@@ -240,5 +242,6 @@ namespace Test
             }
         }
         #endregion
+*/
     }
 }
