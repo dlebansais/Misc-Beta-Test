@@ -63,7 +63,7 @@ namespace Test
         static INode RootNode;
         #endregion
 
-/*
+
 
         #region Sanity Check
         [Test]
@@ -77,7 +77,7 @@ namespace Test
             Assert.That(Controller.RootState != null, "Sanity Check #2");
             Assert.That(Controller.RootState.Node == RootNode, "Sanity Check #3");
             Assert.That(Controller.Contains(RootIndex), "Sanity Check #4");
-            Assert.That(Controller.ToState(RootIndex) == Controller.RootState, "Sanity Check #5");
+            Assert.That(Controller.IndexToState(RootIndex) == Controller.RootState, "Sanity Check #5");
         }
         #endregion
 
@@ -117,7 +117,7 @@ namespace Test
         {
             Assert.That(index != null, "State Tree #0");
             Assert.That(controller.Contains(index), "State Tree #1");
-            IReadOnlyNodeState State = controller.ToState(index);
+            IReadOnlyNodeState State = controller.IndexToState(index);
             Assert.That(State != null, "State Tree #2");
             Assert.That(State.ParentIndex == index, "State Tree #4");
 
@@ -129,7 +129,7 @@ namespace Test
             {
                 Assert.That(State is IReadOnlyOptionalNodeState, "State Tree #5");
                 IReadOnlyOptionalNodeState AsOptionalState = (IReadOnlyOptionalNodeState)State;
-                IReadOnlyOptionalInner ParentInner = AsOptionalState.ParentInner;
+                IReadOnlyOptionalInner<IReadOnlyBrowsingOptionalNodeIndex> ParentInner = AsOptionalState.ParentInner;
 
                 Assert.That(ParentInner.IsAssigned, "State Tree #6");
 
@@ -242,6 +242,6 @@ namespace Test
             }
         }
         #endregion
-*/
+
     }
 }
