@@ -284,6 +284,39 @@ namespace Test
         }
         #endregion
 
+        #region Views
+        [Test]
+        [TestCaseSource(nameof(FileIndexRange))]
+        public static void StateViews(int index)
+        {
+            if (TestOff)
+                return;
+
+            INode RootNode = null;
+            int n = index;
+            foreach (KeyValuePair<string, INode> Entry in RootNodeTable)
+            {
+                RootNode = Entry.Value;
+                if (n == 0)
+                    break;
+                n--;
+            }
+
+            if (n > 0)
+                throw new ArgumentOutOfRangeException($"{n} / {RootNodeTable.Count}");
+            TestStateView(index, RootNode);
+        }
+
+        public static void TestStateView(int index, INode rootNode)
+        {
+            IReadOnlyRootNodeIndex RootIndex = new ReadOnlyRootNodeIndex(rootNode);
+            IReadOnlyController Controller = ReadOnlyController.Create(RootIndex);
+            IReadOnlyControllerView ControllerView = ReadOnlyControllerView.Create(Controller);
+
+            Assert.That(ControllerView.StateViewTable.Count == Controller.Stats.NodeCount, $"Views #0");
+        }
+        #endregion
+
         #region Writeable
         [Test]
         [TestCaseSource(nameof(FileIndexRange))]
