@@ -10,6 +10,7 @@ using PolySerializer;
 using System.Collections.Generic;
 using System;
 using EaslyController;
+using EaslyController.Writeable;
 
 namespace Test
 {
@@ -66,6 +67,12 @@ namespace Test
                 AddEaslyFiles(Folder);
         }
 
+        static IEnumerable<int> FileIndexRange()
+        {
+            for (int i = 0; i < 173; i++)
+                yield return i;
+        }
+
         static Dictionary<string, INode> RootNodeTable;
         static INode FirstRootNode;
         #endregion
@@ -91,10 +98,10 @@ namespace Test
         }
         #endregion
 
-        #region State Tree
+        #region ReadOnly
         [Test]
         [TestCaseSource(nameof(FileIndexRange))]
-        public static void StateTree(int index)
+        public static void ReadOnly(int index)
         {
             if (TestOff)
                 return;
@@ -111,16 +118,10 @@ namespace Test
 
             if (n > 0)
                 throw new ArgumentOutOfRangeException($"{n} / {RootNodeTable.Count}");
-            TestStateTree(index, RootNode);
+            TestReadOnly(index, RootNode);
         }
 
-        static IEnumerable<int> FileIndexRange()
-        {
-            for (int i = 0; i < 173; i++)
-                yield return i;
-        }
-
-        public static void TestStateTree(int index, INode rootNode)
+        public static void TestReadOnly(int index, INode rootNode)
         {
             IReadOnlyRootNodeIndex RootIndex = new ReadOnlyRootNodeIndex(rootNode);
             IReadOnlyController Controller = ReadOnlyController.Create(RootIndex);
@@ -155,11 +156,11 @@ namespace Test
 
         static void BrowseNode(IReadOnlyController controller, IReadOnlyIndex index, Stats stats)
         {
-            Assert.That(index != null, "State Tree #0");
-            Assert.That(controller.Contains(index), "State Tree #1");
+            Assert.That(index != null, "ReadOnly #0");
+            Assert.That(controller.Contains(index), "ReadOnly #1");
             IReadOnlyNodeState State = controller.IndexToState(index);
-            Assert.That(State != null, "State Tree #2");
-            Assert.That(State.ParentIndex == index, "State Tree #4");
+            Assert.That(State != null, "ReadOnly #2");
+            Assert.That(State.ParentIndex == index, "ReadOnly #4");
 
             INode Node;
 
@@ -167,11 +168,11 @@ namespace Test
                 Node = AsPlaceholderState.Node;
             else
             {
-                Assert.That(State is IReadOnlyOptionalNodeState, "State Tree #5");
+                Assert.That(State is IReadOnlyOptionalNodeState, "ReadOnly #5");
                 IReadOnlyOptionalNodeState AsOptionalState = (IReadOnlyOptionalNodeState)State;
                 IReadOnlyOptionalInner<IReadOnlyBrowsingOptionalNodeIndex> ParentInner = AsOptionalState.ParentInner;
 
-                Assert.That(ParentInner.IsAssigned, "State Tree #6");
+                Assert.That(ParentInner.IsAssigned, "ReadOnly #6");
 
                 Node = AsOptionalState.Node;
             }
@@ -280,6 +281,63 @@ namespace Test
                     }
                 }
             }
+        }
+        #endregion
+
+        #region Writeable
+        [Test]
+        [TestCaseSource(nameof(FileIndexRange))]
+        public static void Writeable(int index)
+        {
+            if (TestOff)
+                return;
+
+            INode RootNode = null;
+            int n = index;
+            foreach (KeyValuePair<string, INode> Entry in RootNodeTable)
+            {
+                RootNode = Entry.Value;
+                if (n == 0)
+                    break;
+                n--;
+            }
+
+            if (n > 0)
+                throw new ArgumentOutOfRangeException($"{n} / {RootNodeTable.Count}");
+            TestWriteable(index, RootNode);
+        }
+
+        public static void TestWriteable(int index, INode rootNode)
+        {
+            IWriteableRootNodeIndex RootIndex = new WriteableRootNodeIndex(rootNode);
+            IWriteableController Controller = WriteableController.Create(RootIndex);
+
+            Stats Stats = new Stats();
+            BrowseNode(Controller, RootIndex, Stats);
+
+            if (index == 0)
+            {
+                const int ExpectedNodeCount = 155;
+                const int ExpectedPlaceholderNodeCount = 142;
+                const int ExpectedOptionalNodeCount = 12;
+                const int ExpectedAssignedOptionalNodeCount = 4;
+                const int ExpectedListCount = 5;
+                const int ExpectedBlockListCount = 96;
+
+                Assert.That(Stats.NodeCount == ExpectedNodeCount, $"Failed to browse tree. Expected: {ExpectedNodeCount} node(s), Found: {Stats.NodeCount}");
+                Assert.That(Stats.PlaceholderNodeCount == ExpectedPlaceholderNodeCount, $"Failed to browse tree. Expected: {ExpectedPlaceholderNodeCount} placeholder node(s), Found: {Stats.PlaceholderNodeCount}");
+                Assert.That(Stats.OptionalNodeCount == ExpectedOptionalNodeCount, $"Failed to browse tree. Expected: {ExpectedOptionalNodeCount } optional node(s), Found: {Stats.OptionalNodeCount}");
+                Assert.That(Stats.AssignedOptionalNodeCount == ExpectedAssignedOptionalNodeCount, $"Failed to browse tree. Expected: {ExpectedAssignedOptionalNodeCount} assigned optional node(s), Found: {Stats.AssignedOptionalNodeCount}");
+                Assert.That(Stats.ListCount == ExpectedListCount, $"Failed to browse tree. Expected: {ExpectedListCount} list(s), Found: {Stats.ListCount}");
+                Assert.That(Stats.BlockListCount == ExpectedBlockListCount, $"Failed to browse tree. Expected: {ExpectedBlockListCount} block list(s), Found: {Stats.BlockListCount}");
+            }
+
+            Assert.That(Controller.Stats.NodeCount == Stats.NodeCount, $"Invalid controller state. Expected: {Stats.NodeCount} node(s), Found: {Controller.Stats.NodeCount}");
+            Assert.That(Controller.Stats.PlaceholderNodeCount == Stats.PlaceholderNodeCount, $"Invalid controller state. Expected: {Stats.PlaceholderNodeCount} placeholder node(s), Found: {Controller.Stats.PlaceholderNodeCount}");
+            Assert.That(Controller.Stats.OptionalNodeCount == Stats.OptionalNodeCount, $"Invalid controller state. Expected: {Stats.OptionalNodeCount } optional node(s), Found: {Controller.Stats.OptionalNodeCount}");
+            Assert.That(Controller.Stats.AssignedOptionalNodeCount == Stats.AssignedOptionalNodeCount, $"Invalid controller state. Expected: {Stats.AssignedOptionalNodeCount } assigned optional node(s), Found: {Controller.Stats.AssignedOptionalNodeCount}");
+            Assert.That(Controller.Stats.ListCount == Stats.ListCount, $"Invalid controller state. Expected: {Stats.ListCount} list(s), Found: {Controller.Stats.ListCount}");
+            Assert.That(Controller.Stats.BlockListCount == Stats.BlockListCount, $"Invalid controller state. Expected: {Stats.BlockListCount} block list(s), Found: {Controller.Stats.BlockListCount}");
         }
         #endregion
     }
