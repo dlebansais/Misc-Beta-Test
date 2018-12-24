@@ -77,7 +77,7 @@ namespace Test
         static INode FirstRootNode;
         #endregion
 
-        static bool TestOff = true;
+        static bool TestOff = false;
 
         #region Sanity Check
         [Test]
@@ -123,6 +123,8 @@ namespace Test
 
         public static void TestReadOnly(int index, INode rootNode)
         {
+            ControllerTools.ResetExpectedName();
+
             TestReadOnlyStats(index, rootNode);
         }
 
@@ -329,6 +331,9 @@ namespace Test
                 IReadOnlyNodeStateView View = Entry.Value;
                 Assert.That(View.State == State, $"Views #3");
             }
+
+            IReadOnlyControllerView ControllerView2 = ReadOnlyControllerView.Create(Controller);
+            Assert.That(ControllerView2.IsEqual(ControllerView), $"Views #4");
         }
         #endregion
 
@@ -357,11 +362,12 @@ namespace Test
 
         public static void TestWriteable(int index, INode rootNode)
         {
+            ControllerTools.ResetExpectedName();
+
             TestWriteableStats(index, rootNode, out Stats Stats);
-            /*
+
             Random rand = new Random(0x123456);
-            rand.Next(Stats.BlockListCount);
-            */
+            TestWriteableInsert(index, rootNode, rand);
         }
 
         public static void TestWriteableStats(int index, INode rootNode, out Stats stats)
@@ -395,6 +401,159 @@ namespace Test
             Assert.That(Controller.Stats.AssignedOptionalNodeCount == stats.AssignedOptionalNodeCount, $"Invalid controller state. Expected: {stats.AssignedOptionalNodeCount } assigned optional node(s), Found: {Controller.Stats.AssignedOptionalNodeCount}");
             Assert.That(Controller.Stats.ListCount == stats.ListCount, $"Invalid controller state. Expected: {stats.ListCount} list(s), Found: {Controller.Stats.ListCount}");
             Assert.That(Controller.Stats.BlockListCount == stats.BlockListCount, $"Invalid controller state. Expected: {stats.BlockListCount} block list(s), Found: {Controller.Stats.BlockListCount}");
+        }
+
+        public static void TestWriteableInsert(int index, INode rootNode, Random rand)
+        {
+            IWriteableRootNodeIndex RootIndex = new WriteableRootNodeIndex(rootNode);
+            IWriteableController Controller = WriteableController.Create(RootIndex);
+            IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
+
+            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => InsertAndCompare(ControllerView, rand, inner));
+        }
+
+        static void InsertAndCompare(IWriteableControllerView controllerView, Random rand, IWriteableInner inner)
+        {
+            IWriteableController Controller = controllerView.Controller;
+
+            INode NewNode;
+            try
+            {
+                NewNode = NodeHelper.CreateDefault(inner.InterfaceType);
+            }
+            catch
+            {
+                NewNode = null;
+            }
+            //Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
+
+            if (NewNode == null)
+                return;
+
+            if (inner is IWriteableListInner<IWriteableBrowsingListNodeIndex> AsListInner)
+            {
+                if (AsListInner.StateList.Count > 0)
+                {
+                    int Index = rand.Next(AsListInner.StateList.Count + 1);
+                    IWriteableInsertionListNodeIndex NodeIndex = new WriteableInsertionListNodeIndex(AsListInner.Owner.Node, AsListInner.PropertyName, NewNode, Index);
+                    Controller.Insert(AsListInner, NodeIndex);
+
+                    IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+                    Assert.That(NewView.IsEqual(controllerView));
+                }
+            }
+            else if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
+            {
+                if (rand.Next(2) == 0)
+                {
+                    if (AsBlockListInner.BlockStateList.Count > 0)
+                    {
+                        int BlockIndex = rand.Next(AsBlockListInner.BlockStateList.Count);
+                        IWriteableBlockState BlockState = AsBlockListInner.BlockStateList[BlockIndex];
+                        int Index = rand.Next(BlockState.StateList.Count + 1);
+
+                        IWriteableInsertionExistingBlockNodeIndex NodeIndex = new WriteableInsertionExistingBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, BlockIndex, Index);
+                        Controller.Insert(AsBlockListInner, NodeIndex);
+
+                        IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+                        Assert.That(NewView.IsEqual(controllerView));
+                    }
+                }
+                else
+                {
+                    int BlockIndex = rand.Next(AsBlockListInner.BlockStateList.Count + 1);
+                    IPattern ReplicationPattern = NodeHelper.CreateSimplePattern("x");
+                    IIdentifier SourceIdentifier = NodeHelper.CreateSimpleIdentifier("y");
+                    IWriteableInsertionNewBlockNodeIndex NodeIndex = new WriteableInsertionNewBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, BlockIndex, ReplicationPattern, SourceIdentifier);
+                    Controller.Insert(AsBlockListInner, NodeIndex);
+
+                    IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+                    Assert.That(NewView.IsEqual(controllerView));
+                }
+            }
+        }
+
+        static void BrowseNode(IWriteableController controller, IWriteableIndex index, Action<IWriteableInner> test)
+        {
+            Assert.That(index != null, "Writeable #0");
+            Assert.That(controller.Contains(index), "Writeable #1");
+            IWriteableNodeState State = (IWriteableNodeState)controller.IndexToState(index);
+            Assert.That(State != null, "Writeable #2");
+            Assert.That(State.ParentIndex == index, "Writeable #4");
+
+            INode Node;
+
+            if (State is IWriteablePlaceholderNodeState AsPlaceholderState)
+                Node = AsPlaceholderState.Node;
+            else
+            {
+                Assert.That(State is IWriteableOptionalNodeState, "Writeable #5");
+                IWriteableOptionalNodeState AsOptionalState = (IWriteableOptionalNodeState)State;
+                IWriteableOptionalInner<IWriteableBrowsingOptionalNodeIndex> ParentInner = AsOptionalState.ParentInner;
+
+                Assert.That(ParentInner.IsAssigned, "Writeable #6");
+
+                Node = AsOptionalState.Node;
+            }
+
+            Type ChildNodeType;
+            IList<string> PropertyNames = NodeTreeHelper.EnumChildNodeProperties(Node);
+
+            foreach (string PropertyName in PropertyNames)
+            {
+                if (NodeTreeHelper.IsChildNodeProperty(Node, PropertyName, out ChildNodeType))
+                {
+                    IWriteablePlaceholderInner Inner = (IWriteablePlaceholderInner)State.PropertyToInner(PropertyName);
+                    IWriteableNodeState ChildState = Inner.ChildState;
+                    IWriteableIndex ChildIndex = ChildState.ParentIndex;
+                    BrowseNode(controller, ChildIndex, test);
+                }
+
+                else if (NodeTreeHelper.IsOptionalChildNodeProperty(Node, PropertyName, out ChildNodeType))
+                {
+                    NodeTreeHelper.GetChildNode(Node, PropertyName, out bool IsAssigned, out INode ChildNode);
+                    if (IsAssigned)
+                    {
+                        IWriteableOptionalInner Inner = (IWriteableOptionalInner)State.PropertyToInner(PropertyName);
+                        IWriteableNodeState ChildState = Inner.ChildState;
+                        IWriteableIndex ChildIndex = ChildState.ParentIndex;
+                        BrowseNode(controller, ChildIndex, test);
+                    }
+                }
+
+                else if (NodeTreeHelper.IsChildNodeList(Node, PropertyName, out ChildNodeType))
+                {
+                    IWriteableListInner Inner = (IWriteableListInner)State.PropertyToInner(PropertyName);
+                    test(Inner);
+
+                    for (int i = 0; i < Inner.StateList.Count; i++)
+                    {
+                        IWriteablePlaceholderNodeState ChildState = Inner.StateList[i];
+                        IWriteableIndex ChildIndex = ChildState.ParentIndex;
+                        BrowseNode(controller, ChildIndex, test);
+                    }
+                }
+
+                else if (NodeTreeHelper.IsChildBlockList(Node, PropertyName, out Type ChildInterfaceType, out ChildNodeType))
+                {
+                    IWriteableBlockListInner Inner = (IWriteableBlockListInner)State.PropertyToInner(PropertyName);
+                    test(Inner);
+
+                    for (int BlockIndex = 0; BlockIndex < Inner.BlockStateList.Count; BlockIndex++)
+                    {
+                        IWriteableBlockState BlockState = Inner.BlockStateList[BlockIndex];
+                        BrowseNode(controller, BlockState.PatternIndex, test);
+                        BrowseNode(controller, BlockState.SourceIndex, test);
+
+                        for (int i = 0; i < BlockState.StateList.Count; i++)
+                        {
+                            IWriteablePlaceholderNodeState ChildState = BlockState.StateList[i];
+                            IWriteableIndex ChildIndex = ChildState.ParentIndex;
+                            BrowseNode(controller, ChildIndex, test);
+                        }
+                    }
+                }
+            }
         }
         #endregion
     }
