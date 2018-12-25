@@ -191,7 +191,7 @@ namespace Test
 
             foreach (string PropertyName in PropertyNames)
             {
-                if (NodeTreeHelper.IsChildNodeProperty(Node, PropertyName, out ChildNodeType))
+                if (NodeTreeHelperChild.IsChildNodeProperty(Node, PropertyName, out ChildNodeType))
                 {
                     stats.PlaceholderNodeCount++;
 
@@ -201,11 +201,11 @@ namespace Test
                     BrowseNode(controller, ChildIndex, stats);
                 }
 
-                else if (NodeTreeHelper.IsOptionalChildNodeProperty(Node, PropertyName, out ChildNodeType))
+                else if (NodeTreeHelperOptional.IsOptionalChildNodeProperty(Node, PropertyName, out ChildNodeType))
                 {
                     stats.OptionalNodeCount++;
 
-                    NodeTreeHelper.GetChildNode(Node, PropertyName, out bool IsAssigned, out INode ChildNode);
+                    NodeTreeHelperOptional.GetChildNode(Node, PropertyName, out bool IsAssigned, out INode ChildNode);
                     if (IsAssigned)
                     {
                         stats.AssignedOptionalNodeCount++;
@@ -219,7 +219,7 @@ namespace Test
                         stats.NodeCount++;
                 }
 
-                else if (NodeTreeHelper.IsChildNodeList(Node, PropertyName, out ChildNodeType))
+                else if (NodeTreeHelperList.IsChildNodeList(Node, PropertyName, out ChildNodeType))
                 {
                     stats.ListCount++;
 
@@ -235,7 +235,7 @@ namespace Test
                     }
                 }
 
-                else if (NodeTreeHelper.IsChildBlockList(Node, PropertyName, out Type ChildInterfaceType, out ChildNodeType))
+                else if (NodeTreeHelperBlockList.IsChildBlockList(Node, PropertyName, out Type ChildInterfaceType, out ChildNodeType))
                 {
                     stats.BlockListCount++;
 
@@ -501,7 +501,7 @@ namespace Test
 
             foreach (string PropertyName in PropertyNames)
             {
-                if (NodeTreeHelper.IsChildNodeProperty(Node, PropertyName, out ChildNodeType))
+                if (NodeTreeHelperChild.IsChildNodeProperty(Node, PropertyName, out ChildNodeType))
                 {
                     IWriteablePlaceholderInner Inner = (IWriteablePlaceholderInner)State.PropertyToInner(PropertyName);
                     IWriteableNodeState ChildState = Inner.ChildState;
@@ -509,9 +509,9 @@ namespace Test
                     BrowseNode(controller, ChildIndex, test);
                 }
 
-                else if (NodeTreeHelper.IsOptionalChildNodeProperty(Node, PropertyName, out ChildNodeType))
+                else if (NodeTreeHelperOptional.IsOptionalChildNodeProperty(Node, PropertyName, out ChildNodeType))
                 {
-                    NodeTreeHelper.GetChildNode(Node, PropertyName, out bool IsAssigned, out INode ChildNode);
+                    NodeTreeHelperOptional.GetChildNode(Node, PropertyName, out bool IsAssigned, out INode ChildNode);
                     if (IsAssigned)
                     {
                         IWriteableOptionalInner Inner = (IWriteableOptionalInner)State.PropertyToInner(PropertyName);
@@ -521,7 +521,7 @@ namespace Test
                     }
                 }
 
-                else if (NodeTreeHelper.IsChildNodeList(Node, PropertyName, out ChildNodeType))
+                else if (NodeTreeHelperList.IsChildNodeList(Node, PropertyName, out ChildNodeType))
                 {
                     IWriteableListInner Inner = (IWriteableListInner)State.PropertyToInner(PropertyName);
                     test(Inner);
@@ -534,7 +534,7 @@ namespace Test
                     }
                 }
 
-                else if (NodeTreeHelper.IsChildBlockList(Node, PropertyName, out Type ChildInterfaceType, out ChildNodeType))
+                else if (NodeTreeHelperBlockList.IsChildBlockList(Node, PropertyName, out Type ChildInterfaceType, out ChildNodeType))
                 {
                     IWriteableBlockListInner Inner = (IWriteableBlockListInner)State.PropertyToInner(PropertyName);
                     test(Inner);
