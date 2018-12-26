@@ -409,11 +409,18 @@ namespace Test
             IWriteableController Controller = WriteableController.Create(RootIndex);
             IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
 
+            TestCount = 0;
             BrowseNode(Controller, RootIndex, (IWriteableInner inner) => InsertAndCompare(ControllerView, rand, inner));
         }
 
+        static int TestCount = 0;
+
         static void InsertAndCompare(IWriteableControllerView controllerView, Random rand, IWriteableInner inner)
         {
+            if (TestCount >= 500)
+                return;
+            TestCount++;
+
             IWriteableController Controller = controllerView.Controller;
 
             if (inner is IWriteableListInner<IWriteableBrowsingListNodeIndex> AsListInner)
