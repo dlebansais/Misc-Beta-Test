@@ -416,24 +416,13 @@ namespace Test
         {
             IWriteableController Controller = controllerView.Controller;
 
-            INode NewNode;
-            try
-            {
-                NewNode = NodeHelper.CreateDefault(inner.InterfaceType);
-            }
-            catch
-            {
-                NewNode = null;
-            }
-            //Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
-
-            if (NewNode == null)
-                return;
-
             if (inner is IWriteableListInner<IWriteableBrowsingListNodeIndex> AsListInner)
             {
                 if (AsListInner.StateList.Count > 0)
                 {
+                    INode NewNode = NodeHelper.DeepCloneNode(AsListInner.StateList[0].Node);
+                    Assert.That(NewNode != null, $"Type: {AsListInner.InterfaceType}");
+
                     int Index = rand.Next(AsListInner.StateList.Count + 1);
                     IWriteableInsertionListNodeIndex NodeIndex = new WriteableInsertionListNodeIndex(AsListInner.Owner.Node, AsListInner.PropertyName, NewNode, Index);
                     Controller.Insert(AsListInner, NodeIndex);
@@ -444,9 +433,12 @@ namespace Test
             }
             else if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
             {
-                if (rand.Next(2) == 0)
+                if (AsBlockListInner.BlockStateList.Count > 0 && AsBlockListInner.BlockStateList[0].StateList.Count > 0)
                 {
-                    if (AsBlockListInner.BlockStateList.Count > 0)
+                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node);
+                    Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
+
+                    if (rand.Next(2) == 0)
                     {
                         int BlockIndex = rand.Next(AsBlockListInner.BlockStateList.Count);
                         IWriteableBlockState BlockState = AsBlockListInner.BlockStateList[BlockIndex];
@@ -458,17 +450,18 @@ namespace Test
                         IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
                         Assert.That(NewView.IsEqual(controllerView));
                     }
-                }
-                else
-                {
-                    int BlockIndex = rand.Next(AsBlockListInner.BlockStateList.Count + 1);
-                    IPattern ReplicationPattern = NodeHelper.CreateSimplePattern("x");
-                    IIdentifier SourceIdentifier = NodeHelper.CreateSimpleIdentifier("y");
-                    IWriteableInsertionNewBlockNodeIndex NodeIndex = new WriteableInsertionNewBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, BlockIndex, ReplicationPattern, SourceIdentifier);
-                    Controller.Insert(AsBlockListInner, NodeIndex);
+                    else
+                    {
+                        int BlockIndex = rand.Next(AsBlockListInner.BlockStateList.Count + 1);
 
-                    IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
-                    Assert.That(NewView.IsEqual(controllerView));
+                        IPattern ReplicationPattern = NodeHelper.CreateSimplePattern("x");
+                        IIdentifier SourceIdentifier = NodeHelper.CreateSimpleIdentifier("y");
+                        IWriteableInsertionNewBlockNodeIndex NodeIndex = new WriteableInsertionNewBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, BlockIndex, ReplicationPattern, SourceIdentifier);
+                        Controller.Insert(AsBlockListInner, NodeIndex);
+
+                        IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+                        Assert.That(NewView.IsEqual(controllerView));
+                    }
                 }
             }
         }
