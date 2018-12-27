@@ -77,7 +77,7 @@ namespace Test
         static INode FirstRootNode;
         #endregion
 
-        static bool TestOff = true;
+        static bool TestOff = false;
 
         #region Sanity Check
         [Test]
