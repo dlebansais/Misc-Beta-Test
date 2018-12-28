@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System;
 using EaslyController;
 using EaslyController.Writeable;
+using Easly;
 
 namespace Test
 {
@@ -368,6 +369,7 @@ namespace Test
 
             Random rand = new Random(0x123456);
             TestWriteableInsert(index, rootNode, rand);
+            TestWriteableReplace(index, rootNode, rand);
         }
 
         public static void TestWriteableStats(int index, INode rootNode, out Stats stats)
@@ -469,6 +471,84 @@ namespace Test
                         IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
                         Assert.That(NewView.IsEqual(controllerView));
                     }
+                }
+            }
+        }
+
+        public static void TestWriteableReplace(int index, INode rootNode, Random rand)
+        {
+            IWriteableRootNodeIndex RootIndex = new WriteableRootNodeIndex(rootNode);
+            IWriteableController Controller = WriteableController.Create(RootIndex);
+            IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
+
+            TestCount = 0;
+            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => ReplaceAndCompare(ControllerView, rand, inner));
+        }
+
+        static void ReplaceAndCompare(IWriteableControllerView controllerView, Random rand, IWriteableInner inner)
+        {
+            if (TestCount >= 500)
+                return;
+            TestCount++;
+
+            IWriteableController Controller = controllerView.Controller;
+
+            if (inner is IWriteablePlaceholderInner<IWriteableBrowsingPlaceholderNodeIndex> AsPlaceholderInner)
+            {
+                INode NewNode = NodeHelper.DeepCloneNode(AsPlaceholderInner.ChildState.Node);
+                Assert.That(NewNode != null, $"Type: {AsPlaceholderInner.InterfaceType}");
+
+                IWriteableInsertionPlaceholderNodeIndex NodeIndex = new WriteableInsertionPlaceholderNodeIndex(AsPlaceholderInner.Owner.Node, AsPlaceholderInner.PropertyName, NewNode);
+                Controller.Replace(AsPlaceholderInner, NodeIndex);
+
+                IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+                Assert.That(NewView.IsEqual(controllerView));
+            }
+            else if (inner is IWriteableOptionalInner<IWriteableBrowsingOptionalNodeIndex> AsOptionalInner)
+            {
+                IWriteableOptionalNodeState State = AsOptionalInner.ChildState;
+                IOptionalReference Optional = State.ParentIndex.Optional;
+                Type NodeType = Optional.GetType().GetGenericArguments()[0];
+                INode NewNode = NodeHelper.CreateEmptyNode(NodeType);
+                Assert.That(NewNode != null, $"Type: {AsOptionalInner.InterfaceType}");
+
+                IWriteableInsertionOptionalNodeIndex NodeIndex = new WriteableInsertionOptionalNodeIndex(AsOptionalInner.Owner.Node, AsOptionalInner.PropertyName, NewNode);
+                Controller.Replace(AsOptionalInner, NodeIndex);
+
+                IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+                Assert.That(NewView.IsEqual(controllerView));
+            }
+            else if (inner is IWriteableListInner<IWriteableBrowsingListNodeIndex> AsListInner)
+            {
+                if (AsListInner.StateList.Count > 0)
+                {
+                    INode NewNode = NodeHelper.DeepCloneNode(AsListInner.StateList[0].Node);
+                    Assert.That(NewNode != null, $"Type: {AsListInner.InterfaceType}");
+
+                    int Index = rand.Next(AsListInner.StateList.Count);
+                    IWriteableInsertionListNodeIndex NodeIndex = new WriteableInsertionListNodeIndex(AsListInner.Owner.Node, AsListInner.PropertyName, NewNode, Index);
+                    Controller.Replace(AsListInner, NodeIndex);
+
+                    IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+                    Assert.That(NewView.IsEqual(controllerView));
+                }
+            }
+            else if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0 && AsBlockListInner.BlockStateList[0].StateList.Count > 0)
+                {
+                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node);
+                    Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
+
+                    int BlockIndex = rand.Next(AsBlockListInner.BlockStateList.Count);
+                    IWriteableBlockState BlockState = AsBlockListInner.BlockStateList[BlockIndex];
+                    int Index = rand.Next(BlockState.StateList.Count);
+
+                    IWriteableInsertionExistingBlockNodeIndex NodeIndex = new WriteableInsertionExistingBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, BlockIndex, Index);
+                    Controller.Replace(AsBlockListInner, NodeIndex);
+
+                    IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+                    Assert.That(NewView.IsEqual(controllerView));
                 }
             }
         }
