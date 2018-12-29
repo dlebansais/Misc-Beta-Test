@@ -369,6 +369,7 @@ namespace Test
 
             Random rand = new Random(0x123456);
             TestWriteableInsert(index, rootNode, rand);
+            TestWriteableRemove(index, rootNode, rand);
             TestWriteableReplace(index, rootNode, rand);
         }
 
@@ -416,10 +417,11 @@ namespace Test
         }
 
         static int TestCount = 0;
+        const int MaxTestCount = 500;
 
         static void InsertAndCompare(IWriteableControllerView controllerView, Random rand, IWriteableInner inner)
         {
-            if (TestCount >= 500)
+            if (TestCount >= MaxTestCount)
                 return;
             TestCount++;
 
@@ -487,7 +489,7 @@ namespace Test
 
         static void ReplaceAndCompare(IWriteableControllerView controllerView, Random rand, IWriteableInner inner)
         {
-            if (TestCount >= 500)
+            if (TestCount >= MaxTestCount)
                 return;
             TestCount++;
 
@@ -546,6 +548,58 @@ namespace Test
 
                     IWriteableInsertionExistingBlockNodeIndex NodeIndex = new WriteableInsertionExistingBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, BlockIndex, Index);
                     Controller.Replace(AsBlockListInner, NodeIndex);
+
+                    IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+                    Assert.That(NewView.IsEqual(controllerView));
+                }
+            }
+        }
+
+        public static void TestWriteableRemove(int index, INode rootNode, Random rand)
+        {
+            IWriteableRootNodeIndex RootIndex = new WriteableRootNodeIndex(rootNode);
+            IWriteableController Controller = WriteableController.Create(RootIndex);
+            IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
+
+            TestCount = 0;
+            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => RemoveAndCompare(ControllerView, rand, inner));
+        }
+
+        static void RemoveAndCompare(IWriteableControllerView controllerView, Random rand, IWriteableInner inner)
+        {
+            if (TestCount >= MaxTestCount)
+                return;
+            TestCount++;
+
+            IWriteableController Controller = controllerView.Controller;
+
+            if (inner is IWriteableListInner<IWriteableBrowsingListNodeIndex> AsListInner)
+            {
+                if (AsListInner.StateList.Count > 0)
+                {
+                    int Index = rand.Next(AsListInner.StateList.Count);
+                    IWriteableNodeState ChildState = AsListInner.StateList[Index];
+                    IWriteableBrowsingListNodeIndex NodeIndex = ChildState.ParentIndex as IWriteableBrowsingListNodeIndex;
+                    Assert.That(NodeIndex != null);
+
+                    Controller.Remove(AsListInner, NodeIndex);
+
+                    IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+                    Assert.That(NewView.IsEqual(controllerView));
+                }
+            }
+            else if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0 && AsBlockListInner.BlockStateList[0].StateList.Count > 0)
+                {
+                    int BlockIndex = rand.Next(AsBlockListInner.BlockStateList.Count);
+                    IWriteableBlockState BlockState = AsBlockListInner.BlockStateList[BlockIndex];
+                    int Index = rand.Next(BlockState.StateList.Count);
+                    IWriteableNodeState ChildState = BlockState.StateList[Index];
+                    IWriteableBrowsingExistingBlockNodeIndex NodeIndex = ChildState.ParentIndex as IWriteableBrowsingExistingBlockNodeIndex;
+                    Assert.That(NodeIndex != null);
+
+                    Controller.Remove(AsBlockListInner, NodeIndex);
 
                     IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
                     Assert.That(NewView.IsEqual(controllerView));
