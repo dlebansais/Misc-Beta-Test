@@ -436,7 +436,12 @@ namespace Test
 
                     int Index = rand.Next(AsListInner.StateList.Count + 1);
                     IWriteableInsertionListNodeIndex NodeIndex = new WriteableInsertionListNodeIndex(AsListInner.Owner.Node, AsListInner.PropertyName, NewNode, Index);
-                    Controller.Insert(AsListInner, NodeIndex);
+                    Controller.Insert(AsListInner, NodeIndex, out IWriteableBrowsingCollectionNodeIndex InsertedIndex);
+                    Assert.That(Controller.Contains(InsertedIndex));
+
+                    IWriteablePlaceholderNodeState ChildState = Controller.IndexToState(InsertedIndex) as IWriteablePlaceholderNodeState;
+                    Assert.That(ChildState != null);
+                    Assert.That(ChildState.Node == NewNode);
 
                     IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
                     Assert.That(NewView.IsEqual(controllerView));
@@ -456,7 +461,12 @@ namespace Test
                         int Index = rand.Next(BlockState.StateList.Count + 1);
 
                         IWriteableInsertionExistingBlockNodeIndex NodeIndex = new WriteableInsertionExistingBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, BlockIndex, Index);
-                        Controller.Insert(AsBlockListInner, NodeIndex);
+                        Controller.Insert(AsBlockListInner, NodeIndex, out IWriteableBrowsingCollectionNodeIndex InsertedIndex);
+                        Assert.That(Controller.Contains(InsertedIndex));
+
+                        IWriteablePlaceholderNodeState ChildState = Controller.IndexToState(InsertedIndex) as IWriteablePlaceholderNodeState;
+                        Assert.That(ChildState != null);
+                        Assert.That(ChildState.Node == NewNode);
 
                         IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
                         Assert.That(NewView.IsEqual(controllerView));
@@ -468,7 +478,12 @@ namespace Test
                         IPattern ReplicationPattern = NodeHelper.CreateSimplePattern("x");
                         IIdentifier SourceIdentifier = NodeHelper.CreateSimpleIdentifier("y");
                         IWriteableInsertionNewBlockNodeIndex NodeIndex = new WriteableInsertionNewBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, BlockIndex, ReplicationPattern, SourceIdentifier);
-                        Controller.Insert(AsBlockListInner, NodeIndex);
+                        Controller.Insert(AsBlockListInner, NodeIndex, out IWriteableBrowsingCollectionNodeIndex InsertedIndex);
+                        Assert.That(Controller.Contains(InsertedIndex));
+
+                        IWriteablePlaceholderNodeState ChildState = Controller.IndexToState(InsertedIndex) as IWriteablePlaceholderNodeState;
+                        Assert.That(ChildState != null);
+                        Assert.That(ChildState.Node == NewNode);
 
                         IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
                         Assert.That(NewView.IsEqual(controllerView));
@@ -501,7 +516,12 @@ namespace Test
                 Assert.That(NewNode != null, $"Type: {AsPlaceholderInner.InterfaceType}");
 
                 IWriteableInsertionPlaceholderNodeIndex NodeIndex = new WriteableInsertionPlaceholderNodeIndex(AsPlaceholderInner.Owner.Node, AsPlaceholderInner.PropertyName, NewNode);
-                Controller.Replace(AsPlaceholderInner, NodeIndex);
+                Controller.Replace(AsPlaceholderInner, NodeIndex, out IWriteableBrowsingChildIndex InsertedIndex);
+                Assert.That(Controller.Contains(InsertedIndex));
+
+                IWriteablePlaceholderNodeState ChildState = Controller.IndexToState(InsertedIndex) as IWriteablePlaceholderNodeState;
+                Assert.That(ChildState != null);
+                Assert.That(ChildState.Node == NewNode);
 
                 IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
                 Assert.That(NewView.IsEqual(controllerView));
@@ -515,7 +535,12 @@ namespace Test
                 Assert.That(NewNode != null, $"Type: {AsOptionalInner.InterfaceType}");
 
                 IWriteableInsertionOptionalNodeIndex NodeIndex = new WriteableInsertionOptionalNodeIndex(AsOptionalInner.Owner.Node, AsOptionalInner.PropertyName, NewNode);
-                Controller.Replace(AsOptionalInner, NodeIndex);
+                Controller.Replace(AsOptionalInner, NodeIndex, out IWriteableBrowsingChildIndex InsertedIndex);
+                Assert.That(Controller.Contains(InsertedIndex));
+
+                IWriteablePlaceholderNodeState ChildState = Controller.IndexToState(InsertedIndex) as IWriteablePlaceholderNodeState;
+                Assert.That(ChildState != null);
+                Assert.That(ChildState.Node == NewNode);
 
                 IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
                 Assert.That(NewView.IsEqual(controllerView));
@@ -529,7 +554,12 @@ namespace Test
 
                     int Index = rand.Next(AsListInner.StateList.Count);
                     IWriteableInsertionListNodeIndex NodeIndex = new WriteableInsertionListNodeIndex(AsListInner.Owner.Node, AsListInner.PropertyName, NewNode, Index);
-                    Controller.Replace(AsListInner, NodeIndex);
+                    Controller.Replace(AsListInner, NodeIndex, out IWriteableBrowsingChildIndex InsertedIndex);
+                    Assert.That(Controller.Contains(InsertedIndex));
+
+                    IWriteablePlaceholderNodeState ChildState = Controller.IndexToState(InsertedIndex) as IWriteablePlaceholderNodeState;
+                    Assert.That(ChildState != null);
+                    Assert.That(ChildState.Node == NewNode);
 
                     IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
                     Assert.That(NewView.IsEqual(controllerView));
@@ -547,7 +577,12 @@ namespace Test
                     int Index = rand.Next(BlockState.StateList.Count);
 
                     IWriteableInsertionExistingBlockNodeIndex NodeIndex = new WriteableInsertionExistingBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, BlockIndex, Index);
-                    Controller.Replace(AsBlockListInner, NodeIndex);
+                    Controller.Replace(AsBlockListInner, NodeIndex, out IWriteableBrowsingChildIndex InsertedIndex);
+                    Assert.That(Controller.Contains(InsertedIndex));
+
+                    IWriteablePlaceholderNodeState ChildState = Controller.IndexToState(InsertedIndex) as IWriteablePlaceholderNodeState;
+                    Assert.That(ChildState != null);
+                    Assert.That(ChildState.Node == NewNode);
 
                     IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
                     Assert.That(NewView.IsEqual(controllerView));
