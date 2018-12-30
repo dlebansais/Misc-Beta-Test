@@ -337,7 +337,7 @@ namespace Test
             }
 
             IReadOnlyControllerView ControllerView2 = ReadOnlyControllerView.Create(Controller);
-            Assert.That(ControllerView2.IsEqual(ControllerView), $"Views #4");
+            Assert.That(ControllerView2.IsEqual(CompareEqual.New(), ControllerView), $"Views #4");
         }
         #endregion
 
@@ -469,7 +469,7 @@ namespace Test
                     Assert.That(ChildState.Node == NewNode);
 
                     IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
-                    Assert.That(NewView.IsEqual(controllerView));
+                    Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
                 }
             }
             else if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
@@ -494,7 +494,7 @@ namespace Test
                         Assert.That(ChildState.Node == NewNode);
 
                         IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
-                        Assert.That(NewView.IsEqual(controllerView));
+                        Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
                     }
                     else
                     {
@@ -511,7 +511,7 @@ namespace Test
                         Assert.That(ChildState.Node == NewNode);
 
                         IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
-                        Assert.That(NewView.IsEqual(controllerView));
+                        Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
                     }
                 }
             }
@@ -550,7 +550,7 @@ namespace Test
                 Assert.That(ChildState.Node == NewNode);
 
                 IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
-                Assert.That(NewView.IsEqual(controllerView));
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
             }
             else if (inner is IWriteableOptionalInner<IWriteableBrowsingOptionalNodeIndex> AsOptionalInner)
             {
@@ -569,7 +569,7 @@ namespace Test
                 Assert.That(ChildState.Node == NewNode);
 
                 IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
-                Assert.That(NewView.IsEqual(controllerView));
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
             }
             else if (inner is IWriteableListInner<IWriteableBrowsingListNodeIndex> AsListInner)
             {
@@ -588,7 +588,7 @@ namespace Test
                     Assert.That(ChildState.Node == NewNode);
 
                     IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
-                    Assert.That(NewView.IsEqual(controllerView));
+                    Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
                 }
             }
             else if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
@@ -611,7 +611,7 @@ namespace Test
                     Assert.That(ChildState.Node == NewNode);
 
                     IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
-                    Assert.That(NewView.IsEqual(controllerView));
+                    Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
                 }
             }
 
@@ -647,7 +647,7 @@ namespace Test
                     Controller.Remove(AsListInner, NodeIndex);
 
                     IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
-                    Assert.That(NewView.IsEqual(controllerView));
+                    Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
                 }
             }
             else if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
@@ -664,7 +664,7 @@ namespace Test
                     Controller.Remove(AsBlockListInner, NodeIndex);
 
                     IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
-                    Assert.That(NewView.IsEqual(controllerView));
+                    Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
                 }
             }
 
@@ -707,7 +707,7 @@ namespace Test
                     Assert.That(Optional.Item == ChildState.Node);
 
                     IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
-                    Assert.That(NewView.IsEqual(controllerView));
+                    Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
                 }
             }
 
@@ -747,7 +747,7 @@ namespace Test
                 Assert.That(!AsOptionalInner.IsAssigned);
 
                 IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
-                Assert.That(NewView.IsEqual(controllerView));
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
             }
 
             return false;
@@ -781,7 +781,7 @@ namespace Test
                     Controller.ChangeReplication(AsBlockListInner, BlockIndex, Replication);
 
                     IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
-                    Assert.That(NewView.IsEqual(controllerView));
+                    Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
                 }
             }
 
@@ -818,7 +818,7 @@ namespace Test
                         Controller.SplitBlock(AsBlockListInner, NodeIndex);
 
                         IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
-                        Assert.That(NewView.IsEqual(controllerView));
+                        Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
                     }
                 }
             }
@@ -854,7 +854,7 @@ namespace Test
                     Controller.MergeBlocks(AsBlockListInner, NodeIndex);
 
                     IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
-                    Assert.That(NewView.IsEqual(controllerView));
+                    Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
                 }
             }
 
