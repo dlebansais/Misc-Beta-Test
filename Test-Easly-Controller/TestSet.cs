@@ -100,6 +100,7 @@ namespace Test
         #endregion
 
         #region ReadOnly
+        /*
         [Test]
         [TestCaseSource(nameof(FileIndexRange))]
         public static void ReadOnly(int index)
@@ -120,7 +121,7 @@ namespace Test
             if (n > 0)
                 throw new ArgumentOutOfRangeException($"{n} / {RootNodeTable.Count}");
             TestReadOnly(index, RootNode);
-        }
+        }*/
 
         public static void TestReadOnly(int index, INode rootNode)
         {
@@ -293,6 +294,7 @@ namespace Test
         #endregion
 
         #region Views
+        /*
         [Test]
         [TestCaseSource(nameof(FileIndexRange))]
         public static void StateViews(int index)
@@ -314,6 +316,7 @@ namespace Test
                 throw new ArgumentOutOfRangeException($"{n} / {RootNodeTable.Count}");
             TestStateView(index, RootNode);
         }
+        */
 
         public static void TestStateView(int index, INode rootNode)
         {
@@ -368,12 +371,35 @@ namespace Test
             TestWriteableStats(index, rootNode, out Stats Stats);
 
             Random rand = new Random(0x123456);
-            TestWriteableInsert(index, rootNode, rand);
-            TestWriteableRemove(index, rootNode, rand);
-            TestWriteableReplace(index, rootNode, rand);
-            TestWriteableAssign(index, rootNode, rand);
-            TestWriteableUnassign(index, rootNode, rand);
-            TestWriteableChangeReplication(index, rootNode, rand);
+
+            IWriteableRootNodeIndex RootIndex = new WriteableRootNodeIndex(rootNode);
+            IWriteableController Controller = WriteableController.Create(RootIndex);
+            IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
+
+            TestCount = 0;
+            BrowseNode(Controller, RootIndex, JustCount);
+            MaxTestCount = TestCount;
+
+            for (int i = 0; i < 10; i++)
+            {
+                TestWriteableInsert(index, rootNode, rand);
+                TestWriteableRemove(index, rootNode, rand);
+                TestWriteableReplace(index, rootNode, rand);
+                TestWriteableAssign(index, rootNode, rand);
+                TestWriteableUnassign(index, rootNode, rand);
+                TestWriteableChangeReplication(index, rootNode, rand);
+                TestWriteableSplit(index, rootNode, rand);
+                TestWriteableMerge(index, rootNode, rand);
+            }
+        }
+
+        static int TestCount = 0;
+        static int MaxTestCount = 0;
+
+        public static bool JustCount(IWriteableInner inner)
+        {
+            TestCount++;
+            return true;
         }
 
         public static void TestWriteableStats(int index, INode rootNode, out Stats stats)
@@ -416,17 +442,13 @@ namespace Test
             IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
 
             TestCount = 0;
-            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => InsertAndCompare(ControllerView, rand, inner));
+            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => InsertAndCompare(ControllerView, rand.Next(MaxTestCount), rand, inner));
         }
 
-        static int TestCount = 0;
-        const int MaxTestCount = 500;
-
-        static void InsertAndCompare(IWriteableControllerView controllerView, Random rand, IWriteableInner inner)
+        static bool InsertAndCompare(IWriteableControllerView controllerView, int TestIndex, Random rand, IWriteableInner inner)
         {
-            if (TestCount >= MaxTestCount)
-                return;
-            TestCount++;
+            if (TestCount++ < TestIndex)
+                return true;
 
             IWriteableController Controller = controllerView.Controller;
 
@@ -493,6 +515,8 @@ namespace Test
                     }
                 }
             }
+
+            return false;
         }
 
         public static void TestWriteableReplace(int index, INode rootNode, Random rand)
@@ -502,14 +526,13 @@ namespace Test
             IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
 
             TestCount = 0;
-            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => ReplaceAndCompare(ControllerView, rand, inner));
+            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => ReplaceAndCompare(ControllerView, rand.Next(MaxTestCount), rand, inner));
         }
 
-        static void ReplaceAndCompare(IWriteableControllerView controllerView, Random rand, IWriteableInner inner)
+        static bool ReplaceAndCompare(IWriteableControllerView controllerView, int TestIndex, Random rand, IWriteableInner inner)
         {
-            if (TestCount >= MaxTestCount)
-                return;
-            TestCount++;
+            if (TestCount++ < TestIndex)
+                return true;
 
             IWriteableController Controller = controllerView.Controller;
 
@@ -591,6 +614,8 @@ namespace Test
                     Assert.That(NewView.IsEqual(controllerView));
                 }
             }
+
+            return false;
         }
 
         public static void TestWriteableRemove(int index, INode rootNode, Random rand)
@@ -600,14 +625,13 @@ namespace Test
             IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
 
             TestCount = 0;
-            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => RemoveAndCompare(ControllerView, rand, inner));
+            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => RemoveAndCompare(ControllerView, rand.Next(MaxTestCount), rand, inner));
         }
 
-        static void RemoveAndCompare(IWriteableControllerView controllerView, Random rand, IWriteableInner inner)
+        static bool RemoveAndCompare(IWriteableControllerView controllerView, int TestIndex, Random rand, IWriteableInner inner)
         {
-            if (TestCount >= MaxTestCount)
-                return;
-            TestCount++;
+            if (TestCount++ < TestIndex)
+                return true;
 
             IWriteableController Controller = controllerView.Controller;
 
@@ -643,6 +667,8 @@ namespace Test
                     Assert.That(NewView.IsEqual(controllerView));
                 }
             }
+
+            return false;
         }
 
         public static void TestWriteableAssign(int index, INode rootNode, Random rand)
@@ -652,14 +678,13 @@ namespace Test
             IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
 
             TestCount = 0;
-            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => AssignAndCompare(ControllerView, rand, inner));
+            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => AssignAndCompare(ControllerView, rand.Next(MaxTestCount), rand, inner));
         }
 
-        static void AssignAndCompare(IWriteableControllerView controllerView, Random rand, IWriteableInner inner)
+        static bool AssignAndCompare(IWriteableControllerView controllerView, int TestIndex, Random rand, IWriteableInner inner)
         {
-            if (TestCount >= MaxTestCount)
-                return;
-            TestCount++;
+            if (TestCount++ < TestIndex)
+                return true;
 
             IWriteableController Controller = controllerView.Controller;
 
@@ -685,6 +710,8 @@ namespace Test
                     Assert.That(NewView.IsEqual(controllerView));
                 }
             }
+
+            return false;
         }
 
         public static void TestWriteableUnassign(int index, INode rootNode, Random rand)
@@ -694,14 +721,13 @@ namespace Test
             IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
 
             TestCount = 0;
-            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => UnassignAndCompare(ControllerView, rand, inner));
+            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => UnassignAndCompare(ControllerView, rand.Next(MaxTestCount), rand, inner));
         }
 
-        static void UnassignAndCompare(IWriteableControllerView controllerView, Random rand, IWriteableInner inner)
+        static bool UnassignAndCompare(IWriteableControllerView controllerView, int TestIndex, Random rand, IWriteableInner inner)
         {
-            if (TestCount >= MaxTestCount)
-                return;
-            TestCount++;
+            if (TestCount++ < TestIndex)
+                return true;
 
             IWriteableController Controller = controllerView.Controller;
 
@@ -723,6 +749,8 @@ namespace Test
                 IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
                 Assert.That(NewView.IsEqual(controllerView));
             }
+
+            return false;
         }
 
         public static void TestWriteableChangeReplication(int index, INode rootNode, Random rand)
@@ -732,14 +760,13 @@ namespace Test
             IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
 
             TestCount = 0;
-            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => ChangeReplicationAndCompare(ControllerView, rand, inner));
+            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => ChangeReplicationAndCompare(ControllerView, rand.Next(MaxTestCount), rand, inner));
         }
 
-        static void ChangeReplicationAndCompare(IWriteableControllerView controllerView, Random rand, IWriteableInner inner)
+        static bool ChangeReplicationAndCompare(IWriteableControllerView controllerView, int TestIndex, Random rand, IWriteableInner inner)
         {
-            if (TestCount >= MaxTestCount)
-                return;
-            TestCount++;
+            if (TestCount++ < TestIndex)
+                return true;
 
             IWriteableController Controller = controllerView.Controller;
 
@@ -757,9 +784,84 @@ namespace Test
                     Assert.That(NewView.IsEqual(controllerView));
                 }
             }
+
+            return false;
         }
 
-        static void BrowseNode(IWriteableController controller, IWriteableIndex index, Action<IWriteableInner> test)
+        public static void TestWriteableSplit(int index, INode rootNode, Random rand)
+        {
+            IWriteableRootNodeIndex RootIndex = new WriteableRootNodeIndex(rootNode);
+            IWriteableController Controller = WriteableController.Create(RootIndex);
+            IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
+
+            TestCount = 0;
+            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => SplitAndCompare(ControllerView, rand.Next(MaxTestCount), rand, inner));
+        }
+
+        static bool SplitAndCompare(IWriteableControllerView controllerView, int TestIndex, Random rand, IWriteableInner inner)
+        {
+            if (TestCount++ < TestIndex)
+                return true;
+
+            IWriteableController Controller = controllerView.Controller;
+
+            if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int SplitBlockIndex = rand.Next(AsBlockListInner.BlockStateList.Count);
+                    IWriteableBlockState BlockState = AsBlockListInner.BlockStateList[SplitBlockIndex];
+                    if (BlockState.StateList.Count > 1)
+                    {
+                        int SplitIndex = 1 + rand.Next(BlockState.StateList.Count - 1);
+                        IWriteableBrowsingExistingBlockNodeIndex NodeIndex = (IWriteableBrowsingExistingBlockNodeIndex)AsBlockListInner.IndexAt(SplitBlockIndex, SplitIndex);
+                        Controller.SplitBlock(AsBlockListInner, NodeIndex);
+
+                        IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+                        Assert.That(NewView.IsEqual(controllerView));
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public static void TestWriteableMerge(int index, INode rootNode, Random rand)
+        {
+            IWriteableRootNodeIndex RootIndex = new WriteableRootNodeIndex(rootNode);
+            IWriteableController Controller = WriteableController.Create(RootIndex);
+            IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
+
+            TestCount = 0;
+            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => MergeAndCompare(ControllerView, rand.Next(MaxTestCount), rand, inner));
+        }
+
+        static bool MergeAndCompare(IWriteableControllerView controllerView, int TestIndex, Random rand, IWriteableInner inner)
+        {
+            if (TestCount++ < TestIndex)
+                return true;
+
+            IWriteableController Controller = controllerView.Controller;
+
+            if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 1)
+                {
+                    int MergeBlockIndex = 1 + rand.Next(AsBlockListInner.BlockStateList.Count - 1);
+                    IWriteableBlockState BlockState = AsBlockListInner.BlockStateList[MergeBlockIndex];
+
+                    IWriteableBrowsingExistingBlockNodeIndex NodeIndex = (IWriteableBrowsingExistingBlockNodeIndex)AsBlockListInner.IndexAt(MergeBlockIndex, 0);
+                    Controller.MergeBlocks(AsBlockListInner, NodeIndex);
+
+                    IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+                    Assert.That(NewView.IsEqual(controllerView));
+                }
+            }
+
+            return false;
+        }
+
+        static bool BrowseNode(IWriteableController controller, IWriteableIndex index, Func<IWriteableInner, bool> test)
         {
             Assert.That(index != null, "Writeable #0");
             Assert.That(controller.Contains(index), "Writeable #1");
@@ -792,7 +894,8 @@ namespace Test
                     IWriteablePlaceholderInner Inner = (IWriteablePlaceholderInner)State.PropertyToInner(PropertyName);
                     IWriteableNodeState ChildState = Inner.ChildState;
                     IWriteableIndex ChildIndex = ChildState.ParentIndex;
-                    BrowseNode(controller, ChildIndex, test);
+                    if (!BrowseNode(controller, ChildIndex, test))
+                        return false;
                 }
 
                 else if (NodeTreeHelperOptional.IsOptionalChildNodeProperty(Node, PropertyName, out ChildNodeType))
@@ -803,43 +906,52 @@ namespace Test
                         IWriteableOptionalInner Inner = (IWriteableOptionalInner)State.PropertyToInner(PropertyName);
                         IWriteableNodeState ChildState = Inner.ChildState;
                         IWriteableIndex ChildIndex = ChildState.ParentIndex;
-                        BrowseNode(controller, ChildIndex, test);
+                        if (!BrowseNode(controller, ChildIndex, test))
+                            return false;
                     }
                 }
 
                 else if (NodeTreeHelperList.IsChildNodeList(Node, PropertyName, out ChildNodeType))
                 {
                     IWriteableListInner Inner = (IWriteableListInner)State.PropertyToInner(PropertyName);
-                    test(Inner);
+                    if (!test(Inner))
+                        return false;
 
                     for (int i = 0; i < Inner.StateList.Count; i++)
                     {
                         IWriteablePlaceholderNodeState ChildState = Inner.StateList[i];
                         IWriteableIndex ChildIndex = ChildState.ParentIndex;
-                        BrowseNode(controller, ChildIndex, test);
+                        if (!BrowseNode(controller, ChildIndex, test))
+                            return false;
                     }
                 }
 
                 else if (NodeTreeHelperBlockList.IsChildBlockList(Node, PropertyName, out Type ChildInterfaceType, out ChildNodeType))
                 {
                     IWriteableBlockListInner Inner = (IWriteableBlockListInner)State.PropertyToInner(PropertyName);
-                    test(Inner);
+                    if (!test(Inner))
+                        return false;
 
                     for (int BlockIndex = 0; BlockIndex < Inner.BlockStateList.Count; BlockIndex++)
                     {
                         IWriteableBlockState BlockState = Inner.BlockStateList[BlockIndex];
-                        BrowseNode(controller, BlockState.PatternIndex, test);
-                        BrowseNode(controller, BlockState.SourceIndex, test);
+                        if (!BrowseNode(controller, BlockState.PatternIndex, test))
+                            return false;
+                        if (!BrowseNode(controller, BlockState.SourceIndex, test))
+                            return false;
 
                         for (int i = 0; i < BlockState.StateList.Count; i++)
                         {
                             IWriteablePlaceholderNodeState ChildState = BlockState.StateList[i];
                             IWriteableIndex ChildIndex = ChildState.ParentIndex;
-                            BrowseNode(controller, ChildIndex, test);
+                            if (!BrowseNode(controller, ChildIndex, test))
+                                return false;
                         }
                     }
                 }
             }
+
+            return true;
         }
         #endregion
     }
