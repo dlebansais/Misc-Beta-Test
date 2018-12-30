@@ -371,6 +371,9 @@ namespace Test
             TestWriteableInsert(index, rootNode, rand);
             TestWriteableRemove(index, rootNode, rand);
             TestWriteableReplace(index, rootNode, rand);
+            TestWriteableAssign(index, rootNode, rand);
+            TestWriteableUnassign(index, rootNode, rand);
+            TestWriteableChangeReplication(index, rootNode, rand);
         }
 
         public static void TestWriteableStats(int index, INode rootNode, out Stats stats)
@@ -635,6 +638,120 @@ namespace Test
                     Assert.That(NodeIndex != null);
 
                     Controller.Remove(AsBlockListInner, NodeIndex);
+
+                    IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+                    Assert.That(NewView.IsEqual(controllerView));
+                }
+            }
+        }
+
+        public static void TestWriteableAssign(int index, INode rootNode, Random rand)
+        {
+            IWriteableRootNodeIndex RootIndex = new WriteableRootNodeIndex(rootNode);
+            IWriteableController Controller = WriteableController.Create(RootIndex);
+            IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
+
+            TestCount = 0;
+            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => AssignAndCompare(ControllerView, rand, inner));
+        }
+
+        static void AssignAndCompare(IWriteableControllerView controllerView, Random rand, IWriteableInner inner)
+        {
+            if (TestCount >= MaxTestCount)
+                return;
+            TestCount++;
+
+            IWriteableController Controller = controllerView.Controller;
+
+            if (inner is IWriteableOptionalInner<IWriteableBrowsingOptionalNodeIndex> AsOptionalInner)
+            {
+                IWriteableOptionalNodeState ChildState = AsOptionalInner.ChildState;
+                Assert.That(ChildState != null);
+
+                IWriteableBrowsingOptionalNodeIndex OptionalIndex = ChildState.ParentIndex;
+                Assert.That(Controller.Contains(OptionalIndex));
+
+                IOptionalReference Optional = OptionalIndex.Optional;
+                Assert.That(Optional != null);
+
+                if (Optional.HasItem)
+                {
+                    Controller.Assign(AsOptionalInner);
+                    Assert.That(Optional.IsAssigned);
+                    Assert.That(AsOptionalInner.IsAssigned);
+                    Assert.That(Optional.Item == ChildState.Node);
+
+                    IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+                    Assert.That(NewView.IsEqual(controllerView));
+                }
+            }
+        }
+
+        public static void TestWriteableUnassign(int index, INode rootNode, Random rand)
+        {
+            IWriteableRootNodeIndex RootIndex = new WriteableRootNodeIndex(rootNode);
+            IWriteableController Controller = WriteableController.Create(RootIndex);
+            IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
+
+            TestCount = 0;
+            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => UnassignAndCompare(ControllerView, rand, inner));
+        }
+
+        static void UnassignAndCompare(IWriteableControllerView controllerView, Random rand, IWriteableInner inner)
+        {
+            if (TestCount >= MaxTestCount)
+                return;
+            TestCount++;
+
+            IWriteableController Controller = controllerView.Controller;
+
+            if (inner is IWriteableOptionalInner<IWriteableBrowsingOptionalNodeIndex> AsOptionalInner)
+            {
+                IWriteableOptionalNodeState ChildState = AsOptionalInner.ChildState;
+                Assert.That(ChildState != null);
+
+                IWriteableBrowsingOptionalNodeIndex OptionalIndex = ChildState.ParentIndex;
+                Assert.That(Controller.Contains(OptionalIndex));
+
+                IOptionalReference Optional = OptionalIndex.Optional;
+                Assert.That(Optional != null);
+
+                Controller.Unassign(AsOptionalInner);
+                Assert.That(!Optional.IsAssigned);
+                Assert.That(!AsOptionalInner.IsAssigned);
+
+                IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+                Assert.That(NewView.IsEqual(controllerView));
+            }
+        }
+
+        public static void TestWriteableChangeReplication(int index, INode rootNode, Random rand)
+        {
+            IWriteableRootNodeIndex RootIndex = new WriteableRootNodeIndex(rootNode);
+            IWriteableController Controller = WriteableController.Create(RootIndex);
+            IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
+
+            TestCount = 0;
+            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => ChangeReplicationAndCompare(ControllerView, rand, inner));
+        }
+
+        static void ChangeReplicationAndCompare(IWriteableControllerView controllerView, Random rand, IWriteableInner inner)
+        {
+            if (TestCount >= MaxTestCount)
+                return;
+            TestCount++;
+
+            IWriteableController Controller = controllerView.Controller;
+
+            if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int BlockIndex = rand.Next(AsBlockListInner.BlockStateList.Count);
+                    IWriteableBlockState BlockState = AsBlockListInner.BlockStateList[BlockIndex];
+
+                    ReplicationStatus Replication = (ReplicationStatus)rand.Next(2);
+                    Controller.ChangeReplication(AsBlockListInner, BlockIndex, Replication);
 
                     IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
                     Assert.That(NewView.IsEqual(controllerView));
