@@ -451,6 +451,7 @@ namespace Test
                 return true;
 
             IWriteableController Controller = controllerView.Controller;
+            bool IsModified = false;
 
             if (inner is IWriteableListInner<IWriteableBrowsingListNodeIndex> AsListInner)
             {
@@ -468,8 +469,7 @@ namespace Test
                     Assert.That(ChildState != null);
                     Assert.That(ChildState.Node == NewNode);
 
-                    IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
-                    Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+                    IsModified = true;
                 }
             }
             else if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
@@ -493,8 +493,7 @@ namespace Test
                         Assert.That(ChildState != null);
                         Assert.That(ChildState.Node == NewNode);
 
-                        IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
-                        Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+                        IsModified = true;
                     }
                     else
                     {
@@ -510,10 +509,19 @@ namespace Test
                         Assert.That(ChildState != null);
                         Assert.That(ChildState.Node == NewNode);
 
-                        IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
-                        Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+                        IsModified = true;
                     }
                 }
+            }
+
+            if (IsModified)
+            {
+                IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+                IWriteableController NewController = WriteableController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
             }
 
             return false;
@@ -535,6 +543,7 @@ namespace Test
                 return true;
 
             IWriteableController Controller = controllerView.Controller;
+            bool IsModified = false;
 
             if (inner is IWriteablePlaceholderInner<IWriteableBrowsingPlaceholderNodeIndex> AsPlaceholderInner)
             {
@@ -549,8 +558,7 @@ namespace Test
                 Assert.That(ChildState != null);
                 Assert.That(ChildState.Node == NewNode);
 
-                IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
-                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+                IsModified = true;
             }
             else if (inner is IWriteableOptionalInner<IWriteableBrowsingOptionalNodeIndex> AsOptionalInner)
             {
@@ -568,8 +576,7 @@ namespace Test
                 Assert.That(ChildState != null);
                 Assert.That(ChildState.Node == NewNode);
 
-                IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
-                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+                IsModified = true;
             }
             else if (inner is IWriteableListInner<IWriteableBrowsingListNodeIndex> AsListInner)
             {
@@ -587,8 +594,7 @@ namespace Test
                     Assert.That(ChildState != null);
                     Assert.That(ChildState.Node == NewNode);
 
-                    IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
-                    Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+                    IsModified = true;
                 }
             }
             else if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
@@ -610,9 +616,18 @@ namespace Test
                     Assert.That(ChildState != null);
                     Assert.That(ChildState.Node == NewNode);
 
-                    IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
-                    Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+                    IsModified = true;
                 }
+            }
+
+            if (IsModified)
+            {
+                IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+                IWriteableController NewController = WriteableController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
             }
 
             return false;
@@ -634,6 +649,7 @@ namespace Test
                 return true;
 
             IWriteableController Controller = controllerView.Controller;
+            bool IsModified = false;
 
             if (inner is IWriteableListInner<IWriteableBrowsingListNodeIndex> AsListInner)
             {
@@ -646,8 +662,7 @@ namespace Test
 
                     Controller.Remove(AsListInner, NodeIndex);
 
-                    IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
-                    Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+                    IsModified = true;
                 }
             }
             else if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
@@ -663,9 +678,18 @@ namespace Test
 
                     Controller.Remove(AsBlockListInner, NodeIndex);
 
-                    IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
-                    Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+                    IsModified = true;
                 }
+            }
+
+            if (IsModified)
+            {
+                IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+                IWriteableController NewController = WriteableController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
             }
 
             return false;
@@ -708,6 +732,10 @@ namespace Test
 
                     IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
                     Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                    IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+                    IWriteableController NewController = WriteableController.Create(NewRootIndex);
+                    Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
                 }
             }
 
@@ -748,6 +776,10 @@ namespace Test
 
                 IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
                 Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+                IWriteableController NewController = WriteableController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
             }
 
             return false;
@@ -782,6 +814,10 @@ namespace Test
 
                     IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
                     Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                    IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+                    IWriteableController NewController = WriteableController.Create(NewRootIndex);
+                    Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
                 }
             }
 
@@ -819,6 +855,10 @@ namespace Test
 
                         IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
                         Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                        IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+                        IWriteableController NewController = WriteableController.Create(NewRootIndex);
+                        Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
                     }
                 }
             }
@@ -855,6 +895,10 @@ namespace Test
 
                     IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
                     Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                    IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+                    IWriteableController NewController = WriteableController.Create(NewRootIndex);
+                    Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
                 }
             }
 
