@@ -390,6 +390,7 @@ namespace Test
                 TestWriteableChangeReplication(index, rootNode, rand);
                 TestWriteableSplit(index, rootNode, rand);
                 TestWriteableMerge(index, rootNode, rand);
+                TestWriteableMove(index, rootNode, rand);
             }
         }
 
@@ -859,6 +860,19 @@ namespace Test
                         IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
                         IWriteableController NewController = WriteableController.Create(NewRootIndex);
                         Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                        Assert.That(AsBlockListInner.BlockStateList.Count > 0);
+                        int OldBlockIndex = rand.Next(AsBlockListInner.BlockStateList.Count);
+                        int NewBlockIndex = rand.Next(AsBlockListInner.BlockStateList.Count);
+                        int Direction = NewBlockIndex - OldBlockIndex;
+                        Controller.MoveBlock(AsBlockListInner, OldBlockIndex, Direction);
+
+                        IWriteableControllerView NewViewAfterMove = WriteableControllerView.Create(Controller);
+                        Assert.That(NewViewAfterMove.IsEqual(CompareEqual.New(), controllerView));
+
+                        IWriteableRootNodeIndex NewRootIndexAfterMove = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+                        IWriteableController NewControllerAfterMove = WriteableController.Create(NewRootIndexAfterMove);
+                        Assert.That(NewControllerAfterMove.IsEqual(CompareEqual.New(), Controller));
                     }
                 }
             }
@@ -900,6 +914,78 @@ namespace Test
                     IWriteableController NewController = WriteableController.Create(NewRootIndex);
                     Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
                 }
+            }
+
+            return false;
+        }
+
+        public static void TestWriteableMove(int index, INode rootNode, Random rand)
+        {
+            IWriteableRootNodeIndex RootIndex = new WriteableRootNodeIndex(rootNode);
+            IWriteableController Controller = WriteableController.Create(RootIndex);
+            IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
+
+            TestCount = 0;
+            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => MoveAndCompare(ControllerView, rand.Next(MaxTestCount), rand, inner));
+        }
+
+        static bool MoveAndCompare(IWriteableControllerView controllerView, int TestIndex, Random rand, IWriteableInner inner)
+        {
+            if (TestCount++ < TestIndex)
+                return true;
+
+            IWriteableController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            if (inner is IWriteableListInner<IWriteableBrowsingListNodeIndex> AsListInner)
+            {
+                if (AsListInner.StateList.Count > 0)
+                {
+                    int OldIndex = rand.Next(AsListInner.StateList.Count);
+                    int NewIndex = rand.Next(AsListInner.StateList.Count);
+                    int Direction = NewIndex - OldIndex;
+
+                    IWriteableBrowsingListNodeIndex NodeIndex = AsListInner.IndexAt(OldIndex) as IWriteableBrowsingListNodeIndex;
+                    Assert.That(NodeIndex != null);
+
+                    Controller.Move(AsListInner, NodeIndex, Direction);
+                    Assert.That(Controller.Contains(NodeIndex));
+
+                    IsModified = true;
+                }
+            }
+            else if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int BlockIndex = rand.Next(AsBlockListInner.BlockStateList.Count);
+                    IWriteableBlockState BlockState = AsBlockListInner.BlockStateList[BlockIndex];
+
+                    if (BlockState.StateList.Count > 0)
+                    {
+                        int OldIndex = rand.Next(BlockState.StateList.Count);
+                        int NewIndex = rand.Next(BlockState.StateList.Count);
+                        int Direction = NewIndex - OldIndex;
+
+                        IWriteableBrowsingExistingBlockNodeIndex NodeIndex = AsBlockListInner.IndexAt(BlockIndex, OldIndex) as IWriteableBrowsingExistingBlockNodeIndex;
+                        Assert.That(NodeIndex != null);
+
+                        Controller.Move(AsBlockListInner, NodeIndex, Direction);
+                        Assert.That(Controller.Contains(NodeIndex));
+
+                        IsModified = true;
+                    }
+                }
+            }
+
+            if (IsModified)
+            {
+                IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+                IWriteableController NewController = WriteableController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
             }
 
             return false;
