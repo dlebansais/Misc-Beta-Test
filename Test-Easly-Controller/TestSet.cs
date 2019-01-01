@@ -392,6 +392,7 @@ namespace Test
                 TestWriteableMerge(index, rootNode, rand);
                 TestWriteableMove(index, rootNode, rand);
                 TestWriteableExpand(index, rootNode, rand);
+                TestWriteableReduce(index, rootNode, rand);
             }
         }
 
@@ -1033,6 +1034,72 @@ namespace Test
 
             IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
             IWriteableController NewController = WriteableController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller), $"Node: {NodeIndex.PropertyName} {State.Node}");
+
+            Controller.Expand(NodeIndex);
+
+            NewController = WriteableController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller), $"Node: {NodeIndex.PropertyName} {State.Node}");
+
+            Controller.Reduce(NodeIndex);
+
+            NewController = WriteableController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller), $"Node: {NodeIndex.PropertyName} {State.Node}");
+
+            return false;
+        }
+
+        public static void TestWriteableReduce(int index, INode rootNode, Random rand)
+        {
+            IWriteableRootNodeIndex RootIndex = new WriteableRootNodeIndex(rootNode);
+            IWriteableController Controller = WriteableController.Create(RootIndex);
+            IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
+
+            TestCount = 0;
+            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => ReduceAndCompare(ControllerView, rand.Next(MaxTestCount), rand, inner));
+        }
+
+        static bool ReduceAndCompare(IWriteableControllerView controllerView, int TestIndex, Random rand, IWriteableInner inner)
+        {
+            if (TestCount++ < TestIndex)
+                return true;
+
+            IWriteableController Controller = controllerView.Controller;
+            IWriteableBrowsingChildIndex NodeIndex;
+            IWriteablePlaceholderNodeState State;
+
+            if (inner is IWriteablePlaceholderInner<IWriteableBrowsingPlaceholderNodeIndex> AsPlaceholderInner)
+            {
+                NodeIndex = AsPlaceholderInner.ChildState.ParentIndex as IWriteableBrowsingChildIndex;
+                Assert.That(NodeIndex != null);
+
+                State = Controller.IndexToState(NodeIndex) as IWriteablePlaceholderNodeState;
+                Assert.That(State != null);
+
+                NodeTreeHelper.GetArgumentBlocks(State.Node, out IDictionary<string, IBlockList<IArgument, Argument>> ArgumentBlocksTable);
+                if (ArgumentBlocksTable.Count == 0)
+                    return true;
+            }
+            else
+                return true;
+
+            Controller.Reduce(NodeIndex);
+
+            IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+            Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+            IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+            IWriteableController NewController = WriteableController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller), $"Node: {NodeIndex.PropertyName} {State.Node}");
+
+            Controller.Reduce(NodeIndex);
+
+            NewController = WriteableController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller), $"Node: {NodeIndex.PropertyName} {State.Node}");
+
+            Controller.Expand(NodeIndex);
+
+            NewController = WriteableController.Create(NewRootIndex);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller), $"Node: {NodeIndex.PropertyName} {State.Node}");
 
             return false;
