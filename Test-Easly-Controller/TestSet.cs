@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System;
 using EaslyController;
 using EaslyController.Writeable;
+using EaslyController.Frame;
 using Easly;
 
 namespace Test
@@ -46,7 +47,7 @@ namespace Test
             else
                 RootPath = "./";
 
-            RootNodeTable = new Dictionary<string, INode>();
+            FileNameTable = new List<string>();
             FirstRootNode = null;
             AddEaslyFiles(RootPath);
         }
@@ -54,15 +55,20 @@ namespace Test
         static void AddEaslyFiles(string path)
         {
             foreach (string FileName in Directory.GetFiles(path, "*.easly"))
-                using (FileStream fs = new FileStream(FileName, FileMode.Open, FileAccess.Read))
-                {
-                    Serializer Serializer = new Serializer();
-                    INode RootNode = Serializer.Deserialize(fs) as INode;
+            {
+                FileNameTable.Add(FileName);
 
-                    RootNodeTable.Add(FileName, RootNode);
-                    if (FirstRootNode == null)
+                if (FirstRootNode == null)
+                {
+                    using (FileStream fs = new FileStream(FileName, FileMode.Open, FileAccess.Read))
+                    {
+                        Serializer Serializer = new Serializer();
+                        INode RootNode = Serializer.Deserialize(fs) as INode;
+
                         FirstRootNode = RootNode;
+                    }
                 }
+            }
 
             foreach (string Folder in Directory.GetDirectories(path))
                 AddEaslyFiles(Folder);
@@ -70,11 +76,11 @@ namespace Test
 
         static IEnumerable<int> FileIndexRange()
         {
-            for (int i = 0; i < 173; i++)
+            for (int i = 0; i < 172; i++)
                 yield return i;
         }
 
-        static Dictionary<string, INode> RootNodeTable;
+        static List<string> FileNameTable;
         static INode FirstRootNode;
         #endregion
 
@@ -86,6 +92,8 @@ namespace Test
         {
             if (TestOff)
                 return;
+
+            ControllerTools.ResetExpectedName();
 
             IReadOnlyRootNodeIndex RootIndex = new ReadOnlyRootNodeIndex(FirstRootNode);
             IReadOnlyController Controller = ReadOnlyController.Create(RootIndex);
@@ -100,7 +108,7 @@ namespace Test
         #endregion
 
         #region ReadOnly
-        /*
+        #if READONLY
         [Test]
         [TestCaseSource(nameof(FileIndexRange))]
         public static void ReadOnly(int index)
@@ -108,29 +116,39 @@ namespace Test
             if (TestOff)
                 return;
 
+            string Name = null;
             INode RootNode = null;
             int n = index;
-            foreach (KeyValuePair<string, INode> Entry in RootNodeTable)
+            foreach (string FileName in FileNameTable)
             {
-                RootNode = Entry.Value;
                 if (n == 0)
+                {
+                    using (FileStream fs = new FileStream(FileName, FileMode.Open, FileAccess.Read))
+                    {
+                        Name = FileName;
+                        Serializer Serializer = new Serializer();
+                        RootNode = Serializer.Deserialize(fs) as INode;
+                    }
                     break;
+                }
+
                 n--;
             }
 
             if (n > 0)
-                throw new ArgumentOutOfRangeException($"{n} / {RootNodeTable.Count}");
-            TestReadOnly(index, RootNode);
-        }*/
+                throw new ArgumentOutOfRangeException($"{n} / {FileNameTable.Count}");
+            TestReadOnly(index, Name, RootNode);
+        }
+        #endif
 
-        public static void TestReadOnly(int index, INode rootNode)
+        public static void TestReadOnly(int index, string name, INode rootNode)
         {
             ControllerTools.ResetExpectedName();
 
-            TestReadOnlyStats(index, rootNode);
+            TestReadOnlyStats(index, name, rootNode);
         }
 
-        public static void TestReadOnlyStats(int index, INode rootNode)
+        public static void TestReadOnlyStats(int index, string name, INode rootNode)
         {
             IReadOnlyRootNodeIndex RootIndex = new ReadOnlyRootNodeIndex(rootNode);
             IReadOnlyController Controller = ReadOnlyController.Create(RootIndex);
@@ -138,7 +156,7 @@ namespace Test
             Stats Stats = new Stats();
             BrowseNode(Controller, RootIndex, Stats);
 
-            if (index == 0)
+            if (name.EndsWith("test.easly"))
             {
                 const int ExpectedNodeCount = 155;
                 const int ExpectedPlaceholderNodeCount = 142;
@@ -147,7 +165,7 @@ namespace Test
                 const int ExpectedListCount = 5;
                 const int ExpectedBlockListCount = 96;
 
-                Assert.That(Stats.NodeCount == ExpectedNodeCount, $"Failed to browse tree. Expected: {ExpectedNodeCount} node(s), Found: {Stats.NodeCount}");
+                Assert.That(Stats.NodeCount == ExpectedNodeCount, $"{name} - Failed to browse tree. Expected: {ExpectedNodeCount} node(s), Found: {Stats.NodeCount}");
                 Assert.That(Stats.PlaceholderNodeCount == ExpectedPlaceholderNodeCount, $"Failed to browse tree. Expected: {ExpectedPlaceholderNodeCount} placeholder node(s), Found: {Stats.PlaceholderNodeCount}");
                 Assert.That(Stats.OptionalNodeCount == ExpectedOptionalNodeCount, $"Failed to browse tree. Expected: {ExpectedOptionalNodeCount } optional node(s), Found: {Stats.OptionalNodeCount}");
                 Assert.That(Stats.AssignedOptionalNodeCount == ExpectedAssignedOptionalNodeCount, $"Failed to browse tree. Expected: {ExpectedAssignedOptionalNodeCount} assigned optional node(s), Found: {Stats.AssignedOptionalNodeCount}");
@@ -294,7 +312,7 @@ namespace Test
         #endregion
 
         #region Views
-        /*
+        #if VIEWS
         [Test]
         [TestCaseSource(nameof(FileIndexRange))]
         public static void StateViews(int index)
@@ -302,21 +320,30 @@ namespace Test
             if (TestOff)
                 return;
 
+            string Name = null;
             INode RootNode = null;
             int n = index;
-            foreach (KeyValuePair<string, INode> Entry in RootNodeTable)
+            foreach (string FileName in FileNameTable)
             {
-                RootNode = Entry.Value;
                 if (n == 0)
+                {
+                    using (FileStream fs = new FileStream(FileName, FileMode.Open, FileAccess.Read))
+                    {
+                        Name = FileName;
+                        Serializer Serializer = new Serializer();
+                        RootNode = Serializer.Deserialize(fs) as INode;
+                    }
                     break;
+                }
+
                 n--;
             }
 
             if (n > 0)
-                throw new ArgumentOutOfRangeException($"{n} / {RootNodeTable.Count}");
+                throw new ArgumentOutOfRangeException($"{n} / {FileNameTable.Count}");
             TestStateView(index, RootNode);
         }
-        */
+        #endif
 
         public static void TestStateView(int index, INode rootNode)
         {
@@ -342,6 +369,7 @@ namespace Test
         #endregion
 
         #region Writeable
+        #if WRITEABLE
         [Test]
         [TestCaseSource(nameof(FileIndexRange))]
         public static void Writeable(int index)
@@ -349,26 +377,35 @@ namespace Test
             if (TestOff)
                 return;
 
+            string Name = null;
             INode RootNode = null;
             int n = index;
-            foreach (KeyValuePair<string, INode> Entry in RootNodeTable)
+            foreach (string FileName in FileNameTable)
             {
-                RootNode = Entry.Value;
                 if (n == 0)
+                {
+                    using (FileStream fs = new FileStream(FileName, FileMode.Open, FileAccess.Read))
+                    {
+                        Name = FileName;
+                        Serializer Serializer = new Serializer();
+                        RootNode = Serializer.Deserialize(fs) as INode;
+                    }
                     break;
+                }
+
                 n--;
             }
 
             if (n > 0)
-                throw new ArgumentOutOfRangeException($"{n} / {RootNodeTable.Count}");
-            TestWriteable(index, RootNode);
+                throw new ArgumentOutOfRangeException($"{n} / {FileNameTable.Count}");
+            TestWriteable(index, Name, RootNode);
         }
-
-        public static void TestWriteable(int index, INode rootNode)
+        #endif
+        public static void TestWriteable(int index, string name, INode rootNode)
         {
             ControllerTools.ResetExpectedName();
 
-            TestWriteableStats(index, rootNode, out Stats Stats);
+            TestWriteableStats(index, name, rootNode, out Stats Stats);
 
             Random rand = new Random(0x123456);
 
@@ -376,9 +413,9 @@ namespace Test
             IWriteableController Controller = WriteableController.Create(RootIndex);
             IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
 
-            TestCount = 0;
-            BrowseNode(Controller, RootIndex, JustCount);
-            MaxTestCount = TestCount;
+            WriteableTestCount = 0;
+            WriteableBrowseNode(Controller, RootIndex, JustCount);
+            WriteableMaxTestCount = WriteableTestCount;
 
             for (int i = 0; i < 10; i++)
             {
@@ -414,16 +451,16 @@ namespace Test
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
         }
 
-        static int TestCount = 0;
-        static int MaxTestCount = 0;
+        static int WriteableTestCount = 0;
+        static int WriteableMaxTestCount = 0;
 
         public static bool JustCount(IWriteableInner inner)
         {
-            TestCount++;
+            WriteableTestCount++;
             return true;
         }
 
-        public static void TestWriteableStats(int index, INode rootNode, out Stats stats)
+        public static void TestWriteableStats(int index, string name, INode rootNode, out Stats stats)
         {
             IWriteableRootNodeIndex RootIndex = new WriteableRootNodeIndex(rootNode);
             IWriteableController Controller = WriteableController.Create(RootIndex);
@@ -431,7 +468,7 @@ namespace Test
             stats = new Stats();
             BrowseNode(Controller, RootIndex, stats);
 
-            if (index == 0)
+            if (name.EndsWith("test.easly"))
             {
                 const int ExpectedNodeCount = 155;
                 const int ExpectedPlaceholderNodeCount = 142;
@@ -462,13 +499,13 @@ namespace Test
             IWriteableController Controller = WriteableController.Create(RootIndex);
             IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
 
-            TestCount = 0;
-            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => InsertAndCompare(ControllerView, rand.Next(MaxTestCount), rand, inner));
+            WriteableTestCount = 0;
+            WriteableBrowseNode(Controller, RootIndex, (IWriteableInner inner) => InsertAndCompare(ControllerView, rand.Next(WriteableMaxTestCount), rand, inner));
         }
 
         static bool InsertAndCompare(IWriteableControllerView controllerView, int TestIndex, Random rand, IWriteableInner inner)
         {
-            if (TestCount++ < TestIndex)
+            if (WriteableTestCount++ < TestIndex)
                 return true;
 
             IWriteableController Controller = controllerView.Controller;
@@ -554,13 +591,13 @@ namespace Test
             IWriteableController Controller = WriteableController.Create(RootIndex);
             IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
 
-            TestCount = 0;
-            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => ReplaceAndCompare(ControllerView, rand.Next(MaxTestCount), rand, inner));
+            WriteableTestCount = 0;
+            WriteableBrowseNode(Controller, RootIndex, (IWriteableInner inner) => ReplaceAndCompare(ControllerView, rand.Next(WriteableMaxTestCount), rand, inner));
         }
 
         static bool ReplaceAndCompare(IWriteableControllerView controllerView, int TestIndex, Random rand, IWriteableInner inner)
         {
-            if (TestCount++ < TestIndex)
+            if (WriteableTestCount++ < TestIndex)
                 return true;
 
             IWriteableController Controller = controllerView.Controller;
@@ -660,13 +697,13 @@ namespace Test
             IWriteableController Controller = WriteableController.Create(RootIndex);
             IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
 
-            TestCount = 0;
-            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => RemoveAndCompare(ControllerView, rand.Next(MaxTestCount), rand, inner));
+            WriteableTestCount = 0;
+            WriteableBrowseNode(Controller, RootIndex, (IWriteableInner inner) => RemoveAndCompare(ControllerView, rand.Next(WriteableMaxTestCount), rand, inner));
         }
 
         static bool RemoveAndCompare(IWriteableControllerView controllerView, int TestIndex, Random rand, IWriteableInner inner)
         {
-            if (TestCount++ < TestIndex)
+            if (WriteableTestCount++ < TestIndex)
                 return true;
 
             IWriteableController Controller = controllerView.Controller;
@@ -722,13 +759,13 @@ namespace Test
             IWriteableController Controller = WriteableController.Create(RootIndex);
             IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
 
-            TestCount = 0;
-            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => AssignAndCompare(ControllerView, rand.Next(MaxTestCount), rand, inner));
+            WriteableTestCount = 0;
+            WriteableBrowseNode(Controller, RootIndex, (IWriteableInner inner) => AssignAndCompare(ControllerView, rand.Next(WriteableMaxTestCount), rand, inner));
         }
 
         static bool AssignAndCompare(IWriteableControllerView controllerView, int TestIndex, Random rand, IWriteableInner inner)
         {
-            if (TestCount++ < TestIndex)
+            if (WriteableTestCount++ < TestIndex)
                 return true;
 
             IWriteableController Controller = controllerView.Controller;
@@ -769,13 +806,13 @@ namespace Test
             IWriteableController Controller = WriteableController.Create(RootIndex);
             IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
 
-            TestCount = 0;
-            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => UnassignAndCompare(ControllerView, rand.Next(MaxTestCount), rand, inner));
+            WriteableTestCount = 0;
+            WriteableBrowseNode(Controller, RootIndex, (IWriteableInner inner) => UnassignAndCompare(ControllerView, rand.Next(WriteableMaxTestCount), rand, inner));
         }
 
         static bool UnassignAndCompare(IWriteableControllerView controllerView, int TestIndex, Random rand, IWriteableInner inner)
         {
-            if (TestCount++ < TestIndex)
+            if (WriteableTestCount++ < TestIndex)
                 return true;
 
             IWriteableController Controller = controllerView.Controller;
@@ -812,13 +849,13 @@ namespace Test
             IWriteableController Controller = WriteableController.Create(RootIndex);
             IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
 
-            TestCount = 0;
-            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => ChangeReplicationAndCompare(ControllerView, rand.Next(MaxTestCount), rand, inner));
+            WriteableTestCount = 0;
+            WriteableBrowseNode(Controller, RootIndex, (IWriteableInner inner) => ChangeReplicationAndCompare(ControllerView, rand.Next(WriteableMaxTestCount), rand, inner));
         }
 
         static bool ChangeReplicationAndCompare(IWriteableControllerView controllerView, int TestIndex, Random rand, IWriteableInner inner)
         {
-            if (TestCount++ < TestIndex)
+            if (WriteableTestCount++ < TestIndex)
                 return true;
 
             IWriteableController Controller = controllerView.Controller;
@@ -851,13 +888,13 @@ namespace Test
             IWriteableController Controller = WriteableController.Create(RootIndex);
             IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
 
-            TestCount = 0;
-            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => SplitAndCompare(ControllerView, rand.Next(MaxTestCount), rand, inner));
+            WriteableTestCount = 0;
+            WriteableBrowseNode(Controller, RootIndex, (IWriteableInner inner) => SplitAndCompare(ControllerView, rand.Next(WriteableMaxTestCount), rand, inner));
         }
 
         static bool SplitAndCompare(IWriteableControllerView controllerView, int TestIndex, Random rand, IWriteableInner inner)
         {
-            if (TestCount++ < TestIndex)
+            if (WriteableTestCount++ < TestIndex)
                 return true;
 
             IWriteableController Controller = controllerView.Controller;
@@ -906,13 +943,13 @@ namespace Test
             IWriteableController Controller = WriteableController.Create(RootIndex);
             IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
 
-            TestCount = 0;
-            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => MergeAndCompare(ControllerView, rand.Next(MaxTestCount), rand, inner));
+            WriteableTestCount = 0;
+            WriteableBrowseNode(Controller, RootIndex, (IWriteableInner inner) => MergeAndCompare(ControllerView, rand.Next(WriteableMaxTestCount), rand, inner));
         }
 
         static bool MergeAndCompare(IWriteableControllerView controllerView, int TestIndex, Random rand, IWriteableInner inner)
         {
-            if (TestCount++ < TestIndex)
+            if (WriteableTestCount++ < TestIndex)
                 return true;
 
             IWriteableController Controller = controllerView.Controller;
@@ -945,13 +982,13 @@ namespace Test
             IWriteableController Controller = WriteableController.Create(RootIndex);
             IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
 
-            TestCount = 0;
-            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => MoveAndCompare(ControllerView, rand.Next(MaxTestCount), rand, inner));
+            WriteableTestCount = 0;
+            WriteableBrowseNode(Controller, RootIndex, (IWriteableInner inner) => MoveAndCompare(ControllerView, rand.Next(WriteableMaxTestCount), rand, inner));
         }
 
         static bool MoveAndCompare(IWriteableControllerView controllerView, int TestIndex, Random rand, IWriteableInner inner)
         {
-            if (TestCount++ < TestIndex)
+            if (WriteableTestCount++ < TestIndex)
                 return true;
 
             IWriteableController Controller = controllerView.Controller;
@@ -1017,13 +1054,13 @@ namespace Test
             IWriteableController Controller = WriteableController.Create(RootIndex);
             IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
 
-            TestCount = 0;
-            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => ExpandAndCompare(ControllerView, rand.Next(MaxTestCount), rand, inner));
+            WriteableTestCount = 0;
+            WriteableBrowseNode(Controller, RootIndex, (IWriteableInner inner) => ExpandAndCompare(ControllerView, rand.Next(WriteableMaxTestCount), rand, inner));
         }
 
         static bool ExpandAndCompare(IWriteableControllerView controllerView, int TestIndex, Random rand, IWriteableInner inner)
         {
-            if (TestCount++ < TestIndex)
+            if (WriteableTestCount++ < TestIndex)
                 return true;
 
             IWriteableController Controller = controllerView.Controller;
@@ -1073,13 +1110,13 @@ namespace Test
             IWriteableController Controller = WriteableController.Create(RootIndex);
             IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
 
-            TestCount = 0;
-            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => ReduceAndCompare(ControllerView, rand.Next(MaxTestCount), rand, inner));
+            WriteableTestCount = 0;
+            WriteableBrowseNode(Controller, RootIndex, (IWriteableInner inner) => ReduceAndCompare(ControllerView, rand.Next(WriteableMaxTestCount), rand, inner));
         }
 
         static bool ReduceAndCompare(IWriteableControllerView controllerView, int TestIndex, Random rand, IWriteableInner inner)
         {
-            if (TestCount++ < TestIndex)
+            if (WriteableTestCount++ < TestIndex)
                 return true;
 
             IWriteableController Controller = controllerView.Controller;
@@ -1123,7 +1160,7 @@ namespace Test
             return false;
         }
 
-        static bool BrowseNode(IWriteableController controller, IWriteableIndex index, Func<IWriteableInner, bool> test)
+        static bool WriteableBrowseNode(IWriteableController controller, IWriteableIndex index, Func<IWriteableInner, bool> test)
         {
             Assert.That(index != null, "Writeable #0");
             Assert.That(controller.Contains(index), "Writeable #1");
@@ -1159,7 +1196,7 @@ namespace Test
 
                     IWriteableNodeState ChildState = Inner.ChildState;
                     IWriteableIndex ChildIndex = ChildState.ParentIndex;
-                    if (!BrowseNode(controller, ChildIndex, test))
+                    if (!WriteableBrowseNode(controller, ChildIndex, test))
                         return false;
                 }
 
@@ -1174,7 +1211,7 @@ namespace Test
 
                         IWriteableNodeState ChildState = Inner.ChildState;
                         IWriteableIndex ChildIndex = ChildState.ParentIndex;
-                        if (!BrowseNode(controller, ChildIndex, test))
+                        if (!WriteableBrowseNode(controller, ChildIndex, test))
                             return false;
                     }
                 }
@@ -1189,7 +1226,7 @@ namespace Test
                     {
                         IWriteablePlaceholderNodeState ChildState = Inner.StateList[i];
                         IWriteableIndex ChildIndex = ChildState.ParentIndex;
-                        if (!BrowseNode(controller, ChildIndex, test))
+                        if (!WriteableBrowseNode(controller, ChildIndex, test))
                             return false;
                     }
                 }
@@ -1203,16 +1240,909 @@ namespace Test
                     for (int BlockIndex = 0; BlockIndex < Inner.BlockStateList.Count; BlockIndex++)
                     {
                         IWriteableBlockState BlockState = Inner.BlockStateList[BlockIndex];
-                        if (!BrowseNode(controller, BlockState.PatternIndex, test))
+                        if (!WriteableBrowseNode(controller, BlockState.PatternIndex, test))
                             return false;
-                        if (!BrowseNode(controller, BlockState.SourceIndex, test))
+                        if (!WriteableBrowseNode(controller, BlockState.SourceIndex, test))
                             return false;
 
                         for (int i = 0; i < BlockState.StateList.Count; i++)
                         {
                             IWriteablePlaceholderNodeState ChildState = BlockState.StateList[i];
                             IWriteableIndex ChildIndex = ChildState.ParentIndex;
-                            if (!BrowseNode(controller, ChildIndex, test))
+                            if (!WriteableBrowseNode(controller, ChildIndex, test))
+                                return false;
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+        #endregion
+
+        #region Frame
+        #if FRAME
+        [Test]
+        [TestCaseSource(nameof(FileIndexRange))]
+        public static void Frame(int index)
+        {
+            if (TestOff)
+                return;
+
+            string Name = null;
+            INode RootNode = null;
+            int n = index;
+            foreach (string FileName in FileNameTable)
+            {
+                if (n == 0)
+                {
+                    using (FileStream fs = new FileStream(FileName, FileMode.Open, FileAccess.Read))
+                    {
+                        Name = FileName;
+                        Serializer Serializer = new Serializer();
+                        RootNode = Serializer.Deserialize(fs) as INode;
+                    }
+                    break;
+                }
+
+                n--;
+            }
+
+            if (n > 0)
+                throw new ArgumentOutOfRangeException($"{n} / {FileNameTable.Count}");
+            TestFrame(index, Name, RootNode);
+        }
+        #endif
+
+        public static void TestFrame(int index, string name, INode rootNode)
+        {
+            ControllerTools.ResetExpectedName();
+
+            TestFrameStats(index, name, rootNode, out Stats Stats);
+
+            Random rand = new Random(0x123456);
+
+            IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller);
+
+            FrameTestCount = 0;
+            FrameBrowseNode(Controller, RootIndex, JustCount);
+            FrameMaxTestCount = FrameTestCount;
+
+            for (int i = 0; i < 10; i++)
+            {
+                TestFrameInsert(index, rootNode, rand);
+                TestFrameRemove(index, rootNode, rand);
+                TestFrameReplace(index, rootNode, rand);
+                TestFrameAssign(index, rootNode, rand);
+                TestFrameUnassign(index, rootNode, rand);
+                TestFrameChangeReplication(index, rootNode, rand);
+                TestFrameSplit(index, rootNode, rand);
+                TestFrameMerge(index, rootNode, rand);
+                TestFrameMove(index, rootNode, rand);
+                TestFrameExpand(index, rootNode, rand);
+                TestFrameReduce(index, rootNode, rand);
+            }
+
+            TestFrameCanonicalize(rootNode);
+        }
+
+        public static void TestFrameCanonicalize(INode rootNode)
+        {
+            IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller);
+
+            Controller.Canonicalize();
+
+            IFrameControllerView NewView = FrameControllerView.Create(Controller);
+            Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
+
+            IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+            IFrameController NewController = FrameController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+        }
+
+        static int FrameTestCount = 0;
+        static int FrameMaxTestCount = 0;
+
+        public static bool JustCount(IFrameInner inner)
+        {
+            FrameTestCount++;
+            return true;
+        }
+
+        public static void TestFrameStats(int index, string name, INode rootNode, out Stats stats)
+        {
+            IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
+            IFrameController Controller = FrameController.Create(RootIndex);
+
+            stats = new Stats();
+            BrowseNode(Controller, RootIndex, stats);
+
+            if (name.EndsWith("test.easly"))
+            {
+                const int ExpectedNodeCount = 155;
+                const int ExpectedPlaceholderNodeCount = 142;
+                const int ExpectedOptionalNodeCount = 12;
+                const int ExpectedAssignedOptionalNodeCount = 4;
+                const int ExpectedListCount = 5;
+                const int ExpectedBlockListCount = 96;
+
+                Assert.That(stats.NodeCount == ExpectedNodeCount, $"Failed to browse tree. Expected: {ExpectedNodeCount} node(s), Found: {stats.NodeCount}");
+                Assert.That(stats.PlaceholderNodeCount == ExpectedPlaceholderNodeCount, $"Failed to browse tree. Expected: {ExpectedPlaceholderNodeCount} placeholder node(s), Found: {stats.PlaceholderNodeCount}");
+                Assert.That(stats.OptionalNodeCount == ExpectedOptionalNodeCount, $"Failed to browse tree. Expected: {ExpectedOptionalNodeCount } optional node(s), Found: {stats.OptionalNodeCount}");
+                Assert.That(stats.AssignedOptionalNodeCount == ExpectedAssignedOptionalNodeCount, $"Failed to browse tree. Expected: {ExpectedAssignedOptionalNodeCount} assigned optional node(s), Found: {stats.AssignedOptionalNodeCount}");
+                Assert.That(stats.ListCount == ExpectedListCount, $"Failed to browse tree. Expected: {ExpectedListCount} list(s), Found: {stats.ListCount}");
+                Assert.That(stats.BlockListCount == ExpectedBlockListCount, $"Failed to browse tree. Expected: {ExpectedBlockListCount} block list(s), Found: {stats.BlockListCount}");
+            }
+
+            Assert.That(Controller.Stats.NodeCount == stats.NodeCount, $"Invalid controller state. Expected: {stats.NodeCount} node(s), Found: {Controller.Stats.NodeCount}");
+            Assert.That(Controller.Stats.PlaceholderNodeCount == stats.PlaceholderNodeCount, $"Invalid controller state. Expected: {stats.PlaceholderNodeCount} placeholder node(s), Found: {Controller.Stats.PlaceholderNodeCount}");
+            Assert.That(Controller.Stats.OptionalNodeCount == stats.OptionalNodeCount, $"Invalid controller state. Expected: {stats.OptionalNodeCount } optional node(s), Found: {Controller.Stats.OptionalNodeCount}");
+            Assert.That(Controller.Stats.AssignedOptionalNodeCount == stats.AssignedOptionalNodeCount, $"Invalid controller state. Expected: {stats.AssignedOptionalNodeCount } assigned optional node(s), Found: {Controller.Stats.AssignedOptionalNodeCount}");
+            Assert.That(Controller.Stats.ListCount == stats.ListCount, $"Invalid controller state. Expected: {stats.ListCount} list(s), Found: {Controller.Stats.ListCount}");
+            Assert.That(Controller.Stats.BlockListCount == stats.BlockListCount, $"Invalid controller state. Expected: {stats.BlockListCount} block list(s), Found: {Controller.Stats.BlockListCount}");
+        }
+
+        public static void TestFrameInsert(int index, INode rootNode, Random rand)
+        {
+            IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller);
+
+            FrameTestCount = 0;
+            FrameBrowseNode(Controller, RootIndex, (IFrameInner inner) => InsertAndCompare(ControllerView, rand.Next(FrameMaxTestCount), rand, inner));
+        }
+
+        static bool InsertAndCompare(IFrameControllerView controllerView, int TestIndex, Random rand, IFrameInner inner)
+        {
+            if (FrameTestCount++ < TestIndex)
+                return true;
+
+            IFrameController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            if (inner is IFrameListInner<IFrameBrowsingListNodeIndex> AsListInner)
+            {
+                if (AsListInner.StateList.Count > 0)
+                {
+                    INode NewNode = NodeHelper.DeepCloneNode(AsListInner.StateList[0].Node);
+                    Assert.That(NewNode != null, $"Type: {AsListInner.InterfaceType}");
+
+                    int Index = rand.Next(AsListInner.StateList.Count + 1);
+                    IFrameInsertionListNodeIndex NodeIndex = new FrameInsertionListNodeIndex(AsListInner.Owner.Node, AsListInner.PropertyName, NewNode, Index);
+                    Controller.Insert(AsListInner, NodeIndex, out IWriteableBrowsingCollectionNodeIndex InsertedIndex);
+                    Assert.That(Controller.Contains(InsertedIndex));
+
+                    IFramePlaceholderNodeState ChildState = Controller.IndexToState(InsertedIndex) as IFramePlaceholderNodeState;
+                    Assert.That(ChildState != null);
+                    Assert.That(ChildState.Node == NewNode);
+
+                    IsModified = true;
+                }
+            }
+            else if (inner is IFrameBlockListInner<IFrameBrowsingBlockNodeIndex> AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0 && AsBlockListInner.BlockStateList[0].StateList.Count > 0)
+                {
+                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node);
+                    Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
+
+                    if (rand.Next(2) == 0)
+                    {
+                        int BlockIndex = rand.Next(AsBlockListInner.BlockStateList.Count);
+                        IFrameBlockState BlockState = AsBlockListInner.BlockStateList[BlockIndex];
+                        int Index = rand.Next(BlockState.StateList.Count + 1);
+
+                        IFrameInsertionExistingBlockNodeIndex NodeIndex = new FrameInsertionExistingBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, BlockIndex, Index);
+                        Controller.Insert(AsBlockListInner, NodeIndex, out IWriteableBrowsingCollectionNodeIndex InsertedIndex);
+                        Assert.That(Controller.Contains(InsertedIndex));
+
+                        IFramePlaceholderNodeState ChildState = Controller.IndexToState(InsertedIndex) as IFramePlaceholderNodeState;
+                        Assert.That(ChildState != null);
+                        Assert.That(ChildState.Node == NewNode);
+
+                        IsModified = true;
+                    }
+                    else
+                    {
+                        int BlockIndex = rand.Next(AsBlockListInner.BlockStateList.Count + 1);
+
+                        IPattern ReplicationPattern = NodeHelper.CreateSimplePattern("x");
+                        IIdentifier SourceIdentifier = NodeHelper.CreateSimpleIdentifier("y");
+                        IFrameInsertionNewBlockNodeIndex NodeIndex = new FrameInsertionNewBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, BlockIndex, ReplicationPattern, SourceIdentifier);
+                        Controller.Insert(AsBlockListInner, NodeIndex, out IWriteableBrowsingCollectionNodeIndex InsertedIndex);
+                        Assert.That(Controller.Contains(InsertedIndex));
+
+                        IFramePlaceholderNodeState ChildState = Controller.IndexToState(InsertedIndex) as IFramePlaceholderNodeState;
+                        Assert.That(ChildState != null);
+                        Assert.That(ChildState.Node == NewNode);
+
+                        IsModified = true;
+                    }
+                }
+            }
+
+            if (IsModified)
+            {
+                IFrameControllerView NewView = FrameControllerView.Create(Controller);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+                IFrameController NewController = FrameController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+            }
+
+            return false;
+        }
+
+        public static void TestFrameReplace(int index, INode rootNode, Random rand)
+        {
+            IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller);
+
+            FrameTestCount = 0;
+            FrameBrowseNode(Controller, RootIndex, (IFrameInner inner) => ReplaceAndCompare(ControllerView, rand.Next(FrameMaxTestCount), rand, inner));
+        }
+
+        static bool ReplaceAndCompare(IFrameControllerView controllerView, int TestIndex, Random rand, IFrameInner inner)
+        {
+            if (FrameTestCount++ < TestIndex)
+                return true;
+
+            IFrameController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            if (inner is IFramePlaceholderInner<IFrameBrowsingPlaceholderNodeIndex> AsPlaceholderInner)
+            {
+                INode NewNode = NodeHelper.DeepCloneNode(AsPlaceholderInner.ChildState.Node);
+                Assert.That(NewNode != null, $"Type: {AsPlaceholderInner.InterfaceType}");
+
+                IFrameInsertionPlaceholderNodeIndex NodeIndex = new FrameInsertionPlaceholderNodeIndex(AsPlaceholderInner.Owner.Node, AsPlaceholderInner.PropertyName, NewNode);
+                Controller.Replace(AsPlaceholderInner, NodeIndex, out IWriteableBrowsingChildIndex InsertedIndex);
+                Assert.That(Controller.Contains(InsertedIndex));
+
+                IFramePlaceholderNodeState ChildState = Controller.IndexToState(InsertedIndex) as IFramePlaceholderNodeState;
+                Assert.That(ChildState != null);
+                Assert.That(ChildState.Node == NewNode);
+
+                IsModified = true;
+            }
+            else if (inner is IFrameOptionalInner<IFrameBrowsingOptionalNodeIndex> AsOptionalInner)
+            {
+                IFrameOptionalNodeState State = AsOptionalInner.ChildState;
+                IOptionalReference Optional = State.ParentIndex.Optional;
+                Type NodeInterfaceType = Optional.GetType().GetGenericArguments()[0];
+                INode NewNode = NodeHelper.CreateDefaultFromInterface(NodeInterfaceType);
+                Assert.That(NewNode != null, $"Type: {AsOptionalInner.InterfaceType}");
+
+                IFrameInsertionOptionalNodeIndex NodeIndex = new FrameInsertionOptionalNodeIndex(AsOptionalInner.Owner.Node, AsOptionalInner.PropertyName, NewNode);
+                Controller.Replace(AsOptionalInner, NodeIndex, out IWriteableBrowsingChildIndex InsertedIndex);
+                Assert.That(Controller.Contains(InsertedIndex));
+
+                IFrameOptionalNodeState ChildState = Controller.IndexToState(InsertedIndex) as IFrameOptionalNodeState;
+                Assert.That(ChildState != null);
+                Assert.That(ChildState.Node == NewNode);
+
+                IsModified = true;
+            }
+            else if (inner is IFrameListInner<IFrameBrowsingListNodeIndex> AsListInner)
+            {
+                if (AsListInner.StateList.Count > 0)
+                {
+                    INode NewNode = NodeHelper.DeepCloneNode(AsListInner.StateList[0].Node);
+                    Assert.That(NewNode != null, $"Type: {AsListInner.InterfaceType}");
+
+                    int Index = rand.Next(AsListInner.StateList.Count);
+                    IFrameInsertionListNodeIndex NodeIndex = new FrameInsertionListNodeIndex(AsListInner.Owner.Node, AsListInner.PropertyName, NewNode, Index);
+                    Controller.Replace(AsListInner, NodeIndex, out IWriteableBrowsingChildIndex InsertedIndex);
+                    Assert.That(Controller.Contains(InsertedIndex));
+
+                    IFramePlaceholderNodeState ChildState = Controller.IndexToState(InsertedIndex) as IFramePlaceholderNodeState;
+                    Assert.That(ChildState != null);
+                    Assert.That(ChildState.Node == NewNode);
+
+                    IsModified = true;
+                }
+            }
+            else if (inner is IFrameBlockListInner<IFrameBrowsingBlockNodeIndex> AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0 && AsBlockListInner.BlockStateList[0].StateList.Count > 0)
+                {
+                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node);
+                    Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
+
+                    int BlockIndex = rand.Next(AsBlockListInner.BlockStateList.Count);
+                    IFrameBlockState BlockState = AsBlockListInner.BlockStateList[BlockIndex];
+                    int Index = rand.Next(BlockState.StateList.Count);
+
+                    IFrameInsertionExistingBlockNodeIndex NodeIndex = new FrameInsertionExistingBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, BlockIndex, Index);
+                    Controller.Replace(AsBlockListInner, NodeIndex, out IWriteableBrowsingChildIndex InsertedIndex);
+                    Assert.That(Controller.Contains(InsertedIndex));
+
+                    IFramePlaceholderNodeState ChildState = Controller.IndexToState(InsertedIndex) as IFramePlaceholderNodeState;
+                    Assert.That(ChildState != null);
+                    Assert.That(ChildState.Node == NewNode);
+
+                    IsModified = true;
+                }
+            }
+
+            if (IsModified)
+            {
+                IFrameControllerView NewView = FrameControllerView.Create(Controller);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+                IFrameController NewController = FrameController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+            }
+
+            return false;
+        }
+
+        public static void TestFrameRemove(int index, INode rootNode, Random rand)
+        {
+            IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller);
+
+            FrameTestCount = 0;
+            FrameBrowseNode(Controller, RootIndex, (IFrameInner inner) => RemoveAndCompare(ControllerView, rand.Next(FrameMaxTestCount), rand, inner));
+        }
+
+        static bool RemoveAndCompare(IFrameControllerView controllerView, int TestIndex, Random rand, IFrameInner inner)
+        {
+            if (FrameTestCount++ < TestIndex)
+                return true;
+
+            IFrameController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            if (inner is IFrameListInner<IFrameBrowsingListNodeIndex> AsListInner)
+            {
+                if (AsListInner.StateList.Count > 0)
+                {
+                    int Index = rand.Next(AsListInner.StateList.Count);
+                    IFrameNodeState ChildState = AsListInner.StateList[Index];
+                    IFrameBrowsingListNodeIndex NodeIndex = ChildState.ParentIndex as IFrameBrowsingListNodeIndex;
+                    Assert.That(NodeIndex != null);
+
+                    Controller.Remove(AsListInner, NodeIndex);
+
+                    IsModified = true;
+                }
+            }
+            else if (inner is IFrameBlockListInner<IFrameBrowsingBlockNodeIndex> AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0 && AsBlockListInner.BlockStateList[0].StateList.Count > 0)
+                {
+                    int BlockIndex = rand.Next(AsBlockListInner.BlockStateList.Count);
+                    IFrameBlockState BlockState = AsBlockListInner.BlockStateList[BlockIndex];
+                    int Index = rand.Next(BlockState.StateList.Count);
+                    IFrameNodeState ChildState = BlockState.StateList[Index];
+                    IFrameBrowsingExistingBlockNodeIndex NodeIndex = ChildState.ParentIndex as IFrameBrowsingExistingBlockNodeIndex;
+                    Assert.That(NodeIndex != null);
+
+                    Controller.Remove(AsBlockListInner, NodeIndex);
+
+                    IsModified = true;
+                }
+            }
+
+            if (IsModified)
+            {
+                IFrameControllerView NewView = FrameControllerView.Create(Controller);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+                IFrameController NewController = FrameController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+            }
+
+            return false;
+        }
+
+        public static void TestFrameAssign(int index, INode rootNode, Random rand)
+        {
+            IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller);
+
+            FrameTestCount = 0;
+            FrameBrowseNode(Controller, RootIndex, (IFrameInner inner) => AssignAndCompare(ControllerView, rand.Next(FrameMaxTestCount), rand, inner));
+        }
+
+        static bool AssignAndCompare(IFrameControllerView controllerView, int TestIndex, Random rand, IFrameInner inner)
+        {
+            if (FrameTestCount++ < TestIndex)
+                return true;
+
+            IFrameController Controller = controllerView.Controller;
+
+            if (inner is IFrameOptionalInner<IFrameBrowsingOptionalNodeIndex> AsOptionalInner)
+            {
+                IFrameOptionalNodeState ChildState = AsOptionalInner.ChildState;
+                Assert.That(ChildState != null);
+
+                IFrameBrowsingOptionalNodeIndex OptionalIndex = ChildState.ParentIndex;
+                Assert.That(Controller.Contains(OptionalIndex));
+
+                IOptionalReference Optional = OptionalIndex.Optional;
+                Assert.That(Optional != null);
+
+                if (Optional.HasItem)
+                {
+                    Controller.Assign(OptionalIndex);
+                    Assert.That(Optional.IsAssigned);
+                    Assert.That(AsOptionalInner.IsAssigned);
+                    Assert.That(Optional.Item == ChildState.Node);
+
+                    IFrameControllerView NewView = FrameControllerView.Create(Controller);
+                    Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                    IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+                    IFrameController NewController = FrameController.Create(NewRootIndex);
+                    Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+                }
+            }
+
+            return false;
+        }
+
+        public static void TestFrameUnassign(int index, INode rootNode, Random rand)
+        {
+            IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller);
+
+            FrameTestCount = 0;
+            FrameBrowseNode(Controller, RootIndex, (IFrameInner inner) => UnassignAndCompare(ControllerView, rand.Next(FrameMaxTestCount), rand, inner));
+        }
+
+        static bool UnassignAndCompare(IFrameControllerView controllerView, int TestIndex, Random rand, IFrameInner inner)
+        {
+            if (FrameTestCount++ < TestIndex)
+                return true;
+
+            IFrameController Controller = controllerView.Controller;
+
+            if (inner is IFrameOptionalInner<IFrameBrowsingOptionalNodeIndex> AsOptionalInner)
+            {
+                IFrameOptionalNodeState ChildState = AsOptionalInner.ChildState;
+                Assert.That(ChildState != null);
+
+                IFrameBrowsingOptionalNodeIndex OptionalIndex = ChildState.ParentIndex;
+                Assert.That(Controller.Contains(OptionalIndex));
+
+                IOptionalReference Optional = OptionalIndex.Optional;
+                Assert.That(Optional != null);
+
+                Controller.Unassign(OptionalIndex);
+                Assert.That(!Optional.IsAssigned);
+                Assert.That(!AsOptionalInner.IsAssigned);
+
+                IFrameControllerView NewView = FrameControllerView.Create(Controller);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+                IFrameController NewController = FrameController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+            }
+
+            return false;
+        }
+
+        public static void TestFrameChangeReplication(int index, INode rootNode, Random rand)
+        {
+            IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller);
+
+            FrameTestCount = 0;
+            FrameBrowseNode(Controller, RootIndex, (IFrameInner inner) => ChangeReplicationAndCompare(ControllerView, rand.Next(FrameMaxTestCount), rand, inner));
+        }
+
+        static bool ChangeReplicationAndCompare(IFrameControllerView controllerView, int TestIndex, Random rand, IFrameInner inner)
+        {
+            if (FrameTestCount++ < TestIndex)
+                return true;
+
+            IFrameController Controller = controllerView.Controller;
+
+            if (inner is IFrameBlockListInner<IFrameBrowsingBlockNodeIndex> AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int BlockIndex = rand.Next(AsBlockListInner.BlockStateList.Count);
+                    IFrameBlockState BlockState = AsBlockListInner.BlockStateList[BlockIndex];
+
+                    ReplicationStatus Replication = (ReplicationStatus)rand.Next(2);
+                    Controller.ChangeReplication(AsBlockListInner, BlockIndex, Replication);
+
+                    IFrameControllerView NewView = FrameControllerView.Create(Controller);
+                    Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                    IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+                    IFrameController NewController = FrameController.Create(NewRootIndex);
+                    Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+                }
+            }
+
+            return false;
+        }
+
+        public static void TestFrameSplit(int index, INode rootNode, Random rand)
+        {
+            IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller);
+
+            FrameTestCount = 0;
+            FrameBrowseNode(Controller, RootIndex, (IFrameInner inner) => SplitAndCompare(ControllerView, rand.Next(FrameMaxTestCount), rand, inner));
+        }
+
+        static bool SplitAndCompare(IFrameControllerView controllerView, int TestIndex, Random rand, IFrameInner inner)
+        {
+            if (FrameTestCount++ < TestIndex)
+                return true;
+
+            IFrameController Controller = controllerView.Controller;
+
+            if (inner is IFrameBlockListInner<IFrameBrowsingBlockNodeIndex> AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int SplitBlockIndex = rand.Next(AsBlockListInner.BlockStateList.Count);
+                    IFrameBlockState BlockState = AsBlockListInner.BlockStateList[SplitBlockIndex];
+                    if (BlockState.StateList.Count > 1)
+                    {
+                        int SplitIndex = 1 + rand.Next(BlockState.StateList.Count - 1);
+                        IFrameBrowsingExistingBlockNodeIndex NodeIndex = (IFrameBrowsingExistingBlockNodeIndex)AsBlockListInner.IndexAt(SplitBlockIndex, SplitIndex);
+                        Controller.SplitBlock(AsBlockListInner, NodeIndex);
+
+                        IFrameControllerView NewView = FrameControllerView.Create(Controller);
+                        Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                        IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+                        IFrameController NewController = FrameController.Create(NewRootIndex);
+                        Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                        Assert.That(AsBlockListInner.BlockStateList.Count > 0);
+                        int OldBlockIndex = rand.Next(AsBlockListInner.BlockStateList.Count);
+                        int NewBlockIndex = rand.Next(AsBlockListInner.BlockStateList.Count);
+                        int Direction = NewBlockIndex - OldBlockIndex;
+                        Controller.MoveBlock(AsBlockListInner, OldBlockIndex, Direction);
+
+                        IFrameControllerView NewViewAfterMove = FrameControllerView.Create(Controller);
+                        Assert.That(NewViewAfterMove.IsEqual(CompareEqual.New(), controllerView));
+
+                        IFrameRootNodeIndex NewRootIndexAfterMove = new FrameRootNodeIndex(Controller.RootIndex.Node);
+                        IFrameController NewControllerAfterMove = FrameController.Create(NewRootIndexAfterMove);
+                        Assert.That(NewControllerAfterMove.IsEqual(CompareEqual.New(), Controller));
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public static void TestFrameMerge(int index, INode rootNode, Random rand)
+        {
+            IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller);
+
+            FrameTestCount = 0;
+            FrameBrowseNode(Controller, RootIndex, (IFrameInner inner) => MergeAndCompare(ControllerView, rand.Next(FrameMaxTestCount), rand, inner));
+        }
+
+        static bool MergeAndCompare(IFrameControllerView controllerView, int TestIndex, Random rand, IFrameInner inner)
+        {
+            if (FrameTestCount++ < TestIndex)
+                return true;
+
+            IFrameController Controller = controllerView.Controller;
+
+            if (inner is IFrameBlockListInner<IFrameBrowsingBlockNodeIndex> AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 1)
+                {
+                    int MergeBlockIndex = 1 + rand.Next(AsBlockListInner.BlockStateList.Count - 1);
+                    IFrameBlockState BlockState = AsBlockListInner.BlockStateList[MergeBlockIndex];
+
+                    IFrameBrowsingExistingBlockNodeIndex NodeIndex = (IFrameBrowsingExistingBlockNodeIndex)AsBlockListInner.IndexAt(MergeBlockIndex, 0);
+                    Controller.MergeBlocks(AsBlockListInner, NodeIndex);
+
+                    IFrameControllerView NewView = FrameControllerView.Create(Controller);
+                    Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                    IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+                    IFrameController NewController = FrameController.Create(NewRootIndex);
+                    Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+                }
+            }
+
+            return false;
+        }
+
+        public static void TestFrameMove(int index, INode rootNode, Random rand)
+        {
+            IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller);
+
+            FrameTestCount = 0;
+            FrameBrowseNode(Controller, RootIndex, (IFrameInner inner) => MoveAndCompare(ControllerView, rand.Next(FrameMaxTestCount), rand, inner));
+        }
+
+        static bool MoveAndCompare(IFrameControllerView controllerView, int TestIndex, Random rand, IFrameInner inner)
+        {
+            if (FrameTestCount++ < TestIndex)
+                return true;
+
+            IFrameController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            if (inner is IFrameListInner<IFrameBrowsingListNodeIndex> AsListInner)
+            {
+                if (AsListInner.StateList.Count > 0)
+                {
+                    int OldIndex = rand.Next(AsListInner.StateList.Count);
+                    int NewIndex = rand.Next(AsListInner.StateList.Count);
+                    int Direction = NewIndex - OldIndex;
+
+                    IFrameBrowsingListNodeIndex NodeIndex = AsListInner.IndexAt(OldIndex) as IFrameBrowsingListNodeIndex;
+                    Assert.That(NodeIndex != null);
+
+                    Controller.Move(AsListInner, NodeIndex, Direction);
+                    Assert.That(Controller.Contains(NodeIndex));
+
+                    IsModified = true;
+                }
+            }
+            else if (inner is IFrameBlockListInner<IFrameBrowsingBlockNodeIndex> AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int BlockIndex = rand.Next(AsBlockListInner.BlockStateList.Count);
+                    IFrameBlockState BlockState = AsBlockListInner.BlockStateList[BlockIndex];
+
+                    if (BlockState.StateList.Count > 0)
+                    {
+                        int OldIndex = rand.Next(BlockState.StateList.Count);
+                        int NewIndex = rand.Next(BlockState.StateList.Count);
+                        int Direction = NewIndex - OldIndex;
+
+                        IFrameBrowsingExistingBlockNodeIndex NodeIndex = AsBlockListInner.IndexAt(BlockIndex, OldIndex) as IFrameBrowsingExistingBlockNodeIndex;
+                        Assert.That(NodeIndex != null);
+
+                        Controller.Move(AsBlockListInner, NodeIndex, Direction);
+                        Assert.That(Controller.Contains(NodeIndex));
+
+                        IsModified = true;
+                    }
+                }
+            }
+
+            if (IsModified)
+            {
+                IFrameControllerView NewView = FrameControllerView.Create(Controller);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+                IFrameController NewController = FrameController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+            }
+
+            return false;
+        }
+
+        public static void TestFrameExpand(int index, INode rootNode, Random rand)
+        {
+            IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller);
+
+            FrameTestCount = 0;
+            FrameBrowseNode(Controller, RootIndex, (IFrameInner inner) => ExpandAndCompare(ControllerView, rand.Next(FrameMaxTestCount), rand, inner));
+        }
+
+        static bool ExpandAndCompare(IFrameControllerView controllerView, int TestIndex, Random rand, IFrameInner inner)
+        {
+            if (FrameTestCount++ < TestIndex)
+                return true;
+
+            IFrameController Controller = controllerView.Controller;
+            IFrameNodeIndex NodeIndex;
+            IFramePlaceholderNodeState State;
+
+            if (inner is IFramePlaceholderInner<IFrameBrowsingPlaceholderNodeIndex> AsPlaceholderInner)
+            {
+                NodeIndex = AsPlaceholderInner.ChildState.ParentIndex as IFrameNodeIndex;
+                Assert.That(NodeIndex != null);
+
+                State = Controller.IndexToState(NodeIndex) as IFramePlaceholderNodeState;
+                Assert.That(State != null);
+
+                NodeTreeHelper.GetArgumentBlocks(State.Node, out IDictionary<string, IBlockList<IArgument, Argument>> ArgumentBlocksTable);
+                if (ArgumentBlocksTable.Count == 0)
+                    return true;
+            }
+            else
+                return true;
+
+            Controller.Expand(NodeIndex);
+
+            IFrameControllerView NewView = FrameControllerView.Create(Controller);
+            Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+            IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+            IFrameController NewController = FrameController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+            Controller.Expand(NodeIndex);
+
+            NewController = FrameController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+            Controller.Reduce(NodeIndex);
+
+            NewController = FrameController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+            return false;
+        }
+
+        public static void TestFrameReduce(int index, INode rootNode, Random rand)
+        {
+            IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller);
+
+            FrameTestCount = 0;
+            FrameBrowseNode(Controller, RootIndex, (IFrameInner inner) => ReduceAndCompare(ControllerView, rand.Next(FrameMaxTestCount), rand, inner));
+        }
+
+        static bool ReduceAndCompare(IFrameControllerView controllerView, int TestIndex, Random rand, IFrameInner inner)
+        {
+            if (FrameTestCount++ < TestIndex)
+                return true;
+
+            IFrameController Controller = controllerView.Controller;
+            IFrameNodeIndex NodeIndex;
+            IFramePlaceholderNodeState State;
+
+            if (inner is IFramePlaceholderInner<IFrameBrowsingPlaceholderNodeIndex> AsPlaceholderInner)
+            {
+                NodeIndex = AsPlaceholderInner.ChildState.ParentIndex as IFrameNodeIndex;
+                Assert.That(NodeIndex != null);
+
+                State = Controller.IndexToState(NodeIndex) as IFramePlaceholderNodeState;
+                Assert.That(State != null);
+
+                NodeTreeHelper.GetArgumentBlocks(State.Node, out IDictionary<string, IBlockList<IArgument, Argument>> ArgumentBlocksTable);
+                if (ArgumentBlocksTable.Count == 0)
+                    return true;
+            }
+            else
+                return true;
+
+            Controller.Reduce(NodeIndex);
+
+            IFrameControllerView NewView = FrameControllerView.Create(Controller);
+            Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+            IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+            IFrameController NewController = FrameController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+            Controller.Reduce(NodeIndex);
+
+            NewController = FrameController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+            Controller.Expand(NodeIndex);
+
+            NewController = FrameController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+            return false;
+        }
+
+        static bool FrameBrowseNode(IFrameController controller, IFrameIndex index, Func<IFrameInner, bool> test)
+        {
+            Assert.That(index != null, "Frame #0");
+            Assert.That(controller.Contains(index), "Frame #1");
+            IFrameNodeState State = (IFrameNodeState)controller.IndexToState(index);
+            Assert.That(State != null, "Frame #2");
+            Assert.That(State.ParentIndex == index, "Frame #4");
+
+            INode Node;
+
+            if (State is IFramePlaceholderNodeState AsPlaceholderState)
+                Node = AsPlaceholderState.Node;
+            else
+            {
+                Assert.That(State is IFrameOptionalNodeState, "Frame #5");
+                IFrameOptionalNodeState AsOptionalState = (IFrameOptionalNodeState)State;
+                IFrameOptionalInner<IFrameBrowsingOptionalNodeIndex> ParentInner = AsOptionalState.ParentInner;
+
+                Assert.That(ParentInner.IsAssigned, "Frame #6");
+
+                Node = AsOptionalState.Node;
+            }
+
+            Type ChildNodeType;
+            IList<string> PropertyNames = NodeTreeHelper.EnumChildNodeProperties(Node);
+
+            foreach (string PropertyName in PropertyNames)
+            {
+                if (NodeTreeHelperChild.IsChildNodeProperty(Node, PropertyName, out ChildNodeType))
+                {
+                    IFramePlaceholderInner Inner = (IFramePlaceholderInner)State.PropertyToInner(PropertyName);
+                    if (!test(Inner))
+                        return false;
+
+                    IFrameNodeState ChildState = Inner.ChildState;
+                    IFrameIndex ChildIndex = ChildState.ParentIndex;
+                    if (!FrameBrowseNode(controller, ChildIndex, test))
+                        return false;
+                }
+
+                else if (NodeTreeHelperOptional.IsOptionalChildNodeProperty(Node, PropertyName, out ChildNodeType))
+                {
+                    NodeTreeHelperOptional.GetChildNode(Node, PropertyName, out bool IsAssigned, out INode ChildNode);
+                    if (IsAssigned)
+                    {
+                        IFrameOptionalInner Inner = (IFrameOptionalInner)State.PropertyToInner(PropertyName);
+                        if (!test(Inner))
+                            return false;
+
+                        IFrameNodeState ChildState = Inner.ChildState;
+                        IFrameIndex ChildIndex = ChildState.ParentIndex;
+                        if (!FrameBrowseNode(controller, ChildIndex, test))
+                            return false;
+                    }
+                }
+
+                else if (NodeTreeHelperList.IsChildNodeList(Node, PropertyName, out ChildNodeType))
+                {
+                    IFrameListInner Inner = (IFrameListInner)State.PropertyToInner(PropertyName);
+                    if (!test(Inner))
+                        return false;
+
+                    for (int i = 0; i < Inner.StateList.Count; i++)
+                    {
+                        IFramePlaceholderNodeState ChildState = Inner.StateList[i];
+                        IFrameIndex ChildIndex = ChildState.ParentIndex;
+                        if (!FrameBrowseNode(controller, ChildIndex, test))
+                            return false;
+                    }
+                }
+
+                else if (NodeTreeHelperBlockList.IsChildBlockList(Node, PropertyName, out Type ChildInterfaceType, out ChildNodeType))
+                {
+                    IFrameBlockListInner Inner = (IFrameBlockListInner)State.PropertyToInner(PropertyName);
+                    if (!test(Inner))
+                        return false;
+
+                    for (int BlockIndex = 0; BlockIndex < Inner.BlockStateList.Count; BlockIndex++)
+                    {
+                        IFrameBlockState BlockState = Inner.BlockStateList[BlockIndex];
+                        if (!FrameBrowseNode(controller, BlockState.PatternIndex, test))
+                            return false;
+                        if (!FrameBrowseNode(controller, BlockState.SourceIndex, test))
+                            return false;
+
+                        for (int i = 0; i < BlockState.StateList.Count; i++)
+                        {
+                            IFramePlaceholderNodeState ChildState = BlockState.StateList[i];
+                            IFrameIndex ChildIndex = ChildState.ParentIndex;
+                            if (!FrameBrowseNode(controller, ChildIndex, test))
                                 return false;
                         }
                     }
