@@ -394,6 +394,24 @@ namespace Test
                 TestWriteableExpand(index, rootNode, rand);
                 TestWriteableReduce(index, rootNode, rand);
             }
+
+            TestWriteableCanonicalize(rootNode);
+        }
+
+        public static void TestWriteableCanonicalize(INode rootNode)
+        {
+            IWriteableRootNodeIndex RootIndex = new WriteableRootNodeIndex(rootNode);
+            IWriteableController Controller = WriteableController.Create(RootIndex);
+            IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
+
+            Controller.Canonicalize();
+
+            IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+            Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
+
+            IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+            IWriteableController NewController = WriteableController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
         }
 
         static int TestCount = 0;
@@ -1009,12 +1027,12 @@ namespace Test
                 return true;
 
             IWriteableController Controller = controllerView.Controller;
-            IWriteableBrowsingChildIndex NodeIndex;
+            IWriteableNodeIndex NodeIndex;
             IWriteablePlaceholderNodeState State;
 
             if (inner is IWriteablePlaceholderInner<IWriteableBrowsingPlaceholderNodeIndex> AsPlaceholderInner)
             {
-                NodeIndex = AsPlaceholderInner.ChildState.ParentIndex as IWriteableBrowsingChildIndex;
+                NodeIndex = AsPlaceholderInner.ChildState.ParentIndex as IWriteableNodeIndex;
                 Assert.That(NodeIndex != null);
 
                 State = Controller.IndexToState(NodeIndex) as IWriteablePlaceholderNodeState;
@@ -1034,17 +1052,17 @@ namespace Test
 
             IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
             IWriteableController NewController = WriteableController.Create(NewRootIndex);
-            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller), $"Node: {NodeIndex.PropertyName} {State.Node}");
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
             Controller.Expand(NodeIndex);
 
             NewController = WriteableController.Create(NewRootIndex);
-            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller), $"Node: {NodeIndex.PropertyName} {State.Node}");
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
             Controller.Reduce(NodeIndex);
 
             NewController = WriteableController.Create(NewRootIndex);
-            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller), $"Node: {NodeIndex.PropertyName} {State.Node}");
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
             return false;
         }
@@ -1065,12 +1083,12 @@ namespace Test
                 return true;
 
             IWriteableController Controller = controllerView.Controller;
-            IWriteableBrowsingChildIndex NodeIndex;
+            IWriteableNodeIndex NodeIndex;
             IWriteablePlaceholderNodeState State;
 
             if (inner is IWriteablePlaceholderInner<IWriteableBrowsingPlaceholderNodeIndex> AsPlaceholderInner)
             {
-                NodeIndex = AsPlaceholderInner.ChildState.ParentIndex as IWriteableBrowsingChildIndex;
+                NodeIndex = AsPlaceholderInner.ChildState.ParentIndex as IWriteableNodeIndex;
                 Assert.That(NodeIndex != null);
 
                 State = Controller.IndexToState(NodeIndex) as IWriteablePlaceholderNodeState;
@@ -1090,17 +1108,17 @@ namespace Test
 
             IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
             IWriteableController NewController = WriteableController.Create(NewRootIndex);
-            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller), $"Node: {NodeIndex.PropertyName} {State.Node}");
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
             Controller.Reduce(NodeIndex);
 
             NewController = WriteableController.Create(NewRootIndex);
-            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller), $"Node: {NodeIndex.PropertyName} {State.Node}");
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
             Controller.Expand(NodeIndex);
 
             NewController = WriteableController.Create(NewRootIndex);
-            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller), $"Node: {NodeIndex.PropertyName} {State.Node}");
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
             return false;
         }
