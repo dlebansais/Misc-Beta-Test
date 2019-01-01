@@ -391,6 +391,7 @@ namespace Test
                 TestWriteableSplit(index, rootNode, rand);
                 TestWriteableMerge(index, rootNode, rand);
                 TestWriteableMove(index, rootNode, rand);
+                TestWriteableExpand(index, rootNode, rand);
             }
         }
 
@@ -565,15 +566,15 @@ namespace Test
             {
                 IWriteableOptionalNodeState State = AsOptionalInner.ChildState;
                 IOptionalReference Optional = State.ParentIndex.Optional;
-                Type NodeType = Optional.GetType().GetGenericArguments()[0];
-                INode NewNode = NodeHelper.CreateEmptyNode(NodeType);
+                Type NodeInterfaceType = Optional.GetType().GetGenericArguments()[0];
+                INode NewNode = NodeHelper.CreateDefaultFromInterface(NodeInterfaceType);
                 Assert.That(NewNode != null, $"Type: {AsOptionalInner.InterfaceType}");
 
                 IWriteableInsertionOptionalNodeIndex NodeIndex = new WriteableInsertionOptionalNodeIndex(AsOptionalInner.Owner.Node, AsOptionalInner.PropertyName, NewNode);
                 Controller.Replace(AsOptionalInner, NodeIndex, out IWriteableBrowsingChildIndex InsertedIndex);
                 Assert.That(Controller.Contains(InsertedIndex));
 
-                IWriteablePlaceholderNodeState ChildState = Controller.IndexToState(InsertedIndex) as IWriteablePlaceholderNodeState;
+                IWriteableOptionalNodeState ChildState = Controller.IndexToState(InsertedIndex) as IWriteableOptionalNodeState;
                 Assert.That(ChildState != null);
                 Assert.That(ChildState.Node == NewNode);
 
@@ -726,7 +727,7 @@ namespace Test
 
                 if (Optional.HasItem)
                 {
-                    Controller.Assign(AsOptionalInner);
+                    Controller.Assign(OptionalIndex);
                     Assert.That(Optional.IsAssigned);
                     Assert.That(AsOptionalInner.IsAssigned);
                     Assert.That(Optional.Item == ChildState.Node);
@@ -771,7 +772,7 @@ namespace Test
                 IOptionalReference Optional = OptionalIndex.Optional;
                 Assert.That(Optional != null);
 
-                Controller.Unassign(AsOptionalInner);
+                Controller.Unassign(OptionalIndex);
                 Assert.That(!Optional.IsAssigned);
                 Assert.That(!AsOptionalInner.IsAssigned);
 
@@ -991,6 +992,52 @@ namespace Test
             return false;
         }
 
+        public static void TestWriteableExpand(int index, INode rootNode, Random rand)
+        {
+            IWriteableRootNodeIndex RootIndex = new WriteableRootNodeIndex(rootNode);
+            IWriteableController Controller = WriteableController.Create(RootIndex);
+            IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
+
+            TestCount = 0;
+            BrowseNode(Controller, RootIndex, (IWriteableInner inner) => ExpandAndCompare(ControllerView, rand.Next(MaxTestCount), rand, inner));
+        }
+
+        static bool ExpandAndCompare(IWriteableControllerView controllerView, int TestIndex, Random rand, IWriteableInner inner)
+        {
+            if (TestCount++ < TestIndex)
+                return true;
+
+            IWriteableController Controller = controllerView.Controller;
+            IWriteableBrowsingChildIndex NodeIndex;
+            IWriteablePlaceholderNodeState State;
+
+            if (inner is IWriteablePlaceholderInner<IWriteableBrowsingPlaceholderNodeIndex> AsPlaceholderInner)
+            {
+                NodeIndex = AsPlaceholderInner.ChildState.ParentIndex as IWriteableBrowsingChildIndex;
+                Assert.That(NodeIndex != null);
+
+                State = Controller.IndexToState(NodeIndex) as IWriteablePlaceholderNodeState;
+                Assert.That(State != null);
+
+                NodeTreeHelper.GetArgumentBlocks(State.Node, out IDictionary<string, IBlockList<IArgument, Argument>> ArgumentBlocksTable);
+                if (ArgumentBlocksTable.Count == 0)
+                    return true;
+            }
+            else
+                return true;
+
+            Controller.Expand(NodeIndex);
+
+            IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+            Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+            IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+            IWriteableController NewController = WriteableController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller), $"Node: {NodeIndex.PropertyName} {State.Node}");
+
+            return false;
+        }
+
         static bool BrowseNode(IWriteableController controller, IWriteableIndex index, Func<IWriteableInner, bool> test)
         {
             Assert.That(index != null, "Writeable #0");
@@ -1022,6 +1069,9 @@ namespace Test
                 if (NodeTreeHelperChild.IsChildNodeProperty(Node, PropertyName, out ChildNodeType))
                 {
                     IWriteablePlaceholderInner Inner = (IWriteablePlaceholderInner)State.PropertyToInner(PropertyName);
+                    if (!test(Inner))
+                        return false;
+
                     IWriteableNodeState ChildState = Inner.ChildState;
                     IWriteableIndex ChildIndex = ChildState.ParentIndex;
                     if (!BrowseNode(controller, ChildIndex, test))
@@ -1034,6 +1084,9 @@ namespace Test
                     if (IsAssigned)
                     {
                         IWriteableOptionalInner Inner = (IWriteableOptionalInner)State.PropertyToInner(PropertyName);
+                        if (!test(Inner))
+                            return false;
+
                         IWriteableNodeState ChildState = Inner.ChildState;
                         IWriteableIndex ChildIndex = ChildState.ParentIndex;
                         if (!BrowseNode(controller, ChildIndex, test))
