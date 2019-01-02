@@ -1303,8 +1303,8 @@ namespace Test
             Random rand = new Random(0x123456);
 
             IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
-            IFrameController Controller = FrameController.Create(RootIndex, FrameTemplateSet.Default);
-            IFrameControllerView ControllerView = FrameControllerView.Create(Controller);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
 
             FrameTestCount = 0;
             FrameBrowseNode(Controller, RootIndex, JustCount);
@@ -1331,16 +1331,16 @@ namespace Test
         public static void TestFrameCanonicalize(INode rootNode)
         {
             IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
-            IFrameController Controller = FrameController.Create(RootIndex, FrameTemplateSet.Default);
-            IFrameControllerView ControllerView = FrameControllerView.Create(Controller);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
 
             Controller.Canonicalize();
 
-            IFrameControllerView NewView = FrameControllerView.Create(Controller);
+            IFrameControllerView NewView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
             Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
 
             IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
-            IFrameController NewController = FrameController.Create(NewRootIndex, FrameTemplateSet.Default);
+            IFrameController NewController = FrameController.Create(NewRootIndex);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
         }
 
@@ -1356,7 +1356,7 @@ namespace Test
         public static void TestFrameStats(int index, string name, INode rootNode, out Stats stats)
         {
             IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
-            IFrameController Controller = FrameController.Create(RootIndex, FrameTemplateSet.Default);
+            IFrameController Controller = FrameController.Create(RootIndex);
 
             stats = new Stats();
             BrowseNode(Controller, RootIndex, stats);
@@ -1389,8 +1389,8 @@ namespace Test
         public static void TestFrameInsert(int index, INode rootNode, Random rand)
         {
             IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
-            IFrameController Controller = FrameController.Create(RootIndex, FrameTemplateSet.Default);
-            IFrameControllerView ControllerView = FrameControllerView.Create(Controller);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
 
             FrameTestCount = 0;
             FrameBrowseNode(Controller, RootIndex, (IFrameInner inner) => InsertAndCompare(ControllerView, rand.Next(FrameMaxTestCount), rand, inner));
@@ -1467,11 +1467,11 @@ namespace Test
 
             if (IsModified)
             {
-                IFrameControllerView NewView = FrameControllerView.Create(Controller);
+                IFrameControllerView NewView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
                 Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
                 IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
-                IFrameController NewController = FrameController.Create(NewRootIndex, FrameTemplateSet.Default);
+                IFrameController NewController = FrameController.Create(NewRootIndex);
                 Assert.That(NewController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
             }
 
@@ -1481,8 +1481,8 @@ namespace Test
         public static void TestFrameReplace(int index, INode rootNode, Random rand)
         {
             IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
-            IFrameController Controller = FrameController.Create(RootIndex, FrameTemplateSet.Default);
-            IFrameControllerView ControllerView = FrameControllerView.Create(Controller);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
 
             FrameTestCount = 0;
             FrameBrowseNode(Controller, RootIndex, (IFrameInner inner) => ReplaceAndCompare(ControllerView, rand.Next(FrameMaxTestCount), rand, inner));
@@ -1573,11 +1573,11 @@ namespace Test
 
             if (IsModified)
             {
-                IFrameControllerView NewView = FrameControllerView.Create(Controller);
+                IFrameControllerView NewView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
                 Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
                 IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
-                IFrameController NewController = FrameController.Create(NewRootIndex, FrameTemplateSet.Default);
+                IFrameController NewController = FrameController.Create(NewRootIndex);
                 Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
             }
 
@@ -1587,8 +1587,8 @@ namespace Test
         public static void TestFrameRemove(int index, INode rootNode, Random rand)
         {
             IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
-            IFrameController Controller = FrameController.Create(RootIndex, FrameTemplateSet.Default);
-            IFrameControllerView ControllerView = FrameControllerView.Create(Controller);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
 
             FrameTestCount = 0;
             FrameBrowseNode(Controller, RootIndex, (IFrameInner inner) => RemoveAndCompare(ControllerView, rand.Next(FrameMaxTestCount), rand, inner));
@@ -1635,11 +1635,11 @@ namespace Test
 
             if (IsModified)
             {
-                IFrameControllerView NewView = FrameControllerView.Create(Controller);
+                IFrameControllerView NewView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
                 Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
                 IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
-                IFrameController NewController = FrameController.Create(NewRootIndex, FrameTemplateSet.Default);
+                IFrameController NewController = FrameController.Create(NewRootIndex);
                 Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
             }
 
@@ -1649,8 +1649,8 @@ namespace Test
         public static void TestFrameAssign(int index, INode rootNode, Random rand)
         {
             IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
-            IFrameController Controller = FrameController.Create(RootIndex, FrameTemplateSet.Default);
-            IFrameControllerView ControllerView = FrameControllerView.Create(Controller);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
 
             FrameTestCount = 0;
             FrameBrowseNode(Controller, RootIndex, (IFrameInner inner) => AssignAndCompare(ControllerView, rand.Next(FrameMaxTestCount), rand, inner));
@@ -1681,11 +1681,11 @@ namespace Test
                     Assert.That(AsOptionalInner.IsAssigned);
                     Assert.That(Optional.Item == ChildState.Node);
 
-                    IFrameControllerView NewView = FrameControllerView.Create(Controller);
+                    IFrameControllerView NewView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
                     Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
                     IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
-                    IFrameController NewController = FrameController.Create(NewRootIndex, FrameTemplateSet.Default);
+                    IFrameController NewController = FrameController.Create(NewRootIndex);
                     Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
                 }
             }
@@ -1696,8 +1696,8 @@ namespace Test
         public static void TestFrameUnassign(int index, INode rootNode, Random rand)
         {
             IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
-            IFrameController Controller = FrameController.Create(RootIndex, FrameTemplateSet.Default);
-            IFrameControllerView ControllerView = FrameControllerView.Create(Controller);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
 
             FrameTestCount = 0;
             FrameBrowseNode(Controller, RootIndex, (IFrameInner inner) => UnassignAndCompare(ControllerView, rand.Next(FrameMaxTestCount), rand, inner));
@@ -1725,11 +1725,11 @@ namespace Test
                 Assert.That(!Optional.IsAssigned);
                 Assert.That(!AsOptionalInner.IsAssigned);
 
-                IFrameControllerView NewView = FrameControllerView.Create(Controller);
+                IFrameControllerView NewView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
                 Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
                 IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
-                IFrameController NewController = FrameController.Create(NewRootIndex, FrameTemplateSet.Default);
+                IFrameController NewController = FrameController.Create(NewRootIndex);
                 Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
             }
 
@@ -1739,8 +1739,8 @@ namespace Test
         public static void TestFrameChangeReplication(int index, INode rootNode, Random rand)
         {
             IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
-            IFrameController Controller = FrameController.Create(RootIndex, FrameTemplateSet.Default);
-            IFrameControllerView ControllerView = FrameControllerView.Create(Controller);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
 
             FrameTestCount = 0;
             FrameBrowseNode(Controller, RootIndex, (IFrameInner inner) => ChangeReplicationAndCompare(ControllerView, rand.Next(FrameMaxTestCount), rand, inner));
@@ -1763,11 +1763,11 @@ namespace Test
                     ReplicationStatus Replication = (ReplicationStatus)rand.Next(2);
                     Controller.ChangeReplication(AsBlockListInner, BlockIndex, Replication);
 
-                    IFrameControllerView NewView = FrameControllerView.Create(Controller);
+                    IFrameControllerView NewView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
                     Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
                     IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
-                    IFrameController NewController = FrameController.Create(NewRootIndex, FrameTemplateSet.Default);
+                    IFrameController NewController = FrameController.Create(NewRootIndex);
                     Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
                 }
             }
@@ -1778,8 +1778,8 @@ namespace Test
         public static void TestFrameSplit(int index, INode rootNode, Random rand)
         {
             IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
-            IFrameController Controller = FrameController.Create(RootIndex, FrameTemplateSet.Default);
-            IFrameControllerView ControllerView = FrameControllerView.Create(Controller);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
 
             FrameTestCount = 0;
             FrameBrowseNode(Controller, RootIndex, (IFrameInner inner) => SplitAndCompare(ControllerView, rand.Next(FrameMaxTestCount), rand, inner));
@@ -1804,11 +1804,11 @@ namespace Test
                         IFrameBrowsingExistingBlockNodeIndex NodeIndex = (IFrameBrowsingExistingBlockNodeIndex)AsBlockListInner.IndexAt(SplitBlockIndex, SplitIndex);
                         Controller.SplitBlock(AsBlockListInner, NodeIndex);
 
-                        IFrameControllerView NewView = FrameControllerView.Create(Controller);
+                        IFrameControllerView NewView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
                         Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
                         IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
-                        IFrameController NewController = FrameController.Create(NewRootIndex, FrameTemplateSet.Default);
+                        IFrameController NewController = FrameController.Create(NewRootIndex);
                         Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
                         Assert.That(AsBlockListInner.BlockStateList.Count > 0);
@@ -1817,11 +1817,11 @@ namespace Test
                         int Direction = NewBlockIndex - OldBlockIndex;
                         Controller.MoveBlock(AsBlockListInner, OldBlockIndex, Direction);
 
-                        IFrameControllerView NewViewAfterMove = FrameControllerView.Create(Controller);
+                        IFrameControllerView NewViewAfterMove = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
                         Assert.That(NewViewAfterMove.IsEqual(CompareEqual.New(), controllerView));
 
                         IFrameRootNodeIndex NewRootIndexAfterMove = new FrameRootNodeIndex(Controller.RootIndex.Node);
-                        IFrameController NewControllerAfterMove = FrameController.Create(NewRootIndexAfterMove, FrameTemplateSet.Default);
+                        IFrameController NewControllerAfterMove = FrameController.Create(NewRootIndexAfterMove);
                         Assert.That(NewControllerAfterMove.IsEqual(CompareEqual.New(), Controller));
                     }
                 }
@@ -1833,8 +1833,8 @@ namespace Test
         public static void TestFrameMerge(int index, INode rootNode, Random rand)
         {
             IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
-            IFrameController Controller = FrameController.Create(RootIndex, FrameTemplateSet.Default);
-            IFrameControllerView ControllerView = FrameControllerView.Create(Controller);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
 
             FrameTestCount = 0;
             FrameBrowseNode(Controller, RootIndex, (IFrameInner inner) => MergeAndCompare(ControllerView, rand.Next(FrameMaxTestCount), rand, inner));
@@ -1857,11 +1857,11 @@ namespace Test
                     IFrameBrowsingExistingBlockNodeIndex NodeIndex = (IFrameBrowsingExistingBlockNodeIndex)AsBlockListInner.IndexAt(MergeBlockIndex, 0);
                     Controller.MergeBlocks(AsBlockListInner, NodeIndex);
 
-                    IFrameControllerView NewView = FrameControllerView.Create(Controller);
+                    IFrameControllerView NewView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
                     Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
                     IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
-                    IFrameController NewController = FrameController.Create(NewRootIndex, FrameTemplateSet.Default);
+                    IFrameController NewController = FrameController.Create(NewRootIndex);
                     Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
                 }
             }
@@ -1872,8 +1872,8 @@ namespace Test
         public static void TestFrameMove(int index, INode rootNode, Random rand)
         {
             IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
-            IFrameController Controller = FrameController.Create(RootIndex, FrameTemplateSet.Default);
-            IFrameControllerView ControllerView = FrameControllerView.Create(Controller);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
 
             FrameTestCount = 0;
             FrameBrowseNode(Controller, RootIndex, (IFrameInner inner) => MoveAndCompare(ControllerView, rand.Next(FrameMaxTestCount), rand, inner));
@@ -1930,11 +1930,11 @@ namespace Test
 
             if (IsModified)
             {
-                IFrameControllerView NewView = FrameControllerView.Create(Controller);
+                IFrameControllerView NewView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
                 Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
                 IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
-                IFrameController NewController = FrameController.Create(NewRootIndex, FrameTemplateSet.Default);
+                IFrameController NewController = FrameController.Create(NewRootIndex);
                 Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
             }
 
@@ -1944,8 +1944,8 @@ namespace Test
         public static void TestFrameExpand(int index, INode rootNode, Random rand)
         {
             IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
-            IFrameController Controller = FrameController.Create(RootIndex, FrameTemplateSet.Default);
-            IFrameControllerView ControllerView = FrameControllerView.Create(Controller);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
 
             FrameTestCount = 0;
             FrameBrowseNode(Controller, RootIndex, (IFrameInner inner) => ExpandAndCompare(ControllerView, rand.Next(FrameMaxTestCount), rand, inner));
@@ -1977,21 +1977,21 @@ namespace Test
 
             Controller.Expand(NodeIndex);
 
-            IFrameControllerView NewView = FrameControllerView.Create(Controller);
+            IFrameControllerView NewView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
             Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
             IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
-            IFrameController NewController = FrameController.Create(NewRootIndex, FrameTemplateSet.Default);
+            IFrameController NewController = FrameController.Create(NewRootIndex);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
             Controller.Expand(NodeIndex);
 
-            NewController = FrameController.Create(NewRootIndex, FrameTemplateSet.Default);
+            NewController = FrameController.Create(NewRootIndex);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
             Controller.Reduce(NodeIndex);
 
-            NewController = FrameController.Create(NewRootIndex, FrameTemplateSet.Default);
+            NewController = FrameController.Create(NewRootIndex);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
             return false;
@@ -2000,8 +2000,8 @@ namespace Test
         public static void TestFrameReduce(int index, INode rootNode, Random rand)
         {
             IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
-            IFrameController Controller = FrameController.Create(RootIndex, FrameTemplateSet.Default);
-            IFrameControllerView ControllerView = FrameControllerView.Create(Controller);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
 
             FrameTestCount = 0;
             FrameBrowseNode(Controller, RootIndex, (IFrameInner inner) => ReduceAndCompare(ControllerView, rand.Next(FrameMaxTestCount), rand, inner));
@@ -2033,21 +2033,21 @@ namespace Test
 
             Controller.Reduce(NodeIndex);
 
-            IFrameControllerView NewView = FrameControllerView.Create(Controller);
+            IFrameControllerView NewView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
             Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
             IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
-            IFrameController NewController = FrameController.Create(NewRootIndex, FrameTemplateSet.Default);
+            IFrameController NewController = FrameController.Create(NewRootIndex);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
             Controller.Reduce(NodeIndex);
 
-            NewController = FrameController.Create(NewRootIndex, FrameTemplateSet.Default);
+            NewController = FrameController.Create(NewRootIndex);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
             Controller.Expand(NodeIndex);
 
-            NewController = FrameController.Create(NewRootIndex, FrameTemplateSet.Default);
+            NewController = FrameController.Create(NewRootIndex);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
             return false;
