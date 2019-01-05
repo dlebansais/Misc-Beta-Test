@@ -1310,7 +1310,7 @@ namespace Test
             FrameBrowseNode(Controller, RootIndex, JustCount);
             FrameMaxTestCount = FrameTestCount;
 
-            for (int i = 0; i < 1; i++)
+            for (int i = 0; i < 10; i++)
             {
                 TestFrameInsert(index, rootNode, rand);
                 TestFrameRemove(index, rootNode, rand);
