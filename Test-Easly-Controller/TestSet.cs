@@ -80,19 +80,19 @@ namespace Test
                 yield return i;
         }
 
-        static int RandValue = 0;
+        //static int RandValue = 0;
         static int RandNext(Random rand, int maxValue)
         {
-            //return rand.Next(maxValue);
+            return rand.Next(maxValue);
 
-            if (maxValue == 2)
+            /*if (maxValue == 2)
                 RandValue++;
             else
                 RandValue += 3;
             if (RandValue >= maxValue)
                 RandValue = 0;
 
-            return RandValue;
+            return RandValue;*/
         }
 
         static List<string> FileNameTable;
