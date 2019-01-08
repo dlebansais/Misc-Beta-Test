@@ -362,6 +362,8 @@ namespace Test
 
         public static void TestStateView(int index, INode rootNode)
         {
+            ControllerTools.ResetExpectedName();
+
             IReadOnlyRootNodeIndex RootIndex = new ReadOnlyRootNodeIndex(rootNode);
             IReadOnlyController Controller = ReadOnlyController.Create(RootIndex);
             IReadOnlyControllerView ControllerView = ReadOnlyControllerView.Create(Controller);
