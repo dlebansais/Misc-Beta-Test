@@ -8,6 +8,7 @@ namespace TestDebug
     public class CustomTemplateSet
     {
         #region Init
+#if !TRAVIS
         static CustomTemplateSet()
         {
             IFrameTemplateReadOnlyDictionary FrameCustomNodeTemplates = LoadTemplate(FrameTemplateListString);
@@ -34,11 +35,10 @@ namespace TestDebug
             }
         }
 
-        public static IFrameTemplateSet FrameTemplateSet { get; private set; }
-
         private CustomTemplateSet()
         {
         }
+#endif
         #endregion
 
         #region Node Templates
@@ -2217,6 +2217,10 @@ namespace TestDebug
     </FrameBlockTemplate>
 </FrameTemplateList>
 ";
+        #endregion
+
+        #region Properties
+        public static IFrameTemplateSet FrameTemplateSet { get; private set; }
         #endregion
     }
 }
