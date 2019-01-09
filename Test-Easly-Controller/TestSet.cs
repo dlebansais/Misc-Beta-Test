@@ -56,7 +56,7 @@ namespace Test
         {
             foreach (string FileName in Directory.GetFiles(path, "*.easly"))
             {
-                FileNameTable.Add(FileName);
+                FileNameTable.Add(FileName.Replace("\\", "/"));
 
                 if (FirstRootNode == null)
                 {
@@ -1324,6 +1324,21 @@ namespace Test
             //IFrameControllerView ControllerView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
             IFrameControllerView ControllerView = FrameControllerView.Create(Controller, TestDebug.CustomTemplateSet.FrameTemplateSet);
 
+            Assert.That(ControllerView.FirstLineNumber == 1);
+            if (ExpectedLastLineTable.ContainsKey(name))
+            {
+                int ExpectedLastLineNumber = ExpectedLastLineTable[name];
+                Assert.That(ControllerView.LastLineNumber == ExpectedLastLineNumber, $"Last line number for {name}: {ControllerView.LastLineNumber}, expected: {ExpectedLastLineNumber}");
+            }
+            else
+            {
+                using (FileStream fs = new FileStream("lines.txt", FileMode.Append, FileAccess.Write))
+                using (StreamWriter sw = new StreamWriter(fs))
+                {
+                    sw.WriteLine($"{{ \"{name}\", {ControllerView.LastLineNumber} }},");
+                }
+            }
+
             FrameTestCount = 0;
             FrameBrowseNode(Controller, RootIndex, JustCount);
             FrameMaxTestCount = FrameTestCount;
@@ -1346,8 +1361,183 @@ namespace Test
             TestFrameCanonicalize(rootNode);
 
             Assert.That(ControllerView.FirstLineNumber == 1);
-            Assert.That(ControllerView.LastLineNumber == 0, $"Last line number for {name}: {ControllerView.LastLineNumber}");
         }
+
+        public static Dictionary<string, int> ExpectedLastLineTable = new Dictionary<string, int>()
+        {
+            { "./test.easly", 193 },
+            { "./EaslyExamples/CoreEditor/Classes/Agent Expression.easly", 193 },
+            { "./EaslyExamples/CoreEditor/Classes/Basic Key Event Handler.easly", 855 },
+            { "./EaslyExamples/CoreEditor/Classes/Block Editor Node Management.easly", 62 },
+            { "./EaslyExamples/CoreEditor/Classes/Block Editor Node.easly", 162 },
+            { "./EaslyExamples/CoreEditor/Classes/Block List Editor Node Management.easly", 62 },
+            { "./EaslyExamples/CoreEditor/Classes/Block List Editor Node.easly", 252 },
+            { "./EaslyExamples/CoreEditor/Classes/Control Key Event Handler.easly", 150 },
+            { "./EaslyExamples/CoreEditor/Classes/Control With Decoration Management.easly", 644 },
+            { "./EaslyExamples/CoreEditor/Classes/Decoration.easly", 47 },
+            { "./EaslyExamples/CoreEditor/Classes/Editor Node Management.easly", 124 },
+            { "./EaslyExamples/CoreEditor/Classes/Editor Node.easly", 17 },
+            { "./EaslyExamples/CoreEditor/Classes/Horizontal Separator.easly", 35 },
+            { "./EaslyExamples/CoreEditor/Classes/Identifier Key Event Handler.easly", 56 },
+            { "./EaslyExamples/CoreEditor/Classes/Insertion Position.easly", 34 },
+            { "./EaslyExamples/CoreEditor/Classes/Key Descriptor.easly", 83 },
+            { "./EaslyExamples/CoreEditor/Classes/Node Selection.easly", 67 },
+            { "./EaslyExamples/CoreEditor/Classes/Node With Default.easly", 27 },
+            { "./EaslyExamples/CoreEditor/Classes/Properties Show Options.easly", 120 },
+            { "./EaslyExamples/CoreEditor/Classes/Property Changed Notifier.easly", 57 },
+            { "./EaslyExamples/CoreEditor/Classes/Replace Notification.easly", 44 },
+            { "./EaslyExamples/CoreEditor/Classes/Simplify Notification.easly", 29 },
+            { "./EaslyExamples/CoreEditor/Classes/Specialized Decoration.easly", 66 },
+            { "./EaslyExamples/CoreEditor/Classes/Toggle Notification.easly", 41 },
+            { "./EaslyExamples/CoreEditor/Libraries/Constructs.easly", 5 },
+            { "./EaslyExamples/CoreEditor/Libraries/Nodes.easly", 5 },
+            { "./EaslyExamples/CoreEditor/Libraries/SSC Editor.easly", 21 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Agent Expression.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Anchor Kinds.easly", 33 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Anchored Type.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Argument.easly", 29 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/As Long As Instruction.easly", 43 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Assertion Tag Expression.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Assertion.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Assignment Argument.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Assignment Instruction.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Assignment Type Argument.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Attachment Instruction.easly", 47 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Attachment.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Attribute Feature.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Binary Operator Expression.easly", 43 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Block List.easly", 30 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Block.easly", 17 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Body.easly", 43 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Check Instruction.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Class Constant Expression.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Class Replicate.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Class.easly", 99 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Clone Of Expression.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Clone Type.easly", 33 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Cloneable Status.easly", 33 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Command Instruction.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Command Overload Type.easly", 51 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Command Overload.easly", 43 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Comparable Status.easly", 33 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Comparison Type.easly", 33 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Conditional.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Conformance Type.easly", 33 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Constant Feature.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Constraint.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Continuation.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Copy Semantic.easly", 34 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Create Instruction.easly", 47 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Creation Feature.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Debug Instruction.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Deferred Body.easly", 29 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Discrete.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Effective Body.easly", 43 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Entity Declaration.easly", 43 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Entity Expression.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Equality Expression.easly", 47 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Equality Type.easly", 33 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Event Type.easly", 33 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Exception Handler.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Export Change.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Export Status.easly", 33 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Export.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Expression.easly", 29 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Extern Body.easly", 29 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Feature.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/For Loop Instruction.easly", 55 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Function Feature.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Function Type.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Generic Type.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Generic.easly", 47 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Global Replicate.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Identifier.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/If Then Else Instruction.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Import Type.easly", 34 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Import.easly", 47 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Index Assignment Instruction.easly", 43 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Index Query Expression.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Indexer Feature.easly", 55 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Indexer Type.easly", 75 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Inheritance.easly", 71 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Initialized Object Expression.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Inspect Instruction.easly", 43 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Instruction.easly", 29 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Iteration Type.easly", 33 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Keyword Anchored Type.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Keyword Expression.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Keyword.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Library.easly", 47 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Manifest Character Expression.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Manifest Number Expression.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Manifest String Expression.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Name.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Named Feature.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/New Expression.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Node.easly", 12 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Object Type.easly", 29 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Old Expression.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Once Choice.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Over Loop Instruction.easly", 51 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Parameter End Status.easly", 33 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Pattern.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Positional Argument.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Positional Type Argument.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Precursor Body.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Precursor Expression.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Precursor Index Assignment Instruction.easly", 43 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Precursor Index Expression.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Precursor Instruction.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Preprocessor Expression.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Preprocessor Macro.easly", 40 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Procedure Feature.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Procedure Type.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Property Feature.easly", 51 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Property Type.easly", 59 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Qualified Name.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Query Expression.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Query Overload Type.easly", 55 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Query Overload.easly", 55 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Raise Event Instruction.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Range.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Release Instruction.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Rename.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Replication Status.easly", 33 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Result Of Expression.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Root.easly", 43 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Scope.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Shareable Type.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Sharing Type.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Simple Type.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Throw Instruction.easly", 43 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Tuple Type.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Type Argument.easly", 29 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Typedef.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Unary Operator Expression.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Utility Type.easly", 34 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/With.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Libraries/Constructs.easly", 5 },
+            { "./EaslyExamples/EaslyCoreLanguage/Libraries/Nodes.easly", 6 },
+            { "./EaslyExamples/EaslyCoreLanguage/Libraries/SSC Language.easly", 15 },
+            { "./EaslyExamples/EaslyCoreLanguage/Replicates/SSC Core Language Nodes.easly", 1 },
+            { "./EaslyExamples/MicrosoftDotNet/Classes/.NET Event.easly", 43 },
+            { "./EaslyExamples/MicrosoftDotNet/Classes/System.ComponentModel.PropertyChangedEventArgs.easly", 44 },
+            { "./EaslyExamples/MicrosoftDotNet/Classes/System.ComponentModel.PropertyChangedEventHandler.easly", 48 },
+            { "./EaslyExamples/MicrosoftDotNet/Classes/System.Windows.Controls.Orientation.easly", 33 },
+            { "./EaslyExamples/MicrosoftDotNet/Classes/System.Windows.Controls.TextBox.easly", 73 },
+            { "./EaslyExamples/MicrosoftDotNet/Classes/System.Windows.DependencyObject.easly", 20 },
+            { "./EaslyExamples/MicrosoftDotNet/Classes/System.Windows.FrameworkElement.easly", 60 },
+            { "./EaslyExamples/MicrosoftDotNet/Classes/System.Windows.Input.FocusNavigationDirection.easly", 39 },
+            { "./EaslyExamples/MicrosoftDotNet/Classes/System.Windows.Input.Key.easly", 72 },
+            { "./EaslyExamples/MicrosoftDotNet/Classes/System.Windows.Input.Keyboard.easly", 68 },
+            { "./EaslyExamples/MicrosoftDotNet/Classes/System.Windows.Input.KeyEventArgs.easly", 40 },
+            { "./EaslyExamples/MicrosoftDotNet/Classes/System.Windows.Input.TraversalRequest.easly", 40 },
+            { "./EaslyExamples/MicrosoftDotNet/Classes/System.Windows.InputElement.easly", 20 },
+            { "./EaslyExamples/MicrosoftDotNet/Classes/System.Windows.Media.VisualTreeHelper.easly", 68 },
+            { "./EaslyExamples/MicrosoftDotNet/Libraries/.NET Classes.easly", 5 },
+            { "./EaslyExamples/MicrosoftDotNet/Libraries/.NET Enums.easly", 5 },
+            { "./EaslyExamples/Verification/Verification Example.easly", 80 },
+        };
 
         public static void TestFrameCanonicalize(INode rootNode)
         {
