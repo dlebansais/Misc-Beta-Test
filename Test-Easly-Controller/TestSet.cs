@@ -1321,7 +1321,8 @@ namespace Test
 
             IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
             IFrameController Controller = FrameController.Create(RootIndex);
-            IFrameControllerView ControllerView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+            //IFrameControllerView ControllerView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller, TestDebug.CustomTemplateSet.FrameTemplateSet);
 
             FrameTestCount = 0;
             FrameBrowseNode(Controller, RootIndex, JustCount);
@@ -1343,6 +1344,9 @@ namespace Test
             }
 
             TestFrameCanonicalize(rootNode);
+
+            Assert.That(ControllerView.FirstLineNumber == 1);
+            Assert.That(ControllerView.LastLineNumber == 0, $"Last line number for {name}: {ControllerView.LastLineNumber}");
         }
 
         public static void TestFrameCanonicalize(INode rootNode)
