@@ -1321,23 +1321,31 @@ namespace Test
 
             IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
             IFrameController Controller = FrameController.Create(RootIndex);
-            //IFrameControllerView ControllerView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
-            IFrameControllerView ControllerView = FrameControllerView.Create(Controller, TestDebug.CustomTemplateSet.FrameTemplateSet);
 
-            Assert.That(ControllerView.FirstLineNumber == 1);
-            if (ExpectedLastLineTable.ContainsKey(name))
+            IFrameControllerView ControllerView;
+
+            if (TestDebug.CustomTemplateSet.FrameTemplateSet != null)
             {
-                int ExpectedLastLineNumber = ExpectedLastLineTable[name];
-                Assert.That(ControllerView.LastLineNumber == ExpectedLastLineNumber, $"Last line number for {name}: {ControllerView.LastLineNumber}, expected: {ExpectedLastLineNumber}");
-            }
-            else
-            {
-                using (FileStream fs = new FileStream("lines.txt", FileMode.Append, FileAccess.Write))
-                using (StreamWriter sw = new StreamWriter(fs))
+                ControllerView = FrameControllerView.Create(Controller, TestDebug.CustomTemplateSet.FrameTemplateSet);
+
+                if (ExpectedLastLineTable.ContainsKey(name))
                 {
-                    sw.WriteLine($"{{ \"{name}\", {ControllerView.LastLineNumber} }},");
+                    int ExpectedLastLineNumber = ExpectedLastLineTable[name];
+                    Assert.That(ControllerView.LastLineNumber == ExpectedLastLineNumber, $"Last line number for {name}: {ControllerView.LastLineNumber}, expected: {ExpectedLastLineNumber}");
+                }
+                else
+                {
+                    using (FileStream fs = new FileStream("lines.txt", FileMode.Append, FileAccess.Write))
+                    using (StreamWriter sw = new StreamWriter(fs))
+                    {
+                        sw.WriteLine($"{{ \"{name}\", {ControllerView.LastLineNumber} }},");
+                    }
                 }
             }
+            else
+                ControllerView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+
+            Assert.That(ControllerView.FirstLineNumber == 1);
 
             FrameTestCount = 0;
             FrameBrowseNode(Controller, RootIndex, JustCount);
