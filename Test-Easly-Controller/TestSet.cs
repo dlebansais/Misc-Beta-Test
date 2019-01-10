@@ -13,6 +13,7 @@ using EaslyController;
 using EaslyController.Writeable;
 using EaslyController.Frame;
 using Easly;
+using EaslyController.Focus;
 
 namespace Test
 {
@@ -2362,6 +2363,1101 @@ namespace Test
                             IFramePlaceholderNodeState ChildState = BlockState.StateList[i];
                             IFrameIndex ChildIndex = ChildState.ParentIndex;
                             if (!FrameBrowseNode(controller, ChildIndex, test))
+                                return false;
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+        #endregion
+
+        #region Focus
+#if FOCUS
+        [Test]
+        [TestCaseSource(nameof(FileIndexRange))]
+        public static void Focus(int index)
+        {
+            if (TestOff)
+                return;
+
+            string Name = null;
+            INode RootNode = null;
+            int n = index;
+            foreach (string FileName in FileNameTable)
+            {
+                if (n == 0)
+                {
+                    using (FileStream fs = new FileStream(FileName, FileMode.Open, FileAccess.Read))
+                    {
+                        Name = FileName;
+                        Serializer Serializer = new Serializer();
+                        RootNode = Serializer.Deserialize(fs) as INode;
+                    }
+                    break;
+                }
+
+                n--;
+            }
+
+            if (n > 0)
+                throw new ArgumentOutOfRangeException($"{n} / {FileNameTable.Count}");
+            TestFocus(index, Name, RootNode);
+        }
+#endif
+
+        public static void TestFocus(int index, string name, INode rootNode)
+        {
+            ControllerTools.ResetExpectedName();
+
+            TestFocusStats(index, name, rootNode, out Stats Stats);
+
+            Random rand = new Random(0x123456);
+
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex);
+
+            IFocusControllerView ControllerView;
+
+            if (TestDebug.CustomTemplateSet.FocusTemplateSet != null)
+            {
+                ControllerView = FocusControllerView.Create(Controller, TestDebug.CustomTemplateSet.FocusTemplateSet);
+
+                if (ExpectedLastLineTable.ContainsKey(name))
+                {
+                    int ExpectedLastLineNumber = ExpectedLastLineTable[name];
+                    Assert.That(ControllerView.LastLineNumber == ExpectedLastLineNumber, $"Last line number for {name}: {ControllerView.LastLineNumber}, expected: {ExpectedLastLineNumber}");
+                }
+                else
+                {
+                    using (FileStream fs = new FileStream("lines.txt", FileMode.Append, FileAccess.Write))
+                    using (StreamWriter sw = new StreamWriter(fs))
+                    {
+                        sw.WriteLine($"{{ \"{name}\", {ControllerView.LastLineNumber} }},");
+                    }
+                }
+            }
+            else
+                ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+
+            Assert.That(ControllerView.FirstLineNumber == 1);
+
+            FocusTestCount = 0;
+            FocusBrowseNode(Controller, RootIndex, JustCount);
+            FocusMaxTestCount = FocusTestCount;
+
+            for (int i = 0; i < 10; i++)
+            {
+                TestFocusInsert(index, rootNode, rand);
+                TestFocusRemove(index, rootNode, rand);
+                TestFocusReplace(index, rootNode, rand);
+                TestFocusAssign(index, rootNode, rand);
+                TestFocusUnassign(index, rootNode, rand);
+                TestFocusChangeReplication(index, rootNode, rand);
+                TestFocusSplit(index, rootNode, rand);
+                TestFocusMerge(index, rootNode, rand);
+                TestFocusMove(index, rootNode, rand);
+                TestFocusExpand(index, rootNode, rand);
+                TestFocusReduce(index, rootNode, rand);
+            }
+
+            TestFocusCanonicalize(rootNode);
+
+            Assert.That(ControllerView.FirstLineNumber == 1);
+        }
+
+        public static Dictionary<string, int> ExpectedLastLineTable = new Dictionary<string, int>()
+        {
+            { "./test.easly", 193 },
+            { "./EaslyExamples/CoreEditor/Classes/Agent Expression.easly", 193 },
+            { "./EaslyExamples/CoreEditor/Classes/Basic Key Event Handler.easly", 855 },
+            { "./EaslyExamples/CoreEditor/Classes/Block Editor Node Management.easly", 62 },
+            { "./EaslyExamples/CoreEditor/Classes/Block Editor Node.easly", 162 },
+            { "./EaslyExamples/CoreEditor/Classes/Block List Editor Node Management.easly", 62 },
+            { "./EaslyExamples/CoreEditor/Classes/Block List Editor Node.easly", 252 },
+            { "./EaslyExamples/CoreEditor/Classes/Control Key Event Handler.easly", 150 },
+            { "./EaslyExamples/CoreEditor/Classes/Control With Decoration Management.easly", 644 },
+            { "./EaslyExamples/CoreEditor/Classes/Decoration.easly", 47 },
+            { "./EaslyExamples/CoreEditor/Classes/Editor Node Management.easly", 124 },
+            { "./EaslyExamples/CoreEditor/Classes/Editor Node.easly", 17 },
+            { "./EaslyExamples/CoreEditor/Classes/Horizontal Separator.easly", 35 },
+            { "./EaslyExamples/CoreEditor/Classes/Identifier Key Event Handler.easly", 56 },
+            { "./EaslyExamples/CoreEditor/Classes/Insertion Position.easly", 34 },
+            { "./EaslyExamples/CoreEditor/Classes/Key Descriptor.easly", 83 },
+            { "./EaslyExamples/CoreEditor/Classes/Node Selection.easly", 67 },
+            { "./EaslyExamples/CoreEditor/Classes/Node With Default.easly", 27 },
+            { "./EaslyExamples/CoreEditor/Classes/Properties Show Options.easly", 120 },
+            { "./EaslyExamples/CoreEditor/Classes/Property Changed Notifier.easly", 57 },
+            { "./EaslyExamples/CoreEditor/Classes/Replace Notification.easly", 44 },
+            { "./EaslyExamples/CoreEditor/Classes/Simplify Notification.easly", 29 },
+            { "./EaslyExamples/CoreEditor/Classes/Specialized Decoration.easly", 66 },
+            { "./EaslyExamples/CoreEditor/Classes/Toggle Notification.easly", 41 },
+            { "./EaslyExamples/CoreEditor/Libraries/Constructs.easly", 5 },
+            { "./EaslyExamples/CoreEditor/Libraries/Nodes.easly", 5 },
+            { "./EaslyExamples/CoreEditor/Libraries/SSC Editor.easly", 21 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Agent Expression.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Anchor Kinds.easly", 33 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Anchored Type.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Argument.easly", 29 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/As Long As Instruction.easly", 43 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Assertion Tag Expression.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Assertion.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Assignment Argument.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Assignment Instruction.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Assignment Type Argument.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Attachment Instruction.easly", 47 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Attachment.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Attribute Feature.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Binary Operator Expression.easly", 43 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Block List.easly", 30 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Block.easly", 17 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Body.easly", 43 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Check Instruction.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Class Constant Expression.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Class Replicate.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Class.easly", 99 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Clone Of Expression.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Clone Type.easly", 33 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Cloneable Status.easly", 33 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Command Instruction.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Command Overload Type.easly", 51 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Command Overload.easly", 43 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Comparable Status.easly", 33 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Comparison Type.easly", 33 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Conditional.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Conformance Type.easly", 33 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Constant Feature.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Constraint.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Continuation.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Copy Semantic.easly", 34 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Create Instruction.easly", 47 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Creation Feature.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Debug Instruction.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Deferred Body.easly", 29 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Discrete.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Effective Body.easly", 43 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Entity Declaration.easly", 43 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Entity Expression.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Equality Expression.easly", 47 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Equality Type.easly", 33 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Event Type.easly", 33 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Exception Handler.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Export Change.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Export Status.easly", 33 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Export.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Expression.easly", 29 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Extern Body.easly", 29 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Feature.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/For Loop Instruction.easly", 55 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Function Feature.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Function Type.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Generic Type.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Generic.easly", 47 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Global Replicate.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Identifier.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/If Then Else Instruction.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Import Type.easly", 34 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Import.easly", 47 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Index Assignment Instruction.easly", 43 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Index Query Expression.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Indexer Feature.easly", 55 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Indexer Type.easly", 75 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Inheritance.easly", 71 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Initialized Object Expression.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Inspect Instruction.easly", 43 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Instruction.easly", 29 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Iteration Type.easly", 33 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Keyword Anchored Type.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Keyword Expression.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Keyword.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Library.easly", 47 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Manifest Character Expression.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Manifest Number Expression.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Manifest String Expression.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Name.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Named Feature.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/New Expression.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Node.easly", 12 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Object Type.easly", 29 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Old Expression.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Once Choice.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Over Loop Instruction.easly", 51 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Parameter End Status.easly", 33 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Pattern.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Positional Argument.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Positional Type Argument.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Precursor Body.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Precursor Expression.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Precursor Index Assignment Instruction.easly", 43 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Precursor Index Expression.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Precursor Instruction.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Preprocessor Expression.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Preprocessor Macro.easly", 40 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Procedure Feature.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Procedure Type.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Property Feature.easly", 51 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Property Type.easly", 59 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Qualified Name.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Query Expression.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Query Overload Type.easly", 55 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Query Overload.easly", 55 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Raise Event Instruction.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Range.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Release Instruction.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Rename.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Replication Status.easly", 33 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Result Of Expression.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Root.easly", 43 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Scope.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Shareable Type.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Sharing Type.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Simple Type.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Throw Instruction.easly", 43 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Tuple Type.easly", 35 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Type Argument.easly", 29 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Typedef.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Unary Operator Expression.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/Utility Type.easly", 34 },
+            { "./EaslyExamples/EaslyCoreLanguage/Classes/With.easly", 39 },
+            { "./EaslyExamples/EaslyCoreLanguage/Libraries/Constructs.easly", 5 },
+            { "./EaslyExamples/EaslyCoreLanguage/Libraries/Nodes.easly", 6 },
+            { "./EaslyExamples/EaslyCoreLanguage/Libraries/SSC Language.easly", 15 },
+            { "./EaslyExamples/EaslyCoreLanguage/Replicates/SSC Core Language Nodes.easly", 1 },
+            { "./EaslyExamples/MicrosoftDotNet/Classes/.NET Event.easly", 43 },
+            { "./EaslyExamples/MicrosoftDotNet/Classes/System.ComponentModel.PropertyChangedEventArgs.easly", 44 },
+            { "./EaslyExamples/MicrosoftDotNet/Classes/System.ComponentModel.PropertyChangedEventHandler.easly", 48 },
+            { "./EaslyExamples/MicrosoftDotNet/Classes/System.Windows.Controls.Orientation.easly", 33 },
+            { "./EaslyExamples/MicrosoftDotNet/Classes/System.Windows.Controls.TextBox.easly", 73 },
+            { "./EaslyExamples/MicrosoftDotNet/Classes/System.Windows.DependencyObject.easly", 20 },
+            { "./EaslyExamples/MicrosoftDotNet/Classes/System.Windows.FocusworkElement.easly", 60 },
+            { "./EaslyExamples/MicrosoftDotNet/Classes/System.Windows.Input.FocusNavigationDirection.easly", 39 },
+            { "./EaslyExamples/MicrosoftDotNet/Classes/System.Windows.Input.Key.easly", 72 },
+            { "./EaslyExamples/MicrosoftDotNet/Classes/System.Windows.Input.Keyboard.easly", 68 },
+            { "./EaslyExamples/MicrosoftDotNet/Classes/System.Windows.Input.KeyEventArgs.easly", 40 },
+            { "./EaslyExamples/MicrosoftDotNet/Classes/System.Windows.Input.TraversalRequest.easly", 40 },
+            { "./EaslyExamples/MicrosoftDotNet/Classes/System.Windows.InputElement.easly", 20 },
+            { "./EaslyExamples/MicrosoftDotNet/Classes/System.Windows.Media.VisualTreeHelper.easly", 68 },
+            { "./EaslyExamples/MicrosoftDotNet/Libraries/.NET Classes.easly", 5 },
+            { "./EaslyExamples/MicrosoftDotNet/Libraries/.NET Enums.easly", 5 },
+            { "./EaslyExamples/Verification/Verification Example.easly", 80 },
+        };
+
+        public static void TestFocusCanonicalize(INode rootNode)
+        {
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+
+            Controller.Canonicalize();
+
+            IFocusControllerView NewView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+            Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
+
+            IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController NewController = FocusController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+        }
+
+        static int FocusTestCount = 0;
+        static int FocusMaxTestCount = 0;
+
+        public static bool JustCount(IFocusInner inner)
+        {
+            FocusTestCount++;
+            return true;
+        }
+
+        public static void TestFocusStats(int index, string name, INode rootNode, out Stats stats)
+        {
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex);
+
+            stats = new Stats();
+            BrowseNode(Controller, RootIndex, stats);
+
+            if (name.EndsWith("test.easly"))
+            {
+                const int ExpectedNodeCount = 155;
+                const int ExpectedPlaceholderNodeCount = 142;
+                const int ExpectedOptionalNodeCount = 12;
+                const int ExpectedAssignedOptionalNodeCount = 4;
+                const int ExpectedListCount = 5;
+                const int ExpectedBlockListCount = 96;
+
+                Assert.That(stats.NodeCount == ExpectedNodeCount, $"Failed to browse tree. Expected: {ExpectedNodeCount} node(s), Found: {stats.NodeCount}");
+                Assert.That(stats.PlaceholderNodeCount == ExpectedPlaceholderNodeCount, $"Failed to browse tree. Expected: {ExpectedPlaceholderNodeCount} placeholder node(s), Found: {stats.PlaceholderNodeCount}");
+                Assert.That(stats.OptionalNodeCount == ExpectedOptionalNodeCount, $"Failed to browse tree. Expected: {ExpectedOptionalNodeCount } optional node(s), Found: {stats.OptionalNodeCount}");
+                Assert.That(stats.AssignedOptionalNodeCount == ExpectedAssignedOptionalNodeCount, $"Failed to browse tree. Expected: {ExpectedAssignedOptionalNodeCount} assigned optional node(s), Found: {stats.AssignedOptionalNodeCount}");
+                Assert.That(stats.ListCount == ExpectedListCount, $"Failed to browse tree. Expected: {ExpectedListCount} list(s), Found: {stats.ListCount}");
+                Assert.That(stats.BlockListCount == ExpectedBlockListCount, $"Failed to browse tree. Expected: {ExpectedBlockListCount} block list(s), Found: {stats.BlockListCount}");
+            }
+
+            Assert.That(Controller.Stats.NodeCount == stats.NodeCount, $"Invalid controller state. Expected: {stats.NodeCount} node(s), Found: {Controller.Stats.NodeCount}");
+            Assert.That(Controller.Stats.PlaceholderNodeCount == stats.PlaceholderNodeCount, $"Invalid controller state. Expected: {stats.PlaceholderNodeCount} placeholder node(s), Found: {Controller.Stats.PlaceholderNodeCount}");
+            Assert.That(Controller.Stats.OptionalNodeCount == stats.OptionalNodeCount, $"Invalid controller state. Expected: {stats.OptionalNodeCount } optional node(s), Found: {Controller.Stats.OptionalNodeCount}");
+            Assert.That(Controller.Stats.AssignedOptionalNodeCount == stats.AssignedOptionalNodeCount, $"Invalid controller state. Expected: {stats.AssignedOptionalNodeCount } assigned optional node(s), Found: {Controller.Stats.AssignedOptionalNodeCount}");
+            Assert.That(Controller.Stats.ListCount == stats.ListCount, $"Invalid controller state. Expected: {stats.ListCount} list(s), Found: {Controller.Stats.ListCount}");
+            Assert.That(Controller.Stats.BlockListCount == stats.BlockListCount, $"Invalid controller state. Expected: {stats.BlockListCount} block list(s), Found: {Controller.Stats.BlockListCount}");
+        }
+
+        public static void TestFocusInsert(int index, INode rootNode, Random rand)
+        {
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+
+            FocusTestCount = 0;
+            FocusBrowseNode(Controller, RootIndex, (IFocusInner inner) => InsertAndCompare(ControllerView, RandNext(rand, FocusMaxTestCount), rand, inner));
+        }
+
+        static bool InsertAndCompare(IFocusControllerView controllerView, int TestIndex, Random rand, IFocusInner inner)
+        {
+            if (FocusTestCount++ < TestIndex)
+                return true;
+
+            IFocusController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            if (inner is IFocusListInner<IFocusBrowsingListNodeIndex> AsListInner)
+            {
+                if (AsListInner.StateList.Count > 0)
+                {
+                    INode NewNode = NodeHelper.DeepCloneNode(AsListInner.StateList[0].Node);
+                    Assert.That(NewNode != null, $"Type: {AsListInner.InterfaceType}");
+
+                    int Index = RandNext(rand, AsListInner.StateList.Count + 1);
+                    IFocusInsertionListNodeIndex NodeIndex = new FocusInsertionListNodeIndex(AsListInner.Owner.Node, AsListInner.PropertyName, NewNode, Index);
+                    Controller.Insert(AsListInner, NodeIndex, out IWriteableBrowsingCollectionNodeIndex InsertedIndex);
+                    Assert.That(Controller.Contains(InsertedIndex));
+
+                    IFocusPlaceholderNodeState ChildState = Controller.IndexToState(InsertedIndex) as IFocusPlaceholderNodeState;
+                    Assert.That(ChildState != null);
+                    Assert.That(ChildState.Node == NewNode);
+
+                    IsModified = true;
+                }
+            }
+            else if (inner is IFocusBlockListInner<IFocusBrowsingBlockNodeIndex> AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0 && AsBlockListInner.BlockStateList[0].StateList.Count > 0)
+                {
+                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node);
+                    Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
+
+                    if (RandNext(rand, 2) == 0)
+                    {
+                        int BlockIndex = RandNext(rand, AsBlockListInner.BlockStateList.Count);
+                        IFocusBlockState BlockState = AsBlockListInner.BlockStateList[BlockIndex];
+                        int Index = RandNext(rand, BlockState.StateList.Count + 1);
+
+                        IFocusInsertionExistingBlockNodeIndex NodeIndex = new FocusInsertionExistingBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, BlockIndex, Index);
+                        Controller.Insert(AsBlockListInner, NodeIndex, out IWriteableBrowsingCollectionNodeIndex InsertedIndex);
+                        Assert.That(Controller.Contains(InsertedIndex));
+
+                        IFocusPlaceholderNodeState ChildState = Controller.IndexToState(InsertedIndex) as IFocusPlaceholderNodeState;
+                        Assert.That(ChildState != null);
+                        Assert.That(ChildState.Node == NewNode);
+
+                        IsModified = true;
+                    }
+                    else
+                    {
+                        int BlockIndex = RandNext(rand, AsBlockListInner.BlockStateList.Count + 1);
+
+                        IPattern ReplicationPattern = NodeHelper.CreateSimplePattern("x");
+                        IIdentifier SourceIdentifier = NodeHelper.CreateSimpleIdentifier("y");
+                        IFocusInsertionNewBlockNodeIndex NodeIndex = new FocusInsertionNewBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, BlockIndex, ReplicationPattern, SourceIdentifier);
+                        Controller.Insert(AsBlockListInner, NodeIndex, out IWriteableBrowsingCollectionNodeIndex InsertedIndex);
+                        Assert.That(Controller.Contains(InsertedIndex));
+
+                        IFocusPlaceholderNodeState ChildState = Controller.IndexToState(InsertedIndex) as IFocusPlaceholderNodeState;
+                        Assert.That(ChildState != null);
+                        Assert.That(ChildState.Node == NewNode);
+
+                        IsModified = true;
+                    }
+                }
+            }
+
+            if (IsModified)
+            {
+                IFocusControllerView NewView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+                IFocusController NewController = FocusController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+            }
+
+            return false;
+        }
+
+        public static void TestFocusReplace(int index, INode rootNode, Random rand)
+        {
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+
+            FocusTestCount = 0;
+            FocusBrowseNode(Controller, RootIndex, (IFocusInner inner) => ReplaceAndCompare(ControllerView, RandNext(rand, FocusMaxTestCount), rand, inner));
+        }
+
+        static bool ReplaceAndCompare(IFocusControllerView controllerView, int TestIndex, Random rand, IFocusInner inner)
+        {
+            if (FocusTestCount++ < TestIndex)
+                return true;
+
+            IFocusController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            if (inner is IFocusPlaceholderInner<IFocusBrowsingPlaceholderNodeIndex> AsPlaceholderInner)
+            {
+                INode NewNode = NodeHelper.DeepCloneNode(AsPlaceholderInner.ChildState.Node);
+                Assert.That(NewNode != null, $"Type: {AsPlaceholderInner.InterfaceType}");
+
+                IFocusInsertionPlaceholderNodeIndex NodeIndex = new FocusInsertionPlaceholderNodeIndex(AsPlaceholderInner.Owner.Node, AsPlaceholderInner.PropertyName, NewNode);
+                Controller.Replace(AsPlaceholderInner, NodeIndex, out IWriteableBrowsingChildIndex InsertedIndex);
+                Assert.That(Controller.Contains(InsertedIndex));
+
+                IFocusPlaceholderNodeState ChildState = Controller.IndexToState(InsertedIndex) as IFocusPlaceholderNodeState;
+                Assert.That(ChildState != null);
+                Assert.That(ChildState.Node == NewNode);
+
+                IsModified = true;
+            }
+            else if (inner is IFocusOptionalInner<IFocusBrowsingOptionalNodeIndex> AsOptionalInner)
+            {
+                IFocusOptionalNodeState State = AsOptionalInner.ChildState;
+                IOptionalReference Optional = State.ParentIndex.Optional;
+                Type NodeInterfaceType = Optional.GetType().GetGenericArguments()[0];
+                INode NewNode = NodeHelper.CreateDefaultFromInterface(NodeInterfaceType);
+                Assert.That(NewNode != null, $"Type: {AsOptionalInner.InterfaceType}");
+
+                IFocusInsertionOptionalNodeIndex NodeIndex = new FocusInsertionOptionalNodeIndex(AsOptionalInner.Owner.Node, AsOptionalInner.PropertyName, NewNode);
+                Controller.Replace(AsOptionalInner, NodeIndex, out IWriteableBrowsingChildIndex InsertedIndex);
+                Assert.That(Controller.Contains(InsertedIndex));
+
+                IFocusOptionalNodeState ChildState = Controller.IndexToState(InsertedIndex) as IFocusOptionalNodeState;
+                Assert.That(ChildState != null);
+                Assert.That(ChildState.Node == NewNode);
+
+                IsModified = true;
+            }
+            else if (inner is IFocusListInner<IFocusBrowsingListNodeIndex> AsListInner)
+            {
+                if (AsListInner.StateList.Count > 0)
+                {
+                    INode NewNode = NodeHelper.DeepCloneNode(AsListInner.StateList[0].Node);
+                    Assert.That(NewNode != null, $"Type: {AsListInner.InterfaceType}");
+
+                    int Index = RandNext(rand, AsListInner.StateList.Count);
+                    IFocusInsertionListNodeIndex NodeIndex = new FocusInsertionListNodeIndex(AsListInner.Owner.Node, AsListInner.PropertyName, NewNode, Index);
+                    Controller.Replace(AsListInner, NodeIndex, out IWriteableBrowsingChildIndex InsertedIndex);
+                    Assert.That(Controller.Contains(InsertedIndex));
+
+                    IFocusPlaceholderNodeState ChildState = Controller.IndexToState(InsertedIndex) as IFocusPlaceholderNodeState;
+                    Assert.That(ChildState != null);
+                    Assert.That(ChildState.Node == NewNode);
+
+                    IsModified = true;
+                }
+            }
+            else if (inner is IFocusBlockListInner<IFocusBrowsingBlockNodeIndex> AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0 && AsBlockListInner.BlockStateList[0].StateList.Count > 0)
+                {
+                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node);
+                    Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
+
+                    int BlockIndex = RandNext(rand, AsBlockListInner.BlockStateList.Count);
+                    IFocusBlockState BlockState = AsBlockListInner.BlockStateList[BlockIndex];
+                    int Index = RandNext(rand, BlockState.StateList.Count);
+
+                    IFocusInsertionExistingBlockNodeIndex NodeIndex = new FocusInsertionExistingBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, BlockIndex, Index);
+                    Controller.Replace(AsBlockListInner, NodeIndex, out IWriteableBrowsingChildIndex InsertedIndex);
+                    Assert.That(Controller.Contains(InsertedIndex));
+
+                    IFocusPlaceholderNodeState ChildState = Controller.IndexToState(InsertedIndex) as IFocusPlaceholderNodeState;
+                    Assert.That(ChildState != null);
+                    Assert.That(ChildState.Node == NewNode);
+
+                    IsModified = true;
+                }
+            }
+
+            if (IsModified)
+            {
+                IFocusControllerView NewView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+                IFocusController NewController = FocusController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+            }
+
+            return false;
+        }
+
+        public static void TestFocusRemove(int index, INode rootNode, Random rand)
+        {
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+
+            FocusTestCount = 0;
+            FocusBrowseNode(Controller, RootIndex, (IFocusInner inner) => RemoveAndCompare(ControllerView, RandNext(rand, FocusMaxTestCount), rand, inner));
+        }
+
+        static bool RemoveAndCompare(IFocusControllerView controllerView, int TestIndex, Random rand, IFocusInner inner)
+        {
+            if (FocusTestCount++ < TestIndex)
+                return true;
+
+            IFocusController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            if (inner is IFocusListInner<IFocusBrowsingListNodeIndex> AsListInner)
+            {
+                if (AsListInner.StateList.Count > 0)
+                {
+                    int Index = RandNext(rand, AsListInner.StateList.Count);
+                    IFocusNodeState ChildState = AsListInner.StateList[Index];
+                    IFocusBrowsingListNodeIndex NodeIndex = ChildState.ParentIndex as IFocusBrowsingListNodeIndex;
+                    Assert.That(NodeIndex != null);
+
+                    Controller.Remove(AsListInner, NodeIndex);
+
+                    IsModified = true;
+                }
+            }
+            else if (inner is IFocusBlockListInner<IFocusBrowsingBlockNodeIndex> AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0 && AsBlockListInner.BlockStateList[0].StateList.Count > 0)
+                {
+                    int BlockIndex = RandNext(rand, AsBlockListInner.BlockStateList.Count);
+                    IFocusBlockState BlockState = AsBlockListInner.BlockStateList[BlockIndex];
+                    int Index = RandNext(rand, BlockState.StateList.Count);
+                    IFocusNodeState ChildState = BlockState.StateList[Index];
+                    IFocusBrowsingExistingBlockNodeIndex NodeIndex = ChildState.ParentIndex as IFocusBrowsingExistingBlockNodeIndex;
+                    Assert.That(NodeIndex != null);
+
+                    Controller.Remove(AsBlockListInner, NodeIndex);
+
+                    IsModified = true;
+                }
+            }
+
+            if (IsModified)
+            {
+                IFocusControllerView NewView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+                IFocusController NewController = FocusController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+            }
+
+            return false;
+        }
+
+        public static void TestFocusAssign(int index, INode rootNode, Random rand)
+        {
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+
+            FocusTestCount = 0;
+            FocusBrowseNode(Controller, RootIndex, (IFocusInner inner) => AssignAndCompare(ControllerView, RandNext(rand, FocusMaxTestCount), rand, inner));
+        }
+
+        static bool AssignAndCompare(IFocusControllerView controllerView, int TestIndex, Random rand, IFocusInner inner)
+        {
+            if (FocusTestCount++ < TestIndex)
+                return true;
+
+            IFocusController Controller = controllerView.Controller;
+
+            if (inner is IFocusOptionalInner<IFocusBrowsingOptionalNodeIndex> AsOptionalInner)
+            {
+                IFocusOptionalNodeState ChildState = AsOptionalInner.ChildState;
+                Assert.That(ChildState != null);
+
+                IFocusBrowsingOptionalNodeIndex OptionalIndex = ChildState.ParentIndex;
+                Assert.That(Controller.Contains(OptionalIndex));
+
+                IOptionalReference Optional = OptionalIndex.Optional;
+                Assert.That(Optional != null);
+
+                if (Optional.HasItem)
+                {
+                    Controller.Assign(OptionalIndex);
+                    Assert.That(Optional.IsAssigned);
+                    Assert.That(AsOptionalInner.IsAssigned);
+                    Assert.That(Optional.Item == ChildState.Node);
+
+                    IFocusControllerView NewView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                    Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                    IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+                    IFocusController NewController = FocusController.Create(NewRootIndex);
+                    Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+                }
+            }
+
+            return false;
+        }
+
+        public static void TestFocusUnassign(int index, INode rootNode, Random rand)
+        {
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+
+            FocusTestCount = 0;
+            FocusBrowseNode(Controller, RootIndex, (IFocusInner inner) => UnassignAndCompare(ControllerView, RandNext(rand, FocusMaxTestCount), rand, inner));
+        }
+
+        static bool UnassignAndCompare(IFocusControllerView controllerView, int TestIndex, Random rand, IFocusInner inner)
+        {
+            if (FocusTestCount++ < TestIndex)
+                return true;
+
+            IFocusController Controller = controllerView.Controller;
+
+            if (inner is IFocusOptionalInner<IFocusBrowsingOptionalNodeIndex> AsOptionalInner)
+            {
+                IFocusOptionalNodeState ChildState = AsOptionalInner.ChildState;
+                Assert.That(ChildState != null);
+
+                IFocusBrowsingOptionalNodeIndex OptionalIndex = ChildState.ParentIndex;
+                Assert.That(Controller.Contains(OptionalIndex));
+
+                IOptionalReference Optional = OptionalIndex.Optional;
+                Assert.That(Optional != null);
+
+                Controller.Unassign(OptionalIndex);
+                Assert.That(!Optional.IsAssigned);
+                Assert.That(!AsOptionalInner.IsAssigned);
+
+                IFocusControllerView NewView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+                IFocusController NewController = FocusController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+            }
+
+            return false;
+        }
+
+        public static void TestFocusChangeReplication(int index, INode rootNode, Random rand)
+        {
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+
+            FocusTestCount = 0;
+            FocusBrowseNode(Controller, RootIndex, (IFocusInner inner) => ChangeReplicationAndCompare(ControllerView, RandNext(rand, FocusMaxTestCount), rand, inner));
+        }
+
+        static bool ChangeReplicationAndCompare(IFocusControllerView controllerView, int TestIndex, Random rand, IFocusInner inner)
+        {
+            if (FocusTestCount++ < TestIndex)
+                return true;
+
+            IFocusController Controller = controllerView.Controller;
+
+            if (inner is IFocusBlockListInner<IFocusBrowsingBlockNodeIndex> AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int BlockIndex = RandNext(rand, AsBlockListInner.BlockStateList.Count);
+                    IFocusBlockState BlockState = AsBlockListInner.BlockStateList[BlockIndex];
+
+                    ReplicationStatus Replication = (ReplicationStatus)RandNext(rand, 2);
+                    Controller.ChangeReplication(AsBlockListInner, BlockIndex, Replication);
+
+                    IFocusControllerView NewView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                    Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                    IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+                    IFocusController NewController = FocusController.Create(NewRootIndex);
+                    Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+                }
+            }
+
+            return false;
+        }
+
+        public static void TestFocusSplit(int index, INode rootNode, Random rand)
+        {
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+
+            FocusTestCount = 0;
+            FocusBrowseNode(Controller, RootIndex, (IFocusInner inner) => SplitAndCompare(ControllerView, RandNext(rand, FocusMaxTestCount), rand, inner));
+        }
+
+        static bool SplitAndCompare(IFocusControllerView controllerView, int TestIndex, Random rand, IFocusInner inner)
+        {
+            if (FocusTestCount++ < TestIndex)
+                return true;
+
+            IFocusController Controller = controllerView.Controller;
+
+            if (inner is IFocusBlockListInner<IFocusBrowsingBlockNodeIndex> AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int SplitBlockIndex = RandNext(rand, AsBlockListInner.BlockStateList.Count);
+                    IFocusBlockState BlockState = AsBlockListInner.BlockStateList[SplitBlockIndex];
+                    if (BlockState.StateList.Count > 1)
+                    {
+                        int SplitIndex = 1 + RandNext(rand, BlockState.StateList.Count - 1);
+                        IFocusBrowsingExistingBlockNodeIndex NodeIndex = (IFocusBrowsingExistingBlockNodeIndex)AsBlockListInner.IndexAt(SplitBlockIndex, SplitIndex);
+                        Controller.SplitBlock(AsBlockListInner, NodeIndex);
+
+                        IFocusControllerView NewView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                        Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                        IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+                        IFocusController NewController = FocusController.Create(NewRootIndex);
+                        Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                        Assert.That(AsBlockListInner.BlockStateList.Count > 0);
+                        int OldBlockIndex = RandNext(rand, AsBlockListInner.BlockStateList.Count);
+                        int NewBlockIndex = RandNext(rand, AsBlockListInner.BlockStateList.Count);
+                        int Direction = NewBlockIndex - OldBlockIndex;
+                        Controller.MoveBlock(AsBlockListInner, OldBlockIndex, Direction);
+
+                        IFocusControllerView NewViewAfterMove = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                        Assert.That(NewViewAfterMove.IsEqual(CompareEqual.New(), controllerView));
+
+                        IFocusRootNodeIndex NewRootIndexAfterMove = new FocusRootNodeIndex(Controller.RootIndex.Node);
+                        IFocusController NewControllerAfterMove = FocusController.Create(NewRootIndexAfterMove);
+                        Assert.That(NewControllerAfterMove.IsEqual(CompareEqual.New(), Controller));
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public static void TestFocusMerge(int index, INode rootNode, Random rand)
+        {
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+
+            FocusTestCount = 0;
+            FocusBrowseNode(Controller, RootIndex, (IFocusInner inner) => MergeAndCompare(ControllerView, RandNext(rand, FocusMaxTestCount), rand, inner));
+        }
+
+        static bool MergeAndCompare(IFocusControllerView controllerView, int TestIndex, Random rand, IFocusInner inner)
+        {
+            if (FocusTestCount++ < TestIndex)
+                return true;
+
+            IFocusController Controller = controllerView.Controller;
+
+            if (inner is IFocusBlockListInner<IFocusBrowsingBlockNodeIndex> AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 1)
+                {
+                    int MergeBlockIndex = 1 + RandNext(rand, AsBlockListInner.BlockStateList.Count - 1);
+                    IFocusBlockState BlockState = AsBlockListInner.BlockStateList[MergeBlockIndex];
+
+                    IFocusBrowsingExistingBlockNodeIndex NodeIndex = (IFocusBrowsingExistingBlockNodeIndex)AsBlockListInner.IndexAt(MergeBlockIndex, 0);
+                    Controller.MergeBlocks(AsBlockListInner, NodeIndex);
+
+                    IFocusControllerView NewView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                    Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                    IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+                    IFocusController NewController = FocusController.Create(NewRootIndex);
+                    Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+                }
+            }
+
+            return false;
+        }
+
+        public static void TestFocusMove(int index, INode rootNode, Random rand)
+        {
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+
+            FocusTestCount = 0;
+            FocusBrowseNode(Controller, RootIndex, (IFocusInner inner) => MoveAndCompare(ControllerView, RandNext(rand, FocusMaxTestCount), rand, inner));
+        }
+
+        static bool MoveAndCompare(IFocusControllerView controllerView, int TestIndex, Random rand, IFocusInner inner)
+        {
+            if (FocusTestCount++ < TestIndex)
+                return true;
+
+            IFocusController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            if (inner is IFocusListInner<IFocusBrowsingListNodeIndex> AsListInner)
+            {
+                if (AsListInner.StateList.Count > 0)
+                {
+                    int OldIndex = RandNext(rand, AsListInner.StateList.Count);
+                    int NewIndex = RandNext(rand, AsListInner.StateList.Count);
+                    int Direction = NewIndex - OldIndex;
+
+                    IFocusBrowsingListNodeIndex NodeIndex = AsListInner.IndexAt(OldIndex) as IFocusBrowsingListNodeIndex;
+                    Assert.That(NodeIndex != null);
+
+                    Controller.Move(AsListInner, NodeIndex, Direction);
+                    Assert.That(Controller.Contains(NodeIndex));
+
+                    IsModified = true;
+                }
+            }
+            else if (inner is IFocusBlockListInner<IFocusBrowsingBlockNodeIndex> AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int BlockIndex = RandNext(rand, AsBlockListInner.BlockStateList.Count);
+                    IFocusBlockState BlockState = AsBlockListInner.BlockStateList[BlockIndex];
+
+                    if (BlockState.StateList.Count > 0)
+                    {
+                        int OldIndex = RandNext(rand, BlockState.StateList.Count);
+                        int NewIndex = RandNext(rand, BlockState.StateList.Count);
+                        int Direction = NewIndex - OldIndex;
+
+                        IFocusBrowsingExistingBlockNodeIndex NodeIndex = AsBlockListInner.IndexAt(BlockIndex, OldIndex) as IFocusBrowsingExistingBlockNodeIndex;
+                        Assert.That(NodeIndex != null);
+
+                        Controller.Move(AsBlockListInner, NodeIndex, Direction);
+                        Assert.That(Controller.Contains(NodeIndex));
+
+                        IsModified = true;
+                    }
+                }
+            }
+
+            if (IsModified)
+            {
+                IFocusControllerView NewView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+                IFocusController NewController = FocusController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+            }
+
+            return false;
+        }
+
+        public static void TestFocusExpand(int index, INode rootNode, Random rand)
+        {
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+
+            FocusTestCount = 0;
+            FocusBrowseNode(Controller, RootIndex, (IFocusInner inner) => ExpandAndCompare(ControllerView, RandNext(rand, FocusMaxTestCount), rand, inner));
+        }
+
+        static bool ExpandAndCompare(IFocusControllerView controllerView, int TestIndex, Random rand, IFocusInner inner)
+        {
+            if (FocusTestCount++ < TestIndex)
+                return true;
+
+            IFocusController Controller = controllerView.Controller;
+            IFocusNodeIndex NodeIndex;
+            IFocusPlaceholderNodeState State;
+
+            if (inner is IFocusPlaceholderInner<IFocusBrowsingPlaceholderNodeIndex> AsPlaceholderInner)
+            {
+                NodeIndex = AsPlaceholderInner.ChildState.ParentIndex as IFocusNodeIndex;
+                Assert.That(NodeIndex != null);
+
+                State = Controller.IndexToState(NodeIndex) as IFocusPlaceholderNodeState;
+                Assert.That(State != null);
+
+                NodeTreeHelper.GetArgumentBlocks(State.Node, out IDictionary<string, IBlockList<IArgument, Argument>> ArgumentBlocksTable);
+                if (ArgumentBlocksTable.Count == 0)
+                    return true;
+            }
+            else
+                return true;
+
+            Controller.Expand(NodeIndex);
+
+            IFocusControllerView NewView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+            Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+            IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController NewController = FocusController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+            Controller.Expand(NodeIndex);
+
+            NewController = FocusController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+            Controller.Reduce(NodeIndex);
+
+            NewController = FocusController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+            return false;
+        }
+
+        public static void TestFocusReduce(int index, INode rootNode, Random rand)
+        {
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+
+            FocusTestCount = 0;
+            FocusBrowseNode(Controller, RootIndex, (IFocusInner inner) => ReduceAndCompare(ControllerView, RandNext(rand, FocusMaxTestCount), rand, inner));
+        }
+
+        static bool ReduceAndCompare(IFocusControllerView controllerView, int TestIndex, Random rand, IFocusInner inner)
+        {
+            if (FocusTestCount++ < TestIndex)
+                return true;
+
+            IFocusController Controller = controllerView.Controller;
+            IFocusNodeIndex NodeIndex;
+            IFocusPlaceholderNodeState State;
+
+            if (inner is IFocusPlaceholderInner<IFocusBrowsingPlaceholderNodeIndex> AsPlaceholderInner)
+            {
+                NodeIndex = AsPlaceholderInner.ChildState.ParentIndex as IFocusNodeIndex;
+                Assert.That(NodeIndex != null);
+
+                State = Controller.IndexToState(NodeIndex) as IFocusPlaceholderNodeState;
+                Assert.That(State != null);
+
+                NodeTreeHelper.GetArgumentBlocks(State.Node, out IDictionary<string, IBlockList<IArgument, Argument>> ArgumentBlocksTable);
+                if (ArgumentBlocksTable.Count == 0)
+                    return true;
+            }
+            else
+                return true;
+
+            Controller.Reduce(NodeIndex);
+
+            IFocusControllerView NewView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+            Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+            IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController NewController = FocusController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+            Controller.Reduce(NodeIndex);
+
+            NewController = FocusController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+            Controller.Expand(NodeIndex);
+
+            NewController = FocusController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+            return false;
+        }
+
+        static bool FocusBrowseNode(IFocusController controller, IFocusIndex index, Func<IFocusInner, bool> test)
+        {
+            Assert.That(index != null, "Focus #0");
+            Assert.That(controller.Contains(index), "Focus #1");
+            IFocusNodeState State = (IFocusNodeState)controller.IndexToState(index);
+            Assert.That(State != null, "Focus #2");
+            Assert.That(State.ParentIndex == index, "Focus #4");
+
+            INode Node;
+
+            if (State is IFocusPlaceholderNodeState AsPlaceholderState)
+                Node = AsPlaceholderState.Node;
+            else
+            {
+                Assert.That(State is IFocusOptionalNodeState, "Focus #5");
+                IFocusOptionalNodeState AsOptionalState = (IFocusOptionalNodeState)State;
+                IFocusOptionalInner<IFocusBrowsingOptionalNodeIndex> ParentInner = AsOptionalState.ParentInner;
+
+                Assert.That(ParentInner.IsAssigned, "Focus #6");
+
+                Node = AsOptionalState.Node;
+            }
+
+            Type ChildNodeType;
+            IList<string> PropertyNames = NodeTreeHelper.EnumChildNodeProperties(Node);
+
+            foreach (string PropertyName in PropertyNames)
+            {
+                if (NodeTreeHelperChild.IsChildNodeProperty(Node, PropertyName, out ChildNodeType))
+                {
+                    IFocusPlaceholderInner Inner = (IFocusPlaceholderInner)State.PropertyToInner(PropertyName);
+                    if (!test(Inner))
+                        return false;
+
+                    IFocusNodeState ChildState = Inner.ChildState;
+                    IFocusIndex ChildIndex = ChildState.ParentIndex;
+                    if (!FocusBrowseNode(controller, ChildIndex, test))
+                        return false;
+                }
+
+                else if (NodeTreeHelperOptional.IsOptionalChildNodeProperty(Node, PropertyName, out ChildNodeType))
+                {
+                    NodeTreeHelperOptional.GetChildNode(Node, PropertyName, out bool IsAssigned, out INode ChildNode);
+                    if (IsAssigned)
+                    {
+                        IFocusOptionalInner Inner = (IFocusOptionalInner)State.PropertyToInner(PropertyName);
+                        if (!test(Inner))
+                            return false;
+
+                        IFocusNodeState ChildState = Inner.ChildState;
+                        IFocusIndex ChildIndex = ChildState.ParentIndex;
+                        if (!FocusBrowseNode(controller, ChildIndex, test))
+                            return false;
+                    }
+                }
+
+                else if (NodeTreeHelperList.IsNodeListProperty(Node, PropertyName, out ChildNodeType))
+                {
+                    IFocusListInner Inner = (IFocusListInner)State.PropertyToInner(PropertyName);
+                    if (!test(Inner))
+                        return false;
+
+                    for (int i = 0; i < Inner.StateList.Count; i++)
+                    {
+                        IFocusPlaceholderNodeState ChildState = Inner.StateList[i];
+                        IFocusIndex ChildIndex = ChildState.ParentIndex;
+                        if (!FocusBrowseNode(controller, ChildIndex, test))
+                            return false;
+                    }
+                }
+
+                else if (NodeTreeHelperBlockList.IsBlockListProperty(Node, PropertyName, out Type ChildInterfaceType, out ChildNodeType))
+                {
+                    IFocusBlockListInner Inner = (IFocusBlockListInner)State.PropertyToInner(PropertyName);
+                    if (!test(Inner))
+                        return false;
+
+                    for (int BlockIndex = 0; BlockIndex < Inner.BlockStateList.Count; BlockIndex++)
+                    {
+                        IFocusBlockState BlockState = Inner.BlockStateList[BlockIndex];
+                        if (!FocusBrowseNode(controller, BlockState.PatternIndex, test))
+                            return false;
+                        if (!FocusBrowseNode(controller, BlockState.SourceIndex, test))
+                            return false;
+
+                        for (int i = 0; i < BlockState.StateList.Count; i++)
+                        {
+                            IFocusPlaceholderNodeState ChildState = BlockState.StateList[i];
+                            IFocusIndex ChildIndex = ChildState.ParentIndex;
+                            if (!FocusBrowseNode(controller, ChildIndex, test))
                                 return false;
                         }
                     }
