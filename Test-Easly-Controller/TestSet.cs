@@ -1325,13 +1325,13 @@ namespace Test
 
             IFrameControllerView ControllerView;
 
-            if (TestDebug.CustomTemplateSet.FrameTemplateSet != null)
+            if (TestDebug.CustomFrameTemplateSet.FrameTemplateSet != null)
             {
-                ControllerView = FrameControllerView.Create(Controller, TestDebug.CustomTemplateSet.FrameTemplateSet);
+                ControllerView = FrameControllerView.Create(Controller, TestDebug.CustomFrameTemplateSet.FrameTemplateSet);
 
-                if (ExpectedLastLineTable.ContainsKey(name))
+                if (FrameExpectedLastLineTable.ContainsKey(name))
                 {
-                    int ExpectedLastLineNumber = ExpectedLastLineTable[name];
+                    int ExpectedLastLineNumber = FrameExpectedLastLineTable[name];
                     Assert.That(ControllerView.LastLineNumber == ExpectedLastLineNumber, $"Last line number for {name}: {ControllerView.LastLineNumber}, expected: {ExpectedLastLineNumber}");
                 }
                 else
@@ -1372,7 +1372,7 @@ namespace Test
             Assert.That(ControllerView.FirstLineNumber == 1);
         }
 
-        public static Dictionary<string, int> ExpectedLastLineTable = new Dictionary<string, int>()
+        public static Dictionary<string, int> FrameExpectedLastLineTable = new Dictionary<string, int>()
         {
             { "./test.easly", 193 },
             { "./EaslyExamples/CoreEditor/Classes/Agent Expression.easly", 193 },
@@ -2420,13 +2420,13 @@ namespace Test
 
             IFocusControllerView ControllerView;
 
-            if (TestDebug.CustomTemplateSet.FocusTemplateSet != null)
+            if (TestDebug.CustomFocusTemplateSet.FocusTemplateSet != null)
             {
-                ControllerView = FocusControllerView.Create(Controller, TestDebug.CustomTemplateSet.FocusTemplateSet);
+                ControllerView = FocusControllerView.Create(Controller, TestDebug.CustomFocusTemplateSet.FocusTemplateSet);
 
-                if (ExpectedLastLineTable.ContainsKey(name))
+                if (FocusExpectedLastLineTable.ContainsKey(name))
                 {
-                    int ExpectedLastLineNumber = ExpectedLastLineTable[name];
+                    int ExpectedLastLineNumber = FocusExpectedLastLineTable[name];
                     Assert.That(ControllerView.LastLineNumber == ExpectedLastLineNumber, $"Last line number for {name}: {ControllerView.LastLineNumber}, expected: {ExpectedLastLineNumber}");
                 }
                 else
@@ -2467,7 +2467,7 @@ namespace Test
             Assert.That(ControllerView.FirstLineNumber == 1);
         }
 
-        public static Dictionary<string, int> ExpectedLastLineTable = new Dictionary<string, int>()
+        public static Dictionary<string, int> FocusExpectedLastLineTable = new Dictionary<string, int>()
         {
             { "./test.easly", 193 },
             { "./EaslyExamples/CoreEditor/Classes/Agent Expression.easly", 193 },

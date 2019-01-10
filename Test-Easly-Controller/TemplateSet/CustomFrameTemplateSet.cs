@@ -5,11 +5,10 @@ using System.Windows.Markup;
 
 namespace TestDebug
 {
-    public class CustomTemplateSet
+    public class CustomFrameTemplateSet
     {
         #region Init
-#if !TRAVIS
-        static CustomTemplateSet()
+        static CustomFrameTemplateSet()
         {
             IFrameTemplateReadOnlyDictionary FrameCustomNodeTemplates = LoadTemplate(FrameTemplateListString);
             IFrameTemplateReadOnlyDictionary FrameCustomBlockTemplates = LoadTemplate(FrameBlockTemplateString);
@@ -35,10 +34,11 @@ namespace TestDebug
             }
         }
 
-        private CustomTemplateSet()
+        public static IFrameTemplateSet FrameTemplateSet { get; private set; }
+
+        private CustomFrameTemplateSet()
         {
         }
-#endif
         #endregion
 
         #region Node Templates
@@ -2217,10 +2217,6 @@ namespace TestDebug
     </FrameBlockTemplate>
 </FrameTemplateList>
 ";
-        #endregion
-
-        #region Properties
-        public static IFrameTemplateSet FrameTemplateSet { get; private set; }
         #endregion
     }
 }

@@ -27,7 +27,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE;READONLY;VIEWS;WRITEABLE;FRAME</DefineConstants>
+    <DefineConstants>TRACE;READONLY;VIEWS;WRITEABLE;FRAME;FOCUS</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
@@ -36,7 +36,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Travis|x64'">
     <OutputPath>bin\x64\Travis\</OutputPath>
-    <DefineConstants>TRAVIS;TRACE;READONLY;VIEWS;WRITEABLE;FRAME</DefineConstants>
+    <DefineConstants>TRAVIS;TRACE;READONLY;VIEWS;WRITEABLE;FRAME;FOCUS</DefineConstants>
     <Optimize>true</Optimize>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
@@ -71,7 +71,8 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomTemplateSet.cs" />
+    <Compile Include="TemplateSet\CustomFocusTemplateSet.cs" />
+    <Compile Include="TemplateSet\CustomFrameTemplateSet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestSet.cs" />
   </ItemGroup>
