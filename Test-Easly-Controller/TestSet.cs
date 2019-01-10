@@ -1346,8 +1346,6 @@ namespace Test
             else
                 ControllerView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
 
-            Assert.That(ControllerView.FirstLineNumber == 1);
-
             FrameTestCount = 0;
             FrameBrowseNode(Controller, RootIndex, JustCount);
             FrameMaxTestCount = FrameTestCount;
@@ -1368,8 +1366,6 @@ namespace Test
             }
 
             TestFrameCanonicalize(rootNode);
-
-            Assert.That(ControllerView.FirstLineNumber == 1);
         }
 
         public static Dictionary<string, int> FrameExpectedLastLineTable = new Dictionary<string, int>()
@@ -2441,8 +2437,6 @@ namespace Test
             else
                 ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
 
-            Assert.That(ControllerView.FirstLineNumber == 1);
-
             FocusTestCount = 0;
             FocusBrowseNode(Controller, RootIndex, JustCount);
             FocusMaxTestCount = FocusTestCount;
@@ -2463,8 +2457,6 @@ namespace Test
             }
 
             TestFocusCanonicalize(rootNode);
-
-            Assert.That(ControllerView.FirstLineNumber == 1);
         }
 
         public static Dictionary<string, int> FocusExpectedLastLineTable = new Dictionary<string, int>()
