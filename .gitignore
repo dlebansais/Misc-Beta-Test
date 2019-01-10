@@ -7,6 +7,8 @@
 *.userosscache
 *.sln.docstates
 
+./Test-Easly-Controller/lines.txt
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
