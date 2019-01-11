@@ -1342,6 +1342,10 @@ namespace Test
                         sw.WriteLine($"{{ \"{name}\", {ControllerView.LastLineNumber} }},");
                     }
                 }
+
+                IFrameVisibleCellViewList CellViewList = new FrameVisibleCellViewList();
+                ControllerView.EnumerateVisibleCellViews(CellViewList);
+                TestFrameCellViewList(CellViewList);
             }
             else
                 ControllerView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
@@ -1366,6 +1370,34 @@ namespace Test
             }
 
             TestFrameCanonicalize(rootNode);
+        }
+
+        public static void TestFrameCellViewList(IFrameVisibleCellViewList cellViewList)
+        {
+            foreach (IFrameVisibleCellView CellView in cellViewList)
+            {
+                IFrameFrame Frame = CellView.Frame;
+                INode ChildNode = CellView.StateView.State.Node;
+                string PropertyName;
+
+                switch (CellView)
+                {
+                    case IFrameDiscreteContentFocusableCellView AsDiscreteContentFocusable: // Enum, bool
+                        PropertyName = AsDiscreteContentFocusable.PropertyName;
+                        Assert.That(NodeTreeHelper.IsEnumProperty(ChildNode, PropertyName) || NodeTreeHelper.IsBooleanProperty(ChildNode, PropertyName));
+                        break;
+                    case IFrameTextFocusableCellView AsTextFocusable: // String
+                        PropertyName = AsTextFocusable.PropertyName;
+                        Assert.That(NodeTreeHelper.IsStringProperty(ChildNode, PropertyName) && PropertyName == "Text");
+                        break;
+                    case IFrameFocusableCellView AsFocusable: // Insert
+                        Assert.That(Frame is IFrameInsertFrame);
+                        break;
+                    case IFrameVisibleCellView AsVisible: // Others
+                        Assert.That(((Frame is IFrameKeywordFrame AsKeywordFrame) && !string.IsNullOrEmpty(AsKeywordFrame.Text)) || (Frame is IFrameSymbolFrame AsSymbolFrame));
+                        break;
+                }
+            }
         }
 
         public static Dictionary<string, int> FrameExpectedLastLineTable = new Dictionary<string, int>()
@@ -2433,6 +2465,10 @@ namespace Test
                         sw.WriteLine($"{{ \"{name}\", {ControllerView.LastLineNumber} }},");
                     }
                 }
+
+                IFocusVisibleCellViewList CellViewList = new FocusVisibleCellViewList();
+                ControllerView.EnumerateVisibleCellViews(CellViewList);
+                TestFocusCellViewList(CellViewList);
             }
             else
                 ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
@@ -2457,6 +2493,34 @@ namespace Test
             }
 
             TestFocusCanonicalize(rootNode);
+        }
+
+        public static void TestFocusCellViewList(IFocusVisibleCellViewList cellViewList)
+        {
+            foreach (IFocusVisibleCellView CellView in cellViewList)
+            {
+                IFocusFrame Frame = CellView.Frame;
+                INode ChildNode = CellView.StateView.State.Node;
+                string PropertyName;
+
+                switch (CellView)
+                {
+                    case IFocusDiscreteContentFocusableCellView AsDiscreteContentFocusable: // Enum, bool
+                        PropertyName = AsDiscreteContentFocusable.PropertyName;
+                        Assert.That(NodeTreeHelper.IsEnumProperty(ChildNode, PropertyName) || NodeTreeHelper.IsBooleanProperty(ChildNode, PropertyName));
+                        break;
+                    case IFocusTextFocusableCellView AsTextFocusable: // String
+                        PropertyName = AsTextFocusable.PropertyName;
+                        Assert.That(NodeTreeHelper.IsStringProperty(ChildNode, PropertyName) && PropertyName == "Text");
+                        break;
+                    case IFocusFocusableCellView AsFocusable: // Insert
+                        Assert.That(Frame is IFocusInsertFrame);
+                        break;
+                    case IFocusVisibleCellView AsVisible: // Others
+                        Assert.That(((Frame is IFocusKeywordFrame AsKeywordFrame) && !string.IsNullOrEmpty(AsKeywordFrame.Text)) || (Frame is IFocusSymbolFrame AsSymbolFrame));
+                        break;
+                }
+            }
         }
 
         public static Dictionary<string, int> FocusExpectedLastLineTable = new Dictionary<string, int>()
