@@ -1,4 +1,0 @@
-{ "./EaslyExamples/MicrosoftDotNet/Classes/System.Windows.FrameworkElement.easly", 60 },
-{ "./EaslyExamples/MicrosoftDotNet/Classes/System.Windows.FrameworkElement.easly", 60 },
-{ "./EaslyExamples/MicrosoftDotNet/Classes/System.Windows.FrameworkElement.easly", 60 },
-{ "./EaslyExamples/MicrosoftDotNet/Classes/System.Windows.FrameworkElement.easly", 60 },

@@ -1336,16 +1336,15 @@ namespace Test
                 }
                 else
                 {
+                    /*
                     using (FileStream fs = new FileStream("lines.txt", FileMode.Append, FileAccess.Write))
                     using (StreamWriter sw = new StreamWriter(fs))
                     {
                         sw.WriteLine($"{{ \"{name}\", {ControllerView.LastLineNumber} }},");
-                    }
+                    }*/
                 }
 
-                IFrameVisibleCellViewList CellViewList = new FrameVisibleCellViewList();
-                ControllerView.EnumerateVisibleCellViews(CellViewList);
-                TestFrameCellViewList(CellViewList);
+                TestFrameCellViewList(ControllerView, name);
             }
             else
                 ControllerView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
@@ -1372,10 +1371,29 @@ namespace Test
             TestFrameCanonicalize(rootNode);
         }
 
-        public static void TestFrameCellViewList(IFrameVisibleCellViewList cellViewList)
+        public static void TestFrameCellViewList(IFrameControllerView controllerView, string name)
         {
-            foreach (IFrameVisibleCellView CellView in cellViewList)
+            IFrameVisibleCellViewList CellViewList = new FrameVisibleCellViewList();
+            controllerView.EnumerateVisibleCellViews(CellViewList);
+
+            Assert.That(controllerView.LastLineNumber >= 1);
+            Assert.That(controllerView.LastColumnNumber >= 1);
+
+            IFrameVisibleCellView[,] CellViewGrid = new IFrameVisibleCellView[controllerView.LastLineNumber, controllerView.LastColumnNumber];
+
+            foreach (IFrameVisibleCellView CellView in CellViewList)
             {
+                int LineNumber = CellView.LineNumber - 1;
+                int ColumnNumber = CellView.ColumnNumber - 1;
+
+                Assert.That(LineNumber >= 0);
+                Assert.That(LineNumber < controllerView.LastLineNumber);
+                Assert.That(ColumnNumber >= 0);
+                Assert.That(ColumnNumber < controllerView.LastColumnNumber);
+
+                Assert.That(CellViewGrid[LineNumber, ColumnNumber] == null);
+                CellViewGrid[LineNumber, ColumnNumber] = CellView;
+
                 IFrameFrame Frame = CellView.Frame;
                 INode ChildNode = CellView.StateView.State.Node;
                 string PropertyName;
@@ -1398,6 +1416,42 @@ namespace Test
                         break;
                 }
             }
+
+            int IndexFirstLine = -1;
+            for (int i = 0; i < controllerView.LastColumnNumber; i++)
+                if (CellViewGrid[0, i] != null)
+                {
+                    IndexFirstLine = i;
+                    break;
+                }
+            Assert.That(IndexFirstLine >= 0);
+
+            int IndexFirstColumn = -1;
+            for (int i = 0; i < controllerView.LastLineNumber; i++)
+                if (CellViewGrid[0, 1] != null)
+                {
+                    IndexFirstColumn = i;
+                    break;
+                }
+            Assert.That(IndexFirstColumn >= 0);
+
+            int IndexLastLine = -1;
+            for (int i = 0; i < controllerView.LastColumnNumber; i++)
+                if (CellViewGrid[controllerView.LastLineNumber - 1, i] != null)
+                {
+                    IndexLastLine = i;
+                    break;
+                }
+            Assert.That(IndexLastLine >= 0);
+
+            int IndexLastColumn = -1;
+            for (int i = 0; i < controllerView.LastLineNumber; i++)
+                if (CellViewGrid[i, controllerView.LastColumnNumber - 1] != null)
+                {
+                    IndexLastColumn = i;
+                    break;
+                }
+            Assert.That(IndexLastColumn >= 0);
         }
 
         public static Dictionary<string, int> FrameExpectedLastLineTable = new Dictionary<string, int>()
@@ -2459,16 +2513,15 @@ namespace Test
                 }
                 else
                 {
+                    /*
                     using (FileStream fs = new FileStream("lines.txt", FileMode.Append, FileAccess.Write))
                     using (StreamWriter sw = new StreamWriter(fs))
                     {
                         sw.WriteLine($"{{ \"{name}\", {ControllerView.LastLineNumber} }},");
-                    }
+                    }*/
                 }
 
-                IFocusVisibleCellViewList CellViewList = new FocusVisibleCellViewList();
-                ControllerView.EnumerateVisibleCellViews(CellViewList);
-                TestFocusCellViewList(CellViewList);
+                TestFocusCellViewList(ControllerView, name);
             }
             else
                 ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
@@ -2495,10 +2548,29 @@ namespace Test
             TestFocusCanonicalize(rootNode);
         }
 
-        public static void TestFocusCellViewList(IFocusVisibleCellViewList cellViewList)
+        public static void TestFocusCellViewList(IFocusControllerView controllerView, string name)
         {
-            foreach (IFocusVisibleCellView CellView in cellViewList)
+            IFocusVisibleCellViewList CellViewList = new FocusVisibleCellViewList();
+            controllerView.EnumerateVisibleCellViews(CellViewList);
+
+            Assert.That(controllerView.LastLineNumber >= 1);
+            Assert.That(controllerView.LastColumnNumber >= 1);
+
+            IFocusVisibleCellView[,] CellViewGrid = new IFocusVisibleCellView[controllerView.LastLineNumber, controllerView.LastColumnNumber];
+
+            foreach (IFocusVisibleCellView CellView in CellViewList)
             {
+                int LineNumber = CellView.LineNumber - 1;
+                int ColumnNumber = CellView.ColumnNumber - 1;
+
+                Assert.That(LineNumber >= 0);
+                Assert.That(LineNumber < controllerView.LastLineNumber);
+                Assert.That(ColumnNumber >= 0);
+                Assert.That(ColumnNumber < controllerView.LastColumnNumber);
+
+                Assert.That(CellViewGrid[LineNumber, ColumnNumber] == null);
+                CellViewGrid[LineNumber, ColumnNumber] = CellView;
+
                 IFocusFrame Frame = CellView.Frame;
                 INode ChildNode = CellView.StateView.State.Node;
                 string PropertyName;
@@ -2521,6 +2593,42 @@ namespace Test
                         break;
                 }
             }
+
+            int IndexFirstLine = -1;
+            for (int i = 0; i < controllerView.LastColumnNumber; i++)
+                if (CellViewGrid[0, i] != null)
+                {
+                    IndexFirstLine = i;
+                    break;
+                }
+            Assert.That(IndexFirstLine >= 0);
+
+            int IndexFirstColumn = -1;
+            for (int i = 0; i < controllerView.LastLineNumber; i++)
+                if (CellViewGrid[0, 1] != null)
+                {
+                    IndexFirstColumn = i;
+                    break;
+                }
+            Assert.That(IndexFirstColumn >= 0);
+
+            int IndexLastLine = -1;
+            for (int i = 0; i < controllerView.LastColumnNumber; i++)
+                if (CellViewGrid[controllerView.LastLineNumber - 1, i] != null)
+                {
+                    IndexLastLine = i;
+                    break;
+                }
+            Assert.That(IndexLastLine >= 0);
+
+            int IndexLastColumn = -1;
+            for (int i = 0; i < controllerView.LastLineNumber; i++)
+                if (CellViewGrid[i, controllerView.LastColumnNumber - 1] != null)
+                {
+                    IndexLastColumn = i;
+                    break;
+                }
+            Assert.That(IndexLastColumn >= 0);
         }
 
         public static Dictionary<string, int> FocusExpectedLastLineTable = new Dictionary<string, int>()
