@@ -1336,12 +1336,11 @@ namespace Test
                 }
                 else
                 {
-                    /*
                     using (FileStream fs = new FileStream("lines.txt", FileMode.Append, FileAccess.Write))
                     using (StreamWriter sw = new StreamWriter(fs))
                     {
                         sw.WriteLine($"{{ \"{name}\", {ControllerView.LastLineNumber} }},");
-                    }*/
+                    }
                 }
 
                 TestFrameCellViewList(ControllerView, name);
