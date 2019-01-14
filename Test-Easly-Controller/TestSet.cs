@@ -14,6 +14,7 @@ using EaslyController.Writeable;
 using EaslyController.Frame;
 using Easly;
 using EaslyController.Focus;
+using TestDebug;
 
 namespace Test
 {
@@ -551,8 +552,10 @@ namespace Test
             }
             else if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
             {
-                if (AsBlockListInner.BlockStateList.Count > 0 && AsBlockListInner.BlockStateList[0].StateList.Count > 0)
+                if (AsBlockListInner.BlockStateList.Count > 0)
                 {
+                    Assert.That(AsBlockListInner.BlockStateList[0].StateList.Count > 0);
+
                     INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node);
                     Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
 
@@ -676,8 +679,10 @@ namespace Test
             }
             else if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
             {
-                if (AsBlockListInner.BlockStateList.Count > 0 && AsBlockListInner.BlockStateList[0].StateList.Count > 0)
+                if (AsBlockListInner.BlockStateList.Count > 0)
                 {
+                    Assert.That(AsBlockListInner.BlockStateList[0].StateList.Count > 0);
+
                     INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node);
                     Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
 
@@ -744,8 +749,10 @@ namespace Test
             }
             else if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
             {
-                if (AsBlockListInner.BlockStateList.Count > 0 && AsBlockListInner.BlockStateList[0].StateList.Count > 0)
+                if (AsBlockListInner.BlockStateList.Count > 0)
                 {
+                    Assert.That(AsBlockListInner.BlockStateList[0].StateList.Count > 0);
+
                     int BlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
                     IWriteableBlockState BlockState = AsBlockListInner.BlockStateList[BlockIndex];
                     int Index = RandNext(BlockState.StateList.Count);
@@ -883,6 +890,8 @@ namespace Test
             {
                 if (AsBlockListInner.BlockStateList.Count > 0)
                 {
+                    Assert.That(AsBlockListInner.BlockStateList[0].StateList.Count > 0);
+
                     int BlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
                     IWriteableBlockState BlockState = AsBlockListInner.BlockStateList[BlockIndex];
 
@@ -922,6 +931,8 @@ namespace Test
             {
                 if (AsBlockListInner.BlockStateList.Count > 0)
                 {
+                    Assert.That(AsBlockListInner.BlockStateList[0].StateList.Count > 0);
+
                     int SplitBlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
                     IWriteableBlockState BlockState = AsBlockListInner.BlockStateList[SplitBlockIndex];
                     if (BlockState.StateList.Count > 1)
@@ -1034,23 +1045,22 @@ namespace Test
             {
                 if (AsBlockListInner.BlockStateList.Count > 0)
                 {
+                    Assert.That(AsBlockListInner.BlockStateList[0].StateList.Count > 0);
+
                     int BlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
                     IWriteableBlockState BlockState = AsBlockListInner.BlockStateList[BlockIndex];
 
-                    if (BlockState.StateList.Count > 0)
-                    {
-                        int OldIndex = RandNext(BlockState.StateList.Count);
-                        int NewIndex = RandNext(BlockState.StateList.Count);
-                        int Direction = NewIndex - OldIndex;
+                    int OldIndex = RandNext(BlockState.StateList.Count);
+                    int NewIndex = RandNext(BlockState.StateList.Count);
+                    int Direction = NewIndex - OldIndex;
 
-                        IWriteableBrowsingExistingBlockNodeIndex NodeIndex = AsBlockListInner.IndexAt(BlockIndex, OldIndex) as IWriteableBrowsingExistingBlockNodeIndex;
-                        Assert.That(NodeIndex != null);
+                    IWriteableBrowsingExistingBlockNodeIndex NodeIndex = AsBlockListInner.IndexAt(BlockIndex, OldIndex) as IWriteableBrowsingExistingBlockNodeIndex;
+                    Assert.That(NodeIndex != null);
 
-                        Controller.Move(AsBlockListInner, NodeIndex, Direction);
-                        Assert.That(Controller.Contains(NodeIndex));
+                    Controller.Move(AsBlockListInner, NodeIndex, Direction);
+                    Assert.That(Controller.Contains(NodeIndex));
 
-                        IsModified = true;
-                    }
+                    IsModified = true;
                 }
             }
 
@@ -1727,8 +1737,10 @@ namespace Test
             }
             else if (inner is IFrameBlockListInner<IFrameBrowsingBlockNodeIndex> AsBlockListInner)
             {
-                if (AsBlockListInner.BlockStateList.Count > 0 && AsBlockListInner.BlockStateList[0].StateList.Count > 0)
+                if (AsBlockListInner.BlockStateList.Count > 0)
                 {
+                    Assert.That(AsBlockListInner.BlockStateList[0].StateList.Count > 0);
+
                     INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node);
                     Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
 
@@ -1852,8 +1864,10 @@ namespace Test
             }
             else if (inner is IFrameBlockListInner<IFrameBrowsingBlockNodeIndex> AsBlockListInner)
             {
-                if (AsBlockListInner.BlockStateList.Count > 0 && AsBlockListInner.BlockStateList[0].StateList.Count > 0)
+                if (AsBlockListInner.BlockStateList.Count > 0)
                 {
+                    Assert.That(AsBlockListInner.BlockStateList[0].StateList.Count > 0);
+
                     INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node);
                     Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
 
@@ -1920,8 +1934,10 @@ namespace Test
             }
             else if (inner is IFrameBlockListInner<IFrameBrowsingBlockNodeIndex> AsBlockListInner)
             {
-                if (AsBlockListInner.BlockStateList.Count > 0 && AsBlockListInner.BlockStateList[0].StateList.Count > 0)
+                if (AsBlockListInner.BlockStateList.Count > 0)
                 {
+                    Assert.That(AsBlockListInner.BlockStateList[0].StateList.Count > 0);
+
                     int BlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
                     IFrameBlockState BlockState = AsBlockListInner.BlockStateList[BlockIndex];
                     int Index = RandNext(BlockState.StateList.Count);
@@ -2059,6 +2075,8 @@ namespace Test
             {
                 if (AsBlockListInner.BlockStateList.Count > 0)
                 {
+                    Assert.That(AsBlockListInner.BlockStateList[0].StateList.Count > 0);
+
                     int BlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
                     IFrameBlockState BlockState = AsBlockListInner.BlockStateList[BlockIndex];
 
@@ -2098,6 +2116,8 @@ namespace Test
             {
                 if (AsBlockListInner.BlockStateList.Count > 0)
                 {
+                    Assert.That(AsBlockListInner.BlockStateList[0].StateList.Count > 0);
+
                     int SplitBlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
                     IFrameBlockState BlockState = AsBlockListInner.BlockStateList[SplitBlockIndex];
                     if (BlockState.StateList.Count > 1)
@@ -2210,23 +2230,22 @@ namespace Test
             {
                 if (AsBlockListInner.BlockStateList.Count > 0)
                 {
+                    Assert.That(AsBlockListInner.BlockStateList[0].StateList.Count > 0);
+
                     int BlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
                     IFrameBlockState BlockState = AsBlockListInner.BlockStateList[BlockIndex];
 
-                    if (BlockState.StateList.Count > 0)
-                    {
-                        int OldIndex = RandNext(BlockState.StateList.Count);
-                        int NewIndex = RandNext(BlockState.StateList.Count);
-                        int Direction = NewIndex - OldIndex;
+                    int OldIndex = RandNext(BlockState.StateList.Count);
+                    int NewIndex = RandNext(BlockState.StateList.Count);
+                    int Direction = NewIndex - OldIndex;
 
-                        IFrameBrowsingExistingBlockNodeIndex NodeIndex = AsBlockListInner.IndexAt(BlockIndex, OldIndex) as IFrameBrowsingExistingBlockNodeIndex;
-                        Assert.That(NodeIndex != null);
+                    IFrameBrowsingExistingBlockNodeIndex NodeIndex = AsBlockListInner.IndexAt(BlockIndex, OldIndex) as IFrameBrowsingExistingBlockNodeIndex;
+                    Assert.That(NodeIndex != null);
 
-                        Controller.Move(AsBlockListInner, NodeIndex, Direction);
-                        Assert.That(Controller.Contains(NodeIndex));
+                    Controller.Move(AsBlockListInner, NodeIndex, Direction);
+                    Assert.That(Controller.Contains(NodeIndex));
 
-                        IsModified = true;
-                    }
+                    IsModified = true;
                 }
             }
 
@@ -2496,7 +2515,7 @@ namespace Test
             TestFocusStats(index, name, rootNode, out Stats Stats);
 
             IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
-            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusController Controller = FocusController.Create(RootIndex, CustomFocusSemanticSet.FocusSemanticSet);
 
             IFocusControllerView ControllerView;
 
@@ -2809,7 +2828,7 @@ namespace Test
         public static void TestFocusCanonicalize(INode rootNode)
         {
             IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
-            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusController Controller = FocusController.Create(RootIndex, CustomFocusSemanticSet.FocusSemanticSet);
             IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
 
             Controller.Canonicalize();
@@ -2818,7 +2837,7 @@ namespace Test
             Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
 
             IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
-            IFocusController NewController = FocusController.Create(NewRootIndex);
+            IFocusController NewController = FocusController.Create(NewRootIndex, CustomFocusSemanticSet.FocusSemanticSet);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
         }
 
@@ -2834,7 +2853,7 @@ namespace Test
         public static void TestFocusStats(int index, string name, INode rootNode, out Stats stats)
         {
             IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
-            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusController Controller = FocusController.Create(RootIndex, CustomFocusSemanticSet.FocusSemanticSet);
 
             stats = new Stats();
             BrowseNode(Controller, RootIndex, stats);
@@ -2867,7 +2886,7 @@ namespace Test
         public static void TestFocusInsert(int index, INode rootNode)
         {
             IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
-            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusController Controller = FocusController.Create(RootIndex, CustomFocusSemanticSet.FocusSemanticSet);
             IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
 
             FocusTestCount = 0;
@@ -2903,8 +2922,10 @@ namespace Test
             }
             else if (inner is IFocusBlockListInner<IFocusBrowsingBlockNodeIndex> AsBlockListInner)
             {
-                if (AsBlockListInner.BlockStateList.Count > 0 && AsBlockListInner.BlockStateList[0].StateList.Count > 0)
+                if (AsBlockListInner.BlockStateList.Count > 0)
                 {
+                    Assert.That(AsBlockListInner.BlockStateList[0].StateList.Count > 0);
+
                     INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node);
                     Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
 
@@ -2949,7 +2970,7 @@ namespace Test
                 Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
                 IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
-                IFocusController NewController = FocusController.Create(NewRootIndex);
+                IFocusController NewController = FocusController.Create(NewRootIndex, CustomFocusSemanticSet.FocusSemanticSet);
                 Assert.That(NewController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
             }
 
@@ -2959,7 +2980,7 @@ namespace Test
         public static void TestFocusReplace(int index, INode rootNode)
         {
             IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
-            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusController Controller = FocusController.Create(RootIndex, CustomFocusSemanticSet.FocusSemanticSet);
             IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
 
             FocusTestCount = 0;
@@ -3028,8 +3049,10 @@ namespace Test
             }
             else if (inner is IFocusBlockListInner<IFocusBrowsingBlockNodeIndex> AsBlockListInner)
             {
-                if (AsBlockListInner.BlockStateList.Count > 0 && AsBlockListInner.BlockStateList[0].StateList.Count > 0)
+                if (AsBlockListInner.BlockStateList.Count > 0)
                 {
+                    Assert.That(AsBlockListInner.BlockStateList[0].StateList.Count > 0);
+
                     INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node);
                     Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
 
@@ -3055,7 +3078,7 @@ namespace Test
                 Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
                 IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
-                IFocusController NewController = FocusController.Create(NewRootIndex);
+                IFocusController NewController = FocusController.Create(NewRootIndex, CustomFocusSemanticSet.FocusSemanticSet);
                 Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
             }
 
@@ -3065,7 +3088,7 @@ namespace Test
         public static void TestFocusRemove(int index, INode rootNode)
         {
             IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
-            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusController Controller = FocusController.Create(RootIndex, CustomFocusSemanticSet.FocusSemanticSet);
             IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
 
             FocusTestCount = 0;
@@ -3089,15 +3112,19 @@ namespace Test
                     IFocusBrowsingListNodeIndex NodeIndex = ChildState.ParentIndex as IFocusBrowsingListNodeIndex;
                     Assert.That(NodeIndex != null);
 
-                    Controller.Remove(AsListInner, NodeIndex);
-
-                    IsModified = true;
+                    if (Controller.IsRemoveable(AsListInner, NodeIndex))
+                    {
+                        Controller.Remove(AsListInner, NodeIndex);
+                        IsModified = true;
+                    }
                 }
             }
             else if (inner is IFocusBlockListInner<IFocusBrowsingBlockNodeIndex> AsBlockListInner)
             {
-                if (AsBlockListInner.BlockStateList.Count > 0 && AsBlockListInner.BlockStateList[0].StateList.Count > 0)
+                if (AsBlockListInner.BlockStateList.Count > 0)
                 {
+                    Assert.That(AsBlockListInner.BlockStateList[0].StateList.Count > 0);
+
                     int BlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
                     IFocusBlockState BlockState = AsBlockListInner.BlockStateList[BlockIndex];
                     int Index = RandNext(BlockState.StateList.Count);
@@ -3105,9 +3132,11 @@ namespace Test
                     IFocusBrowsingExistingBlockNodeIndex NodeIndex = ChildState.ParentIndex as IFocusBrowsingExistingBlockNodeIndex;
                     Assert.That(NodeIndex != null);
 
-                    Controller.Remove(AsBlockListInner, NodeIndex);
-
-                    IsModified = true;
+                    if (Controller.IsRemoveable(AsBlockListInner, NodeIndex))
+                    {
+                        Controller.Remove(AsBlockListInner, NodeIndex);
+                        IsModified = true;
+                    }
                 }
             }
 
@@ -3117,7 +3146,7 @@ namespace Test
                 Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
                 IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
-                IFocusController NewController = FocusController.Create(NewRootIndex);
+                IFocusController NewController = FocusController.Create(NewRootIndex, CustomFocusSemanticSet.FocusSemanticSet);
                 Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
             }
 
@@ -3127,7 +3156,7 @@ namespace Test
         public static void TestFocusAssign(int index, INode rootNode)
         {
             IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
-            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusController Controller = FocusController.Create(RootIndex, CustomFocusSemanticSet.FocusSemanticSet);
             IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
 
             FocusTestCount = 0;
@@ -3163,7 +3192,7 @@ namespace Test
                     Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
                     IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
-                    IFocusController NewController = FocusController.Create(NewRootIndex);
+                    IFocusController NewController = FocusController.Create(NewRootIndex, CustomFocusSemanticSet.FocusSemanticSet);
                     Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
                 }
             }
@@ -3174,7 +3203,7 @@ namespace Test
         public static void TestFocusUnassign(int index, INode rootNode)
         {
             IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
-            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusController Controller = FocusController.Create(RootIndex, CustomFocusSemanticSet.FocusSemanticSet);
             IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
 
             FocusTestCount = 0;
@@ -3207,7 +3236,7 @@ namespace Test
                 Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
                 IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
-                IFocusController NewController = FocusController.Create(NewRootIndex);
+                IFocusController NewController = FocusController.Create(NewRootIndex, CustomFocusSemanticSet.FocusSemanticSet);
                 Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
             }
 
@@ -3217,7 +3246,7 @@ namespace Test
         public static void TestFocusChangeReplication(int index, INode rootNode)
         {
             IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
-            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusController Controller = FocusController.Create(RootIndex, CustomFocusSemanticSet.FocusSemanticSet);
             IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
 
             FocusTestCount = 0;
@@ -3235,6 +3264,8 @@ namespace Test
             {
                 if (AsBlockListInner.BlockStateList.Count > 0)
                 {
+                    Assert.That(AsBlockListInner.BlockStateList[0].StateList.Count > 0);
+
                     int BlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
                     IFocusBlockState BlockState = AsBlockListInner.BlockStateList[BlockIndex];
 
@@ -3245,7 +3276,7 @@ namespace Test
                     Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
                     IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
-                    IFocusController NewController = FocusController.Create(NewRootIndex);
+                    IFocusController NewController = FocusController.Create(NewRootIndex, CustomFocusSemanticSet.FocusSemanticSet);
                     Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
                 }
             }
@@ -3256,7 +3287,7 @@ namespace Test
         public static void TestFocusSplit(int index, INode rootNode)
         {
             IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
-            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusController Controller = FocusController.Create(RootIndex, CustomFocusSemanticSet.FocusSemanticSet);
             IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
 
             FocusTestCount = 0;
@@ -3274,6 +3305,8 @@ namespace Test
             {
                 if (AsBlockListInner.BlockStateList.Count > 0)
                 {
+                    Assert.That(AsBlockListInner.BlockStateList[0].StateList.Count > 0);
+
                     int SplitBlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
                     IFocusBlockState BlockState = AsBlockListInner.BlockStateList[SplitBlockIndex];
                     if (BlockState.StateList.Count > 1)
@@ -3286,7 +3319,7 @@ namespace Test
                         Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
                         IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
-                        IFocusController NewController = FocusController.Create(NewRootIndex);
+                        IFocusController NewController = FocusController.Create(NewRootIndex, CustomFocusSemanticSet.FocusSemanticSet);
                         Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
                         Assert.That(AsBlockListInner.BlockStateList.Count > 0);
@@ -3299,7 +3332,7 @@ namespace Test
                         Assert.That(NewViewAfterMove.IsEqual(CompareEqual.New(), controllerView));
 
                         IFocusRootNodeIndex NewRootIndexAfterMove = new FocusRootNodeIndex(Controller.RootIndex.Node);
-                        IFocusController NewControllerAfterMove = FocusController.Create(NewRootIndexAfterMove);
+                        IFocusController NewControllerAfterMove = FocusController.Create(NewRootIndexAfterMove, CustomFocusSemanticSet.FocusSemanticSet);
                         Assert.That(NewControllerAfterMove.IsEqual(CompareEqual.New(), Controller));
                     }
                 }
@@ -3311,7 +3344,7 @@ namespace Test
         public static void TestFocusMerge(int index, INode rootNode)
         {
             IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
-            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusController Controller = FocusController.Create(RootIndex, CustomFocusSemanticSet.FocusSemanticSet);
             IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
 
             FocusTestCount = 0;
@@ -3339,7 +3372,7 @@ namespace Test
                     Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
                     IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
-                    IFocusController NewController = FocusController.Create(NewRootIndex);
+                    IFocusController NewController = FocusController.Create(NewRootIndex, CustomFocusSemanticSet.FocusSemanticSet);
                     Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
                 }
             }
@@ -3350,7 +3383,7 @@ namespace Test
         public static void TestFocusMove(int index, INode rootNode)
         {
             IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
-            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusController Controller = FocusController.Create(RootIndex, CustomFocusSemanticSet.FocusSemanticSet);
             IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
 
             FocusTestCount = 0;
@@ -3386,23 +3419,22 @@ namespace Test
             {
                 if (AsBlockListInner.BlockStateList.Count > 0)
                 {
+                    Assert.That(AsBlockListInner.BlockStateList[0].StateList.Count > 0);
+
                     int BlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
                     IFocusBlockState BlockState = AsBlockListInner.BlockStateList[BlockIndex];
 
-                    if (BlockState.StateList.Count > 0)
-                    {
-                        int OldIndex = RandNext(BlockState.StateList.Count);
-                        int NewIndex = RandNext(BlockState.StateList.Count);
-                        int Direction = NewIndex - OldIndex;
+                    int OldIndex = RandNext(BlockState.StateList.Count);
+                    int NewIndex = RandNext(BlockState.StateList.Count);
+                    int Direction = NewIndex - OldIndex;
 
-                        IFocusBrowsingExistingBlockNodeIndex NodeIndex = AsBlockListInner.IndexAt(BlockIndex, OldIndex) as IFocusBrowsingExistingBlockNodeIndex;
-                        Assert.That(NodeIndex != null);
+                    IFocusBrowsingExistingBlockNodeIndex NodeIndex = AsBlockListInner.IndexAt(BlockIndex, OldIndex) as IFocusBrowsingExistingBlockNodeIndex;
+                    Assert.That(NodeIndex != null);
 
-                        Controller.Move(AsBlockListInner, NodeIndex, Direction);
-                        Assert.That(Controller.Contains(NodeIndex));
+                    Controller.Move(AsBlockListInner, NodeIndex, Direction);
+                    Assert.That(Controller.Contains(NodeIndex));
 
-                        IsModified = true;
-                    }
+                    IsModified = true;
                 }
             }
 
@@ -3412,7 +3444,7 @@ namespace Test
                 Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
                 IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
-                IFocusController NewController = FocusController.Create(NewRootIndex);
+                IFocusController NewController = FocusController.Create(NewRootIndex, CustomFocusSemanticSet.FocusSemanticSet);
                 Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
             }
 
@@ -3422,7 +3454,7 @@ namespace Test
         public static void TestFocusExpand(int index, INode rootNode)
         {
             IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
-            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusController Controller = FocusController.Create(RootIndex, CustomFocusSemanticSet.FocusSemanticSet);
             IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
 
             FocusTestCount = 0;
@@ -3459,17 +3491,17 @@ namespace Test
             Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
             IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
-            IFocusController NewController = FocusController.Create(NewRootIndex);
+            IFocusController NewController = FocusController.Create(NewRootIndex, CustomFocusSemanticSet.FocusSemanticSet);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
             Controller.Expand(NodeIndex);
 
-            NewController = FocusController.Create(NewRootIndex);
+            NewController = FocusController.Create(NewRootIndex, CustomFocusSemanticSet.FocusSemanticSet);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
             Controller.Reduce(NodeIndex);
 
-            NewController = FocusController.Create(NewRootIndex);
+            NewController = FocusController.Create(NewRootIndex, CustomFocusSemanticSet.FocusSemanticSet);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
             return false;
@@ -3478,7 +3510,7 @@ namespace Test
         public static void TestFocusReduce(int index, INode rootNode)
         {
             IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
-            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusController Controller = FocusController.Create(RootIndex, CustomFocusSemanticSet.FocusSemanticSet);
             IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
 
             FocusTestCount = 0;
@@ -3515,17 +3547,17 @@ namespace Test
             Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
             IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
-            IFocusController NewController = FocusController.Create(NewRootIndex);
+            IFocusController NewController = FocusController.Create(NewRootIndex, CustomFocusSemanticSet.FocusSemanticSet);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
             Controller.Reduce(NodeIndex);
 
-            NewController = FocusController.Create(NewRootIndex);
+            NewController = FocusController.Create(NewRootIndex, CustomFocusSemanticSet.FocusSemanticSet);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
             Controller.Expand(NodeIndex);
 
-            NewController = FocusController.Create(NewRootIndex);
+            NewController = FocusController.Create(NewRootIndex, CustomFocusSemanticSet.FocusSemanticSet);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
             return false;
