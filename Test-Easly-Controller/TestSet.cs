@@ -2898,6 +2898,8 @@ namespace Test
             if (FocusTestCount++ < TestIndex)
                 return true;
 
+            MoveFocusRandomly(controllerView);
+
             IFocusController Controller = controllerView.Controller;
             bool IsModified = false;
 
@@ -2991,6 +2993,8 @@ namespace Test
         {
             if (FocusTestCount++ < TestIndex)
                 return true;
+
+            MoveFocusRandomly(controllerView);
 
             IFocusController Controller = controllerView.Controller;
             bool IsModified = false;
@@ -3100,6 +3104,8 @@ namespace Test
             if (FocusTestCount++ < TestIndex)
                 return true;
 
+            MoveFocusRandomly(controllerView);
+
             IFocusController Controller = controllerView.Controller;
             bool IsModified = false;
 
@@ -3168,6 +3174,8 @@ namespace Test
             if (FocusTestCount++ < TestIndex)
                 return true;
 
+            MoveFocusRandomly(controllerView);
+
             IFocusController Controller = controllerView.Controller;
 
             if (inner is IFocusOptionalInner<IFocusBrowsingOptionalNodeIndex> AsOptionalInner)
@@ -3215,6 +3223,8 @@ namespace Test
             if (FocusTestCount++ < TestIndex)
                 return true;
 
+            MoveFocusRandomly(controllerView);
+
             IFocusController Controller = controllerView.Controller;
 
             if (inner is IFocusOptionalInner<IFocusBrowsingOptionalNodeIndex> AsOptionalInner)
@@ -3258,6 +3268,8 @@ namespace Test
             if (FocusTestCount++ < TestIndex)
                 return true;
 
+            MoveFocusRandomly(controllerView);
+
             IFocusController Controller = controllerView.Controller;
 
             if (inner is IFocusBlockListInner<IFocusBrowsingBlockNodeIndex> AsBlockListInner)
@@ -3298,6 +3310,8 @@ namespace Test
         {
             if (FocusTestCount++ < TestIndex)
                 return true;
+
+            MoveFocusRandomly(controllerView);
 
             IFocusController Controller = controllerView.Controller;
 
@@ -3356,6 +3370,8 @@ namespace Test
             if (FocusTestCount++ < TestIndex)
                 return true;
 
+            MoveFocusRandomly(controllerView);
+
             IFocusController Controller = controllerView.Controller;
 
             if (inner is IFocusBlockListInner<IFocusBrowsingBlockNodeIndex> AsBlockListInner)
@@ -3394,6 +3410,8 @@ namespace Test
         {
             if (FocusTestCount++ < TestIndex)
                 return true;
+
+            MoveFocusRandomly(controllerView);
 
             IFocusController Controller = controllerView.Controller;
             bool IsModified = false;
@@ -3466,6 +3484,8 @@ namespace Test
             if (FocusTestCount++ < TestIndex)
                 return true;
 
+            MoveFocusRandomly(controllerView);
+
             IFocusController Controller = controllerView.Controller;
             IFocusNodeIndex NodeIndex;
             IFocusPlaceholderNodeState State;
@@ -3521,6 +3541,8 @@ namespace Test
         {
             if (FocusTestCount++ < TestIndex)
                 return true;
+
+            MoveFocusRandomly(controllerView);
 
             IFocusController Controller = controllerView.Controller;
             IFocusNodeIndex NodeIndex;
@@ -3660,6 +3682,15 @@ namespace Test
             }
 
             return true;
+        }
+
+        static void MoveFocusRandomly(IFocusControllerView controllerView)
+        {
+            int MinFocusMove = controllerView.MinFocusMove;
+            int MaxFocusMove = controllerView.MaxFocusMove;
+
+            int Direction = MinFocusMove + RandNext(MaxFocusMove - MinFocusMove + 1);
+            controllerView.MoveFocus(Direction);
         }
         #endregion
     }
