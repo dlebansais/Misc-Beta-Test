@@ -2564,6 +2564,10 @@ namespace Test
             }
 
             TestFocusCanonicalize(rootNode);
+
+#if !TRAVIS
+            TestNewItemInsertable(rootNode);
+#endif
         }
 
         public static void TestFocusCellViewList(IFocusControllerView controllerView, string name)
@@ -2824,22 +2828,6 @@ namespace Test
             { "./EaslyExamples/MicrosoftDotNet/Libraries/.NET Enums.easly", 5 },
             { "./EaslyExamples/Verification/Verification Example.easly", 80 },
         };
-
-        public static void TestFocusCanonicalize(INode rootNode)
-        {
-            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
-            IFocusController Controller = FocusController.Create(RootIndex, CustomFocusSemanticSet.FocusSemanticSet);
-            IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
-
-            Controller.Canonicalize();
-
-            IFocusControllerView NewView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
-            Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
-
-            IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
-            IFocusController NewController = FocusController.Create(NewRootIndex, CustomFocusSemanticSet.FocusSemanticSet);
-            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
-        }
 
         static int FocusTestCount = 0;
         static int FocusMaxTestCount = 0;
@@ -3584,6 +3572,61 @@ namespace Test
 
             return false;
         }
+
+        public static void TestFocusCanonicalize(INode rootNode)
+        {
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex, CustomFocusSemanticSet.FocusSemanticSet);
+            IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+
+            Controller.Canonicalize();
+
+            IFocusControllerView NewView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+            Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
+
+            IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController NewController = FocusController.Create(NewRootIndex, CustomFocusSemanticSet.FocusSemanticSet);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+        }
+
+#if !TRAVIS
+        public static void TestNewItemInsertable(INode rootNode)
+        {
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex, CustomFocusSemanticSet.FocusSemanticSet);
+            IFocusControllerView ControllerView = FocusControllerView.Create(Controller, CustomFocusTemplateSet.FocusTemplateSet);
+
+            int Min = ControllerView.MinFocusMove;
+            int Max = ControllerView.MaxFocusMove;
+
+            for (int i = 0; i < (Max - Min) + 10; i++)
+            {
+                ControllerView.MoveFocus(+1);
+
+                if (ControllerView.IsNewItemInsertable(out IFocusCollectionInner<IFocusBrowsingCollectionNodeIndex> inner, out IFocusInsertionCollectionNodeIndex index))
+                    Controller.Insert(inner, index, out IWriteableBrowsingCollectionNodeIndex nodeIndex);
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                Min = ControllerView.MinFocusMove;
+                Max = ControllerView.MaxFocusMove;
+                int Direction = RandNext(Max - Min + 1) + Min;
+
+                ControllerView.MoveFocus(Direction);
+
+                if (ControllerView.IsNewItemInsertable(out IFocusCollectionInner<IFocusBrowsingCollectionNodeIndex> inner, out IFocusInsertionCollectionNodeIndex index))
+                    Controller.Insert(inner, index, out IWriteableBrowsingCollectionNodeIndex nodeIndex);
+            }
+
+            IFocusControllerView NewView = FocusControllerView.Create(Controller, CustomFocusTemplateSet.FocusTemplateSet);
+            Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
+
+            IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController NewController = FocusController.Create(NewRootIndex, CustomFocusSemanticSet.FocusSemanticSet);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+        }
+#endif
 
         static bool FocusBrowseNode(IFocusController controller, IFocusIndex index, Func<IFocusInner, bool> test)
         {
