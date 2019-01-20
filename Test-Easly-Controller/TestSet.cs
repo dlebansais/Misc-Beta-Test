@@ -2579,6 +2579,7 @@ namespace Test
             TestItemMoveable(rootNode);
             TestItemSplittable(rootNode);
             TestItemMergeable(rootNode);
+            TestItemCyclable(rootNode);
 #endif
         }
 
@@ -3735,6 +3736,32 @@ namespace Test
 
                 if (ControllerView.IsItemMergeable(out IFocusBlockListInner<IFocusBrowsingBlockNodeIndex> inner, out IFocusBrowsingExistingBlockNodeIndex index))
                     Controller.MergeBlocks(inner, index);
+            }
+
+            IFocusControllerView NewView = FocusControllerView.Create(Controller, CustomFocusTemplateSet.FocusTemplateSet);
+            Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
+
+            IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController NewController = FocusController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+        }
+
+        public static void TestItemCyclable(INode rootNode)
+        {
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusControllerView ControllerView = FocusControllerView.Create(Controller, CustomFocusTemplateSet.FocusTemplateSet);
+
+            for (int i = 0; i < 20; i++)
+            {
+                int Min = ControllerView.MinFocusMove;
+                int Max = ControllerView.MaxFocusMove;
+                int Direction = RandNext(Max - Min + 1) + Min;
+
+                ControllerView.MoveFocus(Direction);
+
+                if (ControllerView.IsItemCyclableThrough(out IFocusNodeState state, out int cyclePosition))
+                    Controller.Replace(state.ParentInner, state.CycleIndexList, cyclePosition, out IFocusBrowsingChildIndex nodeIndex);
             }
 
             IFocusControllerView NewView = FocusControllerView.Create(Controller, CustomFocusTemplateSet.FocusTemplateSet);
