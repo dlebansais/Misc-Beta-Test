@@ -742,9 +742,11 @@ namespace Test
                     IWriteableBrowsingListNodeIndex NodeIndex = ChildState.ParentIndex as IWriteableBrowsingListNodeIndex;
                     Assert.That(NodeIndex != null);
 
-                    Controller.Remove(AsListInner, NodeIndex);
-
-                    IsModified = true;
+                    if (Controller.IsRemoveable(AsListInner, NodeIndex))
+                    {
+                        Controller.Remove(AsListInner, NodeIndex);
+                        IsModified = true;
+                    }
                 }
             }
             else if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
@@ -760,9 +762,11 @@ namespace Test
                     IWriteableBrowsingExistingBlockNodeIndex NodeIndex = ChildState.ParentIndex as IWriteableBrowsingExistingBlockNodeIndex;
                     Assert.That(NodeIndex != null);
 
-                    Controller.Remove(AsBlockListInner, NodeIndex);
-
-                    IsModified = true;
+                    if (Controller.IsRemoveable(AsBlockListInner, NodeIndex))
+                    {
+                        Controller.Remove(AsBlockListInner, NodeIndex);
+                        IsModified = true;
+                    }
                 }
             }
 
@@ -1927,9 +1931,11 @@ namespace Test
                     IFrameBrowsingListNodeIndex NodeIndex = ChildState.ParentIndex as IFrameBrowsingListNodeIndex;
                     Assert.That(NodeIndex != null);
 
-                    Controller.Remove(AsListInner, NodeIndex);
-
-                    IsModified = true;
+                    if (Controller.IsRemoveable(AsListInner, NodeIndex))
+                    {
+                        Controller.Remove(AsListInner, NodeIndex);
+                        IsModified = true;
+                    }
                 }
             }
             else if (inner is IFrameBlockListInner<IFrameBrowsingBlockNodeIndex> AsBlockListInner)
@@ -1945,9 +1951,11 @@ namespace Test
                     IFrameBrowsingExistingBlockNodeIndex NodeIndex = ChildState.ParentIndex as IFrameBrowsingExistingBlockNodeIndex;
                     Assert.That(NodeIndex != null);
 
-                    Controller.Remove(AsBlockListInner, NodeIndex);
-
-                    IsModified = true;
+                    if (Controller.IsRemoveable(AsBlockListInner, NodeIndex))
+                    {
+                        Controller.Remove(AsBlockListInner, NodeIndex);
+                        IsModified = true;
+                    }
                 }
             }
 
@@ -2567,6 +2575,10 @@ namespace Test
 
 #if !TRAVIS
             TestNewItemInsertable(rootNode);
+            TestItemRemoveable(rootNode);
+            TestItemMoveable(rootNode);
+            TestItemSplittable(rootNode);
+            TestItemMergeable(rootNode);
 #endif
         }
 
@@ -3617,6 +3629,112 @@ namespace Test
 
                 if (ControllerView.IsNewItemInsertable(out IFocusCollectionInner<IFocusBrowsingCollectionNodeIndex> inner, out IFocusInsertionCollectionNodeIndex index))
                     Controller.Insert(inner, index, out IWriteableBrowsingCollectionNodeIndex nodeIndex);
+            }
+
+            IFocusControllerView NewView = FocusControllerView.Create(Controller, CustomFocusTemplateSet.FocusTemplateSet);
+            Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
+
+            IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController NewController = FocusController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+        }
+
+        public static void TestItemRemoveable(INode rootNode)
+        {
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusControllerView ControllerView = FocusControllerView.Create(Controller, CustomFocusTemplateSet.FocusTemplateSet);
+
+            for (int i = 0; i < 20; i++)
+            {
+                int Min = ControllerView.MinFocusMove;
+                int Max = ControllerView.MaxFocusMove;
+                int Direction = RandNext(Max - Min + 1) + Min;
+
+                ControllerView.MoveFocus(Direction);
+
+                if (ControllerView.IsItemRemoveable(out IFocusCollectionInner<IFocusBrowsingCollectionNodeIndex> inner, out IFocusBrowsingCollectionNodeIndex index))
+                    Controller.Remove(inner, index);
+            }
+
+            IFocusControllerView NewView = FocusControllerView.Create(Controller, CustomFocusTemplateSet.FocusTemplateSet);
+            Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
+
+            IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController NewController = FocusController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+        }
+
+        public static void TestItemMoveable(INode rootNode)
+        {
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusControllerView ControllerView = FocusControllerView.Create(Controller, CustomFocusTemplateSet.FocusTemplateSet);
+
+            for (int i = 0; i < 20; i++)
+            {
+                int Min = ControllerView.MinFocusMove;
+                int Max = ControllerView.MaxFocusMove;
+                int Direction = RandNext(Max - Min + 1) + Min;
+
+                ControllerView.MoveFocus(Direction);
+
+                Direction = (RandNext(2) * 2) - 1;
+
+                if (ControllerView.IsItemMoveable(Direction, out IFocusCollectionInner <IFocusBrowsingCollectionNodeIndex> inner, out IFocusBrowsingCollectionNodeIndex index))
+                    Controller.Move(inner, index, Direction);
+            }
+
+            IFocusControllerView NewView = FocusControllerView.Create(Controller, CustomFocusTemplateSet.FocusTemplateSet);
+            Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
+
+            IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController NewController = FocusController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+        }
+
+        public static void TestItemSplittable(INode rootNode)
+        {
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusControllerView ControllerView = FocusControllerView.Create(Controller, CustomFocusTemplateSet.FocusTemplateSet);
+
+            for (int i = 0; i < 20; i++)
+            {
+                int Min = ControllerView.MinFocusMove;
+                int Max = ControllerView.MaxFocusMove;
+                int Direction = RandNext(Max - Min + 1) + Min;
+
+                ControllerView.MoveFocus(Direction);
+
+                if (ControllerView.IsItemSplittable(out IFocusBlockListInner<IFocusBrowsingBlockNodeIndex> inner, out IFocusBrowsingExistingBlockNodeIndex index))
+                    Controller.SplitBlock(inner, index);
+            }
+
+            IFocusControllerView NewView = FocusControllerView.Create(Controller, CustomFocusTemplateSet.FocusTemplateSet);
+            Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
+
+            IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController NewController = FocusController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+        }
+
+        public static void TestItemMergeable(INode rootNode)
+        {
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusControllerView ControllerView = FocusControllerView.Create(Controller, CustomFocusTemplateSet.FocusTemplateSet);
+
+            for (int i = 0; i < 20; i++)
+            {
+                int Min = ControllerView.MinFocusMove;
+                int Max = ControllerView.MaxFocusMove;
+                int Direction = RandNext(Max - Min + 1) + Min;
+
+                ControllerView.MoveFocus(Direction);
+
+                if (ControllerView.IsItemMergeable(out IFocusBlockListInner<IFocusBrowsingBlockNodeIndex> inner, out IFocusBrowsingExistingBlockNodeIndex index))
+                    Controller.MergeBlocks(inner, index);
             }
 
             IFocusControllerView NewView = FocusControllerView.Create(Controller, CustomFocusTemplateSet.FocusTemplateSet);
