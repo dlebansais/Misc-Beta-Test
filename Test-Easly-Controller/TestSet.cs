@@ -2580,6 +2580,8 @@ namespace Test
             TestItemSplittable(rootNode);
             TestItemMergeable(rootNode);
             TestItemCyclable(rootNode);
+            TestItemSimplifiable(rootNode);
+            TestIdentifierSplittable(rootNode);
 #endif
         }
 
@@ -3762,6 +3764,61 @@ namespace Test
 
                 if (ControllerView.IsItemCyclableThrough(out IFocusNodeState state, out int cyclePosition))
                     Controller.Replace(state.ParentInner, state.CycleIndexList, cyclePosition, out IFocusBrowsingChildIndex nodeIndex);
+            }
+
+            IFocusControllerView NewView = FocusControllerView.Create(Controller, CustomFocusTemplateSet.FocusTemplateSet);
+            Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
+
+            IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController NewController = FocusController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+        }
+
+        public static void TestItemSimplifiable(INode rootNode)
+        {
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusControllerView ControllerView = FocusControllerView.Create(Controller, CustomFocusTemplateSet.FocusTemplateSet);
+
+            for (int i = 0; i < 200; i++)
+            {
+                int Min = ControllerView.MinFocusMove;
+                int Max = ControllerView.MaxFocusMove;
+                int Direction = RandNext(Max - Min + 1) + Min;
+
+                ControllerView.MoveFocus(Direction);
+
+                if (ControllerView.IsItemSimplifiable(out IFocusInner<IFocusBrowsingChildIndex> Inner, out IFocusInsertionChildIndex Index))
+                    Controller.Replace(Inner, Index, out IWriteableBrowsingChildIndex NodeIndex);
+            }
+
+            IFocusControllerView NewView = FocusControllerView.Create(Controller, CustomFocusTemplateSet.FocusTemplateSet);
+            Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
+
+            IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController NewController = FocusController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+        }
+        
+        public static void TestIdentifierSplittable(INode rootNode)
+        {
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusControllerView ControllerView = FocusControllerView.Create(Controller, CustomFocusTemplateSet.FocusTemplateSet);
+
+            for (int i = 0; i < 200; i++)
+            {
+                int Min = ControllerView.MinFocusMove;
+                int Max = ControllerView.MaxFocusMove;
+                int Direction = RandNext(Max - Min + 1) + Min;
+
+                ControllerView.MoveFocus(Direction);
+
+                if (ControllerView.IsIdentifierSplittable(out IFocusListInner<IFocusBrowsingListNodeIndex> Inner, out IFocusInsertionListNodeIndex ReplaceIndex, out IFocusInsertionListNodeIndex InsertIndex))
+                {
+                    Controller.Replace(Inner, ReplaceIndex, out IWriteableBrowsingChildIndex FirstNodeIndex);
+                    Controller.Insert(Inner, InsertIndex, out IWriteableBrowsingCollectionNodeIndex SecondNodeIndex);
+                }
             }
 
             IFocusControllerView NewView = FocusControllerView.Create(Controller, CustomFocusTemplateSet.FocusTemplateSet);
