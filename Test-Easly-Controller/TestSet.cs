@@ -956,6 +956,9 @@ namespace Test
                         int OldBlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
                         int NewBlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
                         int Direction = NewBlockIndex - OldBlockIndex;
+
+                        Assert.That(Controller.IsBlockMoveable(AsBlockListInner, OldBlockIndex, Direction));
+
                         Controller.MoveBlock(AsBlockListInner, OldBlockIndex, Direction);
 
                         IWriteableControllerView NewViewAfterMove = WriteableControllerView.Create(Controller);
@@ -1039,6 +1042,8 @@ namespace Test
                     IWriteableBrowsingListNodeIndex NodeIndex = AsListInner.IndexAt(OldIndex) as IWriteableBrowsingListNodeIndex;
                     Assert.That(NodeIndex != null);
 
+                    Assert.That(Controller.IsMoveable(AsListInner, NodeIndex, Direction));
+
                     Controller.Move(AsListInner, NodeIndex, Direction);
                     Assert.That(Controller.Contains(NodeIndex));
 
@@ -1060,6 +1065,8 @@ namespace Test
 
                     IWriteableBrowsingExistingBlockNodeIndex NodeIndex = AsBlockListInner.IndexAt(BlockIndex, OldIndex) as IWriteableBrowsingExistingBlockNodeIndex;
                     Assert.That(NodeIndex != null);
+
+                    Assert.That(Controller.IsMoveable(AsBlockListInner, NodeIndex, Direction));
 
                     Controller.Move(AsBlockListInner, NodeIndex, Direction);
                     Assert.That(Controller.Contains(NodeIndex));
@@ -2145,6 +2152,9 @@ namespace Test
                         int OldBlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
                         int NewBlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
                         int Direction = NewBlockIndex - OldBlockIndex;
+
+                        Assert.That(Controller.IsBlockMoveable(AsBlockListInner, OldBlockIndex, Direction));
+
                         Controller.MoveBlock(AsBlockListInner, OldBlockIndex, Direction);
 
                         IFrameControllerView NewViewAfterMove = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
@@ -2228,6 +2238,8 @@ namespace Test
                     IFrameBrowsingListNodeIndex NodeIndex = AsListInner.IndexAt(OldIndex) as IFrameBrowsingListNodeIndex;
                     Assert.That(NodeIndex != null);
 
+                    Assert.That(Controller.IsMoveable(AsListInner, NodeIndex, Direction));
+
                     Controller.Move(AsListInner, NodeIndex, Direction);
                     Assert.That(Controller.Contains(NodeIndex));
 
@@ -2249,6 +2261,8 @@ namespace Test
 
                     IFrameBrowsingExistingBlockNodeIndex NodeIndex = AsBlockListInner.IndexAt(BlockIndex, OldIndex) as IFrameBrowsingExistingBlockNodeIndex;
                     Assert.That(NodeIndex != null);
+
+                    Assert.That(Controller.IsMoveable(AsBlockListInner, NodeIndex, Direction));
 
                     Controller.Move(AsBlockListInner, NodeIndex, Direction);
                     Assert.That(Controller.Contains(NodeIndex));
@@ -2577,11 +2591,13 @@ namespace Test
             TestNewItemInsertable(rootNode);
             TestItemRemoveable(rootNode);
             TestItemMoveable(rootNode);
+            TestBlockMoveable(rootNode);
             TestItemSplittable(rootNode);
             TestItemMergeable(rootNode);
             TestItemCyclable(rootNode);
             TestItemSimplifiable(rootNode);
             TestIdentifierSplittable(rootNode);
+            TestReplicationModifiable(rootNode);
 #endif
         }
 
@@ -3343,6 +3359,9 @@ namespace Test
                         int OldBlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
                         int NewBlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
                         int Direction = NewBlockIndex - OldBlockIndex;
+
+                        Assert.That(Controller.IsBlockMoveable(AsBlockListInner, OldBlockIndex, Direction));
+
                         Controller.MoveBlock(AsBlockListInner, OldBlockIndex, Direction);
 
                         IFocusControllerView NewViewAfterMove = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
@@ -3430,6 +3449,8 @@ namespace Test
                     IFocusBrowsingListNodeIndex NodeIndex = AsListInner.IndexAt(OldIndex) as IFocusBrowsingListNodeIndex;
                     Assert.That(NodeIndex != null);
 
+                    Assert.That(Controller.IsMoveable(AsListInner, NodeIndex, Direction));
+
                     Controller.Move(AsListInner, NodeIndex, Direction);
                     Assert.That(Controller.Contains(NodeIndex));
 
@@ -3451,6 +3472,8 @@ namespace Test
 
                     IFocusBrowsingExistingBlockNodeIndex NodeIndex = AsBlockListInner.IndexAt(BlockIndex, OldIndex) as IFocusBrowsingExistingBlockNodeIndex;
                     Assert.That(NodeIndex != null);
+
+                    Assert.That(Controller.IsMoveable(AsBlockListInner, NodeIndex, Direction));
 
                     Controller.Move(AsBlockListInner, NodeIndex, Direction);
                     Assert.That(Controller.Contains(NodeIndex));
@@ -3696,6 +3719,34 @@ namespace Test
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
         }
 
+        public static void TestBlockMoveable(INode rootNode)
+        {
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusControllerView ControllerView = FocusControllerView.Create(Controller, CustomFocusTemplateSet.FocusTemplateSet);
+
+            for (int i = 0; i < 20; i++)
+            {
+                int Min = ControllerView.MinFocusMove;
+                int Max = ControllerView.MaxFocusMove;
+                int Direction = RandNext(Max - Min + 1) + Min;
+
+                ControllerView.MoveFocus(Direction);
+
+                Direction = (RandNext(2) * 2) - 1;
+
+                if (ControllerView.IsBlockMoveable(Direction, out IFocusBlockListInner<IFocusBrowsingBlockNodeIndex> Inner, out int BlockIndex))
+                    Controller.MoveBlock(Inner, BlockIndex, Direction);
+            }
+
+            IFocusControllerView NewView = FocusControllerView.Create(Controller, CustomFocusTemplateSet.FocusTemplateSet);
+            Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
+
+            IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController NewController = FocusController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+        }
+
         public static void TestItemSplittable(INode rootNode)
         {
             IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
@@ -3822,6 +3873,51 @@ namespace Test
             }
 
             IFocusControllerView NewView = FocusControllerView.Create(Controller, CustomFocusTemplateSet.FocusTemplateSet);
+            Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
+
+            IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController NewController = FocusController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+        }
+
+        public static void TestReplicationModifiable(INode rootNode)
+        {
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusControllerView ControllerView = FocusControllerView.Create(Controller, CustomFocusTemplateSet.FocusTemplateSet);
+
+            ReplicationStatus Replication;
+
+            for (int i = 0; i < 200; i++)
+            {
+                int Min = ControllerView.MinFocusMove;
+                int Max = ControllerView.MaxFocusMove;
+                int Direction = RandNext(Max - Min + 1) + Min;
+
+                ControllerView.MoveFocus(Direction);
+
+                if (ControllerView.IsReplicationModifiable(out IFocusBlockListInner<IFocusBrowsingBlockNodeIndex> Inner, out int BlockIndex, out Replication))
+                {
+                    switch (Replication)
+                    {
+                        case ReplicationStatus.Normal:
+                            Replication = ReplicationStatus.Replicated;
+                            break;
+                        case ReplicationStatus.Replicated:
+                            Replication = ReplicationStatus.Normal;
+                            break;
+                    }
+
+                    Controller.ChangeReplication(Inner, BlockIndex, Replication);
+                }
+            }
+
+            IFocusControllerView NewView = FocusControllerView.Create(Controller, CustomFocusTemplateSet.FocusTemplateSet);
+
+            CompareEqual comparer = CompareEqual.New();
+            bool IsEq = NewView.IsEqual(comparer, ControllerView);
+            System.Diagnostics.Debug.Assert(IsEq);
+
             Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
 
             IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
