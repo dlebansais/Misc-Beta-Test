@@ -3,7 +3,9 @@ solution: Misc-Beta-Test.sln
 
 install:
 - nuget restore Misc-Beta-Test.sln
-- nuget install NUnit.ConsoleRunner -Version 3.7.0 -OutputDirectory testrunner
+- nuget install NUnit.ConsoleRunner -Version 3.7.0 -OutputDirectory test-runner
+- nuget install xunit -Version 2.4.1 -OutputDirectory coverage-runner
+- nuget install OpenCover -Version 4.6.519 -OutputDirectory coverage-runner
 
 script:
 - msbuild /p:Configuration=Travis Misc-Beta-Test.sln
@@ -12,6 +14,7 @@ script:
 - cp ./Test-SimpleDatabase/bin/x64/Travis/Test-SimpleDatabase.dll ./Misc-Beta-Test/bin/x64/Travis
 - cp ./Test-Easly-Controller/bin/x64/Travis/Test-Easly-Controller.dll ./Misc-Beta-Test/bin/x64/Travis
 - cp ./Test-Easly-Controller/test.easly ./Misc-Beta-Test/bin/x64/Travis
+- cp ./Coverage-LargeList/bin/x64/Travis/Coverage-LargeList.dll ./Misc-Beta-Test/bin/x64/Travis
 
 deploy:
   provider: pages
