@@ -1,7 +1,6 @@
 ﻿using LargeList;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using System.Threading;
@@ -43,7 +42,7 @@ namespace Test
             TestLargeList<TestClass>.Init(IsStrict, DefaultMaxSegmentCapacity);
         }
 
-        const int MaxCollectionLoops = 100;
+        const int MaxCollectionLoops = 10;
 #if DEBUG
         const int MaxListLoops = 100;
 #else
@@ -108,6 +107,9 @@ namespace Test
             [Values(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)] int LoopDigit1,
             [Values(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)] int LoopDigit0)
         {
+            if (LoopDigit1 > 2 || LoopDigit0 > 2)
+                return;
+
             int Loop = LoopDigit1 * 10 + LoopDigit0;
             TestStatus Status;
 
@@ -123,9 +125,9 @@ namespace Test
         {
             return rand.Next(MaxIntValue);
         }
-#endregion
+        #endregion
 
-#region string
+        #region string
         [Test]
         public static void TestSessionString_collection()
         {
@@ -183,6 +185,9 @@ namespace Test
             [Values(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)] int LoopDigit1,
             [Values(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)] int LoopDigit0)
         {
+            if (LoopDigit1 > 2 || LoopDigit0 > 2)
+                return;
+
             int Loop = LoopDigit1 * 10 + LoopDigit0;
             TestStatus Status;
 
@@ -198,9 +203,9 @@ namespace Test
         {
             return rand.Next(MaxIntValue).ToString();
         }
-#endregion
+        #endregion
 
-#region Generic
+        #region Generic
         [Test]
         public static void TestSessionGeneric_collection()
         {
@@ -258,6 +263,9 @@ namespace Test
             [Values(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)] int LoopDigit1,
             [Values(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)] int LoopDigit0)
         {
+            if (LoopDigit1 > 2 || LoopDigit0 > 2)
+                return;
+
             int Loop = LoopDigit1 * 10 + LoopDigit0;
             TestStatus Status;
 
@@ -275,6 +283,6 @@ namespace Test
             string StringValue = rand.Next(MaxIntValue).ToString();
             return new TestClass(IntegerValue, StringValue);
         }
-#endregion
+        #endregion
     }
 }
