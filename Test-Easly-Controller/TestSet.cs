@@ -533,7 +533,6 @@ namespace Test
 
             IWriteableRootNodeIndex OldRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
             IWriteableController OldController = WriteableController.Create(OldRootIndex);
-            IWriteableControllerView OldView = WriteableControllerView.Create(OldController);
 
             if (inner is IWriteableListInner<IWriteableBrowsingListNodeIndex> AsListInner)
             {
@@ -606,15 +605,13 @@ namespace Test
                 IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
                 IWriteableController NewController = WriteableController.Create(NewRootIndex);
                 Assert.That(NewController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
-
+                /*
                 Controller.Undo();
 
                 Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
-
-                System.Diagnostics.Debug.Assert(false);
-                CompareEqual Comparer = CompareEqual.New();
-                bool IsEQ = OldView.IsEqual(CompareEqual.New(), controllerView);
-                Assert.That(IsEQ);
+                IWriteableControllerView OldView = WriteableControllerView.Create(Controller);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+                */
             }
 
             return false;
