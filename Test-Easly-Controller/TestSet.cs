@@ -605,13 +605,12 @@ namespace Test
                 IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
                 IWriteableController NewController = WriteableController.Create(NewRootIndex);
                 Assert.That(NewController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
-                /*
+
                 Controller.Undo();
 
                 Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
                 IWriteableControllerView OldView = WriteableControllerView.Create(Controller);
                 Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
-                */
             }
 
             return false;
