@@ -616,6 +616,100 @@ namespace Test
             return false;
         }
 
+        public static void TestWriteableRemove(int index, INode rootNode)
+        {
+            IWriteableRootNodeIndex RootIndex = new WriteableRootNodeIndex(rootNode);
+            IWriteableController Controller = WriteableController.Create(RootIndex);
+            IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
+
+            WriteableTestCount = 0;
+            WriteableBrowseNode(Controller, RootIndex, (IWriteableInner inner) => RemoveAndCompare(ControllerView, RandNext(WriteableMaxTestCount), inner));
+        }
+
+        static bool RemoveAndCompare(IWriteableControllerView controllerView, int TestIndex, IWriteableInner inner)
+        {
+            if (WriteableTestCount++ < TestIndex)
+                return true;
+
+            IWriteableController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            IWriteableRootNodeIndex OldRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+            IWriteableController OldController = WriteableController.Create(OldRootIndex);
+
+            if (inner is IWriteableListInner<IWriteableBrowsingListNodeIndex> AsListInner)
+            {
+                if (AsListInner.StateList.Count > 0)
+                {
+                    int Index = RandNext(AsListInner.StateList.Count);
+                    IWriteableNodeState ChildState = AsListInner.StateList[Index];
+                    IWriteableBrowsingListNodeIndex NodeIndex = ChildState.ParentIndex as IWriteableBrowsingListNodeIndex;
+                    Assert.That(NodeIndex != null);
+
+                    if (Controller.IsRemoveable(AsListInner, NodeIndex))
+                    {
+
+                        total++;
+                        if (total == 0x11)
+                        {
+                            //System.Diagnostics.Debug.Assert(false);
+                            total = 0x11;
+                        }
+
+                        Controller.Remove(AsListInner, NodeIndex);
+                        IsModified = true;
+                    }
+                }
+            }
+            else if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    Assert.That(AsBlockListInner.BlockStateList[0].StateList.Count > 0);
+
+                    int BlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
+                    IWriteableBlockState BlockState = AsBlockListInner.BlockStateList[BlockIndex];
+                    int Index = RandNext(BlockState.StateList.Count);
+                    IWriteableNodeState ChildState = BlockState.StateList[Index];
+                    IWriteableBrowsingExistingBlockNodeIndex NodeIndex = ChildState.ParentIndex as IWriteableBrowsingExistingBlockNodeIndex;
+                    Assert.That(NodeIndex != null);
+
+                    if (Controller.IsRemoveable(AsBlockListInner, NodeIndex))
+                    {
+
+                        total++;
+                        if (total == 0x11)
+                        {
+                            //System.Diagnostics.Debug.Assert(false);
+                            total = 0x11;
+                        }
+
+                        Controller.Remove(AsBlockListInner, NodeIndex);
+                        IsModified = true;
+                    }
+                }
+            }
+
+            if (IsModified)
+            {
+                IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+                IWriteableController NewController = WriteableController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+                
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IWriteableControllerView OldView = WriteableControllerView.Create(Controller);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+            }
+
+            return false;
+        }
+        static int total = 0;
+
         public static void TestWriteableReplace(int index, INode rootNode)
         {
             IWriteableRootNodeIndex RootIndex = new WriteableRootNodeIndex(rootNode);
@@ -633,6 +727,9 @@ namespace Test
 
             IWriteableController Controller = controllerView.Controller;
             bool IsModified = false;
+
+            IWriteableRootNodeIndex OldRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+            IWriteableController OldController = WriteableController.Create(OldRootIndex);
 
             if (inner is IWriteablePlaceholderInner<IWriteableBrowsingPlaceholderNodeIndex> AsPlaceholderInner)
             {
@@ -719,74 +816,13 @@ namespace Test
                 IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
                 IWriteableController NewController = WriteableController.Create(NewRootIndex);
                 Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
-            }
+                /*
+                Controller.Undo();
 
-            return false;
-        }
-
-        public static void TestWriteableRemove(int index, INode rootNode)
-        {
-            IWriteableRootNodeIndex RootIndex = new WriteableRootNodeIndex(rootNode);
-            IWriteableController Controller = WriteableController.Create(RootIndex);
-            IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
-
-            WriteableTestCount = 0;
-            WriteableBrowseNode(Controller, RootIndex, (IWriteableInner inner) => RemoveAndCompare(ControllerView, RandNext(WriteableMaxTestCount), inner));
-        }
-
-        static bool RemoveAndCompare(IWriteableControllerView controllerView, int TestIndex, IWriteableInner inner)
-        {
-            if (WriteableTestCount++ < TestIndex)
-                return true;
-
-            IWriteableController Controller = controllerView.Controller;
-            bool IsModified = false;
-
-            if (inner is IWriteableListInner<IWriteableBrowsingListNodeIndex> AsListInner)
-            {
-                if (AsListInner.StateList.Count > 0)
-                {
-                    int Index = RandNext(AsListInner.StateList.Count);
-                    IWriteableNodeState ChildState = AsListInner.StateList[Index];
-                    IWriteableBrowsingListNodeIndex NodeIndex = ChildState.ParentIndex as IWriteableBrowsingListNodeIndex;
-                    Assert.That(NodeIndex != null);
-
-                    if (Controller.IsRemoveable(AsListInner, NodeIndex))
-                    {
-                        Controller.Remove(AsListInner, NodeIndex);
-                        IsModified = true;
-                    }
-                }
-            }
-            else if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
-            {
-                if (AsBlockListInner.BlockStateList.Count > 0)
-                {
-                    Assert.That(AsBlockListInner.BlockStateList[0].StateList.Count > 0);
-
-                    int BlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
-                    IWriteableBlockState BlockState = AsBlockListInner.BlockStateList[BlockIndex];
-                    int Index = RandNext(BlockState.StateList.Count);
-                    IWriteableNodeState ChildState = BlockState.StateList[Index];
-                    IWriteableBrowsingExistingBlockNodeIndex NodeIndex = ChildState.ParentIndex as IWriteableBrowsingExistingBlockNodeIndex;
-                    Assert.That(NodeIndex != null);
-
-                    if (Controller.IsRemoveable(AsBlockListInner, NodeIndex))
-                    {
-                        Controller.Remove(AsBlockListInner, NodeIndex);
-                        IsModified = true;
-                    }
-                }
-            }
-
-            if (IsModified)
-            {
-                IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
-                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
-
-                IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
-                IWriteableController NewController = WriteableController.Create(NewRootIndex);
-                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IWriteableControllerView OldView = WriteableControllerView.Create(Controller);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+                */
             }
 
             return false;
