@@ -648,14 +648,6 @@ namespace Test
 
                     if (Controller.IsRemoveable(AsListInner, NodeIndex))
                     {
-
-                        total++;
-                        if (total == 0x11)
-                        {
-                            //System.Diagnostics.Debug.Assert(false);
-                            total = 0x11;
-                        }
-
                         Controller.Remove(AsListInner, NodeIndex);
                         IsModified = true;
                     }
@@ -676,14 +668,6 @@ namespace Test
 
                     if (Controller.IsRemoveable(AsBlockListInner, NodeIndex))
                     {
-
-                        total++;
-                        if (total == 0x11)
-                        {
-                            //System.Diagnostics.Debug.Assert(false);
-                            total = 0x11;
-                        }
-
                         Controller.Remove(AsBlockListInner, NodeIndex);
                         IsModified = true;
                     }
@@ -708,7 +692,6 @@ namespace Test
 
             return false;
         }
-        static int total = 0;
 
         public static void TestWriteableReplace(int index, INode rootNode)
         {
@@ -816,13 +799,12 @@ namespace Test
                 IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
                 IWriteableController NewController = WriteableController.Create(NewRootIndex);
                 Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
-                /*
+
                 Controller.Undo();
 
                 Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
                 IWriteableControllerView OldView = WriteableControllerView.Create(Controller);
                 Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
-                */
             }
 
             return false;
@@ -844,6 +826,8 @@ namespace Test
                 return true;
 
             IWriteableController Controller = controllerView.Controller;
+            IWriteableRootNodeIndex OldRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+            IWriteableController OldController = WriteableController.Create(OldRootIndex);
 
             if (inner is IWriteableOptionalInner<IWriteableBrowsingOptionalNodeIndex> AsOptionalInner)
             {
@@ -858,7 +842,7 @@ namespace Test
 
                 if (Optional.HasItem)
                 {
-                    Controller.Assign(OptionalIndex);
+                    Controller.Assign(OptionalIndex, out bool IsChanged);
                     Assert.That(Optional.IsAssigned);
                     Assert.That(AsOptionalInner.IsAssigned);
                     Assert.That(Optional.Item == ChildState.Node);
@@ -869,6 +853,15 @@ namespace Test
                     IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
                     IWriteableController NewController = WriteableController.Create(NewRootIndex);
                     Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                    if (IsChanged)
+                    {
+                        Controller.Undo();
+
+                        Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                        IWriteableControllerView OldView = WriteableControllerView.Create(Controller);
+                        Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+                    }
                 }
             }
 
@@ -891,6 +884,8 @@ namespace Test
                 return true;
 
             IWriteableController Controller = controllerView.Controller;
+            IWriteableRootNodeIndex OldRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+            IWriteableController OldController = WriteableController.Create(OldRootIndex);
 
             if (inner is IWriteableOptionalInner<IWriteableBrowsingOptionalNodeIndex> AsOptionalInner)
             {
@@ -903,7 +898,7 @@ namespace Test
                 IOptionalReference Optional = OptionalIndex.Optional;
                 Assert.That(Optional != null);
 
-                Controller.Unassign(OptionalIndex);
+                Controller.Unassign(OptionalIndex, out bool IsChanged);
                 Assert.That(!Optional.IsAssigned);
                 Assert.That(!AsOptionalInner.IsAssigned);
 
@@ -913,6 +908,15 @@ namespace Test
                 IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
                 IWriteableController NewController = WriteableController.Create(NewRootIndex);
                 Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                if (IsChanged)
+                {
+                    Controller.Undo();
+
+                    Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                    IWriteableControllerView OldView = WriteableControllerView.Create(Controller);
+                    Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+                }
             }
 
             return false;
@@ -2054,7 +2058,7 @@ namespace Test
 
                 if (Optional.HasItem)
                 {
-                    Controller.Assign(OptionalIndex);
+                    Controller.Assign(OptionalIndex, out bool IsChanged);
                     Assert.That(Optional.IsAssigned);
                     Assert.That(AsOptionalInner.IsAssigned);
                     Assert.That(Optional.Item == ChildState.Node);
@@ -2099,7 +2103,7 @@ namespace Test
                 IOptionalReference Optional = OptionalIndex.Optional;
                 Assert.That(Optional != null);
 
-                Controller.Unassign(OptionalIndex);
+                Controller.Unassign(OptionalIndex, out bool IsChanged);
                 Assert.That(!Optional.IsAssigned);
                 Assert.That(!AsOptionalInner.IsAssigned);
 
@@ -3255,7 +3259,7 @@ namespace Test
 
                 if (Optional.HasItem)
                 {
-                    Controller.Assign(OptionalIndex);
+                    Controller.Assign(OptionalIndex, out bool IsChanged);
                     Assert.That(Optional.IsAssigned);
                     Assert.That(AsOptionalInner.IsAssigned);
                     Assert.That(Optional.Item == ChildState.Node);
@@ -3302,7 +3306,7 @@ namespace Test
                 IOptionalReference Optional = OptionalIndex.Optional;
                 Assert.That(Optional != null);
 
-                Controller.Unassign(OptionalIndex);
+                Controller.Unassign(OptionalIndex, out bool IsChanged);
                 Assert.That(!Optional.IsAssigned);
                 Assert.That(!AsOptionalInner.IsAssigned);
 
