@@ -524,7 +524,7 @@ namespace Test
             {
                 if (AsListInner.StateList.Count > 0)
                 {
-                    INode NewNode = NodeHelper.DeepCloneNode(AsListInner.StateList[0].Node);
+                    INode NewNode = NodeHelper.DeepCloneNode(AsListInner.StateList[0].Node, cloneCommentGuid: false);
                     Assert.That(NewNode != null, $"Type: {AsListInner.InterfaceType}");
 
                     int Index = RandNext(AsListInner.StateList.Count + 1);
@@ -545,7 +545,7 @@ namespace Test
                 {
                     Assert.That(AsBlockListInner.BlockStateList[0].StateList.Count > 0);
 
-                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node);
+                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node, cloneCommentGuid: false);
                     Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
 
                     if (RandNext(2) == 0)
@@ -702,7 +702,7 @@ namespace Test
 
             if (inner is IWriteablePlaceholderInner<IWriteableBrowsingPlaceholderNodeIndex> AsPlaceholderInner)
             {
-                INode NewNode = NodeHelper.DeepCloneNode(AsPlaceholderInner.ChildState.Node);
+                INode NewNode = NodeHelper.DeepCloneNode(AsPlaceholderInner.ChildState.Node, cloneCommentGuid: false);
                 Assert.That(NewNode != null, $"Type: {AsPlaceholderInner.InterfaceType}");
 
                 IWriteableInsertionPlaceholderNodeIndex NodeIndex = new WriteableInsertionPlaceholderNodeIndex(AsPlaceholderInner.Owner.Node, AsPlaceholderInner.PropertyName, NewNode);
@@ -737,7 +737,7 @@ namespace Test
             {
                 if (AsListInner.StateList.Count > 0)
                 {
-                    INode NewNode = NodeHelper.DeepCloneNode(AsListInner.StateList[0].Node);
+                    INode NewNode = NodeHelper.DeepCloneNode(AsListInner.StateList[0].Node, cloneCommentGuid: false);
                     Assert.That(NewNode != null, $"Type: {AsListInner.InterfaceType}");
 
                     int Index = RandNext(AsListInner.StateList.Count);
@@ -758,7 +758,7 @@ namespace Test
                 {
                     Assert.That(AsBlockListInner.BlockStateList[0].StateList.Count > 0);
 
-                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node);
+                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node, cloneCommentGuid: false);
                     Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
 
                     int BlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
@@ -2050,7 +2050,7 @@ namespace Test
             {
                 if (AsListInner.StateList.Count > 0)
                 {
-                    INode NewNode = NodeHelper.DeepCloneNode(AsListInner.StateList[0].Node);
+                    INode NewNode = NodeHelper.DeepCloneNode(AsListInner.StateList[0].Node, cloneCommentGuid: false);
                     Assert.That(NewNode != null, $"Type: {AsListInner.InterfaceType}");
 
                     int Index = RandNext(AsListInner.StateList.Count + 1);
@@ -2071,7 +2071,7 @@ namespace Test
                 {
                     Assert.That(AsBlockListInner.BlockStateList[0].StateList.Count > 0);
 
-                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node);
+                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node, cloneCommentGuid: false);
                     Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
 
                     if (RandNext(2) == 0)
@@ -2151,7 +2151,7 @@ namespace Test
 
             if (inner is IFramePlaceholderInner<IFrameBrowsingPlaceholderNodeIndex> AsPlaceholderInner)
             {
-                INode NewNode = NodeHelper.DeepCloneNode(AsPlaceholderInner.ChildState.Node);
+                INode NewNode = NodeHelper.DeepCloneNode(AsPlaceholderInner.ChildState.Node, cloneCommentGuid: false);
                 Assert.That(NewNode != null, $"Type: {AsPlaceholderInner.InterfaceType}");
 
                 IFrameInsertionPlaceholderNodeIndex NodeIndex = new FrameInsertionPlaceholderNodeIndex(AsPlaceholderInner.Owner.Node, AsPlaceholderInner.PropertyName, NewNode);
@@ -2186,7 +2186,7 @@ namespace Test
             {
                 if (AsListInner.StateList.Count > 0)
                 {
-                    INode NewNode = NodeHelper.DeepCloneNode(AsListInner.StateList[0].Node);
+                    INode NewNode = NodeHelper.DeepCloneNode(AsListInner.StateList[0].Node, cloneCommentGuid: false);
                     Assert.That(NewNode != null, $"Type: {AsListInner.InterfaceType}");
 
                     int Index = RandNext(AsListInner.StateList.Count);
@@ -2207,7 +2207,7 @@ namespace Test
                 {
                     Assert.That(AsBlockListInner.BlockStateList[0].StateList.Count > 0);
 
-                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node);
+                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node, cloneCommentGuid: false);
                     Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
 
                     int BlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
@@ -3360,7 +3360,7 @@ namespace Test
             {
                 if (AsListInner.StateList.Count > 0)
                 {
-                    INode NewNode = NodeHelper.DeepCloneNode(AsListInner.StateList[0].Node);
+                    INode NewNode = NodeHelper.DeepCloneNode(AsListInner.StateList[0].Node, cloneCommentGuid: false);
                     Assert.That(NewNode != null, $"Type: {AsListInner.InterfaceType}");
 
                     int Index = RandNext(AsListInner.StateList.Count + 1);
@@ -3381,7 +3381,7 @@ namespace Test
                 {
                     Assert.That(AsBlockListInner.BlockStateList[0].StateList.Count > 0);
 
-                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node);
+                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node, cloneCommentGuid: false);
                     Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
 
                     if (RandNext(2) == 0)
@@ -3463,7 +3463,7 @@ namespace Test
 
             if (inner is IFocusPlaceholderInner<IFocusBrowsingPlaceholderNodeIndex> AsPlaceholderInner)
             {
-                INode NewNode = NodeHelper.DeepCloneNode(AsPlaceholderInner.ChildState.Node);
+                INode NewNode = NodeHelper.DeepCloneNode(AsPlaceholderInner.ChildState.Node, cloneCommentGuid: false);
                 Assert.That(NewNode != null, $"Type: {AsPlaceholderInner.InterfaceType}");
 
                 IFocusInsertionPlaceholderNodeIndex NodeIndex = new FocusInsertionPlaceholderNodeIndex(AsPlaceholderInner.Owner.Node, AsPlaceholderInner.PropertyName, NewNode);
@@ -3498,7 +3498,7 @@ namespace Test
             {
                 if (AsListInner.StateList.Count > 0)
                 {
-                    INode NewNode = NodeHelper.DeepCloneNode(AsListInner.StateList[0].Node);
+                    INode NewNode = NodeHelper.DeepCloneNode(AsListInner.StateList[0].Node, cloneCommentGuid: false);
                     Assert.That(NewNode != null, $"Type: {AsListInner.InterfaceType}");
 
                     int Index = RandNext(AsListInner.StateList.Count);
@@ -3519,7 +3519,7 @@ namespace Test
                 {
                     Assert.That(AsBlockListInner.BlockStateList[0].StateList.Count > 0);
 
-                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node);
+                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node, cloneCommentGuid: false);
                     Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
 
                     int BlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
