@@ -445,30 +445,16 @@ namespace Test
                 TestWriteableAssign(index, rootNode);
                 TestWriteableUnassign(index, rootNode);
                 TestWriteableChangeReplication(index, rootNode);
+                TestWriteableChangeDiscreteValue(index, rootNode);
                 TestWriteableSplit(index, rootNode);
                 TestWriteableMerge(index, rootNode);
                 TestWriteableMove(index, rootNode);
+                TestWriteableMoveBlock(index, rootNode);
                 TestWriteableExpand(index, rootNode);
                 TestWriteableReduce(index, rootNode);
             }
 
             TestWriteableCanonicalize(rootNode);
-        }
-
-        public static void TestWriteableCanonicalize(INode rootNode)
-        {
-            IWriteableRootNodeIndex RootIndex = new WriteableRootNodeIndex(rootNode);
-            IWriteableController Controller = WriteableController.Create(RootIndex);
-            IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
-
-            Controller.Canonicalize();
-
-            IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
-            Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
-
-            IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
-            IWriteableController NewController = WriteableController.Create(NewRootIndex);
-            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
         }
 
         static int WriteableTestCount = 0;
@@ -938,6 +924,8 @@ namespace Test
                 return true;
 
             IWriteableController Controller = controllerView.Controller;
+            IWriteableRootNodeIndex OldRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+            IWriteableController OldController = WriteableController.Create(OldRootIndex);
 
             if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
             {
@@ -957,8 +945,59 @@ namespace Test
                     IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
                     IWriteableController NewController = WriteableController.Create(NewRootIndex);
                     Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                    Controller.Undo();
+
+                    Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                    IWriteableControllerView OldView = WriteableControllerView.Create(Controller);
+                    Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
                 }
             }
+
+            return false;
+        }
+
+        public static void TestWriteableChangeDiscreteValue(int index, INode rootNode)
+        {
+            IWriteableRootNodeIndex RootIndex = new WriteableRootNodeIndex(rootNode);
+            IWriteableController Controller = WriteableController.Create(RootIndex);
+            IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
+
+            WriteableTestCount = 0;
+            WriteableBrowseValues(Controller, RootIndex, (IWriteableIndex nodeIndex, string propertyName) => ChangeDiscreteValueAndCompare(ControllerView, RandNext(WriteableMaxTestCount), nodeIndex, propertyName));
+        }
+
+        static bool ChangeDiscreteValueAndCompare(IWriteableControllerView controllerView, int TestIndex, IWriteableIndex nodeIndex, string propertyName)
+        {
+            if (WriteableTestCount++ < TestIndex)
+                return true;
+
+            IWriteableController Controller = controllerView.Controller;
+            IWriteableRootNodeIndex OldRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+            IWriteableController OldController = WriteableController.Create(OldRootIndex);
+
+            IWriteableNodeState State = (IWriteableNodeState)Controller.IndexToState(nodeIndex);
+            State.PropertyToValue(propertyName, out object Value, out int MinValue, out int MaxValue);
+
+            int OldValue = (int)Value;
+            int NewValue = OldValue + 1;
+            if (NewValue > MaxValue)
+                NewValue = MinValue;
+
+            Controller.ChangeDiscreteValue(nodeIndex, propertyName, OldValue);
+
+            IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+            Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+            IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+            IWriteableController NewController = WriteableController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+            Controller.Undo();
+
+            Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Property: {propertyName}, Old Value: {OldValue}");
+            IWriteableControllerView OldView = WriteableControllerView.Create(Controller);
+            Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
 
             return false;
         }
@@ -979,6 +1018,8 @@ namespace Test
                 return true;
 
             IWriteableController Controller = controllerView.Controller;
+            IWriteableRootNodeIndex OldRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+            IWriteableController OldController = WriteableController.Create(OldRootIndex);
 
             if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
             {
@@ -1000,6 +1041,14 @@ namespace Test
                         IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
                         IWriteableController NewController = WriteableController.Create(NewRootIndex);
                         Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                        Controller.Undo();
+
+                        Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                        IWriteableControllerView OldView = WriteableControllerView.Create(Controller);
+                        Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+
+                        Controller.Redo();
 
                         Assert.That(AsBlockListInner.BlockStateList.Count > 0);
                         int OldBlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
@@ -1039,6 +1088,8 @@ namespace Test
                 return true;
 
             IWriteableController Controller = controllerView.Controller;
+            IWriteableRootNodeIndex OldRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+            IWriteableController OldController = WriteableController.Create(OldRootIndex);
 
             if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
             {
@@ -1056,6 +1107,12 @@ namespace Test
                     IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
                     IWriteableController NewController = WriteableController.Create(NewRootIndex);
                     Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                    Controller.Undo();
+
+                    Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                    IWriteableControllerView OldView = WriteableControllerView.Create(Controller);
+                    Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
                 }
             }
 
@@ -1079,6 +1136,8 @@ namespace Test
 
             IWriteableController Controller = controllerView.Controller;
             bool IsModified = false;
+            IWriteableRootNodeIndex OldRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+            IWriteableController OldController = WriteableController.Create(OldRootIndex);
 
             if (inner is IWriteableListInner<IWriteableBrowsingListNodeIndex> AsListInner)
             {
@@ -1132,6 +1191,61 @@ namespace Test
                 IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
                 IWriteableController NewController = WriteableController.Create(NewRootIndex);
                 Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IWriteableControllerView OldView = WriteableControllerView.Create(Controller);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+            }
+
+            return false;
+        }
+
+        public static void TestWriteableMoveBlock(int index, INode rootNode)
+        {
+            IWriteableRootNodeIndex RootIndex = new WriteableRootNodeIndex(rootNode);
+            IWriteableController Controller = WriteableController.Create(RootIndex);
+            IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
+
+            WriteableTestCount = 0;
+            WriteableBrowseNode(Controller, RootIndex, (IWriteableInner inner) => MoveBlockAndCompare(ControllerView, RandNext(WriteableMaxTestCount), inner));
+        }
+
+        static bool MoveBlockAndCompare(IWriteableControllerView controllerView, int TestIndex, IWriteableInner inner)
+        {
+            if (WriteableTestCount++ < TestIndex)
+                return true;
+
+            IWriteableController Controller = controllerView.Controller;
+            IWriteableRootNodeIndex OldRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+            IWriteableController OldController = WriteableController.Create(OldRootIndex);
+
+            if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 1)
+                {
+                    int OldIndex = RandNext(AsBlockListInner.BlockStateList.Count);
+                    int NewIndex = RandNext(AsBlockListInner.BlockStateList.Count);
+                    int Direction = NewIndex - OldIndex;
+
+                    Assert.That(Controller.IsBlockMoveable(AsBlockListInner, OldIndex, Direction));
+
+                    Controller.MoveBlock(AsBlockListInner, OldIndex, Direction);
+
+                    IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+                    Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                    IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+                    IWriteableController NewController = WriteableController.Create(NewRootIndex);
+                    Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                    Controller.Undo();
+
+                    Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                    IWriteableControllerView OldView = WriteableControllerView.Create(Controller);
+                    Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+                }
             }
 
             return false;
@@ -1171,7 +1285,10 @@ namespace Test
             else
                 return true;
 
-            Controller.Expand(NodeIndex);
+            IWriteableRootNodeIndex OldRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+            IWriteableController OldController = WriteableController.Create(OldRootIndex);
+
+            Controller.Expand(NodeIndex, out bool IsChanged);
 
             IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
             Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
@@ -1180,12 +1297,23 @@ namespace Test
             IWriteableController NewController = WriteableController.Create(NewRootIndex);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
-            Controller.Expand(NodeIndex);
+            if (IsChanged)
+            {
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IWriteableControllerView OldView = WriteableControllerView.Create(Controller);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+
+                Controller.Redo();
+            }
+
+            Controller.Expand(NodeIndex, out IsChanged);
 
             NewController = WriteableController.Create(NewRootIndex);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
-            Controller.Reduce(NodeIndex);
+            Controller.Reduce(NodeIndex, out IsChanged);
 
             NewController = WriteableController.Create(NewRootIndex);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
@@ -1227,7 +1355,10 @@ namespace Test
             else
                 return true;
 
-            Controller.Reduce(NodeIndex);
+            IWriteableRootNodeIndex OldRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+            IWriteableController OldController = WriteableController.Create(OldRootIndex);
+
+            Controller.Reduce(NodeIndex, out bool IsChanged);
 
             IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
             Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
@@ -1236,17 +1367,56 @@ namespace Test
             IWriteableController NewController = WriteableController.Create(NewRootIndex);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
-            Controller.Reduce(NodeIndex);
+            if (IsChanged)
+            {
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IWriteableControllerView OldView = WriteableControllerView.Create(Controller);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+
+                Controller.Redo();
+            }
+
+            Controller.Reduce(NodeIndex, out IsChanged);
 
             NewController = WriteableController.Create(NewRootIndex);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
-            Controller.Expand(NodeIndex);
+            Controller.Expand(NodeIndex, out IsChanged);
 
             NewController = WriteableController.Create(NewRootIndex);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
             return false;
+        }
+
+        public static void TestWriteableCanonicalize(INode rootNode)
+        {
+            IWriteableRootNodeIndex RootIndex = new WriteableRootNodeIndex(rootNode);
+            IWriteableController Controller = WriteableController.Create(RootIndex);
+            IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
+
+            IWriteableRootNodeIndex OldRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+            IWriteableController OldController = WriteableController.Create(OldRootIndex);
+
+            Controller.Canonicalize(out bool IsChanged);
+
+            IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+            Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
+
+            IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+            IWriteableController NewController = WriteableController.Create(NewRootIndex);
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+            
+            if (IsChanged)
+            {
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Root Node: {rootNode}");
+                IWriteableControllerView OldView = WriteableControllerView.Create(Controller);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), ControllerView));
+            }
         }
 
         static bool WriteableBrowseNode(IWriteableController controller, IWriteableIndex index, Func<IWriteableInner, bool> test)
@@ -1347,10 +1517,107 @@ namespace Test
 
             return true;
         }
+
+        static bool WriteableBrowseValues(IWriteableController controller, IWriteableIndex index, Func<IWriteableIndex, string, bool> test)
+        {
+            Assert.That(index != null, "Writeable #7");
+            Assert.That(controller.Contains(index), "Writeable #8");
+            IWriteableNodeState State = (IWriteableNodeState)controller.IndexToState(index);
+            Assert.That(State != null, "Writeable #9");
+            Assert.That(State.ParentIndex == index, "Writeable #10");
+
+            INode Node;
+
+            if (State is IWriteablePlaceholderNodeState AsPlaceholderState)
+                Node = AsPlaceholderState.Node;
+            else
+            {
+                Assert.That(State is IWriteableOptionalNodeState, "Writeable #11");
+                IWriteableOptionalNodeState AsOptionalState = (IWriteableOptionalNodeState)State;
+                IWriteableOptionalInner<IWriteableBrowsingOptionalNodeIndex> ParentInner = AsOptionalState.ParentInner;
+
+                Assert.That(ParentInner.IsAssigned, "Writeable #12");
+
+                Node = AsOptionalState.Node;
+            }
+
+            Type ChildNodeType;
+            IList<string> PropertyNames = NodeTreeHelper.EnumChildNodeProperties(Node);
+
+            foreach (string PropertyName in PropertyNames)
+            {
+                if (NodeTreeHelper.IsEnumProperty(Node, PropertyName))
+                {
+                    if (!test(index, PropertyName))
+                        return false;
+                }
+
+                else if (NodeTreeHelperChild.IsChildNodeProperty(Node, PropertyName, out ChildNodeType))
+                {
+                    IWriteablePlaceholderInner Inner = (IWriteablePlaceholderInner)State.PropertyToInner(PropertyName);
+
+                    IWriteableNodeState ChildState = Inner.ChildState;
+                    IWriteableIndex ChildIndex = ChildState.ParentIndex;
+                    if (!WriteableBrowseValues(controller, ChildIndex, test))
+                        return false;
+                }
+
+                else if (NodeTreeHelperOptional.IsOptionalChildNodeProperty(Node, PropertyName, out ChildNodeType))
+                {
+                    NodeTreeHelperOptional.GetChildNode(Node, PropertyName, out bool IsAssigned, out INode ChildNode);
+                    if (IsAssigned)
+                    {
+                        IWriteableOptionalInner Inner = (IWriteableOptionalInner)State.PropertyToInner(PropertyName);
+
+                        IWriteableNodeState ChildState = Inner.ChildState;
+                        IWriteableIndex ChildIndex = ChildState.ParentIndex;
+                        if (!WriteableBrowseValues(controller, ChildIndex, test))
+                            return false;
+                    }
+                }
+
+                else if (NodeTreeHelperList.IsNodeListProperty(Node, PropertyName, out ChildNodeType))
+                {
+                    IWriteableListInner Inner = (IWriteableListInner)State.PropertyToInner(PropertyName);
+
+                    for (int i = 0; i < Inner.StateList.Count; i++)
+                    {
+                        IWriteablePlaceholderNodeState ChildState = Inner.StateList[i];
+                        IWriteableIndex ChildIndex = ChildState.ParentIndex;
+                        if (!WriteableBrowseValues(controller, ChildIndex, test))
+                            return false;
+                    }
+                }
+
+                else if (NodeTreeHelperBlockList.IsBlockListProperty(Node, PropertyName, out Type ChildInterfaceType, out ChildNodeType))
+                {
+                    IWriteableBlockListInner Inner = (IWriteableBlockListInner)State.PropertyToInner(PropertyName);
+
+                    for (int BlockIndex = 0; BlockIndex < Inner.BlockStateList.Count; BlockIndex++)
+                    {
+                        IWriteableBlockState BlockState = Inner.BlockStateList[BlockIndex];
+                        if (!WriteableBrowseValues(controller, BlockState.PatternIndex, test))
+                            return false;
+                        if (!WriteableBrowseValues(controller, BlockState.SourceIndex, test))
+                            return false;
+
+                        for (int i = 0; i < BlockState.StateList.Count; i++)
+                        {
+                            IWriteablePlaceholderNodeState ChildState = BlockState.StateList[i];
+                            IWriteableIndex ChildIndex = ChildState.ParentIndex;
+                            if (!WriteableBrowseValues(controller, ChildIndex, test))
+                                return false;
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
         #endregion
 
         #region Frame
-        #if FRAME
+#if FRAME
         [Test]
         [TestCaseSource(nameof(FileIndexRange))]
         public static void Frame(int index)
@@ -1706,7 +1973,7 @@ namespace Test
             IFrameController Controller = FrameController.Create(RootIndex);
             IFrameControllerView ControllerView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
 
-            Controller.Canonicalize();
+            Controller.Canonicalize(out bool IsChanged);
 
             IFrameControllerView NewView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
             Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
@@ -1775,6 +2042,9 @@ namespace Test
 
             IFrameController Controller = controllerView.Controller;
             bool IsModified = false;
+
+            IFrameRootNodeIndex OldRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+            IFrameController OldController = FrameController.Create(OldRootIndex);
 
             if (inner is IFrameListInner<IFrameBrowsingListNodeIndex> AsListInner)
             {
@@ -1847,6 +2117,12 @@ namespace Test
                 IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
                 IFrameController NewController = FrameController.Create(NewRootIndex);
                 Assert.That(NewController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IFrameControllerView OldView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
             }
 
             return false;
@@ -1869,6 +2145,9 @@ namespace Test
 
             IFrameController Controller = controllerView.Controller;
             bool IsModified = false;
+
+            IFrameRootNodeIndex OldRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+            IFrameController OldController = FrameController.Create(OldRootIndex);
 
             if (inner is IFramePlaceholderInner<IFrameBrowsingPlaceholderNodeIndex> AsPlaceholderInner)
             {
@@ -1955,6 +2234,12 @@ namespace Test
                 IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
                 IFrameController NewController = FrameController.Create(NewRootIndex);
                 Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IFrameControllerView OldView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
             }
 
             return false;
@@ -1977,6 +2262,9 @@ namespace Test
 
             IFrameController Controller = controllerView.Controller;
             bool IsModified = false;
+
+            IFrameRootNodeIndex OldRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+            IFrameController OldController = FrameController.Create(OldRootIndex);
 
             if (inner is IFrameListInner<IFrameBrowsingListNodeIndex> AsListInner)
             {
@@ -2023,6 +2311,12 @@ namespace Test
                 IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
                 IFrameController NewController = FrameController.Create(NewRootIndex);
                 Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IFrameControllerView OldView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
             }
 
             return false;
@@ -2044,6 +2338,9 @@ namespace Test
                 return true;
 
             IFrameController Controller = controllerView.Controller;
+
+            IFrameRootNodeIndex OldRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+            IFrameController OldController = FrameController.Create(OldRootIndex);
 
             if (inner is IFrameOptionalInner<IFrameBrowsingOptionalNodeIndex> AsOptionalInner)
             {
@@ -2069,6 +2366,15 @@ namespace Test
                     IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
                     IFrameController NewController = FrameController.Create(NewRootIndex);
                     Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                    if (IsChanged)
+                    {
+                        Controller.Undo();
+
+                        Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                        IFrameControllerView OldView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+                        Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+                    }
                 }
             }
 
@@ -2092,6 +2398,9 @@ namespace Test
 
             IFrameController Controller = controllerView.Controller;
 
+            IFrameRootNodeIndex OldRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+            IFrameController OldController = FrameController.Create(OldRootIndex);
+
             if (inner is IFrameOptionalInner<IFrameBrowsingOptionalNodeIndex> AsOptionalInner)
             {
                 IFrameOptionalNodeState ChildState = AsOptionalInner.ChildState;
@@ -2113,6 +2422,15 @@ namespace Test
                 IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
                 IFrameController NewController = FrameController.Create(NewRootIndex);
                 Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                if (IsChanged)
+                {
+                    Controller.Undo();
+
+                    Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                    IFrameControllerView OldView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+                    Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+                }
             }
 
             return false;
@@ -2135,6 +2453,9 @@ namespace Test
 
             IFrameController Controller = controllerView.Controller;
 
+            IFrameRootNodeIndex OldRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+            IFrameController OldController = FrameController.Create(OldRootIndex);
+
             if (inner is IFrameBlockListInner<IFrameBrowsingBlockNodeIndex> AsBlockListInner)
             {
                 if (AsBlockListInner.BlockStateList.Count > 0)
@@ -2153,6 +2474,12 @@ namespace Test
                     IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
                     IFrameController NewController = FrameController.Create(NewRootIndex);
                     Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                    Controller.Undo();
+
+                    Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                    IFrameControllerView OldView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+                    Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
                 }
             }
 
@@ -2176,6 +2503,9 @@ namespace Test
 
             IFrameController Controller = controllerView.Controller;
 
+            IFrameRootNodeIndex OldRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+            IFrameController OldController = FrameController.Create(OldRootIndex);
+
             if (inner is IFrameBlockListInner<IFrameBrowsingBlockNodeIndex> AsBlockListInner)
             {
                 if (AsBlockListInner.BlockStateList.Count > 0)
@@ -2196,6 +2526,14 @@ namespace Test
                         IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
                         IFrameController NewController = FrameController.Create(NewRootIndex);
                         Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                        Controller.Undo();
+
+                        Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                        IFrameControllerView OldView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+                        Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+
+                        Controller.Redo();
 
                         Assert.That(AsBlockListInner.BlockStateList.Count > 0);
                         int OldBlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
@@ -2236,6 +2574,9 @@ namespace Test
 
             IFrameController Controller = controllerView.Controller;
 
+            IFrameRootNodeIndex OldRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+            IFrameController OldController = FrameController.Create(OldRootIndex);
+
             if (inner is IFrameBlockListInner<IFrameBrowsingBlockNodeIndex> AsBlockListInner)
             {
                 if (AsBlockListInner.BlockStateList.Count > 1)
@@ -2252,6 +2593,12 @@ namespace Test
                     IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
                     IFrameController NewController = FrameController.Create(NewRootIndex);
                     Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                    Controller.Undo();
+
+                    Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                    IFrameControllerView OldView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+                    Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
                 }
             }
 
@@ -2275,6 +2622,9 @@ namespace Test
 
             IFrameController Controller = controllerView.Controller;
             bool IsModified = false;
+
+            IFrameRootNodeIndex OldRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+            IFrameController OldController = FrameController.Create(OldRootIndex);
 
             if (inner is IFrameListInner<IFrameBrowsingListNodeIndex> AsListInner)
             {
@@ -2328,6 +2678,12 @@ namespace Test
                 IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
                 IFrameController NewController = FrameController.Create(NewRootIndex);
                 Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IFrameControllerView OldView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
             }
 
             return false;
@@ -2352,6 +2708,9 @@ namespace Test
             IFrameNodeIndex NodeIndex;
             IFramePlaceholderNodeState State;
 
+            IFrameRootNodeIndex OldRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+            IFrameController OldController = FrameController.Create(OldRootIndex);
+
             if (inner is IFramePlaceholderInner<IFrameBrowsingPlaceholderNodeIndex> AsPlaceholderInner)
             {
                 NodeIndex = AsPlaceholderInner.ChildState.ParentIndex as IFrameNodeIndex;
@@ -2367,7 +2726,7 @@ namespace Test
             else
                 return true;
 
-            Controller.Expand(NodeIndex);
+            Controller.Expand(NodeIndex, out bool IsChanged);
 
             IFrameControllerView NewView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
             Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
@@ -2376,12 +2735,23 @@ namespace Test
             IFrameController NewController = FrameController.Create(NewRootIndex);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
-            Controller.Expand(NodeIndex);
+            if (IsChanged)
+            {
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IFrameControllerView OldView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+
+                Controller.Redo();
+            }
+
+            Controller.Expand(NodeIndex, out IsChanged);
 
             NewController = FrameController.Create(NewRootIndex);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
-            Controller.Reduce(NodeIndex);
+            Controller.Reduce(NodeIndex, out IsChanged);
 
             NewController = FrameController.Create(NewRootIndex);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
@@ -2408,6 +2778,9 @@ namespace Test
             IFrameNodeIndex NodeIndex;
             IFramePlaceholderNodeState State;
 
+            IFrameRootNodeIndex OldRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+            IFrameController OldController = FrameController.Create(OldRootIndex);
+
             if (inner is IFramePlaceholderInner<IFrameBrowsingPlaceholderNodeIndex> AsPlaceholderInner)
             {
                 NodeIndex = AsPlaceholderInner.ChildState.ParentIndex as IFrameNodeIndex;
@@ -2423,7 +2796,7 @@ namespace Test
             else
                 return true;
 
-            Controller.Reduce(NodeIndex);
+            Controller.Reduce(NodeIndex, out bool IsChanged);
 
             IFrameControllerView NewView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
             Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
@@ -2432,12 +2805,21 @@ namespace Test
             IFrameController NewController = FrameController.Create(NewRootIndex);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
-            Controller.Reduce(NodeIndex);
+            if (IsChanged)
+            {
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IFrameControllerView OldView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+            }
+
+            Controller.Reduce(NodeIndex, out IsChanged);
 
             NewController = FrameController.Create(NewRootIndex);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
-            Controller.Expand(NodeIndex);
+            Controller.Expand(NodeIndex, out IsChanged);
 
             NewController = FrameController.Create(NewRootIndex);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
@@ -2971,6 +3353,9 @@ namespace Test
             IFocusController Controller = controllerView.Controller;
             bool IsModified = false;
 
+            IFocusRootNodeIndex OldRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController OldController = FocusController.Create(OldRootIndex);
+
             if (inner is IFocusListInner<IFocusBrowsingListNodeIndex> AsListInner)
             {
                 if (AsListInner.StateList.Count > 0)
@@ -3042,6 +3427,12 @@ namespace Test
                 IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
                 IFocusController NewController = FocusController.Create(NewRootIndex);
                 Assert.That(NewController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IFocusControllerView OldView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
             }
 
             return false;
@@ -3066,6 +3457,9 @@ namespace Test
 
             IFocusController Controller = controllerView.Controller;
             bool IsModified = false;
+
+            IFocusRootNodeIndex OldRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController OldController = FocusController.Create(OldRootIndex);
 
             if (inner is IFocusPlaceholderInner<IFocusBrowsingPlaceholderNodeIndex> AsPlaceholderInner)
             {
@@ -3152,6 +3546,12 @@ namespace Test
                 IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
                 IFocusController NewController = FocusController.Create(NewRootIndex);
                 Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IFocusControllerView OldView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
             }
 
             return false;
@@ -3176,6 +3576,9 @@ namespace Test
 
             IFocusController Controller = controllerView.Controller;
             bool IsModified = false;
+
+            IFocusRootNodeIndex OldRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController OldController = FocusController.Create(OldRootIndex);
 
             if (inner is IFocusListInner<IFocusBrowsingListNodeIndex> AsListInner)
             {
@@ -3222,6 +3625,12 @@ namespace Test
                 IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
                 IFocusController NewController = FocusController.Create(NewRootIndex);
                 Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IFocusControllerView OldView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
             }
 
             return false;
@@ -3245,6 +3654,9 @@ namespace Test
             MoveFocusRandomly(controllerView);
 
             IFocusController Controller = controllerView.Controller;
+
+            IFocusRootNodeIndex OldRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController OldController = FocusController.Create(OldRootIndex);
 
             if (inner is IFocusOptionalInner<IFocusBrowsingOptionalNodeIndex> AsOptionalInner)
             {
@@ -3270,6 +3682,15 @@ namespace Test
                     IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
                     IFocusController NewController = FocusController.Create(NewRootIndex);
                     Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                    if (IsChanged)
+                    {
+                        Controller.Undo();
+
+                        Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                        IFocusControllerView OldView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                        Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+                    }
                 }
             }
 
@@ -3295,6 +3716,9 @@ namespace Test
 
             IFocusController Controller = controllerView.Controller;
 
+            IFocusRootNodeIndex OldRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController OldController = FocusController.Create(OldRootIndex);
+
             if (inner is IFocusOptionalInner<IFocusBrowsingOptionalNodeIndex> AsOptionalInner)
             {
                 IFocusOptionalNodeState ChildState = AsOptionalInner.ChildState;
@@ -3316,6 +3740,15 @@ namespace Test
                 IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
                 IFocusController NewController = FocusController.Create(NewRootIndex);
                 Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                if (IsChanged)
+                {
+                    Controller.Undo();
+
+                    Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                    IFocusControllerView OldView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                    Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+                }
             }
 
             return false;
@@ -3340,6 +3773,9 @@ namespace Test
 
             IFocusController Controller = controllerView.Controller;
 
+            IFocusRootNodeIndex OldRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController OldController = FocusController.Create(OldRootIndex);
+
             if (inner is IFocusBlockListInner<IFocusBrowsingBlockNodeIndex> AsBlockListInner)
             {
                 if (AsBlockListInner.BlockStateList.Count > 0)
@@ -3358,6 +3794,12 @@ namespace Test
                     IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
                     IFocusController NewController = FocusController.Create(NewRootIndex);
                     Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                    Controller.Undo();
+
+                    Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                    IFocusControllerView OldView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                    Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
                 }
             }
 
@@ -3383,6 +3825,9 @@ namespace Test
 
             IFocusController Controller = controllerView.Controller;
 
+            IFocusRootNodeIndex OldRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController OldController = FocusController.Create(OldRootIndex);
+
             if (inner is IFocusBlockListInner<IFocusBrowsingBlockNodeIndex> AsBlockListInner)
             {
                 if (AsBlockListInner.BlockStateList.Count > 0)
@@ -3403,6 +3848,12 @@ namespace Test
                         IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
                         IFocusController NewController = FocusController.Create(NewRootIndex);
                         Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                        Controller.Undo();
+
+                        Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                        IFocusControllerView OldView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                        Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
 
                         Assert.That(AsBlockListInner.BlockStateList.Count > 0);
                         int OldBlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
@@ -3445,6 +3896,9 @@ namespace Test
 
             IFocusController Controller = controllerView.Controller;
 
+            IFocusRootNodeIndex OldRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController OldController = FocusController.Create(OldRootIndex);
+
             if (inner is IFocusBlockListInner<IFocusBrowsingBlockNodeIndex> AsBlockListInner)
             {
                 if (AsBlockListInner.BlockStateList.Count > 1)
@@ -3461,6 +3915,12 @@ namespace Test
                     IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
                     IFocusController NewController = FocusController.Create(NewRootIndex);
                     Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                    Controller.Undo();
+
+                    Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                    IFocusControllerView OldView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                    Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
                 }
             }
 
@@ -3486,6 +3946,9 @@ namespace Test
 
             IFocusController Controller = controllerView.Controller;
             bool IsModified = false;
+
+            IFocusRootNodeIndex OldRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController OldController = FocusController.Create(OldRootIndex);
 
             if (inner is IFocusListInner<IFocusBrowsingListNodeIndex> AsListInner)
             {
@@ -3539,6 +4002,12 @@ namespace Test
                 IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
                 IFocusController NewController = FocusController.Create(NewRootIndex);
                 Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IFocusControllerView OldView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
             }
 
             return false;
@@ -3565,6 +4034,9 @@ namespace Test
             IFocusNodeIndex NodeIndex;
             IFocusPlaceholderNodeState State;
 
+            IFocusRootNodeIndex OldRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController OldController = FocusController.Create(OldRootIndex);
+
             if (inner is IFocusPlaceholderInner<IFocusBrowsingPlaceholderNodeIndex> AsPlaceholderInner)
             {
                 NodeIndex = AsPlaceholderInner.ChildState.ParentIndex as IFocusNodeIndex;
@@ -3580,7 +4052,7 @@ namespace Test
             else
                 return true;
 
-            Controller.Expand(NodeIndex);
+            Controller.Expand(NodeIndex, out bool IsChanged);
 
             IFocusControllerView NewView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
             Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
@@ -3589,12 +4061,23 @@ namespace Test
             IFocusController NewController = FocusController.Create(NewRootIndex);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
-            Controller.Expand(NodeIndex);
+            if (IsChanged)
+            {
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IFocusControllerView OldView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+
+                Controller.Redo();
+            }
+
+            Controller.Expand(NodeIndex, out IsChanged);
 
             NewController = FocusController.Create(NewRootIndex);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
-            Controller.Reduce(NodeIndex);
+            Controller.Reduce(NodeIndex, out IsChanged);
 
             NewController = FocusController.Create(NewRootIndex);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
@@ -3623,6 +4106,9 @@ namespace Test
             IFocusNodeIndex NodeIndex;
             IFocusPlaceholderNodeState State;
 
+            IFocusRootNodeIndex OldRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController OldController = FocusController.Create(OldRootIndex);
+
             if (inner is IFocusPlaceholderInner<IFocusBrowsingPlaceholderNodeIndex> AsPlaceholderInner)
             {
                 NodeIndex = AsPlaceholderInner.ChildState.ParentIndex as IFocusNodeIndex;
@@ -3638,7 +4124,7 @@ namespace Test
             else
                 return true;
 
-            Controller.Reduce(NodeIndex);
+            Controller.Reduce(NodeIndex, out bool IsChanged);
 
             IFocusControllerView NewView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
             Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
@@ -3647,12 +4133,23 @@ namespace Test
             IFocusController NewController = FocusController.Create(NewRootIndex);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
-            Controller.Reduce(NodeIndex);
+            if (IsChanged)
+            {
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IFocusControllerView OldView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+
+                Controller.Redo();
+            }
+
+            Controller.Reduce(NodeIndex, out IsChanged);
 
             NewController = FocusController.Create(NewRootIndex);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
 
-            Controller.Expand(NodeIndex);
+            Controller.Expand(NodeIndex, out IsChanged);
 
             NewController = FocusController.Create(NewRootIndex);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
@@ -3666,7 +4163,10 @@ namespace Test
             IFocusController Controller = FocusController.Create(RootIndex);
             IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
 
-            Controller.Canonicalize();
+            IFocusRootNodeIndex OldRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController OldController = FocusController.Create(OldRootIndex);
+
+            Controller.Canonicalize(out bool IsChanged);
 
             IFocusControllerView NewView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
             Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
@@ -3674,6 +4174,15 @@ namespace Test
             IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
             IFocusController NewController = FocusController.Create(NewRootIndex);
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+            if (IsChanged)
+            {
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"RootNode: {rootNode}");
+                IFocusControllerView OldView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), ControllerView));
+            }
         }
 
 #if !TRAVIS
@@ -3880,7 +4389,18 @@ namespace Test
             IFocusController Controller = FocusController.Create(RootIndex);
             IFocusControllerView ControllerView = FocusControllerView.Create(Controller, CustomFocusTemplateSet.FocusTemplateSet);
 
-            for (int i = 0; i < 200; i++)
+            List<IFocusInner<IFocusBrowsingChildIndex>> InnerList = new List<IFocusInner<IFocusBrowsingChildIndex>>();
+            List<IFocusInsertionChildIndex> IndexList = new List<IFocusInsertionChildIndex>();
+            List<int> nList = new List<int>();
+
+            total++;
+            if (total == 0x03)
+            {
+                total = 0x03;
+                //System.Diagnostics.Debug.Assert(false);
+            }
+
+            for (int i = 0; i < /*200*/89; i++)
             {
                 int Min = ControllerView.MinFocusMove;
                 int Max = ControllerView.MaxFocusMove;
@@ -3889,17 +4409,32 @@ namespace Test
                 ControllerView.MoveFocus(Direction);
 
                 if (ControllerView.IsItemSimplifiable(out IFocusInner<IFocusBrowsingChildIndex> Inner, out IFocusInsertionChildIndex Index))
-                    Controller.Replace(Inner, Index, out IWriteableBrowsingChildIndex NodeIndex);
-            }
+                {
+                    InnerList.Add(Inner);
+                    IndexList.Add(Index);
+                    nList.Add(i);
 
+                    //System.Diagnostics.Debug.Assert(i < 88);
+                    Controller.Replace(Inner, Index, out IWriteableBrowsingChildIndex NodeIndex);
+                    //break;
+                }
+            }
+            
+            foreach (IFocusInner<IFocusBrowsingChildIndex> Inner in InnerList)
+            {
+                string s = $"{Inner.Owner.Node}: {Inner.PropertyName}";
+                System.Diagnostics.Debug.WriteLine(s);
+            }
+            /*
             IFocusControllerView NewView = FocusControllerView.Create(Controller, CustomFocusTemplateSet.FocusTemplateSet);
             Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
 
             IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
             IFocusController NewController = FocusController.Create(NewRootIndex);
-            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+            Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));*/
         }
-        
+        static int total = 0;
+
         public static void TestIdentifierSplittable(INode rootNode)
         {
             IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
