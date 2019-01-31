@@ -4,20 +4,32 @@ namespace Coverage
 {
     public interface IMain : BaseNode.INode
     {
-        ILeaf Placeholder { get; }
-        Easly.IOptionalReference<ILeaf> Optional { get; }
-        BaseNode.CopySemantic CopySpecification { get; }
+        ITree PlaceholderTree { get; }
+        ILeaf PlaceholderLeaf { get; }
+        Easly.IOptionalReference<ILeaf> UnassignedOptionalLeaf { get; }
+        Easly.IOptionalReference<ITree> AssignedOptionalTree { get; }
+        Easly.IOptionalReference<ILeaf> AssignedOptionalLeaf { get; }
         BaseNode.IBlockList<ILeaf, Leaf> LeafBlocks { get; }
         IList<ILeaf> LeafPath { get; }
+        bool ValueBoolean { get; }
+        BaseNode.CopySemantic ValueEnum { get; }
+        string ValueString { get; }
+        System.Guid ValueGuid { get; }
     }
 
     [System.Serializable]
     public class Main : BaseNode.Node, IMain
     {
-        public virtual ILeaf Placeholder { get; set; }
-        public virtual Easly.IOptionalReference<ILeaf> Optional { get; set; }
-        public virtual BaseNode.CopySemantic CopySpecification { get; set; }
+        public virtual ITree PlaceholderTree { get; set; }
+        public virtual ILeaf PlaceholderLeaf { get; set; }
+        public virtual Easly.IOptionalReference<ILeaf> UnassignedOptionalLeaf { get; set; }
+        public virtual Easly.IOptionalReference<ITree> AssignedOptionalTree { get; set; }
+        public virtual Easly.IOptionalReference<ILeaf> AssignedOptionalLeaf { get; set; }
         public virtual BaseNode.IBlockList<ILeaf, Leaf> LeafBlocks { get; set; }
         public virtual IList<ILeaf> LeafPath { get; set; }
+        public virtual bool ValueBoolean { get; set; }
+        public virtual BaseNode.CopySemantic ValueEnum { get; set; }
+        public virtual string ValueString { get; set; }
+        public virtual System.Guid ValueGuid { get; set; }
     }
 }

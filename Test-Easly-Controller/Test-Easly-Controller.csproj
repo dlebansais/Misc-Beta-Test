@@ -71,6 +71,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CoverageLanguage\Tree.cs" />
     <Compile Include="CoverageLanguage\Leaf.cs" />
     <Compile Include="CoverageLanguage\Main.cs" />
     <Compile Include="TemplateSet\CustomFocusTemplateSet.cs" />
