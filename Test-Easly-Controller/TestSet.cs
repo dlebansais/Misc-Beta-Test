@@ -215,7 +215,7 @@ namespace Test
             {
                 Assert.That(State is IReadOnlyOptionalNodeState, "ReadOnly #5");
                 IReadOnlyOptionalNodeState AsOptionalState = (IReadOnlyOptionalNodeState)State;
-                IReadOnlyOptionalInner<IReadOnlyBrowsingOptionalNodeIndex> ParentInner = AsOptionalState.ParentInner;
+                IReadOnlyOptionalInner ParentInner = AsOptionalState.ParentInner;
 
                 Assert.That(ParentInner.IsAssigned, "ReadOnly #6");
 
@@ -520,7 +520,7 @@ namespace Test
             IWriteableRootNodeIndex OldRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
             IWriteableController OldController = WriteableController.Create(OldRootIndex);
 
-            if (inner is IWriteableListInner<IWriteableBrowsingListNodeIndex> AsListInner)
+            if (inner is IWriteableListInner AsListInner)
             {
                 if (AsListInner.StateList.Count > 0)
                 {
@@ -539,7 +539,7 @@ namespace Test
                     IsModified = true;
                 }
             }
-            else if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
+            else if (inner is IWriteableBlockListInner AsBlockListInner)
             {
                 if (AsBlockListInner.BlockStateList.Count > 0)
                 {
@@ -623,7 +623,7 @@ namespace Test
             IWriteableRootNodeIndex OldRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
             IWriteableController OldController = WriteableController.Create(OldRootIndex);
 
-            if (inner is IWriteableListInner<IWriteableBrowsingListNodeIndex> AsListInner)
+            if (inner is IWriteableListInner AsListInner)
             {
                 if (AsListInner.StateList.Count > 0)
                 {
@@ -639,7 +639,7 @@ namespace Test
                     }
                 }
             }
-            else if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
+            else if (inner is IWriteableBlockListInner AsBlockListInner)
             {
                 if (AsBlockListInner.BlockStateList.Count > 0)
                 {
@@ -700,7 +700,7 @@ namespace Test
             IWriteableRootNodeIndex OldRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
             IWriteableController OldController = WriteableController.Create(OldRootIndex);
 
-            if (inner is IWriteablePlaceholderInner<IWriteableBrowsingPlaceholderNodeIndex> AsPlaceholderInner)
+            if (inner is IWriteablePlaceholderInner AsPlaceholderInner)
             {
                 INode NewNode = NodeHelper.DeepCloneNode(AsPlaceholderInner.ChildState.Node, cloneCommentGuid: false);
                 Assert.That(NewNode != null, $"Type: {AsPlaceholderInner.InterfaceType}");
@@ -715,7 +715,7 @@ namespace Test
 
                 IsModified = true;
             }
-            else if (inner is IWriteableOptionalInner<IWriteableBrowsingOptionalNodeIndex> AsOptionalInner)
+            else if (inner is IWriteableOptionalInner AsOptionalInner)
             {
                 IWriteableOptionalNodeState State = AsOptionalInner.ChildState;
                 IOptionalReference Optional = State.ParentIndex.Optional;
@@ -733,7 +733,7 @@ namespace Test
 
                 IsModified = true;
             }
-            else if (inner is IWriteableListInner<IWriteableBrowsingListNodeIndex> AsListInner)
+            else if (inner is IWriteableListInner AsListInner)
             {
                 if (AsListInner.StateList.Count > 0)
                 {
@@ -752,7 +752,7 @@ namespace Test
                     IsModified = true;
                 }
             }
-            else if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
+            else if (inner is IWriteableBlockListInner AsBlockListInner)
             {
                 if (AsBlockListInner.BlockStateList.Count > 0)
                 {
@@ -815,7 +815,7 @@ namespace Test
             IWriteableRootNodeIndex OldRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
             IWriteableController OldController = WriteableController.Create(OldRootIndex);
 
-            if (inner is IWriteableOptionalInner<IWriteableBrowsingOptionalNodeIndex> AsOptionalInner)
+            if (inner is IWriteableOptionalInner AsOptionalInner)
             {
                 IWriteableOptionalNodeState ChildState = AsOptionalInner.ChildState;
                 Assert.That(ChildState != null);
@@ -873,7 +873,7 @@ namespace Test
             IWriteableRootNodeIndex OldRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
             IWriteableController OldController = WriteableController.Create(OldRootIndex);
 
-            if (inner is IWriteableOptionalInner<IWriteableBrowsingOptionalNodeIndex> AsOptionalInner)
+            if (inner is IWriteableOptionalInner AsOptionalInner)
             {
                 IWriteableOptionalNodeState ChildState = AsOptionalInner.ChildState;
                 Assert.That(ChildState != null);
@@ -927,7 +927,7 @@ namespace Test
             IWriteableRootNodeIndex OldRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
             IWriteableController OldController = WriteableController.Create(OldRootIndex);
 
-            if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
+            if (inner is IWriteableBlockListInner AsBlockListInner)
             {
                 if (AsBlockListInner.BlockStateList.Count > 0)
                 {
@@ -1021,7 +1021,7 @@ namespace Test
             IWriteableRootNodeIndex OldRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
             IWriteableController OldController = WriteableController.Create(OldRootIndex);
 
-            if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
+            if (inner is IWriteableBlockListInner AsBlockListInner)
             {
                 if (AsBlockListInner.BlockStateList.Count > 0)
                 {
@@ -1091,7 +1091,7 @@ namespace Test
             IWriteableRootNodeIndex OldRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
             IWriteableController OldController = WriteableController.Create(OldRootIndex);
 
-            if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
+            if (inner is IWriteableBlockListInner AsBlockListInner)
             {
                 if (AsBlockListInner.BlockStateList.Count > 1)
                 {
@@ -1139,7 +1139,7 @@ namespace Test
             IWriteableRootNodeIndex OldRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
             IWriteableController OldController = WriteableController.Create(OldRootIndex);
 
-            if (inner is IWriteableListInner<IWriteableBrowsingListNodeIndex> AsListInner)
+            if (inner is IWriteableListInner AsListInner)
             {
                 if (AsListInner.StateList.Count > 0)
                 {
@@ -1158,7 +1158,7 @@ namespace Test
                     IsModified = true;
                 }
             }
-            else if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
+            else if (inner is IWriteableBlockListInner AsBlockListInner)
             {
                 if (AsBlockListInner.BlockStateList.Count > 0)
                 {
@@ -1221,7 +1221,7 @@ namespace Test
             IWriteableRootNodeIndex OldRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
             IWriteableController OldController = WriteableController.Create(OldRootIndex);
 
-            if (inner is IWriteableBlockListInner<IWriteableBrowsingBlockNodeIndex> AsBlockListInner)
+            if (inner is IWriteableBlockListInner AsBlockListInner)
             {
                 if (AsBlockListInner.BlockStateList.Count > 1)
                 {
@@ -1270,7 +1270,7 @@ namespace Test
             IWriteableNodeIndex NodeIndex;
             IWriteablePlaceholderNodeState State;
 
-            if (inner is IWriteablePlaceholderInner<IWriteableBrowsingPlaceholderNodeIndex> AsPlaceholderInner)
+            if (inner is IWriteablePlaceholderInner AsPlaceholderInner)
             {
                 NodeIndex = AsPlaceholderInner.ChildState.ParentIndex as IWriteableNodeIndex;
                 Assert.That(NodeIndex != null);
@@ -1340,7 +1340,7 @@ namespace Test
             IWriteableNodeIndex NodeIndex;
             IWriteablePlaceholderNodeState State;
 
-            if (inner is IWriteablePlaceholderInner<IWriteableBrowsingPlaceholderNodeIndex> AsPlaceholderInner)
+            if (inner is IWriteablePlaceholderInner AsPlaceholderInner)
             {
                 NodeIndex = AsPlaceholderInner.ChildState.ParentIndex as IWriteableNodeIndex;
                 Assert.That(NodeIndex != null);
@@ -1435,7 +1435,7 @@ namespace Test
             {
                 Assert.That(State is IWriteableOptionalNodeState, "Writeable #5");
                 IWriteableOptionalNodeState AsOptionalState = (IWriteableOptionalNodeState)State;
-                IWriteableOptionalInner<IWriteableBrowsingOptionalNodeIndex> ParentInner = AsOptionalState.ParentInner;
+                IWriteableOptionalInner ParentInner = AsOptionalState.ParentInner;
 
                 Assert.That(ParentInner.IsAssigned, "Writeable #6");
 
@@ -1534,7 +1534,7 @@ namespace Test
             {
                 Assert.That(State is IWriteableOptionalNodeState, "Writeable #11");
                 IWriteableOptionalNodeState AsOptionalState = (IWriteableOptionalNodeState)State;
-                IWriteableOptionalInner<IWriteableBrowsingOptionalNodeIndex> ParentInner = AsOptionalState.ParentInner;
+                IWriteableOptionalInner ParentInner = AsOptionalState.ParentInner;
 
                 Assert.That(ParentInner.IsAssigned, "Writeable #12");
 
@@ -2046,7 +2046,7 @@ namespace Test
             IFrameRootNodeIndex OldRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
             IFrameController OldController = FrameController.Create(OldRootIndex);
 
-            if (inner is IFrameListInner<IFrameBrowsingListNodeIndex> AsListInner)
+            if (inner is IFrameListInner AsListInner)
             {
                 if (AsListInner.StateList.Count > 0)
                 {
@@ -2065,7 +2065,7 @@ namespace Test
                     IsModified = true;
                 }
             }
-            else if (inner is IFrameBlockListInner<IFrameBrowsingBlockNodeIndex> AsBlockListInner)
+            else if (inner is IFrameBlockListInner AsBlockListInner)
             {
                 if (AsBlockListInner.BlockStateList.Count > 0)
                 {
@@ -2149,7 +2149,7 @@ namespace Test
             IFrameRootNodeIndex OldRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
             IFrameController OldController = FrameController.Create(OldRootIndex);
 
-            if (inner is IFramePlaceholderInner<IFrameBrowsingPlaceholderNodeIndex> AsPlaceholderInner)
+            if (inner is IFramePlaceholderInner AsPlaceholderInner)
             {
                 INode NewNode = NodeHelper.DeepCloneNode(AsPlaceholderInner.ChildState.Node, cloneCommentGuid: false);
                 Assert.That(NewNode != null, $"Type: {AsPlaceholderInner.InterfaceType}");
@@ -2164,7 +2164,7 @@ namespace Test
 
                 IsModified = true;
             }
-            else if (inner is IFrameOptionalInner<IFrameBrowsingOptionalNodeIndex> AsOptionalInner)
+            else if (inner is IFrameOptionalInner AsOptionalInner)
             {
                 IFrameOptionalNodeState State = AsOptionalInner.ChildState;
                 IOptionalReference Optional = State.ParentIndex.Optional;
@@ -2182,7 +2182,7 @@ namespace Test
 
                 IsModified = true;
             }
-            else if (inner is IFrameListInner<IFrameBrowsingListNodeIndex> AsListInner)
+            else if (inner is IFrameListInner AsListInner)
             {
                 if (AsListInner.StateList.Count > 0)
                 {
@@ -2201,7 +2201,7 @@ namespace Test
                     IsModified = true;
                 }
             }
-            else if (inner is IFrameBlockListInner<IFrameBrowsingBlockNodeIndex> AsBlockListInner)
+            else if (inner is IFrameBlockListInner AsBlockListInner)
             {
                 if (AsBlockListInner.BlockStateList.Count > 0)
                 {
@@ -2266,7 +2266,7 @@ namespace Test
             IFrameRootNodeIndex OldRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
             IFrameController OldController = FrameController.Create(OldRootIndex);
 
-            if (inner is IFrameListInner<IFrameBrowsingListNodeIndex> AsListInner)
+            if (inner is IFrameListInner AsListInner)
             {
                 if (AsListInner.StateList.Count > 0)
                 {
@@ -2282,7 +2282,7 @@ namespace Test
                     }
                 }
             }
-            else if (inner is IFrameBlockListInner<IFrameBrowsingBlockNodeIndex> AsBlockListInner)
+            else if (inner is IFrameBlockListInner AsBlockListInner)
             {
                 if (AsBlockListInner.BlockStateList.Count > 0)
                 {
@@ -2342,7 +2342,7 @@ namespace Test
             IFrameRootNodeIndex OldRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
             IFrameController OldController = FrameController.Create(OldRootIndex);
 
-            if (inner is IFrameOptionalInner<IFrameBrowsingOptionalNodeIndex> AsOptionalInner)
+            if (inner is IFrameOptionalInner AsOptionalInner)
             {
                 IFrameOptionalNodeState ChildState = AsOptionalInner.ChildState;
                 Assert.That(ChildState != null);
@@ -2401,7 +2401,7 @@ namespace Test
             IFrameRootNodeIndex OldRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
             IFrameController OldController = FrameController.Create(OldRootIndex);
 
-            if (inner is IFrameOptionalInner<IFrameBrowsingOptionalNodeIndex> AsOptionalInner)
+            if (inner is IFrameOptionalInner AsOptionalInner)
             {
                 IFrameOptionalNodeState ChildState = AsOptionalInner.ChildState;
                 Assert.That(ChildState != null);
@@ -2456,7 +2456,7 @@ namespace Test
             IFrameRootNodeIndex OldRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
             IFrameController OldController = FrameController.Create(OldRootIndex);
 
-            if (inner is IFrameBlockListInner<IFrameBrowsingBlockNodeIndex> AsBlockListInner)
+            if (inner is IFrameBlockListInner AsBlockListInner)
             {
                 if (AsBlockListInner.BlockStateList.Count > 0)
                 {
@@ -2506,7 +2506,7 @@ namespace Test
             IFrameRootNodeIndex OldRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
             IFrameController OldController = FrameController.Create(OldRootIndex);
 
-            if (inner is IFrameBlockListInner<IFrameBrowsingBlockNodeIndex> AsBlockListInner)
+            if (inner is IFrameBlockListInner AsBlockListInner)
             {
                 if (AsBlockListInner.BlockStateList.Count > 0)
                 {
@@ -2577,7 +2577,7 @@ namespace Test
             IFrameRootNodeIndex OldRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
             IFrameController OldController = FrameController.Create(OldRootIndex);
 
-            if (inner is IFrameBlockListInner<IFrameBrowsingBlockNodeIndex> AsBlockListInner)
+            if (inner is IFrameBlockListInner AsBlockListInner)
             {
                 if (AsBlockListInner.BlockStateList.Count > 1)
                 {
@@ -2626,7 +2626,7 @@ namespace Test
             IFrameRootNodeIndex OldRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
             IFrameController OldController = FrameController.Create(OldRootIndex);
 
-            if (inner is IFrameListInner<IFrameBrowsingListNodeIndex> AsListInner)
+            if (inner is IFrameListInner AsListInner)
             {
                 if (AsListInner.StateList.Count > 0)
                 {
@@ -2645,7 +2645,7 @@ namespace Test
                     IsModified = true;
                 }
             }
-            else if (inner is IFrameBlockListInner<IFrameBrowsingBlockNodeIndex> AsBlockListInner)
+            else if (inner is IFrameBlockListInner AsBlockListInner)
             {
                 if (AsBlockListInner.BlockStateList.Count > 0)
                 {
@@ -2711,7 +2711,7 @@ namespace Test
             IFrameRootNodeIndex OldRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
             IFrameController OldController = FrameController.Create(OldRootIndex);
 
-            if (inner is IFramePlaceholderInner<IFrameBrowsingPlaceholderNodeIndex> AsPlaceholderInner)
+            if (inner is IFramePlaceholderInner AsPlaceholderInner)
             {
                 NodeIndex = AsPlaceholderInner.ChildState.ParentIndex as IFrameNodeIndex;
                 Assert.That(NodeIndex != null);
@@ -2781,7 +2781,7 @@ namespace Test
             IFrameRootNodeIndex OldRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
             IFrameController OldController = FrameController.Create(OldRootIndex);
 
-            if (inner is IFramePlaceholderInner<IFrameBrowsingPlaceholderNodeIndex> AsPlaceholderInner)
+            if (inner is IFramePlaceholderInner AsPlaceholderInner)
             {
                 NodeIndex = AsPlaceholderInner.ChildState.ParentIndex as IFrameNodeIndex;
                 Assert.That(NodeIndex != null);
@@ -2843,7 +2843,7 @@ namespace Test
             {
                 Assert.That(State is IFrameOptionalNodeState, "Frame #5");
                 IFrameOptionalNodeState AsOptionalState = (IFrameOptionalNodeState)State;
-                IFrameOptionalInner<IFrameBrowsingOptionalNodeIndex> ParentInner = AsOptionalState.ParentInner;
+                IFrameOptionalInner ParentInner = AsOptionalState.ParentInner;
 
                 Assert.That(ParentInner.IsAssigned, "Frame #6");
 
@@ -3356,7 +3356,7 @@ namespace Test
             IFocusRootNodeIndex OldRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
             IFocusController OldController = FocusController.Create(OldRootIndex);
 
-            if (inner is IFocusListInner<IFocusBrowsingListNodeIndex> AsListInner)
+            if (inner is IFocusListInner AsListInner)
             {
                 if (AsListInner.StateList.Count > 0)
                 {
@@ -3375,7 +3375,7 @@ namespace Test
                     IsModified = true;
                 }
             }
-            else if (inner is IFocusBlockListInner<IFocusBrowsingBlockNodeIndex> AsBlockListInner)
+            else if (inner is IFocusBlockListInner AsBlockListInner)
             {
                 if (AsBlockListInner.BlockStateList.Count > 0)
                 {
@@ -3461,7 +3461,7 @@ namespace Test
             IFocusRootNodeIndex OldRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
             IFocusController OldController = FocusController.Create(OldRootIndex);
 
-            if (inner is IFocusPlaceholderInner<IFocusBrowsingPlaceholderNodeIndex> AsPlaceholderInner)
+            if (inner is IFocusPlaceholderInner AsPlaceholderInner)
             {
                 INode NewNode = NodeHelper.DeepCloneNode(AsPlaceholderInner.ChildState.Node, cloneCommentGuid: false);
                 Assert.That(NewNode != null, $"Type: {AsPlaceholderInner.InterfaceType}");
@@ -3476,7 +3476,7 @@ namespace Test
 
                 IsModified = true;
             }
-            else if (inner is IFocusOptionalInner<IFocusBrowsingOptionalNodeIndex> AsOptionalInner)
+            else if (inner is IFocusOptionalInner AsOptionalInner)
             {
                 IFocusOptionalNodeState State = AsOptionalInner.ChildState;
                 IOptionalReference Optional = State.ParentIndex.Optional;
@@ -3494,7 +3494,7 @@ namespace Test
 
                 IsModified = true;
             }
-            else if (inner is IFocusListInner<IFocusBrowsingListNodeIndex> AsListInner)
+            else if (inner is IFocusListInner AsListInner)
             {
                 if (AsListInner.StateList.Count > 0)
                 {
@@ -3513,7 +3513,7 @@ namespace Test
                     IsModified = true;
                 }
             }
-            else if (inner is IFocusBlockListInner<IFocusBrowsingBlockNodeIndex> AsBlockListInner)
+            else if (inner is IFocusBlockListInner AsBlockListInner)
             {
                 if (AsBlockListInner.BlockStateList.Count > 0)
                 {
@@ -3580,7 +3580,7 @@ namespace Test
             IFocusRootNodeIndex OldRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
             IFocusController OldController = FocusController.Create(OldRootIndex);
 
-            if (inner is IFocusListInner<IFocusBrowsingListNodeIndex> AsListInner)
+            if (inner is IFocusListInner AsListInner)
             {
                 if (AsListInner.StateList.Count > 0)
                 {
@@ -3596,7 +3596,7 @@ namespace Test
                     }
                 }
             }
-            else if (inner is IFocusBlockListInner<IFocusBrowsingBlockNodeIndex> AsBlockListInner)
+            else if (inner is IFocusBlockListInner AsBlockListInner)
             {
                 if (AsBlockListInner.BlockStateList.Count > 0)
                 {
@@ -3658,7 +3658,7 @@ namespace Test
             IFocusRootNodeIndex OldRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
             IFocusController OldController = FocusController.Create(OldRootIndex);
 
-            if (inner is IFocusOptionalInner<IFocusBrowsingOptionalNodeIndex> AsOptionalInner)
+            if (inner is IFocusOptionalInner AsOptionalInner)
             {
                 IFocusOptionalNodeState ChildState = AsOptionalInner.ChildState;
                 Assert.That(ChildState != null);
@@ -3719,7 +3719,7 @@ namespace Test
             IFocusRootNodeIndex OldRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
             IFocusController OldController = FocusController.Create(OldRootIndex);
 
-            if (inner is IFocusOptionalInner<IFocusBrowsingOptionalNodeIndex> AsOptionalInner)
+            if (inner is IFocusOptionalInner AsOptionalInner)
             {
                 IFocusOptionalNodeState ChildState = AsOptionalInner.ChildState;
                 Assert.That(ChildState != null);
@@ -3776,7 +3776,7 @@ namespace Test
             IFocusRootNodeIndex OldRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
             IFocusController OldController = FocusController.Create(OldRootIndex);
 
-            if (inner is IFocusBlockListInner<IFocusBrowsingBlockNodeIndex> AsBlockListInner)
+            if (inner is IFocusBlockListInner AsBlockListInner)
             {
                 if (AsBlockListInner.BlockStateList.Count > 0)
                 {
@@ -3828,7 +3828,7 @@ namespace Test
             IFocusRootNodeIndex OldRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
             IFocusController OldController = FocusController.Create(OldRootIndex);
 
-            if (inner is IFocusBlockListInner<IFocusBrowsingBlockNodeIndex> AsBlockListInner)
+            if (inner is IFocusBlockListInner AsBlockListInner)
             {
                 if (AsBlockListInner.BlockStateList.Count > 0)
                 {
@@ -3899,7 +3899,7 @@ namespace Test
             IFocusRootNodeIndex OldRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
             IFocusController OldController = FocusController.Create(OldRootIndex);
 
-            if (inner is IFocusBlockListInner<IFocusBrowsingBlockNodeIndex> AsBlockListInner)
+            if (inner is IFocusBlockListInner AsBlockListInner)
             {
                 if (AsBlockListInner.BlockStateList.Count > 1)
                 {
@@ -3950,7 +3950,7 @@ namespace Test
             IFocusRootNodeIndex OldRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
             IFocusController OldController = FocusController.Create(OldRootIndex);
 
-            if (inner is IFocusListInner<IFocusBrowsingListNodeIndex> AsListInner)
+            if (inner is IFocusListInner AsListInner)
             {
                 if (AsListInner.StateList.Count > 0)
                 {
@@ -3969,7 +3969,7 @@ namespace Test
                     IsModified = true;
                 }
             }
-            else if (inner is IFocusBlockListInner<IFocusBrowsingBlockNodeIndex> AsBlockListInner)
+            else if (inner is IFocusBlockListInner AsBlockListInner)
             {
                 if (AsBlockListInner.BlockStateList.Count > 0)
                 {
@@ -4037,7 +4037,7 @@ namespace Test
             IFocusRootNodeIndex OldRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
             IFocusController OldController = FocusController.Create(OldRootIndex);
 
-            if (inner is IFocusPlaceholderInner<IFocusBrowsingPlaceholderNodeIndex> AsPlaceholderInner)
+            if (inner is IFocusPlaceholderInner AsPlaceholderInner)
             {
                 NodeIndex = AsPlaceholderInner.ChildState.ParentIndex as IFocusNodeIndex;
                 Assert.That(NodeIndex != null);
@@ -4109,7 +4109,7 @@ namespace Test
             IFocusRootNodeIndex OldRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
             IFocusController OldController = FocusController.Create(OldRootIndex);
 
-            if (inner is IFocusPlaceholderInner<IFocusBrowsingPlaceholderNodeIndex> AsPlaceholderInner)
+            if (inner is IFocusPlaceholderInner AsPlaceholderInner)
             {
                 NodeIndex = AsPlaceholderInner.ChildState.ParentIndex as IFocusNodeIndex;
                 Assert.That(NodeIndex != null);
@@ -4199,7 +4199,7 @@ namespace Test
             {
                 ControllerView.MoveFocus(+1);
 
-                if (ControllerView.IsNewItemInsertable(out IFocusCollectionInner<IFocusBrowsingCollectionNodeIndex> inner, out IFocusInsertionCollectionNodeIndex index))
+                if (ControllerView.IsNewItemInsertable(out IFocusCollectionInner inner, out IFocusInsertionCollectionNodeIndex index))
                     Controller.Insert(inner, index, out IWriteableBrowsingCollectionNodeIndex nodeIndex);
             }
 
@@ -4211,7 +4211,7 @@ namespace Test
 
                 ControllerView.MoveFocus(Direction);
 
-                if (ControllerView.IsNewItemInsertable(out IFocusCollectionInner<IFocusBrowsingCollectionNodeIndex> inner, out IFocusInsertionCollectionNodeIndex index))
+                if (ControllerView.IsNewItemInsertable(out IFocusCollectionInner inner, out IFocusInsertionCollectionNodeIndex index))
                     Controller.Insert(inner, index, out IWriteableBrowsingCollectionNodeIndex nodeIndex);
             }
 
@@ -4237,7 +4237,7 @@ namespace Test
 
                 ControllerView.MoveFocus(Direction);
 
-                if (ControllerView.IsItemRemoveable(out IFocusCollectionInner<IFocusBrowsingCollectionNodeIndex> inner, out IFocusBrowsingCollectionNodeIndex index))
+                if (ControllerView.IsItemRemoveable(out IFocusCollectionInner inner, out IFocusBrowsingCollectionNodeIndex index))
                     Controller.Remove(inner, index);
             }
 
@@ -4265,7 +4265,7 @@ namespace Test
 
                 Direction = (RandNext(2) * 2) - 1;
 
-                if (ControllerView.IsItemMoveable(Direction, out IFocusCollectionInner <IFocusBrowsingCollectionNodeIndex> inner, out IFocusBrowsingCollectionNodeIndex index))
+                if (ControllerView.IsItemMoveable(Direction, out IFocusCollectionInner inner, out IFocusBrowsingCollectionNodeIndex index))
                     Controller.Move(inner, index, Direction);
             }
 
@@ -4293,7 +4293,7 @@ namespace Test
 
                 Direction = (RandNext(2) * 2) - 1;
 
-                if (ControllerView.IsBlockMoveable(Direction, out IFocusBlockListInner<IFocusBrowsingBlockNodeIndex> Inner, out int BlockIndex))
+                if (ControllerView.IsBlockMoveable(Direction, out IFocusBlockListInner Inner, out int BlockIndex))
                     Controller.MoveBlock(Inner, BlockIndex, Direction);
             }
 
@@ -4319,7 +4319,7 @@ namespace Test
 
                 ControllerView.MoveFocus(Direction);
 
-                if (ControllerView.IsItemSplittable(out IFocusBlockListInner<IFocusBrowsingBlockNodeIndex> inner, out IFocusBrowsingExistingBlockNodeIndex index))
+                if (ControllerView.IsItemSplittable(out IFocusBlockListInner inner, out IFocusBrowsingExistingBlockNodeIndex index))
                     Controller.SplitBlock(inner, index);
             }
 
@@ -4345,7 +4345,7 @@ namespace Test
 
                 ControllerView.MoveFocus(Direction);
 
-                if (ControllerView.IsItemMergeable(out IFocusBlockListInner<IFocusBrowsingBlockNodeIndex> inner, out IFocusBrowsingExistingBlockNodeIndex index))
+                if (ControllerView.IsItemMergeable(out IFocusBlockListInner inner, out IFocusBrowsingExistingBlockNodeIndex index))
                     Controller.MergeBlocks(inner, index);
             }
 
@@ -4389,7 +4389,7 @@ namespace Test
             IFocusController Controller = FocusController.Create(RootIndex);
             IFocusControllerView ControllerView = FocusControllerView.Create(Controller, CustomFocusTemplateSet.FocusTemplateSet);
 
-            List<IFocusInner<IFocusBrowsingChildIndex>> InnerList = new List<IFocusInner<IFocusBrowsingChildIndex>>();
+            List<IFocusInner> InnerList = new List<IFocusInner>();
             List<IFocusInsertionChildIndex> IndexList = new List<IFocusInsertionChildIndex>();
             List<int> nList = new List<int>();
 
@@ -4408,7 +4408,7 @@ namespace Test
 
                 ControllerView.MoveFocus(Direction);
 
-                if (ControllerView.IsItemSimplifiable(out IFocusInner<IFocusBrowsingChildIndex> Inner, out IFocusInsertionChildIndex Index))
+                if (ControllerView.IsItemSimplifiable(out IFocusInner Inner, out IFocusInsertionChildIndex Index))
                 {
                     InnerList.Add(Inner);
                     IndexList.Add(Index);
@@ -4449,7 +4449,7 @@ namespace Test
 
                 ControllerView.MoveFocus(Direction);
 
-                if (ControllerView.IsIdentifierSplittable(out IFocusListInner<IFocusBrowsingListNodeIndex> Inner, out IFocusInsertionListNodeIndex ReplaceIndex, out IFocusInsertionListNodeIndex InsertIndex))
+                if (ControllerView.IsIdentifierSplittable(out IFocusListInner Inner, out IFocusInsertionListNodeIndex ReplaceIndex, out IFocusInsertionListNodeIndex InsertIndex))
                 {
                     Controller.Replace(Inner, ReplaceIndex, out IWriteableBrowsingChildIndex FirstNodeIndex);
                     Controller.Insert(Inner, InsertIndex, out IWriteableBrowsingCollectionNodeIndex SecondNodeIndex);
@@ -4480,7 +4480,7 @@ namespace Test
 
                 ControllerView.MoveFocus(Direction);
 
-                if (ControllerView.IsReplicationModifiable(out IFocusBlockListInner<IFocusBrowsingBlockNodeIndex> Inner, out int BlockIndex, out Replication))
+                if (ControllerView.IsReplicationModifiable(out IFocusBlockListInner Inner, out int BlockIndex, out Replication))
                 {
                     switch (Replication)
                     {
@@ -4526,7 +4526,7 @@ namespace Test
             {
                 Assert.That(State is IFocusOptionalNodeState, "Focus #5");
                 IFocusOptionalNodeState AsOptionalState = (IFocusOptionalNodeState)State;
-                IFocusOptionalInner<IFocusBrowsingOptionalNodeIndex> ParentInner = AsOptionalState.ParentInner;
+                IFocusOptionalInner ParentInner = AsOptionalState.ParentInner;
 
                 Assert.That(ParentInner.IsAssigned, "Focus #6");
 
