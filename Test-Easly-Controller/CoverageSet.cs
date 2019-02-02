@@ -714,6 +714,9 @@ namespace Coverage
 
             //System.Diagnostics.Debug.Assert(false);
             Assert.That(CompareEqual.CoverIsEqual(Controller0, Controller1));
+
+            Assert.That(!Controller0.CanUndo);
+            Assert.That(!Controller0.CanRedo);
         }
 
         [Test]
@@ -834,6 +837,7 @@ namespace Coverage
             RootNode = CreateRoot(Imperfections.None);
             RootIndex = new WriteableRootNodeIndex(RootNode);
 
+            IWriteableController ControllerBase = WriteableController.Create(RootIndex);
             IWriteableController Controller = WriteableController.Create(RootIndex);
 
             using (IWriteableControllerView ControllerView0 = WriteableControllerView.Create(Controller))
@@ -926,6 +930,17 @@ namespace Coverage
                 Assert.That(AllChildren3.Count == AllChildren2.Count + 3, $"New count: {AllChildren3.Count}");
 
                 Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
             }
         }
 
@@ -941,6 +956,7 @@ namespace Coverage
             RootNode = CreateRoot(Imperfections.None);
             RootIndex = new WriteableRootNodeIndex(RootNode);
 
+            IWriteableController ControllerBase = WriteableController.Create(RootIndex);
             IWriteableController Controller = WriteableController.Create(RootIndex);
 
             using (IWriteableControllerView ControllerView0 = WriteableControllerView.Create(Controller))
@@ -1035,9 +1051,21 @@ namespace Coverage
                 Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
 
 
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
 
                 NeverEmptyCollectionTable.Remove(typeof(IMain));
                 Assert.That(Controller.IsRemoveable(LeafPathInner, RemovedLeafIndex0));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
             }
         }
 
@@ -1053,6 +1081,7 @@ namespace Coverage
             RootNode = CreateRoot(Imperfections.None);
             RootIndex = new WriteableRootNodeIndex(RootNode);
 
+            IWriteableController ControllerBase = WriteableController.Create(RootIndex);
             IWriteableController Controller = WriteableController.Create(RootIndex);
 
             using (IWriteableControllerView ControllerView0 = WriteableControllerView.Create(Controller))
@@ -1073,6 +1102,8 @@ namespace Coverage
 
                 IWriteableNodeStateReadOnlyList AllChildren0 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
                 Assert.That(AllChildren0.Count == 16, $"New count: {AllChildren0.Count}");
+
+                Assert.That(Controller.IsMoveable(LeafPathInner, MovedLeafIndex0, +1));
 
                 Controller.Move(LeafPathInner, MovedLeafIndex0, +1);
                 Assert.That(Controller.Contains(MovedLeafIndex0));
@@ -1102,6 +1133,7 @@ namespace Coverage
                 int NodeCount = LeafBlocksInner.BlockStateList[1].StateList.Count;
                 Assert.That(BlockNodeCount == 3, $"New count: {BlockNodeCount}");
 
+                Assert.That(Controller.IsMoveable(LeafBlocksInner, MovedLeafIndex1, -1));
                 Controller.Move(LeafBlocksInner, MovedLeafIndex1, -1);
                 Assert.That(Controller.Contains(MovedLeafIndex1));
 
@@ -1115,6 +1147,15 @@ namespace Coverage
                 Assert.That(AllChildren2.Count == AllChildren1.Count, $"New count: {AllChildren2.Count}");
 
                 Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
             }
         }
 
@@ -1130,6 +1171,7 @@ namespace Coverage
             RootNode = CreateRoot(Imperfections.None);
             RootIndex = new WriteableRootNodeIndex(RootNode);
 
+            IWriteableController ControllerBase = WriteableController.Create(RootIndex);
             IWriteableController Controller = WriteableController.Create(RootIndex);
 
             using (IWriteableControllerView ControllerView0 = WriteableControllerView.Create(Controller))
@@ -1152,6 +1194,7 @@ namespace Coverage
                 int NodeCount = LeafBlocksInner.BlockStateList[1].StateList.Count;
                 Assert.That(BlockNodeCount == 3, $"New count: {BlockNodeCount}");
 
+                Assert.That(Controller.IsBlockMoveable(LeafBlocksInner, 1, -1));
                 Controller.MoveBlock(LeafBlocksInner, 1, -1);
                 Assert.That(Controller.Contains(MovedLeafIndex1));
 
@@ -1165,6 +1208,13 @@ namespace Coverage
                 Assert.That(AllChildren2.Count == AllChildren1.Count, $"New count: {AllChildren2.Count}");
 
                 Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
             }
         }
 
@@ -1180,6 +1230,7 @@ namespace Coverage
             RootNode = CreateRoot(Imperfections.None);
             RootIndex = new WriteableRootNodeIndex(RootNode);
 
+            IWriteableController ControllerBase = WriteableController.Create(RootIndex);
             IWriteableController Controller = WriteableController.Create(RootIndex);
 
             using (IWriteableControllerView ControllerView0 = WriteableControllerView.Create(Controller))
@@ -1205,6 +1256,15 @@ namespace Coverage
 
                 Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
                 Assert.That(BaseNodeHelper.NodeTreeHelper.GetEnumValue(PlaceholderTreeState.Node, nameof(ITree.ValueEnum)) == (int)BaseNode.CopySemantic.Any);
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
             }
         }
 
@@ -1220,6 +1280,7 @@ namespace Coverage
             RootNode = CreateRoot(Imperfections.None);
             RootIndex = new WriteableRootNodeIndex(RootNode);
 
+            IWriteableController ControllerBase = WriteableController.Create(RootIndex);
             IWriteableController Controller = WriteableController.Create(RootIndex);
 
             using (IWriteableControllerView ControllerView0 = WriteableControllerView.Create(Controller))
@@ -1362,6 +1423,23 @@ namespace Coverage
                 Assert.That(AllChildren6.Count == AllChildren5.Count - 1, $"New count: {AllChildren6.Count}");
 
                 Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
             }
         }
 
@@ -1377,6 +1455,7 @@ namespace Coverage
             RootNode = CreateRoot(Imperfections.None);
             RootIndex = new WriteableRootNodeIndex(RootNode);
 
+            IWriteableController ControllerBase = WriteableController.Create(RootIndex);
             IWriteableController Controller = WriteableController.Create(RootIndex);
 
             using (IWriteableControllerView ControllerView0 = WriteableControllerView.Create(Controller))
@@ -1418,6 +1497,15 @@ namespace Coverage
 
                 IWriteableNodeStateReadOnlyList AllChildren3 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
                 Assert.That(AllChildren3.Count == AllChildren2.Count - 1, $"New count: {AllChildren3.Count}");
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
             }
         }
 
@@ -1433,6 +1521,7 @@ namespace Coverage
             RootNode = CreateRoot(Imperfections.None);
             RootIndex = new WriteableRootNodeIndex(RootNode);
 
+            IWriteableController ControllerBase = WriteableController.Create(RootIndex);
             IWriteableController Controller = WriteableController.Create(RootIndex);
 
             using (IWriteableControllerView ControllerView0 = WriteableControllerView.Create(Controller))
@@ -1474,6 +1563,15 @@ namespace Coverage
 
                 IWriteableNodeStateReadOnlyList AllChildren3 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
                 Assert.That(AllChildren3.Count == AllChildren2.Count + 1, $"New count: {AllChildren3.Count}");
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
             }
         }
 
@@ -1489,6 +1587,7 @@ namespace Coverage
             RootNode = CreateRoot(Imperfections.None);
             RootIndex = new WriteableRootNodeIndex(RootNode);
 
+            IWriteableController ControllerBase = WriteableController.Create(RootIndex);
             IWriteableController Controller = WriteableController.Create(RootIndex);
 
             using (IWriteableControllerView ControllerView0 = WriteableControllerView.Create(Controller))
@@ -1517,6 +1616,529 @@ namespace Coverage
                 Assert.That(AllChildren1.Count == AllChildren0.Count, $"New count: {AllChildren1.Count}");
 
                 Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void WriteableSplit()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IWriteableRootNodeIndex RootIndex;
+
+            RootNode = CreateRoot(Imperfections.None);
+            RootIndex = new WriteableRootNodeIndex(RootNode);
+
+            IWriteableController ControllerBase = WriteableController.Create(RootIndex);
+            IWriteableController Controller = WriteableController.Create(RootIndex);
+
+            using (IWriteableControllerView ControllerView0 = WriteableControllerView.Create(Controller))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IWriteableNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IWriteableBlockListInner LeafBlocksInner = RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IWriteableBlockListInner;
+                Assert.That(LeafBlocksInner != null);
+
+                IWriteableNodeStateReadOnlyList AllChildren0 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren0.Count == 16, $"New count: {AllChildren0.Count}");
+
+                IWriteableBlockState BlockState0 = LeafBlocksInner.BlockStateList[0];
+                Assert.That(BlockState0 != null);
+                BaseNode.IBlock ChildBlock0 = BlockState0.ChildBlock;
+                Assert.That(ChildBlock0.NodeList.Count == 1);
+
+                IWriteableBlockState BlockState1 = LeafBlocksInner.BlockStateList[1];
+                Assert.That(BlockState1 != null);
+                BaseNode.IBlock ChildBlock1 = BlockState1.ChildBlock;
+                Assert.That(ChildBlock1.NodeList.Count == 2);
+
+                Assert.That(LeafBlocksInner.Count == 3);
+                Assert.That(LeafBlocksInner.BlockStateList.Count == 2);
+
+                IWriteableBrowsingExistingBlockNodeIndex SplitIndex0 = LeafBlocksInner.IndexAt(1, 1) as IWriteableBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.IsSplittable(LeafBlocksInner, SplitIndex0));
+
+                Controller.SplitBlock(LeafBlocksInner, SplitIndex0);
+
+                Assert.That(LeafBlocksInner.BlockStateList.Count == 3);
+                Assert.That(ChildBlock0 == LeafBlocksInner.BlockStateList[0].ChildBlock);
+                Assert.That(ChildBlock1 == LeafBlocksInner.BlockStateList[2].ChildBlock);
+                Assert.That(ChildBlock1.NodeList.Count == 1);
+
+                IWriteableBlockState BlockState12 = LeafBlocksInner.BlockStateList[1];
+                Assert.That(BlockState12.ChildBlock.NodeList.Count == 1);
+
+                IWriteableNodeStateReadOnlyList AllChildren1 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren1.Count == AllChildren0.Count + 2, $"New count: {AllChildren1.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void WriteableMerge()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IWriteableRootNodeIndex RootIndex;
+
+            RootNode = CreateRoot(Imperfections.None);
+            RootIndex = new WriteableRootNodeIndex(RootNode);
+
+            IWriteableController ControllerBase = WriteableController.Create(RootIndex);
+            IWriteableController Controller = WriteableController.Create(RootIndex);
+
+            using (IWriteableControllerView ControllerView0 = WriteableControllerView.Create(Controller))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IWriteableNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IWriteableBlockListInner LeafBlocksInner = RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IWriteableBlockListInner;
+                Assert.That(LeafBlocksInner != null);
+
+                IWriteableNodeStateReadOnlyList AllChildren0 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren0.Count == 16, $"New count: {AllChildren0.Count}");
+
+                IWriteableBlockState BlockState0 = LeafBlocksInner.BlockStateList[0];
+                Assert.That(BlockState0 != null);
+                BaseNode.IBlock ChildBlock0 = BlockState0.ChildBlock;
+                Assert.That(ChildBlock0.NodeList.Count == 1);
+
+                IWriteableBlockState BlockState1 = LeafBlocksInner.BlockStateList[1];
+                Assert.That(BlockState1 != null);
+                BaseNode.IBlock ChildBlock1 = BlockState1.ChildBlock;
+                Assert.That(ChildBlock1.NodeList.Count == 2);
+
+                Assert.That(LeafBlocksInner.Count == 3);
+
+                IWriteableBrowsingExistingBlockNodeIndex MergeIndex0 = LeafBlocksInner.IndexAt(1, 0) as IWriteableBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.IsMergeable(LeafBlocksInner, MergeIndex0));
+
+                Assert.That(LeafBlocksInner.BlockStateList.Count == 2);
+
+                Controller.MergeBlocks(LeafBlocksInner, MergeIndex0);
+
+                Assert.That(LeafBlocksInner.BlockStateList.Count == 1);
+                Assert.That(ChildBlock1 == LeafBlocksInner.BlockStateList[0].ChildBlock);
+                Assert.That(ChildBlock1.NodeList.Count == 3);
+
+                Assert.That(LeafBlocksInner.BlockStateList[0] == BlockState1);
+
+                IWriteableNodeStateReadOnlyList AllChildren1 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren1.Count == AllChildren0.Count - 2, $"New count: {AllChildren1.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void WriteableExpand()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IWriteableRootNodeIndex RootIndex;
+
+            RootNode = CreateRoot(Imperfections.None);
+            RootIndex = new WriteableRootNodeIndex(RootNode);
+
+            IWriteableController ControllerBase = WriteableController.Create(RootIndex);
+            IWriteableController Controller = WriteableController.Create(RootIndex);
+
+            using (IWriteableControllerView ControllerView0 = WriteableControllerView.Create(Controller))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IWriteableNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IWriteableNodeStateReadOnlyList AllChildren0 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren0.Count == 16, $"New count: {AllChildren0.Count}");
+
+                Controller.Expand(RootIndex, out bool IsChanged);
+                Assert.That(IsChanged);
+
+                IWriteableNodeStateReadOnlyList AllChildren1 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren1.Count == AllChildren0.Count + 1, $"New count: {AllChildren1.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Controller.Expand(RootIndex, out IsChanged);
+                Assert.That(!IsChanged);
+
+                IWriteableNodeStateReadOnlyList AllChildren2 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren2.Count == AllChildren1.Count, $"New count: {AllChildren2.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                IWriteableOptionalInner OptionalLeafInner = RootState.PropertyToInner(nameof(IMain.AssignedOptionalLeaf)) as IWriteableOptionalInner;
+                Assert.That(OptionalLeafInner != null);
+
+                IWriteableInsertionOptionalClearIndex ReplacementIndex5 = new WriteableInsertionOptionalClearIndex(RootNode, nameof(IMain.AssignedOptionalLeaf));
+
+                Controller.Replace(OptionalLeafInner, ReplacementIndex5, out IWriteableBrowsingChildIndex NewItemIndex5);
+                Assert.That(Controller.Contains(NewItemIndex5));
+
+                IWriteableNodeStateReadOnlyList AllChildren3 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren3.Count == AllChildren2.Count - 1, $"New count: {AllChildren3.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Controller.Expand(RootIndex, out IsChanged);
+                Assert.That(IsChanged);
+
+                IWriteableNodeStateReadOnlyList AllChildren4 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren4.Count == AllChildren3.Count + 1, $"New count: {AllChildren4.Count}");
+
+
+
+                IWriteableBlockListInner LeafBlocksInner = RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IWriteableBlockListInner;
+                Assert.That(LeafBlocksInner != null);
+
+                IWriteableBrowsingExistingBlockNodeIndex RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IWriteableBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IWriteableBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IWriteableBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                IWriteableNodeStateReadOnlyList AllChildren5 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren5.Count == AllChildren4.Count - 7, $"New count: {AllChildren5.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+                Assert.That(LeafBlocksInner.IsEmpty);
+
+                Controller.Expand(RootIndex, out IsChanged);
+                Assert.That(!IsChanged);
+
+                IWriteableNodeStateReadOnlyList AllChildren6 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren6.Count == AllChildren5.Count, $"New count: {AllChildren6.Count}");
+
+                IDictionary<Type, string[]> WithExpandCollectionTable = BaseNodeHelper.NodeHelper.WithExpandCollectionTable as IDictionary<Type, string[]>;
+                WithExpandCollectionTable.Add(typeof(IMain), new string[] { nameof(IMain.LeafBlocks) });
+
+                Controller.Expand(RootIndex, out IsChanged);
+                Assert.That(IsChanged);
+
+                IWriteableNodeStateReadOnlyList AllChildren7 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren7.Count == AllChildren6.Count + 3, $"New count: {AllChildren7.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+                Assert.That(!LeafBlocksInner.IsEmpty);
+                Assert.That(LeafBlocksInner.IsSingle);
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                WithExpandCollectionTable.Remove(typeof(IMain));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void WriteableReduce()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IWriteableRootNodeIndex RootIndex;
+            bool IsChanged;
+
+            RootNode = CreateRoot(Imperfections.None);
+            RootIndex = new WriteableRootNodeIndex(RootNode);
+
+            IWriteableController ControllerBase = WriteableController.Create(RootIndex);
+            IWriteableController Controller = WriteableController.Create(RootIndex);
+
+            using (IWriteableControllerView ControllerView0 = WriteableControllerView.Create(Controller))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IWriteableNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IWriteableBlockListInner LeafBlocksInner = RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IWriteableBlockListInner;
+                Assert.That(LeafBlocksInner != null);
+
+                IWriteableBrowsingExistingBlockNodeIndex RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IWriteableBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IWriteableBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IWriteableBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+                Assert.That(LeafBlocksInner.IsEmpty);
+
+                IWriteableNodeStateReadOnlyList AllChildren0 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren0.Count == 9, $"New count: {AllChildren0.Count}");
+
+                IDictionary<Type, string[]> WithExpandCollectionTable = BaseNodeHelper.NodeHelper.WithExpandCollectionTable as IDictionary<Type, string[]>;
+                WithExpandCollectionTable.Add(typeof(IMain), new string[] { nameof(IMain.LeafBlocks) });
+
+                Controller.Expand(RootIndex, out IsChanged);
+                Assert.That(IsChanged);
+
+                IWriteableNodeStateReadOnlyList AllChildren1 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren1.Count == AllChildren0.Count + 4, $"New count: {AllChildren1.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                //System.Diagnostics.Debug.Assert(false);
+                Controller.Reduce(RootIndex, out IsChanged);
+                Assert.That(IsChanged);
+
+                IWriteableNodeStateReadOnlyList AllChildren2 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren2.Count == AllChildren1.Count - 7, $"New count: {AllChildren2.Count}");
+
+                Controller.Reduce(RootIndex, out IsChanged);
+                Assert.That(!IsChanged);
+
+                IWriteableNodeStateReadOnlyList AllChildren3 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren3.Count == AllChildren2.Count, $"New count: {AllChildren3.Count}");
+
+                Controller.Expand(RootIndex, out IsChanged);
+                Assert.That(IsChanged);
+
+                IWriteableNodeStateReadOnlyList AllChildren4 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren4.Count == AllChildren3.Count + 7, $"New count: {AllChildren4.Count}");
+
+                BaseNode.IBlock ChildBlock = LeafBlocksInner.BlockStateList[0].ChildBlock;
+                ILeaf FirstNode = ChildBlock.NodeList[0] as ILeaf;
+                Assert.That(FirstNode != null);
+                BaseNodeHelper.NodeTreeHelper.SetString(FirstNode, nameof(ILeaf.Text), "!");
+
+                //System.Diagnostics.Debug.Assert(false);
+                Controller.Reduce(RootIndex, out IsChanged);
+                Assert.That(IsChanged);
+
+                IWriteableNodeStateReadOnlyList AllChildren5 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren5.Count == AllChildren4.Count - 4, $"New count: {AllChildren5.Count}");
+
+                BaseNodeHelper.NodeTreeHelper.SetString(FirstNode, nameof(ILeaf.Text), "");
+
+                //System.Diagnostics.Debug.Assert(false);
+                Controller.Reduce(RootIndex, out IsChanged);
+                Assert.That(IsChanged);
+
+                IWriteableNodeStateReadOnlyList AllChildren6 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren6.Count == AllChildren5.Count - 3, $"New count: {AllChildren6.Count}");
+
+                Controller.Expand(RootIndex, out IsChanged);
+                Assert.That(IsChanged);
+
+                WithExpandCollectionTable.Remove(typeof(IMain));
+
+                //System.Diagnostics.Debug.Assert(false);
+                Controller.Reduce(RootIndex, out IsChanged);
+                Assert.That(IsChanged);
+
+                IWriteableNodeStateReadOnlyList AllChildren7 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren7.Count == AllChildren6.Count + 3, $"New count: {AllChildren7.Count}");
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                WithExpandCollectionTable.Add(typeof(IMain), new string[] { nameof(IMain.LeafBlocks) });
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                WithExpandCollectionTable.Remove(typeof(IMain));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void WriteableCanonicalize()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IWriteableRootNodeIndex RootIndex;
+            bool IsChanged;
+
+            RootNode = CreateRoot(Imperfections.None);
+            RootIndex = new WriteableRootNodeIndex(RootNode);
+
+            IWriteableController ControllerBase = WriteableController.Create(RootIndex);
+            IWriteableController Controller = WriteableController.Create(RootIndex);
+
+            using (IWriteableControllerView ControllerView0 = WriteableControllerView.Create(Controller))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IWriteableNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IWriteableBlockListInner LeafBlocksInner = RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IWriteableBlockListInner;
+                Assert.That(LeafBlocksInner != null);
+
+                IWriteableBrowsingExistingBlockNodeIndex RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IWriteableBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IWriteableBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IWriteableBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+                Assert.That(LeafBlocksInner.IsEmpty);
+
+                IWriteableNodeStateReadOnlyList AllChildren0 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren0.Count == 9, $"New count: {AllChildren0.Count}");
+
+                IDictionary<Type, string[]> WithExpandCollectionTable = BaseNodeHelper.NodeHelper.WithExpandCollectionTable as IDictionary<Type, string[]>;
+                WithExpandCollectionTable.Add(typeof(IMain), new string[] { nameof(IMain.LeafBlocks) });
+
+                Controller.Expand(RootIndex, out IsChanged);
+                Assert.That(IsChanged);
+
+                IWriteableNodeStateReadOnlyList AllChildren1 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren1.Count == AllChildren0.Count + 4, $"New count: {AllChildren1.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                //System.Diagnostics.Debug.Assert(false);
+                Controller.Canonicalize(out IsChanged);
+                Assert.That(IsChanged);
+
+                IWriteableNodeStateReadOnlyList AllChildren2 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren2.Count == AllChildren1.Count - 7, $"New count: {AllChildren2.Count}");
+
+                Controller.Canonicalize(out IsChanged);
+                Assert.That(!IsChanged);
+
+                IWriteableNodeStateReadOnlyList AllChildren3 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren3.Count == AllChildren2.Count, $"New count: {AllChildren3.Count}");
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                WithExpandCollectionTable.Remove(typeof(IMain));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
             }
         }
         #endregion
