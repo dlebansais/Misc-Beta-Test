@@ -96,6 +96,7 @@ namespace TestDebug
         <FrameHorizontalPanelFrame>
             <FrameHorizontalBlockListFrame PropertyName=""MainBlocks"" />
             <FrameOptionalFrame PropertyName=""UnassignedOptionalMain"" />
+            <FrameTextValueFrame PropertyName=""ValueString""/>
         </FrameHorizontalPanelFrame>
     </FrameNodeTemplate>
     <FrameNodeTemplate NodeType=""{xaml:Type easly:IAssertion}"">

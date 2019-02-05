@@ -4,6 +4,7 @@ namespace Coverage
     {
         BaseNode.IBlockList<IMain, Main> MainBlocks { get; }
         Easly.IOptionalReference<IMain> UnassignedOptionalMain { get; }
+        string ValueString { get; }
     }
 
     [System.Serializable]
@@ -11,5 +12,6 @@ namespace Coverage
     {
         public virtual BaseNode.IBlockList<IMain, Main> MainBlocks { get; set; }
         public virtual Easly.IOptionalReference<IMain> UnassignedOptionalMain { get; set; }
+        public virtual string ValueString { get; set; }
     }
 }

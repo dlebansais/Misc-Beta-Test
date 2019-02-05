@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Threading;
 using EaslyController;
+using EaslyController.Focus;
 using EaslyController.Frame;
 using EaslyController.ReadOnly;
 using EaslyController.Writeable;
@@ -2372,6 +2373,7 @@ namespace Coverage
 
             BaseNodeHelper.NodeTreeHelperBlockList.SetBlockList(RootNode, nameof(IRoot.MainBlocks), (BaseNode.IBlockList)MainBlocks);
             BaseNodeHelper.NodeTreeHelperOptional.SetOptionalReference(RootNode, nameof(IRoot.UnassignedOptionalMain), (Easly.IOptionalReference)UnassignedOptional);
+            BaseNodeHelper.NodeTreeHelper.SetString(RootNode, nameof(IRoot.ValueString), "root string");
 
             //System.Diagnostics.Debug.Assert(false);
             IWriteableRootNodeIndex RootIndex = new WriteableRootNodeIndex(RootNode);
@@ -3170,6 +3172,10 @@ namespace Coverage
                             break;
                     }
                 }
+
+                IFrameVisibleCellViewList VisibleCellViewList = new FrameVisibleCellViewList();
+                ControllerView0.EnumerateVisibleCellViews(VisibleCellViewList);
+                ControllerView0.PrintCellViewTree(true);
             }
         }
 
@@ -4699,6 +4705,7 @@ namespace Coverage
 
             BaseNodeHelper.NodeTreeHelperBlockList.SetBlockList(RootNode, nameof(IRoot.MainBlocks), (BaseNode.IBlockList)MainBlocks);
             BaseNodeHelper.NodeTreeHelperOptional.SetOptionalReference(RootNode, nameof(IRoot.UnassignedOptionalMain), (Easly.IOptionalReference)UnassignedOptional);
+            BaseNodeHelper.NodeTreeHelper.SetString(RootNode, nameof(IRoot.ValueString), "root string");
 
             //System.Diagnostics.Debug.Assert(false);
             IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(RootNode);
@@ -5115,6 +5122,2336 @@ namespace Coverage
 
                 // IFrameStateViewDictionary
                 IFrameStateViewDictionary StateViewTable = ControllerView.StateViewTable;
+
+                IDictionary<IReadOnlyNodeState, IReadOnlyNodeStateView> StateViewTableAsDictionary = StateViewTable;
+                Assert.That(StateViewTableAsDictionary != null);
+                Assert.That(StateViewTableAsDictionary.TryGetValue(RootState, out IReadOnlyNodeStateView StateViewTableAsDictionaryValue) == StateViewTable.TryGetValue(RootState, out IReadOnlyNodeStateView StateViewTableValue));
+                Assert.That(StateViewTableAsDictionary.Keys != null);
+                Assert.That(StateViewTableAsDictionary.Values != null);
+
+                ICollection<KeyValuePair<IReadOnlyNodeState, IReadOnlyNodeStateView>> StateViewTableAsCollection = StateViewTable;
+                Assert.That(!StateViewTableAsCollection.IsReadOnly);
+
+                foreach (KeyValuePair<IReadOnlyNodeState, IReadOnlyNodeStateView> Entry in StateViewTableAsCollection)
+                {
+                    Assert.That(StateViewTableAsCollection.Contains(Entry));
+                    StateViewTableAsCollection.Remove(Entry);
+                    StateViewTableAsCollection.Add(Entry);
+                    StateViewTableAsCollection.CopyTo(new KeyValuePair<IReadOnlyNodeState, IReadOnlyNodeStateView>[StateViewTable.Count], 0);
+                    break;
+                }
+            }
+        }
+        #endregion
+
+        #region Focus
+        [Test]
+        [Category("Coverage")]
+        public static void FocusCreation()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFocusRootNodeIndex RootIndex;
+            IFocusController Controller;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+            try
+            {
+                RootIndex = new FocusRootNodeIndex(RootNode);
+                Controller = FocusController.Create(RootIndex);
+            }
+            catch (Exception e)
+            {
+                Assert.Fail($"#0: {e}");
+            }
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.BadGuid);
+            Assert.That(!BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+            try
+            {
+                RootIndex = new FocusRootNodeIndex(RootNode);
+                Assert.Fail($"#1: no exception");
+            }
+            catch (ArgumentException e)
+            {
+                Assert.That(e.Message == "node", $"#1: wrong exception message '{e.Message}'");
+            }
+            catch (Exception e)
+            {
+                Assert.Fail($"#1: {e}");
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FocusProperties()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFocusRootNodeIndex RootIndex0;
+            IFocusRootNodeIndex RootIndex1;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+            RootIndex0 = new FocusRootNodeIndex(RootNode);
+            Assert.That(RootIndex0.Node == RootNode);
+            Assert.That(RootIndex0.IsEqual(CompareEqual.New(), RootIndex0));
+
+            RootIndex1 = new FocusRootNodeIndex(RootNode);
+            Assert.That(RootIndex1.Node == RootNode);
+            Assert.That(CompareEqual.CoverIsEqual(RootIndex0, RootIndex1));
+
+            IFocusController Controller0 = FocusController.Create(RootIndex0);
+            Assert.That(Controller0.RootIndex == RootIndex0);
+
+            Stats Stats = Controller0.Stats;
+            Assert.That(Stats.NodeCount >= 0);
+            Assert.That(Stats.PlaceholderNodeCount >= 0);
+            Assert.That(Stats.OptionalNodeCount >= 0);
+            Assert.That(Stats.AssignedOptionalNodeCount >= 0);
+            Assert.That(Stats.ListCount >= 0);
+            Assert.That(Stats.BlockListCount >= 0);
+            Assert.That(Stats.BlockCount >= 0);
+
+            IFocusPlaceholderNodeState RootState = Controller0.RootState;
+            Assert.That(RootState.ParentIndex == RootIndex0);
+
+            Assert.That(Controller0.Contains(RootIndex0));
+            Assert.That(Controller0.IndexToState(RootIndex0) == RootState);
+
+            Assert.That(RootState.InnerTable.Count == 7);
+            Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.PlaceholderTree)));
+            Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.PlaceholderLeaf)));
+            Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.UnassignedOptionalLeaf)));
+            Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.AssignedOptionalTree)));
+            Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.AssignedOptionalLeaf)));
+            Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.LeafBlocks)));
+            Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.LeafPath)));
+
+            IFocusPlaceholderInner MainPlaceholderTreeInner = RootState.PropertyToInner(nameof(IMain.PlaceholderTree)) as IFocusPlaceholderInner;
+            Assert.That(MainPlaceholderTreeInner != null);
+            Assert.That(MainPlaceholderTreeInner.InterfaceType == typeof(ITree));
+            Assert.That(MainPlaceholderTreeInner.ChildState != null);
+            Assert.That(MainPlaceholderTreeInner.ChildState.ParentInner == MainPlaceholderTreeInner);
+
+            IFocusPlaceholderInner MainPlaceholderLeafInner = RootState.PropertyToInner(nameof(IMain.PlaceholderLeaf)) as IFocusPlaceholderInner;
+            Assert.That(MainPlaceholderLeafInner != null);
+            Assert.That(MainPlaceholderLeafInner.InterfaceType == typeof(ILeaf));
+            Assert.That(MainPlaceholderLeafInner.ChildState != null);
+            Assert.That(MainPlaceholderLeafInner.ChildState.ParentInner == MainPlaceholderLeafInner);
+
+            IFocusOptionalInner MainUnassignedOptionalInner = RootState.PropertyToInner(nameof(IMain.UnassignedOptionalLeaf)) as IFocusOptionalInner;
+            Assert.That(MainUnassignedOptionalInner != null);
+            Assert.That(MainUnassignedOptionalInner.InterfaceType == typeof(ILeaf));
+            Assert.That(!MainUnassignedOptionalInner.IsAssigned);
+            Assert.That(MainUnassignedOptionalInner.ChildState != null);
+            Assert.That(MainUnassignedOptionalInner.ChildState.ParentInner == MainUnassignedOptionalInner);
+
+            IFocusOptionalInner MainAssignedOptionalTreeInner = RootState.PropertyToInner(nameof(IMain.AssignedOptionalTree)) as IFocusOptionalInner;
+            Assert.That(MainAssignedOptionalTreeInner != null);
+            Assert.That(MainAssignedOptionalTreeInner.InterfaceType == typeof(ITree));
+            Assert.That(MainAssignedOptionalTreeInner.IsAssigned);
+
+            IFocusNodeState AssignedOptionalTreeState = MainAssignedOptionalTreeInner.ChildState;
+            Assert.That(AssignedOptionalTreeState != null);
+            Assert.That(AssignedOptionalTreeState.ParentInner == MainAssignedOptionalTreeInner);
+            Assert.That(AssignedOptionalTreeState.ParentState == RootState);
+
+            IFocusNodeStateReadOnlyList AssignedOptionalTreeAllChildren = AssignedOptionalTreeState.GetAllChildren() as IFocusNodeStateReadOnlyList;
+            Assert.That(AssignedOptionalTreeAllChildren != null);
+            Assert.That(AssignedOptionalTreeAllChildren.Count == 2, $"New count: {AssignedOptionalTreeAllChildren.Count}");
+
+            IFocusOptionalInner MainAssignedOptionalLeafInner = RootState.PropertyToInner(nameof(IMain.AssignedOptionalLeaf)) as IFocusOptionalInner;
+            Assert.That(MainAssignedOptionalLeafInner != null);
+            Assert.That(MainAssignedOptionalLeafInner.InterfaceType == typeof(ILeaf));
+            Assert.That(MainAssignedOptionalLeafInner.IsAssigned);
+            Assert.That(MainAssignedOptionalLeafInner.ChildState != null);
+            Assert.That(MainAssignedOptionalLeafInner.ChildState.ParentInner == MainAssignedOptionalLeafInner);
+
+            IFocusBlockListInner MainLeafBlocksInner = RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IFocusBlockListInner;
+            Assert.That(MainLeafBlocksInner != null);
+            Assert.That(!MainLeafBlocksInner.IsNeverEmpty);
+            Assert.That(!MainLeafBlocksInner.IsEmpty);
+            Assert.That(!MainLeafBlocksInner.IsSingle);
+            Assert.That(MainLeafBlocksInner.InterfaceType == typeof(ILeaf));
+            Assert.That(MainLeafBlocksInner.BlockType == typeof(BaseNode.IBlock<ILeaf, Leaf>));
+            Assert.That(MainLeafBlocksInner.ItemType == typeof(Leaf));
+            Assert.That(MainLeafBlocksInner.Count == 4);
+            Assert.That(MainLeafBlocksInner.BlockStateList != null);
+            Assert.That(MainLeafBlocksInner.BlockStateList.Count == 3);
+            Assert.That(MainLeafBlocksInner.AllIndexes().Count == MainLeafBlocksInner.Count);
+
+            IFocusBlockState LeafBlock = MainLeafBlocksInner.BlockStateList[0];
+            Assert.That(LeafBlock != null);
+            Assert.That(LeafBlock.StateList != null);
+            Assert.That(LeafBlock.StateList.Count == 1);
+            Assert.That(MainLeafBlocksInner.FirstNodeState == LeafBlock.StateList[0]);
+            Assert.That(MainLeafBlocksInner.IndexAt(0, 0) == MainLeafBlocksInner.FirstNodeState.ParentIndex);
+
+            IFocusPlaceholderInner PatternInner = LeafBlock.PropertyToInner(nameof(BaseNode.IBlock.ReplicationPattern)) as IFocusPlaceholderInner;
+            Assert.That(PatternInner != null);
+
+            IFocusPlaceholderInner SourceInner = LeafBlock.PropertyToInner(nameof(BaseNode.IBlock.SourceIdentifier)) as IFocusPlaceholderInner;
+            Assert.That(SourceInner != null);
+
+            IFocusPatternState PatternState = LeafBlock.PatternState;
+            Assert.That(PatternState != null);
+            Assert.That(PatternState.ParentBlockState == LeafBlock);
+            Assert.That(PatternState.ParentInner == PatternInner);
+            Assert.That(PatternState.ParentIndex == LeafBlock.PatternIndex);
+            Assert.That(PatternState.ParentState == RootState);
+            Assert.That(PatternState.InnerTable.Count == 0);
+            Assert.That(PatternState is IFocusPlaceholderNodeState AsPlaceholderPatternNodeState && AsPlaceholderPatternNodeState.ParentIndex == LeafBlock.PatternIndex);
+            Assert.That(PatternState.GetAllChildren().Count == 1);
+
+            IFocusSourceState SourceState = LeafBlock.SourceState;
+            Assert.That(SourceState != null);
+            Assert.That(SourceState.ParentBlockState == LeafBlock);
+            Assert.That(SourceState.ParentInner == SourceInner);
+            Assert.That(SourceState.ParentIndex == LeafBlock.SourceIndex);
+            Assert.That(SourceState.ParentState == RootState);
+            Assert.That(SourceState.InnerTable.Count == 0);
+            Assert.That(SourceState is IFocusPlaceholderNodeState AsPlaceholderSourceNodeState && AsPlaceholderSourceNodeState.ParentIndex == LeafBlock.SourceIndex);
+            Assert.That(SourceState.GetAllChildren().Count == 1);
+
+            Assert.That(MainLeafBlocksInner.FirstNodeState == LeafBlock.StateList[0]);
+
+            IFocusListInner MainLeafPathInner = RootState.PropertyToInner(nameof(IMain.LeafPath)) as IFocusListInner;
+            Assert.That(MainLeafPathInner != null);
+            Assert.That(!MainLeafPathInner.IsNeverEmpty);
+            Assert.That(MainLeafPathInner.InterfaceType == typeof(ILeaf));
+            Assert.That(MainLeafPathInner.Count == 2);
+            Assert.That(MainLeafPathInner.StateList != null);
+            Assert.That(MainLeafPathInner.StateList.Count == 2);
+            Assert.That(MainLeafPathInner.FirstNodeState == MainLeafPathInner.StateList[0]);
+            Assert.That(MainLeafPathInner.IndexAt(0) == MainLeafPathInner.FirstNodeState.ParentIndex);
+            Assert.That(MainLeafPathInner.AllIndexes().Count == MainLeafPathInner.Count);
+
+            IFocusNodeStateReadOnlyList AllChildren = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+            Assert.That(AllChildren.Count == 19, $"New count: {AllChildren.Count}");
+
+            IFocusPlaceholderInner PlaceholderInner = RootState.InnerTable[nameof(IMain.PlaceholderLeaf)] as IFocusPlaceholderInner;
+            Assert.That(PlaceholderInner != null);
+
+            IFocusBrowsingPlaceholderNodeIndex PlaceholderNodeIndex = PlaceholderInner.ChildState.ParentIndex as IFocusBrowsingPlaceholderNodeIndex;
+            Assert.That(PlaceholderNodeIndex != null);
+            Assert.That(Controller0.Contains(PlaceholderNodeIndex));
+
+            IFocusOptionalInner UnassignedOptionalInner = RootState.InnerTable[nameof(IMain.UnassignedOptionalLeaf)] as IFocusOptionalInner;
+            Assert.That(UnassignedOptionalInner != null);
+
+            IFocusBrowsingOptionalNodeIndex UnassignedOptionalNodeIndex = UnassignedOptionalInner.ChildState.ParentIndex;
+            Assert.That(UnassignedOptionalNodeIndex != null);
+            Assert.That(Controller0.Contains(UnassignedOptionalNodeIndex));
+            Assert.That(Controller0.IsAssigned(UnassignedOptionalNodeIndex) == false);
+
+            IFocusOptionalInner AssignedOptionalInner = RootState.InnerTable[nameof(IMain.AssignedOptionalLeaf)] as IFocusOptionalInner;
+            Assert.That(AssignedOptionalInner != null);
+
+            IFocusBrowsingOptionalNodeIndex AssignedOptionalNodeIndex = AssignedOptionalInner.ChildState.ParentIndex;
+            Assert.That(AssignedOptionalNodeIndex != null);
+            Assert.That(Controller0.Contains(AssignedOptionalNodeIndex));
+            Assert.That(Controller0.IsAssigned(AssignedOptionalNodeIndex) == true);
+
+            int Min, Max;
+            object ReadValue;
+
+            RootState.PropertyToValue(nameof(IMain.ValueBoolean), out ReadValue, out Min, out Max);
+            bool ReadAsBoolean = ((int)ReadValue) != 0;
+            Assert.That(ReadAsBoolean == true);
+            Assert.That(Controller0.GetDiscreteValue(RootIndex0, nameof(IMain.ValueBoolean)) == (ReadAsBoolean ? 1 : 0));
+            Assert.That(Min == 0);
+            Assert.That(Max == 1);
+
+            RootState.PropertyToValue(nameof(IMain.ValueEnum), out ReadValue, out Min, out Max);
+            BaseNode.CopySemantic ReadAsEnum = (BaseNode.CopySemantic)(int)ReadValue;
+            Assert.That(ReadAsEnum == BaseNode.CopySemantic.Value);
+            Assert.That(Controller0.GetDiscreteValue(RootIndex0, nameof(IMain.ValueEnum)) == (int)ReadAsEnum);
+            Assert.That(Min == 0);
+            Assert.That(Max == 2);
+
+            RootState.PropertyToValue(nameof(IMain.ValueString), out ReadValue, out Min, out Max);
+            string ReadAsString = ReadValue as string;
+            Assert.That(ReadAsString == "string");
+            Assert.That(Controller0.GetStringValue(RootIndex0, nameof(IMain.ValueString)) == ReadAsString);
+
+            RootState.PropertyToValue(nameof(IMain.ValueGuid), out ReadValue, out Min, out Max);
+            Guid ReadAsGuid = (Guid)ReadValue;
+            Assert.That(ReadAsGuid == ValueGuid0);
+            Assert.That(Controller0.GetGuidValue(RootIndex0, nameof(IMain.ValueGuid)) == ReadAsGuid);
+
+            IFocusController Controller1 = FocusController.Create(RootIndex0);
+            Assert.That(Controller0.IsEqual(CompareEqual.New(), Controller0));
+
+            //System.Diagnostics.Debug.Assert(false);
+            Assert.That(CompareEqual.CoverIsEqual(Controller0, Controller1));
+
+            Assert.That(!Controller0.CanUndo);
+            Assert.That(!Controller0.CanRedo);
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FocusClone()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(RootNode);
+            Assert.That(RootIndex != null);
+
+            IFocusController Controller = FocusController.Create(RootIndex);
+            Assert.That(Controller != null);
+
+            IFocusPlaceholderNodeState RootState = Controller.RootState;
+            Assert.That(RootState != null);
+
+            BaseNode.INode ClonedNode = RootState.CloneNode();
+            Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(ClonedNode));
+
+            IFocusRootNodeIndex CloneRootIndex = new FocusRootNodeIndex(ClonedNode);
+            Assert.That(CloneRootIndex != null);
+
+            IFocusController CloneController = FocusController.Create(CloneRootIndex);
+            Assert.That(CloneController != null);
+
+            IFocusPlaceholderNodeState CloneRootState = Controller.RootState;
+            Assert.That(CloneRootState != null);
+
+            IFocusNodeStateReadOnlyList AllChildren = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+            IFocusNodeStateReadOnlyList CloneAllChildren = (IFocusNodeStateReadOnlyList)CloneRootState.GetAllChildren();
+            Assert.That(AllChildren.Count == CloneAllChildren.Count);
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FocusViews()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFocusRootNodeIndex RootIndex;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FocusRootNodeIndex(RootNode);
+
+            IFocusController Controller = FocusController.Create(RootIndex);
+
+            using (IFocusControllerView ControllerView0 = FocusControllerView.Create(Controller, TestDebug.CoverageFocusTemplateSet.FocusTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                using (IFocusControllerView ControllerView1 = FocusControllerView.Create(Controller, TestDebug.CoverageFocusTemplateSet.FocusTemplateSet))
+                {
+                    Assert.That(ControllerView0.IsEqual(CompareEqual.New(), ControllerView0));
+                    Assert.That(CompareEqual.CoverIsEqual(ControllerView0, ControllerView1));
+                }
+
+                foreach (KeyValuePair<IFocusBlockState, IFocusBlockStateView> Entry in ControllerView0.BlockStateViewTable)
+                {
+                    IFocusBlockState BlockState = Entry.Key;
+                    Assert.That(BlockState != null);
+
+                    IFocusBlockStateView BlockStateView = Entry.Value;
+                    Assert.That(BlockStateView != null);
+                    Assert.That(BlockStateView.BlockState == BlockState);
+
+                    Assert.That(BlockStateView.ControllerView == ControllerView0);
+                }
+
+                foreach (KeyValuePair<IFocusNodeState, IFocusNodeStateView> Entry in ControllerView0.StateViewTable)
+                {
+                    IFocusNodeState State = Entry.Key;
+                    Assert.That(State != null);
+
+                    IFocusNodeStateView StateView = Entry.Value;
+                    Assert.That(StateView != null);
+                    Assert.That(StateView.State == State);
+
+                    IFocusIndex ParentIndex = State.ParentIndex;
+                    Assert.That(ParentIndex != null);
+
+                    Assert.That(Controller.Contains(ParentIndex));
+                    Assert.That(StateView.ControllerView == ControllerView0);
+
+                    switch (StateView)
+                    {
+                        case IFocusPatternStateView AsPatternStateView:
+                            Assert.That(AsPatternStateView.State == State);
+                            Assert.That(AsPatternStateView is IFocusPlaceholderNodeStateView AsPlaceholderPatternNodeStateView && AsPlaceholderPatternNodeStateView.State == State);
+                            break;
+
+                        case IFocusSourceStateView AsSourceStateView:
+                            Assert.That(AsSourceStateView.State == State);
+                            Assert.That(AsSourceStateView is IFocusPlaceholderNodeStateView AsPlaceholderSourceNodeStateView && AsPlaceholderSourceNodeStateView.State == State);
+                            break;
+
+                        case IFocusPlaceholderNodeStateView AsPlaceholderNodeStateView:
+                            Assert.That(AsPlaceholderNodeStateView.State == State);
+                            break;
+
+                        case IFocusOptionalNodeStateView AsOptionalNodeStateView:
+                            Assert.That(AsOptionalNodeStateView.State == State);
+                            break;
+                    }
+                }
+
+                IFocusVisibleCellViewList VisibleCellViewList = new FocusVisibleCellViewList();
+                ControllerView0.EnumerateVisibleCellViews(VisibleCellViewList);
+                ControllerView0.PrintCellViewTree(true);
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FocusInsert()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFocusRootNodeIndex RootIndex;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FocusRootNodeIndex(RootNode);
+
+            IFocusController ControllerBase = FocusController.Create(RootIndex);
+            IFocusController Controller = FocusController.Create(RootIndex);
+
+            using (IFocusControllerView ControllerView0 = FocusControllerView.Create(Controller, TestDebug.CoverageFocusTemplateSet.FocusTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IFocusNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IFocusListInner LeafPathInner = RootState.PropertyToInner(nameof(IMain.LeafPath)) as IFocusListInner;
+                Assert.That(LeafPathInner != null);
+
+                int PathCount = LeafPathInner.Count;
+                Assert.That(PathCount == 2);
+
+                IFocusBrowsingListNodeIndex ExistingIndex = LeafPathInner.IndexAt(0) as IFocusBrowsingListNodeIndex;
+
+                Leaf NewItem0 = CreateLeaf(Guid.NewGuid());
+
+                IFocusInsertionListNodeIndex InsertionIndex0;
+                InsertionIndex0 = ExistingIndex.ToInsertionIndex(RootNode, NewItem0) as IFocusInsertionListNodeIndex;
+                Assert.That(InsertionIndex0.ParentNode == RootNode);
+                Assert.That(InsertionIndex0.Node == NewItem0);
+                Assert.That(CompareEqual.CoverIsEqual(InsertionIndex0, InsertionIndex0));
+
+                IFocusNodeStateReadOnlyList AllChildren0 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren0.Count == 19, $"New count: {AllChildren0.Count}");
+
+                Controller.Insert(LeafPathInner, InsertionIndex0, out IWriteableBrowsingCollectionNodeIndex NewItemIndex0);
+                Assert.That(Controller.Contains(NewItemIndex0));
+
+                IFocusBrowsingListNodeIndex DuplicateExistingIndex0 = InsertionIndex0.ToBrowsingIndex() as IFocusBrowsingListNodeIndex;
+                Assert.That(CompareEqual.CoverIsEqual(NewItemIndex0 as IFocusBrowsingListNodeIndex, DuplicateExistingIndex0));
+                Assert.That(CompareEqual.CoverIsEqual(DuplicateExistingIndex0, NewItemIndex0 as IFocusBrowsingListNodeIndex));
+
+                Assert.That(LeafPathInner.Count == PathCount + 1);
+                Assert.That(LeafPathInner.StateList.Count == PathCount + 1);
+
+                IFocusPlaceholderNodeState NewItemState0 = LeafPathInner.StateList[0];
+                Assert.That(NewItemState0.Node == NewItem0);
+                Assert.That(NewItemState0.ParentIndex == NewItemIndex0);
+
+                IFocusNodeStateReadOnlyList AllChildren1 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren1.Count == AllChildren0.Count + 1, $"New count: {AllChildren1.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+
+
+                IFocusBlockListInner LeafBlocksInner = RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IFocusBlockListInner;
+                Assert.That(LeafBlocksInner != null);
+
+                int BlockNodeCount = LeafBlocksInner.Count;
+                int NodeCount = LeafBlocksInner.BlockStateList[0].StateList.Count;
+                Assert.That(BlockNodeCount == 4);
+
+                IFocusBrowsingExistingBlockNodeIndex ExistingIndex1 = LeafBlocksInner.IndexAt(0, 0) as IFocusBrowsingExistingBlockNodeIndex;
+
+                Leaf NewItem1 = CreateLeaf(Guid.NewGuid());
+                IFocusInsertionExistingBlockNodeIndex InsertionIndex1;
+                InsertionIndex1 = ExistingIndex1.ToInsertionIndex(RootNode, NewItem1) as IFocusInsertionExistingBlockNodeIndex;
+                Assert.That(InsertionIndex1.ParentNode == RootNode);
+                Assert.That(InsertionIndex1.Node == NewItem1);
+                Assert.That(CompareEqual.CoverIsEqual(InsertionIndex1, InsertionIndex1));
+
+                Controller.Insert(LeafBlocksInner, InsertionIndex1, out IWriteableBrowsingCollectionNodeIndex NewItemIndex1);
+                Assert.That(Controller.Contains(NewItemIndex1));
+
+                IFocusBrowsingExistingBlockNodeIndex DuplicateExistingIndex1 = InsertionIndex1.ToBrowsingIndex() as IFocusBrowsingExistingBlockNodeIndex;
+                Assert.That(CompareEqual.CoverIsEqual(NewItemIndex1 as IFocusBrowsingExistingBlockNodeIndex, DuplicateExistingIndex1));
+                Assert.That(CompareEqual.CoverIsEqual(DuplicateExistingIndex1, NewItemIndex1 as IFocusBrowsingExistingBlockNodeIndex));
+
+                Assert.That(LeafBlocksInner.Count == BlockNodeCount + 1);
+                Assert.That(LeafBlocksInner.BlockStateList[0].StateList.Count == NodeCount + 1);
+
+                IFocusPlaceholderNodeState NewItemState1 = LeafBlocksInner.BlockStateList[0].StateList[0];
+                Assert.That(NewItemState1.Node == NewItem1);
+                Assert.That(NewItemState1.ParentIndex == NewItemIndex1);
+                Assert.That(NewItemState1.ParentState == RootState);
+
+                IFocusNodeStateReadOnlyList AllChildren2 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren2.Count == AllChildren1.Count + 1, $"New count: {AllChildren2.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+
+
+
+                Leaf NewItem2 = CreateLeaf(Guid.NewGuid());
+                BaseNode.IPattern NewPattern = BaseNodeHelper.NodeHelper.CreateSimplePattern("");
+                BaseNode.IIdentifier NewSource = BaseNodeHelper.NodeHelper.CreateSimpleIdentifier("");
+
+                IFocusInsertionNewBlockNodeIndex InsertionIndex2 = new FocusInsertionNewBlockNodeIndex(RootNode, nameof(IMain.LeafBlocks), NewItem2, 0, NewPattern, NewSource);
+                Assert.That(CompareEqual.CoverIsEqual(InsertionIndex2, InsertionIndex2));
+
+                int BlockCount = LeafBlocksInner.BlockStateList.Count;
+                Assert.That(BlockCount == 3);
+
+                Controller.Insert(LeafBlocksInner, InsertionIndex2, out IWriteableBrowsingCollectionNodeIndex NewItemIndex2);
+                Assert.That(Controller.Contains(NewItemIndex2));
+
+                IFocusBrowsingExistingBlockNodeIndex DuplicateExistingIndex2 = InsertionIndex2.ToBrowsingIndex() as IFocusBrowsingExistingBlockNodeIndex;
+                Assert.That(CompareEqual.CoverIsEqual(NewItemIndex2 as IFocusBrowsingExistingBlockNodeIndex, DuplicateExistingIndex2));
+                Assert.That(CompareEqual.CoverIsEqual(DuplicateExistingIndex2, NewItemIndex2 as IFocusBrowsingExistingBlockNodeIndex));
+
+                Assert.That(LeafBlocksInner.Count == BlockNodeCount + 2);
+                Assert.That(LeafBlocksInner.BlockStateList.Count == BlockCount + 1);
+                Assert.That(LeafBlocksInner.BlockStateList[0].StateList.Count == 1, $"Count: {LeafBlocksInner.BlockStateList[0].StateList.Count}");
+                Assert.That(LeafBlocksInner.BlockStateList[1].StateList.Count == 2, $"Count: {LeafBlocksInner.BlockStateList[1].StateList.Count}");
+                Assert.That(LeafBlocksInner.BlockStateList[2].StateList.Count == 2, $"Count: {LeafBlocksInner.BlockStateList[2].StateList.Count}");
+
+                IFocusPlaceholderNodeState NewItemState2 = LeafBlocksInner.BlockStateList[0].StateList[0];
+                Assert.That(NewItemState2.Node == NewItem2);
+                Assert.That(NewItemState2.ParentIndex == NewItemIndex2);
+
+                IFocusNodeStateReadOnlyList AllChildren3 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren3.Count == AllChildren2.Count + 3, $"New count: {AllChildren3.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+
+                Controller.Redo();
+                Controller.Undo();
+
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FocusRemove()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFocusRootNodeIndex RootIndex;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FocusRootNodeIndex(RootNode);
+
+            IFocusController ControllerBase = FocusController.Create(RootIndex);
+            IFocusController Controller = FocusController.Create(RootIndex);
+
+            using (IFocusControllerView ControllerView0 = FocusControllerView.Create(Controller, TestDebug.CoverageFocusTemplateSet.FocusTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IFocusNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IFocusListInner LeafPathInner = RootState.PropertyToInner(nameof(IMain.LeafPath)) as IFocusListInner;
+                Assert.That(LeafPathInner != null);
+
+                IFocusBrowsingListNodeIndex RemovedLeafIndex0 = LeafPathInner.StateList[0].ParentIndex as IFocusBrowsingListNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex0));
+
+                int PathCount = LeafPathInner.Count;
+                Assert.That(PathCount == 2);
+
+                IFocusNodeStateReadOnlyList AllChildren0 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren0.Count == 19, $"New count: {AllChildren0.Count}");
+
+                Assert.That(Controller.IsRemoveable(LeafPathInner, RemovedLeafIndex0));
+
+                Controller.Remove(LeafPathInner, RemovedLeafIndex0);
+                Assert.That(!Controller.Contains(RemovedLeafIndex0));
+
+                Assert.That(LeafPathInner.Count == PathCount - 1);
+                Assert.That(LeafPathInner.StateList.Count == PathCount - 1);
+
+                IFocusNodeStateReadOnlyList AllChildren1 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren1.Count == AllChildren0.Count - 1, $"New count: {AllChildren1.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                RemovedLeafIndex0 = LeafPathInner.StateList[0].ParentIndex as IFocusBrowsingListNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex0));
+
+                Assert.That(LeafPathInner.Count == 1);
+
+                Assert.That(Controller.IsRemoveable(LeafPathInner, RemovedLeafIndex0));
+
+                IDictionary<Type, string[]> NeverEmptyCollectionTable = BaseNodeHelper.NodeHelper.NeverEmptyCollectionTable as IDictionary<Type, string[]>;
+                NeverEmptyCollectionTable.Add(typeof(IMain), new string[] { nameof(IMain.LeafPath) });
+                Assert.That(!Controller.IsRemoveable(LeafPathInner, RemovedLeafIndex0));
+
+
+
+                IFocusBlockListInner LeafBlocksInner = RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IFocusBlockListInner;
+                Assert.That(LeafBlocksInner != null);
+
+                IFocusBrowsingExistingBlockNodeIndex RemovedLeafIndex1 = LeafBlocksInner.BlockStateList[1].StateList[0].ParentIndex as IFocusBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex1));
+
+                int BlockNodeCount = LeafBlocksInner.Count;
+                int NodeCount = LeafBlocksInner.BlockStateList[1].StateList.Count;
+                Assert.That(BlockNodeCount == 4, $"New count: {BlockNodeCount}");
+
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex1));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex1);
+                Assert.That(!Controller.Contains(RemovedLeafIndex1));
+
+                Assert.That(LeafBlocksInner.Count == BlockNodeCount - 1);
+                Assert.That(LeafBlocksInner.BlockStateList[1].StateList.Count == NodeCount - 1);
+
+                IFocusNodeStateReadOnlyList AllChildren2 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren2.Count == AllChildren1.Count - 1, $"New count: {AllChildren2.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+
+
+                IFocusBrowsingExistingBlockNodeIndex RemovedLeafIndex2 = LeafBlocksInner.BlockStateList[1].StateList[0].ParentIndex as IFocusBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex2));
+
+
+                int BlockCount = LeafBlocksInner.BlockStateList.Count;
+                Assert.That(BlockCount == 3);
+
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex2));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex2);
+                Assert.That(!Controller.Contains(RemovedLeafIndex2));
+
+                Assert.That(LeafBlocksInner.Count == BlockNodeCount - 2);
+                Assert.That(LeafBlocksInner.BlockStateList.Count == BlockCount - 1);
+                Assert.That(LeafBlocksInner.BlockStateList[0].StateList.Count == 1, $"Count: {LeafBlocksInner.BlockStateList[0].StateList.Count}");
+
+                IFocusNodeStateReadOnlyList AllChildren3 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren3.Count == AllChildren2.Count - 3, $"New count: {AllChildren3.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+
+                NeverEmptyCollectionTable.Remove(typeof(IMain));
+                Assert.That(Controller.IsRemoveable(LeafPathInner, RemovedLeafIndex0));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+
+                Controller.Redo();
+                Controller.Undo();
+
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FocusMove()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFocusRootNodeIndex RootIndex;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FocusRootNodeIndex(RootNode);
+
+            IFocusController ControllerBase = FocusController.Create(RootIndex);
+            IFocusController Controller = FocusController.Create(RootIndex);
+
+            using (IFocusControllerView ControllerView0 = FocusControllerView.Create(Controller, TestDebug.CoverageFocusTemplateSet.FocusTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IFocusNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IFocusListInner LeafPathInner = RootState.PropertyToInner(nameof(IMain.LeafPath)) as IFocusListInner;
+                Assert.That(LeafPathInner != null);
+
+                IFocusBrowsingListNodeIndex MovedLeafIndex0 = LeafPathInner.IndexAt(0) as IFocusBrowsingListNodeIndex;
+                Assert.That(Controller.Contains(MovedLeafIndex0));
+
+                int PathCount = LeafPathInner.Count;
+                Assert.That(PathCount == 2);
+
+                IFocusNodeStateReadOnlyList AllChildren0 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren0.Count == 19, $"New count: {AllChildren0.Count}");
+
+                Assert.That(Controller.IsMoveable(LeafPathInner, MovedLeafIndex0, +1));
+
+                Controller.Move(LeafPathInner, MovedLeafIndex0, +1);
+                Assert.That(Controller.Contains(MovedLeafIndex0));
+
+                Assert.That(LeafPathInner.Count == PathCount);
+                Assert.That(LeafPathInner.StateList.Count == PathCount);
+
+                //System.Diagnostics.Debug.Assert(false);
+                IFocusBrowsingListNodeIndex NewLeafIndex0 = LeafPathInner.IndexAt(1) as IFocusBrowsingListNodeIndex;
+                Assert.That(NewLeafIndex0 == MovedLeafIndex0);
+
+                IFocusNodeStateReadOnlyList AllChildren1 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren1.Count == AllChildren0.Count, $"New count: {AllChildren1.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+
+
+
+                IFocusBlockListInner LeafBlocksInner = RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IFocusBlockListInner;
+                Assert.That(LeafBlocksInner != null);
+
+                IFocusBrowsingExistingBlockNodeIndex MovedLeafIndex1 = LeafBlocksInner.IndexAt(1, 1) as IFocusBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(MovedLeafIndex1));
+
+                int BlockNodeCount = LeafBlocksInner.Count;
+                int NodeCount = LeafBlocksInner.BlockStateList[1].StateList.Count;
+                Assert.That(BlockNodeCount == 4, $"New count: {BlockNodeCount}");
+
+                Assert.That(Controller.IsMoveable(LeafBlocksInner, MovedLeafIndex1, -1));
+                Controller.Move(LeafBlocksInner, MovedLeafIndex1, -1);
+                Assert.That(Controller.Contains(MovedLeafIndex1));
+
+                Assert.That(LeafBlocksInner.Count == BlockNodeCount);
+                Assert.That(LeafBlocksInner.BlockStateList[1].StateList.Count == NodeCount);
+
+                IFocusBrowsingExistingBlockNodeIndex NewLeafIndex1 = LeafBlocksInner.IndexAt(1, 0) as IFocusBrowsingExistingBlockNodeIndex;
+                Assert.That(NewLeafIndex1 == MovedLeafIndex1);
+
+                IFocusNodeStateReadOnlyList AllChildren2 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren2.Count == AllChildren1.Count, $"New count: {AllChildren2.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+
+                Controller.Redo();
+                Controller.Undo();
+
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FocusMoveBlock()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFocusRootNodeIndex RootIndex;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FocusRootNodeIndex(RootNode);
+
+            IFocusController ControllerBase = FocusController.Create(RootIndex);
+            IFocusController Controller = FocusController.Create(RootIndex);
+
+            using (IFocusControllerView ControllerView0 = FocusControllerView.Create(Controller, TestDebug.CoverageFocusTemplateSet.FocusTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IFocusNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IFocusNodeStateReadOnlyList AllChildren1 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren1.Count == 19, $"New count: {AllChildren1.Count}");
+
+                IFocusBlockListInner LeafBlocksInner = RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IFocusBlockListInner;
+                Assert.That(LeafBlocksInner != null);
+
+                IFocusBrowsingExistingBlockNodeIndex MovedLeafIndex1 = LeafBlocksInner.IndexAt(1, 0) as IFocusBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(MovedLeafIndex1));
+
+                int BlockNodeCount = LeafBlocksInner.Count;
+                int NodeCount = LeafBlocksInner.BlockStateList[1].StateList.Count;
+                Assert.That(BlockNodeCount == 4, $"New count: {BlockNodeCount}");
+
+                Assert.That(Controller.IsBlockMoveable(LeafBlocksInner, 1, -1));
+                Controller.MoveBlock(LeafBlocksInner, 1, -1);
+                Assert.That(Controller.Contains(MovedLeafIndex1));
+
+                Assert.That(LeafBlocksInner.Count == BlockNodeCount);
+                Assert.That(LeafBlocksInner.BlockStateList[0].StateList.Count == NodeCount);
+
+                IFocusBrowsingExistingBlockNodeIndex NewLeafIndex1 = LeafBlocksInner.IndexAt(0, 0) as IFocusBrowsingExistingBlockNodeIndex;
+                Assert.That(NewLeafIndex1 == MovedLeafIndex1);
+
+                IFocusNodeStateReadOnlyList AllChildren2 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren2.Count == AllChildren1.Count, $"New count: {AllChildren2.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+
+                Controller.Redo();
+                Controller.Undo();
+
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FocusChangeDiscreteValue()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFocusRootNodeIndex RootIndex;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FocusRootNodeIndex(RootNode);
+
+            IFocusController ControllerBase = FocusController.Create(RootIndex);
+            IFocusController Controller = FocusController.Create(RootIndex);
+
+            using (IFocusControllerView ControllerView0 = FocusControllerView.Create(Controller, TestDebug.CoverageFocusTemplateSet.FocusTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IFocusNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                Assert.That(BaseNodeHelper.NodeTreeHelper.GetEnumValue(RootState.Node, nameof(IMain.ValueEnum)) == (int)BaseNode.CopySemantic.Value);
+
+                Controller.ChangeDiscreteValue(RootIndex, nameof(IMain.ValueEnum), (int)BaseNode.CopySemantic.Reference);
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+                Assert.That(BaseNodeHelper.NodeTreeHelper.GetEnumValue(RootNode, nameof(IMain.ValueEnum)) == (int)BaseNode.CopySemantic.Reference);
+
+                IFocusPlaceholderInner PlaceholderTreeInner = RootState.PropertyToInner(nameof(IMain.PlaceholderTree)) as IFocusPlaceholderInner;
+                IFocusPlaceholderNodeState PlaceholderTreeState = PlaceholderTreeInner.ChildState as IFocusPlaceholderNodeState;
+
+                Assert.That(BaseNodeHelper.NodeTreeHelper.GetEnumValue(PlaceholderTreeState.Node, nameof(ITree.ValueEnum)) == (int)BaseNode.CopySemantic.Value);
+
+                Controller.ChangeDiscreteValue(PlaceholderTreeState.ParentIndex, nameof(ITree.ValueEnum), (int)BaseNode.CopySemantic.Any);
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+                Assert.That(BaseNodeHelper.NodeTreeHelper.GetEnumValue(PlaceholderTreeState.Node, nameof(ITree.ValueEnum)) == (int)BaseNode.CopySemantic.Any);
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+
+                Controller.Redo();
+                Controller.Undo();
+
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FocusReplace()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFocusRootNodeIndex RootIndex;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FocusRootNodeIndex(RootNode);
+
+            IFocusController ControllerBase = FocusController.Create(RootIndex);
+            IFocusController Controller = FocusController.Create(RootIndex);
+
+            using (IFocusControllerView ControllerView0 = FocusControllerView.Create(Controller, TestDebug.CoverageFocusTemplateSet.FocusTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IFocusNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                Leaf NewItem0 = CreateLeaf(Guid.NewGuid());
+                IFocusInsertionListNodeIndex ReplacementIndex0 = new FocusInsertionListNodeIndex(RootNode, nameof(IMain.LeafPath), NewItem0, 0);
+
+                IFocusListInner LeafPathInner = RootState.PropertyToInner(nameof(IMain.LeafPath)) as IFocusListInner;
+                Assert.That(LeafPathInner != null);
+
+                int PathCount = LeafPathInner.Count;
+                Assert.That(PathCount == 2);
+
+                IFocusNodeStateReadOnlyList AllChildren0 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren0.Count == 19, $"New count: {AllChildren0.Count}");
+
+                Controller.Replace(LeafPathInner, ReplacementIndex0, out IWriteableBrowsingChildIndex NewItemIndex0);
+                Assert.That(Controller.Contains(NewItemIndex0));
+
+                Assert.That(LeafPathInner.Count == PathCount);
+                Assert.That(LeafPathInner.StateList.Count == PathCount);
+
+                IFocusPlaceholderNodeState NewItemState0 = LeafPathInner.StateList[0];
+                Assert.That(NewItemState0.Node == NewItem0);
+                Assert.That(NewItemState0.ParentIndex == NewItemIndex0);
+
+                IFocusNodeStateReadOnlyList AllChildren1 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren1.Count == AllChildren0.Count, $"New count: {AllChildren1.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+
+
+                Leaf NewItem1 = CreateLeaf(Guid.NewGuid());
+                IFocusInsertionExistingBlockNodeIndex ReplacementIndex1 = new FocusInsertionExistingBlockNodeIndex(RootNode, nameof(IMain.LeafBlocks), NewItem1, 0, 0);
+
+                IFocusBlockListInner LeafBlocksInner = RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IFocusBlockListInner;
+                Assert.That(LeafBlocksInner != null);
+
+                IFocusBlockState BlockState = LeafBlocksInner.BlockStateList[0];
+
+                int BlockNodeCount = LeafBlocksInner.Count;
+                int NodeCount = BlockState.StateList.Count;
+                Assert.That(BlockNodeCount == 4);
+
+                Controller.Replace(LeafBlocksInner, ReplacementIndex1, out IWriteableBrowsingChildIndex NewItemIndex1);
+                Assert.That(Controller.Contains(NewItemIndex1));
+
+                Assert.That(LeafBlocksInner.Count == BlockNodeCount);
+                Assert.That(BlockState.StateList.Count == NodeCount);
+
+                IFocusPlaceholderNodeState NewItemState1 = BlockState.StateList[0];
+                Assert.That(NewItemState1.Node == NewItem1);
+                Assert.That(NewItemState1.ParentIndex == NewItemIndex1);
+
+                IFocusNodeStateReadOnlyList AllChildren2 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren2.Count == AllChildren1.Count, $"New count: {AllChildren2.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+
+
+                IFocusPlaceholderInner PlaceholderTreeInner = RootState.PropertyToInner(nameof(IMain.PlaceholderTree)) as IFocusPlaceholderInner;
+                Assert.That(PlaceholderTreeInner != null);
+
+                IFocusBrowsingPlaceholderNodeIndex ExistingIndex2 = PlaceholderTreeInner.ChildState.ParentIndex as IFocusBrowsingPlaceholderNodeIndex;
+
+                Tree NewItem2 = CreateTree();
+                IFocusInsertionPlaceholderNodeIndex ReplacementIndex2;
+                ReplacementIndex2 = ExistingIndex2.ToInsertionIndex(RootNode, NewItem2) as IFocusInsertionPlaceholderNodeIndex;
+
+                Controller.Replace(PlaceholderTreeInner, ReplacementIndex2, out IWriteableBrowsingChildIndex NewItemIndex2);
+                Assert.That(Controller.Contains(NewItemIndex2));
+
+                IFocusPlaceholderNodeState NewItemState2 = PlaceholderTreeInner.ChildState as IFocusPlaceholderNodeState;
+                Assert.That(NewItemState2.Node == NewItem2);
+                Assert.That(NewItemState2.ParentIndex == NewItemIndex2);
+
+                IFocusBrowsingPlaceholderNodeIndex DuplicateExistingIndex2 = ReplacementIndex2.ToBrowsingIndex() as IFocusBrowsingPlaceholderNodeIndex;
+                Assert.That(CompareEqual.CoverIsEqual(NewItemIndex2 as IFocusBrowsingPlaceholderNodeIndex, DuplicateExistingIndex2));
+                Assert.That(CompareEqual.CoverIsEqual(DuplicateExistingIndex2, NewItemIndex2 as IFocusBrowsingPlaceholderNodeIndex));
+
+                IFocusNodeStateReadOnlyList AllChildren3 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren3.Count == AllChildren2.Count, $"New count: {AllChildren3.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+
+
+                IFocusPlaceholderInner PlaceholderLeafInner = NewItemState2.PropertyToInner(nameof(ITree.Placeholder)) as IFocusPlaceholderInner;
+                Assert.That(PlaceholderLeafInner != null);
+
+                IFocusBrowsingPlaceholderNodeIndex ExistingIndex3 = PlaceholderLeafInner.ChildState.ParentIndex as IFocusBrowsingPlaceholderNodeIndex;
+
+                Leaf NewItem3 = CreateLeaf(Guid.NewGuid());
+                IFocusInsertionPlaceholderNodeIndex ReplacementIndex3;
+                ReplacementIndex3 = ExistingIndex3.ToInsertionIndex(NewItem2, NewItem3) as IFocusInsertionPlaceholderNodeIndex;
+                Assert.That(CompareEqual.CoverIsEqual(ReplacementIndex3, ReplacementIndex3));
+
+                Controller.Replace(PlaceholderLeafInner, ReplacementIndex3, out IWriteableBrowsingChildIndex NewItemIndex3);
+                Assert.That(Controller.Contains(NewItemIndex3));
+
+                IFocusPlaceholderNodeState NewItemState3 = PlaceholderLeafInner.ChildState as IFocusPlaceholderNodeState;
+                Assert.That(NewItemState3.Node == NewItem3);
+                Assert.That(NewItemState3.ParentIndex == NewItemIndex3);
+
+                IFocusNodeStateReadOnlyList AllChildren4 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren4.Count == AllChildren3.Count, $"New count: {AllChildren4.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+
+
+
+                IFocusOptionalInner OptionalLeafInner = RootState.PropertyToInner(nameof(IMain.AssignedOptionalLeaf)) as IFocusOptionalInner;
+                Assert.That(OptionalLeafInner != null);
+
+                IFocusBrowsingOptionalNodeIndex ExistingIndex4 = OptionalLeafInner.ChildState.ParentIndex as IFocusBrowsingOptionalNodeIndex;
+
+                Leaf NewItem4 = CreateLeaf(Guid.NewGuid());
+                IFocusInsertionOptionalNodeIndex ReplacementIndex4;
+                ReplacementIndex4 = ExistingIndex4.ToInsertionIndex(RootNode, NewItem4) as IFocusInsertionOptionalNodeIndex;
+                Assert.That(ReplacementIndex4.ParentNode == RootNode);
+                Assert.That(ReplacementIndex4.PropertyName == OptionalLeafInner.PropertyName);
+                Assert.That(CompareEqual.CoverIsEqual(ReplacementIndex4, ReplacementIndex4));
+
+                Controller.Replace(OptionalLeafInner, ReplacementIndex4, out IWriteableBrowsingChildIndex NewItemIndex4);
+                Assert.That(Controller.Contains(NewItemIndex4));
+
+                Assert.That(OptionalLeafInner.IsAssigned);
+                IFocusOptionalNodeState NewItemState4 = OptionalLeafInner.ChildState as IFocusOptionalNodeState;
+                Assert.That(NewItemState4.Node == NewItem4);
+                Assert.That(NewItemState4.ParentIndex == NewItemIndex4);
+
+                IFocusBrowsingOptionalNodeIndex DuplicateExistingIndex4 = ReplacementIndex4.ToBrowsingIndex() as IFocusBrowsingOptionalNodeIndex;
+                Assert.That(CompareEqual.CoverIsEqual(NewItemIndex4 as IFocusBrowsingOptionalNodeIndex, DuplicateExistingIndex4));
+                Assert.That(CompareEqual.CoverIsEqual(DuplicateExistingIndex4, NewItemIndex4 as IFocusBrowsingOptionalNodeIndex));
+
+                IFocusNodeStateReadOnlyList AllChildren5 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren5.Count == AllChildren4.Count, $"New count: {AllChildren5.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+
+
+                IFocusBrowsingOptionalNodeIndex ExistingIndex5 = OptionalLeafInner.ChildState.ParentIndex as IFocusBrowsingOptionalNodeIndex;
+
+                Leaf NewItem5 = CreateLeaf(Guid.NewGuid());
+                IFocusInsertionOptionalClearIndex ReplacementIndex5;
+                ReplacementIndex5 = ExistingIndex5.ToInsertionIndex(RootNode, null) as IFocusInsertionOptionalClearIndex;
+                Assert.That(ReplacementIndex5.ParentNode == RootNode);
+                Assert.That(ReplacementIndex5.PropertyName == OptionalLeafInner.PropertyName);
+                Assert.That(CompareEqual.CoverIsEqual(ReplacementIndex5, ReplacementIndex5));
+
+                Controller.Replace(OptionalLeafInner, ReplacementIndex5, out IWriteableBrowsingChildIndex NewItemIndex5);
+                Assert.That(Controller.Contains(NewItemIndex5));
+
+                Assert.That(!OptionalLeafInner.IsAssigned);
+                IFocusOptionalNodeState NewItemState5 = OptionalLeafInner.ChildState as IFocusOptionalNodeState;
+                Assert.That(NewItemState5.ParentIndex == NewItemIndex5);
+
+                IFocusBrowsingOptionalNodeIndex DuplicateExistingIndex5 = ReplacementIndex5.ToBrowsingIndex() as IFocusBrowsingOptionalNodeIndex;
+                Assert.That(CompareEqual.CoverIsEqual(NewItemIndex5 as IFocusBrowsingOptionalNodeIndex, DuplicateExistingIndex5));
+                Assert.That(CompareEqual.CoverIsEqual(DuplicateExistingIndex5, NewItemIndex5 as IFocusBrowsingOptionalNodeIndex));
+
+                IFocusNodeStateReadOnlyList AllChildren6 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren6.Count == AllChildren5.Count - 1, $"New count: {AllChildren6.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+
+                Controller.Redo();
+                Controller.Undo();
+
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FocusAssign()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFocusRootNodeIndex RootIndex;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FocusRootNodeIndex(RootNode);
+
+            IFocusController ControllerBase = FocusController.Create(RootIndex);
+            IFocusController Controller = FocusController.Create(RootIndex);
+
+            //System.Diagnostics.Debug.Assert(false);
+            using (IFocusControllerView ControllerView0 = FocusControllerView.Create(Controller, TestDebug.CoverageFocusTemplateSet.FocusTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IFocusNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IFocusOptionalInner UnassignedOptionalLeafInner = RootState.PropertyToInner(nameof(IMain.UnassignedOptionalLeaf)) as IFocusOptionalInner;
+                Assert.That(UnassignedOptionalLeafInner != null);
+                Assert.That(!UnassignedOptionalLeafInner.IsAssigned);
+
+                IFocusBrowsingOptionalNodeIndex AssignmentIndex0 = UnassignedOptionalLeafInner.ChildState.ParentIndex;
+                Assert.That(AssignmentIndex0 != null);
+
+                IFocusNodeStateReadOnlyList AllChildren0 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren0.Count == 19, $"New count: {AllChildren0.Count}");
+
+                Controller.Assign(AssignmentIndex0, out bool IsChanged);
+                Assert.That(IsChanged);
+                Assert.That(UnassignedOptionalLeafInner.IsAssigned);
+
+                IFocusNodeStateReadOnlyList AllChildren1 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren1.Count == AllChildren0.Count + 1, $"New count: {AllChildren1.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Controller.Assign(AssignmentIndex0, out IsChanged);
+                Assert.That(!IsChanged);
+                Assert.That(UnassignedOptionalLeafInner.IsAssigned);
+
+                IFocusNodeStateReadOnlyList AllChildren2 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren2.Count == AllChildren1.Count, $"New count: {AllChildren2.Count}");
+
+                Controller.Unassign(AssignmentIndex0, out IsChanged);
+                Assert.That(IsChanged);
+                Assert.That(!UnassignedOptionalLeafInner.IsAssigned);
+
+                IFocusNodeStateReadOnlyList AllChildren3 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren3.Count == AllChildren2.Count - 1, $"New count: {AllChildren3.Count}");
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+
+                Controller.Redo();
+                Controller.Undo();
+
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FocusUnassign()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFocusRootNodeIndex RootIndex;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FocusRootNodeIndex(RootNode);
+
+            IFocusController ControllerBase = FocusController.Create(RootIndex);
+            IFocusController Controller = FocusController.Create(RootIndex);
+
+            using (IFocusControllerView ControllerView0 = FocusControllerView.Create(Controller, TestDebug.CoverageFocusTemplateSet.FocusTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IFocusNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IFocusOptionalInner AssignedOptionalLeafInner = RootState.PropertyToInner(nameof(IMain.AssignedOptionalLeaf)) as IFocusOptionalInner;
+                Assert.That(AssignedOptionalLeafInner != null);
+                Assert.That(AssignedOptionalLeafInner.IsAssigned);
+
+                IFocusBrowsingOptionalNodeIndex AssignmentIndex0 = AssignedOptionalLeafInner.ChildState.ParentIndex;
+                Assert.That(AssignmentIndex0 != null);
+
+                IFocusNodeStateReadOnlyList AllChildren0 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren0.Count == 19, $"New count: {AllChildren0.Count}");
+
+                Controller.Unassign(AssignmentIndex0, out bool IsChanged);
+                Assert.That(IsChanged);
+                Assert.That(!AssignedOptionalLeafInner.IsAssigned);
+
+                IFocusNodeStateReadOnlyList AllChildren1 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren1.Count == AllChildren0.Count - 1, $"New count: {AllChildren1.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Controller.Unassign(AssignmentIndex0, out IsChanged);
+                Assert.That(!IsChanged);
+                Assert.That(!AssignedOptionalLeafInner.IsAssigned);
+
+                IFocusNodeStateReadOnlyList AllChildren2 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren2.Count == AllChildren1.Count, $"New count: {AllChildren2.Count}");
+
+                Controller.Assign(AssignmentIndex0, out IsChanged);
+                Assert.That(IsChanged);
+                Assert.That(AssignedOptionalLeafInner.IsAssigned);
+
+                IFocusNodeStateReadOnlyList AllChildren3 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren3.Count == AllChildren2.Count + 1, $"New count: {AllChildren3.Count}");
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+
+                Controller.Redo();
+                Controller.Undo();
+
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FocusChangeReplication()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFocusRootNodeIndex RootIndex;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FocusRootNodeIndex(RootNode);
+
+            IFocusController ControllerBase = FocusController.Create(RootIndex);
+            IFocusController Controller = FocusController.Create(RootIndex);
+
+            using (IFocusControllerView ControllerView0 = FocusControllerView.Create(Controller, TestDebug.CoverageFocusTemplateSet.FocusTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IFocusNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IFocusBlockListInner LeafBlocksInner = RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IFocusBlockListInner;
+                Assert.That(LeafBlocksInner != null);
+
+                IFocusNodeStateReadOnlyList AllChildren0 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren0.Count == 19, $"New count: {AllChildren0.Count}");
+
+                IFocusBlockState BlockState = LeafBlocksInner.BlockStateList[0];
+                Assert.That(BlockState != null);
+                Assert.That(BlockState.ParentInner == LeafBlocksInner);
+                BaseNode.IBlock ChildBlock = BlockState.ChildBlock;
+                Assert.That(ChildBlock.Replication == BaseNode.ReplicationStatus.Normal);
+
+                Controller.ChangeReplication(LeafBlocksInner, 0, BaseNode.ReplicationStatus.Replicated);
+
+                Assert.That(ChildBlock.Replication == BaseNode.ReplicationStatus.Replicated);
+
+                IFocusNodeStateReadOnlyList AllChildren1 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren1.Count == AllChildren0.Count, $"New count: {AllChildren1.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+
+                Controller.Redo();
+                Controller.Undo();
+
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FocusSplit()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFocusRootNodeIndex RootIndex;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FocusRootNodeIndex(RootNode);
+
+            IFocusController ControllerBase = FocusController.Create(RootIndex);
+            IFocusController Controller = FocusController.Create(RootIndex);
+
+            using (IFocusControllerView ControllerView0 = FocusControllerView.Create(Controller, TestDebug.CoverageFocusTemplateSet.FocusTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IFocusNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IFocusBlockListInner LeafBlocksInner = RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IFocusBlockListInner;
+                Assert.That(LeafBlocksInner != null);
+
+                IFocusNodeStateReadOnlyList AllChildren0 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren0.Count == 19, $"New count: {AllChildren0.Count}");
+
+                IFocusBlockState BlockState0 = LeafBlocksInner.BlockStateList[0];
+                Assert.That(BlockState0 != null);
+                BaseNode.IBlock ChildBlock0 = BlockState0.ChildBlock;
+                Assert.That(ChildBlock0.NodeList.Count == 1);
+
+                IFocusBlockState BlockState1 = LeafBlocksInner.BlockStateList[1];
+                Assert.That(BlockState1 != null);
+                BaseNode.IBlock ChildBlock1 = BlockState1.ChildBlock;
+                Assert.That(ChildBlock1.NodeList.Count == 2);
+
+                Assert.That(LeafBlocksInner.Count == 4);
+                Assert.That(LeafBlocksInner.BlockStateList.Count == 3);
+
+                IFocusBrowsingExistingBlockNodeIndex SplitIndex0 = LeafBlocksInner.IndexAt(1, 1) as IFocusBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.IsSplittable(LeafBlocksInner, SplitIndex0));
+
+                Controller.SplitBlock(LeafBlocksInner, SplitIndex0);
+
+                Assert.That(LeafBlocksInner.BlockStateList.Count == 4);
+                Assert.That(ChildBlock0 == LeafBlocksInner.BlockStateList[0].ChildBlock);
+                Assert.That(ChildBlock1 == LeafBlocksInner.BlockStateList[2].ChildBlock);
+                Assert.That(ChildBlock1.NodeList.Count == 1);
+
+                IFocusBlockState BlockState12 = LeafBlocksInner.BlockStateList[1];
+                Assert.That(BlockState12.ChildBlock.NodeList.Count == 1);
+
+                IFocusNodeStateReadOnlyList AllChildren1 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren1.Count == AllChildren0.Count + 2, $"New count: {AllChildren1.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+
+                Controller.Redo();
+                Controller.Undo();
+
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FocusMerge()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFocusRootNodeIndex RootIndex;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FocusRootNodeIndex(RootNode);
+
+            IFocusController ControllerBase = FocusController.Create(RootIndex);
+            IFocusController Controller = FocusController.Create(RootIndex);
+
+            using (IFocusControllerView ControllerView0 = FocusControllerView.Create(Controller, TestDebug.CoverageFocusTemplateSet.FocusTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IFocusNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IFocusBlockListInner LeafBlocksInner = RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IFocusBlockListInner;
+                Assert.That(LeafBlocksInner != null);
+
+                IFocusNodeStateReadOnlyList AllChildren0 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren0.Count == 19, $"New count: {AllChildren0.Count}");
+
+                IFocusBlockState BlockState0 = LeafBlocksInner.BlockStateList[0];
+                Assert.That(BlockState0 != null);
+                BaseNode.IBlock ChildBlock0 = BlockState0.ChildBlock;
+                Assert.That(ChildBlock0.NodeList.Count == 1);
+
+                IFocusBlockState BlockState1 = LeafBlocksInner.BlockStateList[1];
+                Assert.That(BlockState1 != null);
+                BaseNode.IBlock ChildBlock1 = BlockState1.ChildBlock;
+                Assert.That(ChildBlock1.NodeList.Count == 2);
+
+                Assert.That(LeafBlocksInner.Count == 4);
+
+                IFocusBrowsingExistingBlockNodeIndex MergeIndex0 = LeafBlocksInner.IndexAt(1, 0) as IFocusBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.IsMergeable(LeafBlocksInner, MergeIndex0));
+
+                Assert.That(LeafBlocksInner.BlockStateList.Count == 3);
+
+                Controller.MergeBlocks(LeafBlocksInner, MergeIndex0);
+
+                Assert.That(LeafBlocksInner.BlockStateList.Count == 2);
+                Assert.That(ChildBlock1 == LeafBlocksInner.BlockStateList[0].ChildBlock);
+                Assert.That(ChildBlock1.NodeList.Count == 3);
+
+                Assert.That(LeafBlocksInner.BlockStateList[0] == BlockState1);
+
+                IFocusNodeStateReadOnlyList AllChildren1 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren1.Count == AllChildren0.Count - 2, $"New count: {AllChildren1.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+
+                Controller.Redo();
+                Controller.Undo();
+
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FocusExpand()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFocusRootNodeIndex RootIndex;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FocusRootNodeIndex(RootNode);
+
+            IFocusController ControllerBase = FocusController.Create(RootIndex);
+            IFocusController Controller = FocusController.Create(RootIndex);
+
+            using (IFocusControllerView ControllerView0 = FocusControllerView.Create(Controller, TestDebug.CoverageFocusTemplateSet.FocusTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IFocusNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IFocusNodeStateReadOnlyList AllChildren0 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren0.Count == 19, $"New count: {AllChildren0.Count}");
+
+                Controller.Expand(RootIndex, out bool IsChanged);
+                Assert.That(IsChanged);
+
+                IFocusNodeStateReadOnlyList AllChildren1 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren1.Count == AllChildren0.Count + 1, $"New count: {AllChildren1.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Controller.Expand(RootIndex, out IsChanged);
+                Assert.That(!IsChanged);
+
+                IFocusNodeStateReadOnlyList AllChildren2 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren2.Count == AllChildren1.Count, $"New count: {AllChildren2.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                IFocusOptionalInner OptionalLeafInner = RootState.PropertyToInner(nameof(IMain.AssignedOptionalLeaf)) as IFocusOptionalInner;
+                Assert.That(OptionalLeafInner != null);
+
+                IFocusInsertionOptionalClearIndex ReplacementIndex5 = new FocusInsertionOptionalClearIndex(RootNode, nameof(IMain.AssignedOptionalLeaf));
+
+                Controller.Replace(OptionalLeafInner, ReplacementIndex5, out IWriteableBrowsingChildIndex NewItemIndex5);
+                Assert.That(Controller.Contains(NewItemIndex5));
+
+                IFocusNodeStateReadOnlyList AllChildren3 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren3.Count == AllChildren2.Count - 1, $"New count: {AllChildren3.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Controller.Expand(RootIndex, out IsChanged);
+                Assert.That(IsChanged);
+
+                IFocusNodeStateReadOnlyList AllChildren4 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren4.Count == AllChildren3.Count + 1, $"New count: {AllChildren4.Count}");
+
+
+
+                IFocusBlockListInner LeafBlocksInner = RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IFocusBlockListInner;
+                Assert.That(LeafBlocksInner != null);
+
+                IFocusBrowsingExistingBlockNodeIndex RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IFocusBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IFocusBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IFocusBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IFocusBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                IFocusNodeStateReadOnlyList AllChildren5 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren5.Count == AllChildren4.Count - 10, $"New count: {AllChildren5.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+                Assert.That(LeafBlocksInner.IsEmpty);
+
+                Controller.Expand(RootIndex, out IsChanged);
+                Assert.That(!IsChanged);
+
+                IFocusNodeStateReadOnlyList AllChildren6 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren6.Count == AllChildren5.Count, $"New count: {AllChildren6.Count}");
+
+                IDictionary<Type, string[]> WithExpandCollectionTable = BaseNodeHelper.NodeHelper.WithExpandCollectionTable as IDictionary<Type, string[]>;
+                WithExpandCollectionTable.Add(typeof(IMain), new string[] { nameof(IMain.LeafBlocks) });
+
+                Controller.Expand(RootIndex, out IsChanged);
+                Assert.That(IsChanged);
+
+                IFocusNodeStateReadOnlyList AllChildren7 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren7.Count == AllChildren6.Count + 3, $"New count: {AllChildren7.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+                Assert.That(!LeafBlocksInner.IsEmpty);
+                Assert.That(LeafBlocksInner.IsSingle);
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                WithExpandCollectionTable.Remove(typeof(IMain));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+
+                Controller.Redo();
+                Controller.Undo();
+
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FocusReduce()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFocusRootNodeIndex RootIndex;
+            bool IsChanged;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FocusRootNodeIndex(RootNode);
+
+            IFocusController ControllerBase = FocusController.Create(RootIndex);
+            IFocusController Controller = FocusController.Create(RootIndex);
+
+            using (IFocusControllerView ControllerView0 = FocusControllerView.Create(Controller, TestDebug.CoverageFocusTemplateSet.FocusTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IFocusNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IFocusBlockListInner LeafBlocksInner = RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IFocusBlockListInner;
+                Assert.That(LeafBlocksInner != null);
+
+                IFocusBrowsingExistingBlockNodeIndex RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IFocusBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IFocusBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IFocusBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IFocusBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+                Assert.That(LeafBlocksInner.IsEmpty);
+
+                IFocusNodeStateReadOnlyList AllChildren0 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren0.Count == 9, $"New count: {AllChildren0.Count}");
+
+                IDictionary<Type, string[]> WithExpandCollectionTable = BaseNodeHelper.NodeHelper.WithExpandCollectionTable as IDictionary<Type, string[]>;
+                WithExpandCollectionTable.Add(typeof(IMain), new string[] { nameof(IMain.LeafBlocks) });
+
+                Controller.Expand(RootIndex, out IsChanged);
+                Assert.That(IsChanged);
+
+                IFocusNodeStateReadOnlyList AllChildren1 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren1.Count == AllChildren0.Count + 4, $"New count: {AllChildren1.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                //System.Diagnostics.Debug.Assert(false);
+                Controller.Reduce(RootIndex, out IsChanged);
+                Assert.That(IsChanged);
+
+                IFocusNodeStateReadOnlyList AllChildren2 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren2.Count == AllChildren1.Count - 7, $"New count: {AllChildren2.Count}");
+
+                Controller.Reduce(RootIndex, out IsChanged);
+                Assert.That(!IsChanged);
+
+                IFocusNodeStateReadOnlyList AllChildren3 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren3.Count == AllChildren2.Count, $"New count: {AllChildren3.Count}");
+
+                Controller.Expand(RootIndex, out IsChanged);
+                Assert.That(IsChanged);
+
+                IFocusNodeStateReadOnlyList AllChildren4 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren4.Count == AllChildren3.Count + 7, $"New count: {AllChildren4.Count}");
+
+                BaseNode.IBlock ChildBlock = LeafBlocksInner.BlockStateList[0].ChildBlock;
+                ILeaf FirstNode = ChildBlock.NodeList[0] as ILeaf;
+                Assert.That(FirstNode != null);
+                BaseNodeHelper.NodeTreeHelper.SetString(FirstNode, nameof(ILeaf.Text), "!");
+
+                //System.Diagnostics.Debug.Assert(false);
+                Controller.Reduce(RootIndex, out IsChanged);
+                Assert.That(IsChanged);
+
+                IFocusNodeStateReadOnlyList AllChildren5 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren5.Count == AllChildren4.Count - 4, $"New count: {AllChildren5.Count}");
+
+                BaseNodeHelper.NodeTreeHelper.SetString(FirstNode, nameof(ILeaf.Text), "");
+
+                //System.Diagnostics.Debug.Assert(false);
+                Controller.Reduce(RootIndex, out IsChanged);
+                Assert.That(IsChanged);
+
+                IFocusNodeStateReadOnlyList AllChildren6 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren6.Count == AllChildren5.Count - 3, $"New count: {AllChildren6.Count}");
+
+                Controller.Expand(RootIndex, out IsChanged);
+                Assert.That(IsChanged);
+
+                WithExpandCollectionTable.Remove(typeof(IMain));
+
+                //System.Diagnostics.Debug.Assert(false);
+                Controller.Reduce(RootIndex, out IsChanged);
+                Assert.That(IsChanged);
+
+                IFocusNodeStateReadOnlyList AllChildren7 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren7.Count == AllChildren6.Count + 3, $"New count: {AllChildren7.Count}");
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                WithExpandCollectionTable.Add(typeof(IMain), new string[] { nameof(IMain.LeafBlocks) });
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                WithExpandCollectionTable.Remove(typeof(IMain));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+
+                Controller.Redo();
+                Controller.Undo();
+
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FocusCanonicalize()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFocusRootNodeIndex RootIndex;
+            bool IsChanged;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FocusRootNodeIndex(RootNode);
+
+            IFocusController ControllerBase = FocusController.Create(RootIndex);
+            IFocusController Controller = FocusController.Create(RootIndex);
+
+            using (IFocusControllerView ControllerView0 = FocusControllerView.Create(Controller, TestDebug.CoverageFocusTemplateSet.FocusTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IFocusNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IFocusBlockListInner LeafBlocksInner = RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IFocusBlockListInner;
+                Assert.That(LeafBlocksInner != null);
+
+                IFocusBrowsingExistingBlockNodeIndex RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IFocusBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                Assert.That(Controller.CanUndo);
+                IFocusOperationGroup LastOperation = Controller.OperationStack[Controller.RedoIndex - 1];
+                Assert.That(LastOperation.MainOperation is IFocusRemoveOperation);
+
+                RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IFocusBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IFocusBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IFocusBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+                Assert.That(LeafBlocksInner.IsEmpty);
+
+                IFocusListInner LeafPathInner = RootState.PropertyToInner(nameof(IMain.LeafPath)) as IFocusListInner;
+                Assert.That(LeafPathInner != null);
+                Assert.That(LeafPathInner.Count == 2);
+
+                IFocusBrowsingListNodeIndex RemovedListLeafIndex = LeafPathInner.StateList[0].ParentIndex as IFocusBrowsingListNodeIndex;
+                Assert.That(Controller.Contains(RemovedListLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafPathInner, RemovedListLeafIndex));
+
+                Controller.Remove(LeafPathInner, RemovedListLeafIndex);
+                Assert.That(!Controller.Contains(RemovedListLeafIndex));
+
+                IDictionary<Type, string[]> NeverEmptyCollectionTable = BaseNodeHelper.NodeHelper.NeverEmptyCollectionTable as IDictionary<Type, string[]>;
+                NeverEmptyCollectionTable.Add(typeof(IMain), new string[] { nameof(IMain.PlaceholderTree) });
+
+                RemovedListLeafIndex = LeafPathInner.StateList[0].ParentIndex as IFocusBrowsingListNodeIndex;
+                Assert.That(Controller.Contains(RemovedListLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafPathInner, RemovedListLeafIndex));
+
+                Controller.Remove(LeafPathInner, RemovedListLeafIndex);
+                Assert.That(!Controller.Contains(RemovedListLeafIndex));
+                Assert.That(LeafPathInner.Count == 0);
+
+                NeverEmptyCollectionTable.Remove(typeof(IMain));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                IFocusNodeStateReadOnlyList AllChildren0 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren0.Count == 12, $"New count: {AllChildren0.Count}");
+
+                IDictionary<Type, string[]> WithExpandCollectionTable = BaseNodeHelper.NodeHelper.WithExpandCollectionTable as IDictionary<Type, string[]>;
+                WithExpandCollectionTable.Add(typeof(IMain), new string[] { nameof(IMain.LeafBlocks) });
+
+                //System.Diagnostics.Debug.Assert(false);
+                Controller.Expand(RootIndex, out IsChanged);
+                Assert.That(IsChanged);
+
+                IFocusNodeStateReadOnlyList AllChildren1 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren1.Count == AllChildren0.Count + 1, $"New count: {AllChildren1.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Controller.Canonicalize(out IsChanged);
+                Assert.That(IsChanged);
+
+                IFocusNodeStateReadOnlyList AllChildren2 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren2.Count == AllChildren1.Count - 4, $"New count: {AllChildren2.Count}");
+
+                Controller.Undo();
+                Controller.Redo();
+
+                Controller.Canonicalize(out IsChanged);
+                Assert.That(!IsChanged);
+
+                IFocusNodeStateReadOnlyList AllChildren3 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren3.Count == AllChildren2.Count, $"New count: {AllChildren3.Count}");
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                NeverEmptyCollectionTable.Add(typeof(IMain), new string[] { nameof(IMain.LeafBlocks) });
+                Assert.That(LeafBlocksInner.BlockStateList.Count == 1);
+                Assert.That(LeafBlocksInner.BlockStateList[0].StateList.Count == 1, LeafBlocksInner.BlockStateList[0].StateList.Count.ToString());
+
+                Controller.Canonicalize(out IsChanged);
+                Assert.That(IsChanged);
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                NeverEmptyCollectionTable.Remove(typeof(IMain));
+
+                WithExpandCollectionTable.Remove(typeof(IMain));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+
+                Controller.Redo();
+                Controller.Undo();
+
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FocusPrune()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain MainItem = CreateRoot(ValueGuid0, Imperfections.None);
+            IRoot RootNode = new Root();
+            BaseNode.IDocument RootDocument = BaseNodeHelper.NodeHelper.CreateSimpleDocumentation("root doc", Guid.NewGuid());
+            BaseNodeHelper.NodeTreeHelper.SetDocumentation(RootNode, RootDocument);
+            BaseNode.IBlockList<IMain, Main> MainBlocks = BaseNodeHelper.BlockListHelper<IMain, Main>.CreateSimpleBlockList(MainItem);
+
+            IMain UnassignedOptionalMain = CreateRoot(ValueGuid1, Imperfections.None);
+            Easly.IOptionalReference<IMain> UnassignedOptional = BaseNodeHelper.OptionalReferenceHelper<IMain>.CreateReference(UnassignedOptionalMain);
+
+            BaseNodeHelper.NodeTreeHelperBlockList.SetBlockList(RootNode, nameof(IRoot.MainBlocks), (BaseNode.IBlockList)MainBlocks);
+            BaseNodeHelper.NodeTreeHelperOptional.SetOptionalReference(RootNode, nameof(IRoot.UnassignedOptionalMain), (Easly.IOptionalReference)UnassignedOptional);
+            BaseNodeHelper.NodeTreeHelper.SetString(RootNode, nameof(IRoot.ValueString), "root string");
+
+            //System.Diagnostics.Debug.Assert(false);
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(RootNode);
+
+            IFocusController ControllerBase = FocusController.Create(RootIndex);
+            IFocusController Controller = FocusController.Create(RootIndex);
+
+            using (IFocusControllerView ControllerView0 = FocusControllerView.Create(Controller, TestDebug.CoverageFocusTemplateSet.FocusTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IFocusNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IFocusBlockListInner MainInner = RootState.PropertyToInner(nameof(IRoot.MainBlocks)) as IFocusBlockListInner;
+                Assert.That(MainInner != null);
+
+                IFocusBrowsingExistingBlockNodeIndex MainIndex = MainInner.IndexAt(0, 0) as IFocusBrowsingExistingBlockNodeIndex;
+                Controller.Remove(MainInner, MainIndex);
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+
+                Controller.Redo();
+                Controller.Undo();
+
+                MainIndex = MainInner.IndexAt(0, 0) as IFocusBrowsingExistingBlockNodeIndex;
+                Controller.Remove(MainInner, MainIndex);
+
+                Controller.Undo();
+                Controller.Redo();
+                Controller.Undo();
+
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FocusCollections()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFocusRootNodeIndex RootIndex;
+            bool IsReadOnly;
+            IReadOnlyBlockState FirstBlockState;
+            IReadOnlyBrowsingBlockNodeIndex FirstBlockNodeIndex;
+            IReadOnlyBrowsingListNodeIndex FirstListNodeIndex;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FocusRootNodeIndex(RootNode);
+
+            IFocusController ControllerBase = FocusController.Create(RootIndex);
+            IFocusController Controller = FocusController.Create(RootIndex);
+
+            IReadOnlyIndexNodeStateDictionary ControllerStateTable = DebugObjects.GetReferenceByInterface(typeof(IFocusIndexNodeStateDictionary)) as IReadOnlyIndexNodeStateDictionary;
+
+            using (IFocusControllerView ControllerView = FocusControllerView.Create(Controller, TestDebug.CoverageFocusTemplateSet.FocusTemplateSet))
+            {
+                // IReadOnlyBlockStateViewDictionary 
+                IReadOnlyBlockStateViewDictionary BlockStateViewTable = ControllerView.BlockStateViewTable;
+
+                foreach (KeyValuePair<IReadOnlyBlockState, IReadOnlyBlockStateView> Entry in BlockStateViewTable)
+                {
+                    IReadOnlyBlockStateView StateView = BlockStateViewTable[Entry.Key];
+                    BlockStateViewTable.TryGetValue(Entry.Key, out IReadOnlyBlockStateView Value);
+                    BlockStateViewTable.Contains(Entry);
+                    BlockStateViewTable.Remove(Entry.Key);
+                    BlockStateViewTable.Add(Entry.Key, Entry.Value);
+                    ICollection<IReadOnlyBlockState> Keys = BlockStateViewTable.Keys;
+                    ICollection<IReadOnlyBlockStateView> Values = BlockStateViewTable.Values;
+
+                    break;
+                }
+
+                IDictionary<IReadOnlyBlockState, IReadOnlyBlockStateView> BlockStateViewTableAsDictionary = BlockStateViewTable;
+                foreach (KeyValuePair<IReadOnlyBlockState, IReadOnlyBlockStateView> Entry in BlockStateViewTableAsDictionary)
+                {
+                    IReadOnlyBlockStateView StateView = BlockStateViewTableAsDictionary[Entry.Key];
+                    break;
+                }
+
+                ICollection<KeyValuePair<IReadOnlyBlockState, IReadOnlyBlockStateView>> BlockStateViewTableAsCollection = BlockStateViewTable;
+                IsReadOnly = BlockStateViewTableAsCollection.IsReadOnly;
+                foreach (KeyValuePair<IReadOnlyBlockState, IReadOnlyBlockStateView> Entry in BlockStateViewTableAsCollection)
+                {
+                    BlockStateViewTableAsCollection.Contains(Entry);
+                    BlockStateViewTableAsCollection.Remove(Entry);
+                    BlockStateViewTableAsCollection.Add(Entry);
+                    BlockStateViewTableAsCollection.CopyTo(new KeyValuePair<IReadOnlyBlockState, IReadOnlyBlockStateView>[BlockStateViewTableAsCollection.Count], 0);
+                    break;
+                }
+
+                IEnumerable<KeyValuePair<IReadOnlyBlockState, IReadOnlyBlockStateView>> BlockStateViewTableAsEnumerable = BlockStateViewTable;
+                foreach (KeyValuePair<IReadOnlyBlockState, IReadOnlyBlockStateView> Entry in BlockStateViewTableAsEnumerable)
+                {
+                    break;
+                }
+
+                // IFocusBlockStateList
+
+                IFocusNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IFocusBlockListInner LeafBlocksInner = RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IFocusBlockListInner;
+                Assert.That(LeafBlocksInner != null);
+
+                IReadOnlyListInner LeafPathInner = RootState.PropertyToInner(nameof(IMain.LeafPath)) as IReadOnlyListInner;
+                Assert.That(LeafPathInner != null);
+
+                IFocusPlaceholderNodeState FirstNodeState = LeafBlocksInner.FirstNodeState;
+                IFocusBlockStateList DebugBlockStateList = DebugObjects.GetReferenceByInterface(typeof(IFocusBlockStateList)) as IFocusBlockStateList;
+                if (DebugBlockStateList != null)
+                {
+                    Assert.That(DebugBlockStateList.Count > 0);
+                    IsReadOnly = ((IReadOnlyBlockStateList)DebugBlockStateList).IsReadOnly;
+                    FirstBlockState = DebugBlockStateList[0];
+                    Assert.That(DebugBlockStateList.Contains(FirstBlockState));
+                    Assert.That(DebugBlockStateList.IndexOf(FirstBlockState) == 0);
+                    DebugBlockStateList.Remove(FirstBlockState);
+                    DebugBlockStateList.Add(FirstBlockState);
+                    DebugBlockStateList.Remove(FirstBlockState);
+                    DebugBlockStateList.Insert(0, FirstBlockState);
+                    DebugBlockStateList.CopyTo((IReadOnlyBlockState[])(new IFocusBlockState[DebugBlockStateList.Count]), 0);
+
+                    IEnumerable<IReadOnlyBlockState> BlockStateListAsEnumerable = DebugBlockStateList;
+                    foreach (IReadOnlyBlockState Item in BlockStateListAsEnumerable)
+                    {
+                        break;
+                    }
+
+                    IList<IReadOnlyBlockState> BlockStateListAsIlist = DebugBlockStateList;
+                    Assert.That(BlockStateListAsIlist[0] == FirstBlockState);
+
+                    IReadOnlyList<IReadOnlyBlockState> BlockStateListAsIReadOnlylist = DebugBlockStateList;
+                    Assert.That(BlockStateListAsIReadOnlylist[0] == FirstBlockState);
+                }
+
+                IFocusBlockStateReadOnlyList BlockStateList = LeafBlocksInner.BlockStateList;
+                Assert.That(BlockStateList.Count > 0);
+                FirstBlockState = BlockStateList[0];
+                Assert.That(BlockStateList.Contains(FirstBlockState));
+                Assert.That(BlockStateList.IndexOf(FirstBlockState) == 0);
+
+                // IFocusBrowsingBlockNodeIndexList
+
+                IFocusBrowsingBlockNodeIndexList BlockNodeIndexList = LeafBlocksInner.AllIndexes() as IFocusBrowsingBlockNodeIndexList;
+                Assert.That(BlockNodeIndexList.Count > 0);
+                IsReadOnly = ((IReadOnlyBrowsingBlockNodeIndexList)BlockNodeIndexList).IsReadOnly;
+                FirstBlockNodeIndex = BlockNodeIndexList[0];
+                Assert.That(BlockNodeIndexList.Contains(FirstBlockNodeIndex));
+                Assert.That(BlockNodeIndexList.IndexOf(FirstBlockNodeIndex) == 0);
+                BlockNodeIndexList.Remove(FirstBlockNodeIndex);
+                BlockNodeIndexList.Add(FirstBlockNodeIndex);
+                BlockNodeIndexList.Remove(FirstBlockNodeIndex);
+                BlockNodeIndexList.Insert(0, FirstBlockNodeIndex);
+                BlockNodeIndexList.CopyTo((IReadOnlyBrowsingBlockNodeIndex[])(new IFocusBrowsingBlockNodeIndex[BlockNodeIndexList.Count]), 0);
+
+                IEnumerable<IReadOnlyBrowsingBlockNodeIndex> BlockNodeIndexListAsEnumerable = BlockNodeIndexList;
+                foreach (IReadOnlyBrowsingBlockNodeIndex Item in BlockNodeIndexListAsEnumerable)
+                {
+                    break;
+                }
+
+                IList<IReadOnlyBrowsingBlockNodeIndex> BlockNodeIndexListAsIlist = BlockNodeIndexList;
+                Assert.That(BlockNodeIndexListAsIlist[0] == FirstBlockNodeIndex);
+
+                IReadOnlyList<IReadOnlyBrowsingBlockNodeIndex> BlockNodeIndexListAsIReadOnlylist = BlockNodeIndexList;
+                Assert.That(BlockNodeIndexListAsIReadOnlylist[0] == FirstBlockNodeIndex);
+
+                IReadOnlyBrowsingBlockNodeIndexList BlockNodeIndexListAsReadOnly = BlockNodeIndexList;
+                Assert.That(BlockNodeIndexListAsReadOnly[0] == FirstBlockNodeIndex);
+
+                // IFocusBrowsingListNodeIndexList
+
+                IFocusBrowsingListNodeIndexList ListNodeIndexList = LeafPathInner.AllIndexes() as IFocusBrowsingListNodeIndexList;
+                Assert.That(ListNodeIndexList.Count > 0);
+                IsReadOnly = ((IReadOnlyBrowsingListNodeIndexList)ListNodeIndexList).IsReadOnly;
+                FirstListNodeIndex = ListNodeIndexList[0];
+                Assert.That(ListNodeIndexList.Contains(FirstListNodeIndex));
+                Assert.That(ListNodeIndexList.IndexOf(FirstListNodeIndex) == 0);
+                ListNodeIndexList.Remove(FirstListNodeIndex);
+                ListNodeIndexList.Add(FirstListNodeIndex);
+                ListNodeIndexList.Remove(FirstListNodeIndex);
+                ListNodeIndexList.Insert(0, FirstListNodeIndex);
+                ListNodeIndexList.CopyTo((IReadOnlyBrowsingListNodeIndex[])(new IFocusBrowsingListNodeIndex[ListNodeIndexList.Count]), 0);
+
+                IEnumerable<IReadOnlyBrowsingListNodeIndex> ListNodeIndexListAsEnumerable = ListNodeIndexList;
+                foreach (IReadOnlyBrowsingListNodeIndex Item in ListNodeIndexListAsEnumerable)
+                {
+                    break;
+                }
+
+                IList<IReadOnlyBrowsingListNodeIndex> ListNodeIndexListAsIlist = ListNodeIndexList;
+                Assert.That(ListNodeIndexListAsIlist[0] == FirstListNodeIndex);
+
+                IReadOnlyList<IReadOnlyBrowsingListNodeIndex> ListNodeIndexListAsIReadOnlylist = ListNodeIndexList;
+                Assert.That(ListNodeIndexListAsIReadOnlylist[0] == FirstListNodeIndex);
+
+                IReadOnlyBrowsingListNodeIndexList ListNodeIndexListAsReadOnly = ListNodeIndexList;
+                Assert.That(ListNodeIndexListAsReadOnly[0] == FirstListNodeIndex);
+
+                // IFocusIndexNodeStateDictionary
+                if (ControllerStateTable != null)
+                {
+                    foreach (KeyValuePair<IReadOnlyIndex, IReadOnlyNodeState> Entry in ControllerStateTable)
+                    {
+                        IReadOnlyNodeState StateView = ControllerStateTable[Entry.Key];
+                        ControllerStateTable.TryGetValue(Entry.Key, out IReadOnlyNodeState Value);
+                        ControllerStateTable.Contains(Entry);
+                        ControllerStateTable.Remove(Entry.Key);
+                        ControllerStateTable.Add(Entry.Key, Entry.Value);
+                        ICollection<IReadOnlyIndex> Keys = ControllerStateTable.Keys;
+                        ICollection<IReadOnlyNodeState> Values = ControllerStateTable.Values;
+
+                        break;
+                    }
+
+                    IDictionary<IReadOnlyIndex, IReadOnlyNodeState> ControllerStateTableAsDictionary = ControllerStateTable;
+                    foreach (KeyValuePair<IReadOnlyIndex, IReadOnlyNodeState> Entry in ControllerStateTableAsDictionary)
+                    {
+                        IReadOnlyNodeState StateView = ControllerStateTableAsDictionary[Entry.Key];
+                        Assert.That(ControllerStateTableAsDictionary.ContainsKey(Entry.Key));
+                        break;
+                    }
+
+                    ICollection<KeyValuePair<IReadOnlyIndex, IReadOnlyNodeState>> ControllerStateTableAsCollection = ControllerStateTable;
+                    IsReadOnly = ControllerStateTableAsCollection.IsReadOnly;
+                    foreach (KeyValuePair<IReadOnlyIndex, IReadOnlyNodeState> Entry in ControllerStateTableAsCollection)
+                    {
+                        ControllerStateTableAsCollection.Contains(Entry);
+                        ControllerStateTableAsCollection.Remove(Entry);
+                        ControllerStateTableAsCollection.Add(Entry);
+                        ControllerStateTableAsCollection.CopyTo(new KeyValuePair<IReadOnlyIndex, IReadOnlyNodeState>[ControllerStateTableAsCollection.Count], 0);
+                        break;
+                    }
+
+                    IEnumerable<KeyValuePair<IReadOnlyIndex, IReadOnlyNodeState>> ControllerStateTableAsEnumerable = ControllerStateTable;
+                    foreach (KeyValuePair<IReadOnlyIndex, IReadOnlyNodeState> Entry in ControllerStateTableAsEnumerable)
+                    {
+                        break;
+                    }
+                }
+
+                // IFocusIndexNodeStateReadOnlyDictionary
+
+                IReadOnlyIndexNodeStateReadOnlyDictionary StateTable = Controller.StateTable;
+                IReadOnlyDictionary<IReadOnlyIndex, IReadOnlyNodeState> StateTableAsDictionary = StateTable;
+                Assert.That(StateTable.TryGetValue(RootIndex, out IReadOnlyNodeState RootStateValue) == StateTableAsDictionary.TryGetValue(RootIndex, out IReadOnlyNodeState RootStateValueFromDictionary) && RootStateValue == RootStateValueFromDictionary);
+                Assert.That(StateTableAsDictionary.Keys != null);
+                Assert.That(StateTableAsDictionary.Values != null);
+
+                // IFocusInnerDictionary
+
+                IFocusInnerDictionary<string> InnerTableModify = DebugObjects.GetReferenceByInterface(typeof(IFocusInnerDictionary<string>)) as IFocusInnerDictionary<string>;
+                Assert.That(InnerTableModify != null);
+                Assert.That(InnerTableModify.Count > 0);
+
+                IDictionary<string, IReadOnlyInner> InnerTableModifyAsDictionary = InnerTableModify;
+                Assert.That(InnerTableModifyAsDictionary.Keys != null);
+                Assert.That(InnerTableModifyAsDictionary.Values != null);
+
+                foreach (KeyValuePair<string, IFocusInner> Entry in InnerTableModify)
+                {
+                    Assert.That(InnerTableModifyAsDictionary.ContainsKey(Entry.Key));
+                    Assert.That(InnerTableModifyAsDictionary[Entry.Key] == Entry.Value);
+                }
+
+                ICollection<KeyValuePair<string, IReadOnlyInner>> InnerTableModifyAsCollection = InnerTableModify;
+                Assert.That(!InnerTableModifyAsCollection.IsReadOnly);
+
+                IEnumerable<KeyValuePair<string, IReadOnlyInner>> InnerTableModifyAsEnumerable = InnerTableModify;
+                IEnumerator<KeyValuePair<string, IReadOnlyInner>> InnerTableModifyAsEnumerableEnumerator = InnerTableModifyAsEnumerable.GetEnumerator();
+
+                foreach (KeyValuePair<string, IReadOnlyInner> Entry in InnerTableModifyAsEnumerable)
+                {
+                    Assert.That(InnerTableModifyAsDictionary.ContainsKey(Entry.Key));
+                    Assert.That(InnerTableModifyAsDictionary[Entry.Key] == Entry.Value);
+                    Assert.That(InnerTableModify.TryGetValue(Entry.Key, out IReadOnlyInner ReadOnlyInnerValue) == InnerTableModify.TryGetValue(Entry.Key, out IFocusInner FocusInnerValue));
+
+                    Assert.That(InnerTableModify.Contains(Entry));
+                    InnerTableModify.Remove(Entry);
+                    InnerTableModify.Add(Entry);
+                    InnerTableModify.CopyTo(new KeyValuePair<string, IReadOnlyInner>[InnerTableModify.Count], 0);
+                    break;
+                }
+
+                // IFocusInnerReadOnlyDictionary
+
+                IFocusInnerReadOnlyDictionary<string> InnerTable = RootState.InnerTable;
+
+                IReadOnlyDictionary<string, IReadOnlyInner> InnerTableAsDictionary = InnerTable;
+                Assert.That(InnerTableAsDictionary.Keys != null);
+                Assert.That(InnerTableAsDictionary.Values != null);
+
+                foreach (KeyValuePair<string, IFocusInner> Entry in InnerTable)
+                {
+                    Assert.That(InnerTable.TryGetValue(Entry.Key, out IReadOnlyInner ReadOnlyInnerValue) == InnerTable.TryGetValue(Entry.Key, out IFocusInner FocusInnerValue));
+                    break;
+                }
+
+                // FocusNodeStateList
+
+                //System.Diagnostics.Debug.Assert(false);
+                FirstNodeState = LeafPathInner.FirstNodeState as IFocusPlaceholderNodeState;
+                Assert.That(FirstNodeState != null);
+
+                IFocusNodeStateList NodeStateListModify = DebugObjects.GetReferenceByInterface(typeof(IFocusNodeStateList)) as IFocusNodeStateList;
+                Assert.That(NodeStateListModify != null);
+                Assert.That(NodeStateListModify.Count > 0);
+                FirstNodeState = NodeStateListModify[0] as IFocusPlaceholderNodeState;
+                Assert.That(NodeStateListModify.Contains((IReadOnlyNodeState)FirstNodeState));
+                Assert.That(NodeStateListModify.IndexOf((IReadOnlyNodeState)FirstNodeState) == 0);
+
+                NodeStateListModify.Remove((IReadOnlyNodeState)FirstNodeState);
+                NodeStateListModify.Insert(0, (IReadOnlyNodeState)FirstNodeState);
+                NodeStateListModify.CopyTo((IReadOnlyNodeState[])(new IFocusNodeState[NodeStateListModify.Count]), 0);
+
+                IReadOnlyNodeStateList NodeStateListModifyAsReadOnly = NodeStateListModify as IReadOnlyNodeStateList;
+                Assert.That(NodeStateListModifyAsReadOnly != null);
+                Assert.That(NodeStateListModifyAsReadOnly[0] == NodeStateListModify[0]);
+
+                IList<IReadOnlyNodeState> NodeStateListModifyAsIList = NodeStateListModify as IList<IReadOnlyNodeState>;
+                Assert.That(NodeStateListModifyAsIList != null);
+                Assert.That(NodeStateListModifyAsIList[0] == NodeStateListModify[0]);
+
+                IReadOnlyList<IReadOnlyNodeState> NodeStateListModifyAsIReadOnlyList = NodeStateListModify as IReadOnlyList<IReadOnlyNodeState>;
+                Assert.That(NodeStateListModifyAsIReadOnlyList != null);
+                Assert.That(NodeStateListModifyAsIReadOnlyList[0] == NodeStateListModify[0]);
+
+                ICollection<IReadOnlyNodeState> NodeStateListModifyAsCollection = NodeStateListModify as ICollection<IReadOnlyNodeState>;
+                Assert.That(NodeStateListModifyAsCollection != null);
+                Assert.That(!NodeStateListModifyAsCollection.IsReadOnly);
+
+                IEnumerable<IReadOnlyNodeState> NodeStateListModifyAsEnumerable = NodeStateListModify as IEnumerable<IReadOnlyNodeState>;
+                Assert.That(NodeStateListModifyAsEnumerable != null);
+                Assert.That(NodeStateListModifyAsEnumerable.GetEnumerator() != null);
+
+                // FocusNodeStateReadOnlyList
+
+                IFocusNodeStateReadOnlyList NodeStateList = NodeStateListModify.ToReadOnly() as IFocusNodeStateReadOnlyList;
+                Assert.That(NodeStateList != null);
+                Assert.That(NodeStateList.Count > 0);
+                FirstNodeState = NodeStateList[0] as IFocusPlaceholderNodeState;
+                Assert.That(NodeStateList.Contains((IReadOnlyNodeState)FirstNodeState));
+                Assert.That(NodeStateList.IndexOf((IReadOnlyNodeState)FirstNodeState) == 0);
+
+                IReadOnlyList<IReadOnlyNodeState> NodeStateListAsIReadOnlyList = NodeStateList as IReadOnlyList<IReadOnlyNodeState>;
+                Assert.That(NodeStateListAsIReadOnlyList[0] == FirstNodeState);
+
+                IEnumerable<IReadOnlyNodeState> NodeStateListAsEnumerable = NodeStateList as IEnumerable<IReadOnlyNodeState>;
+                Assert.That(NodeStateListAsEnumerable != null);
+                Assert.That(NodeStateListAsEnumerable.GetEnumerator() != null);
+
+                // FocusPlaceholderNodeStateList
+
+                FirstNodeState = LeafPathInner.FirstNodeState as IFocusPlaceholderNodeState;
+                Assert.That(FirstNodeState != null);
+
+                IFocusPlaceholderNodeStateList PlaceholderNodeStateListModify = DebugObjects.GetReferenceByInterface(typeof(IFocusPlaceholderNodeStateList)) as IFocusPlaceholderNodeStateList;
+                if (PlaceholderNodeStateListModify != null)
+                {
+                    Assert.That(PlaceholderNodeStateListModify.Count > 0);
+                    FirstNodeState = PlaceholderNodeStateListModify[0] as IFocusPlaceholderNodeState;
+                    Assert.That(PlaceholderNodeStateListModify.Contains((IReadOnlyPlaceholderNodeState)FirstNodeState));
+                    Assert.That(PlaceholderNodeStateListModify.IndexOf((IReadOnlyPlaceholderNodeState)FirstNodeState) == 0);
+
+                    PlaceholderNodeStateListModify.Remove((IReadOnlyPlaceholderNodeState)FirstNodeState);
+                    PlaceholderNodeStateListModify.Add((IReadOnlyPlaceholderNodeState)FirstNodeState);
+                    PlaceholderNodeStateListModify.Remove((IReadOnlyPlaceholderNodeState)FirstNodeState);
+                    PlaceholderNodeStateListModify.Insert(0, (IReadOnlyPlaceholderNodeState)FirstNodeState);
+                    PlaceholderNodeStateListModify.CopyTo((IReadOnlyPlaceholderNodeState[])(new IFocusPlaceholderNodeState[PlaceholderNodeStateListModify.Count]), 0);
+
+                    IReadOnlyPlaceholderNodeStateList PlaceholderNodeStateListModifyAsReadOnly = PlaceholderNodeStateListModify as IReadOnlyPlaceholderNodeStateList;
+                    Assert.That(PlaceholderNodeStateListModifyAsReadOnly != null);
+                    Assert.That(PlaceholderNodeStateListModifyAsReadOnly[0] == PlaceholderNodeStateListModify[0]);
+
+                    IList<IReadOnlyPlaceholderNodeState> PlaceholderNodeStateListModifyAsIList = PlaceholderNodeStateListModify as IList<IReadOnlyPlaceholderNodeState>;
+                    Assert.That(PlaceholderNodeStateListModifyAsIList != null);
+                    Assert.That(PlaceholderNodeStateListModifyAsIList[0] == PlaceholderNodeStateListModify[0]);
+
+                    IReadOnlyList<IReadOnlyPlaceholderNodeState> PlaceholderNodeStateListModifyAsIReadOnlyList = PlaceholderNodeStateListModify as IReadOnlyList<IReadOnlyPlaceholderNodeState>;
+                    Assert.That(PlaceholderNodeStateListModifyAsIReadOnlyList != null);
+                    Assert.That(PlaceholderNodeStateListModifyAsIReadOnlyList[0] == PlaceholderNodeStateListModify[0]);
+
+                    ICollection<IReadOnlyPlaceholderNodeState> PlaceholderNodeStateListModifyAsCollection = PlaceholderNodeStateListModify as ICollection<IReadOnlyPlaceholderNodeState>;
+                    Assert.That(PlaceholderNodeStateListModifyAsCollection != null);
+                    Assert.That(!PlaceholderNodeStateListModifyAsCollection.IsReadOnly);
+
+                    IEnumerable<IReadOnlyPlaceholderNodeState> PlaceholderNodeStateListModifyAsEnumerable = PlaceholderNodeStateListModify as IEnumerable<IReadOnlyPlaceholderNodeState>;
+                    Assert.That(PlaceholderNodeStateListModifyAsEnumerable != null);
+                    Assert.That(PlaceholderNodeStateListModifyAsEnumerable.GetEnumerator() != null);
+                }
+
+                // FocusPlaceholderNodeStateReadOnlyList
+
+                IFocusPlaceholderNodeStateReadOnlyList PlaceholderNodeStateList = LeafPathInner.StateList as IFocusPlaceholderNodeStateReadOnlyList;
+                Assert.That(PlaceholderNodeStateList != null);
+                Assert.That(PlaceholderNodeStateList.Count > 0);
+                FirstNodeState = PlaceholderNodeStateList[0] as IFocusPlaceholderNodeState;
+                Assert.That(PlaceholderNodeStateList.Contains((IReadOnlyPlaceholderNodeState)FirstNodeState));
+                Assert.That(PlaceholderNodeStateList.IndexOf((IReadOnlyPlaceholderNodeState)FirstNodeState) == 0);
+
+                IReadOnlyList<IReadOnlyPlaceholderNodeState> PlaceholderNodeStateListAsIReadOnlyList = PlaceholderNodeStateList as IReadOnlyList<IReadOnlyPlaceholderNodeState>;
+                Assert.That(PlaceholderNodeStateListAsIReadOnlyList[0] == FirstNodeState);
+
+                IEnumerable<IReadOnlyPlaceholderNodeState> PlaceholderNodeStateListAsEnumerable = PlaceholderNodeStateList as IEnumerable<IReadOnlyPlaceholderNodeState>;
+                Assert.That(PlaceholderNodeStateListAsEnumerable != null);
+                Assert.That(PlaceholderNodeStateListAsEnumerable.GetEnumerator() != null);
+
+                // IFocusStateViewDictionary
+                IFocusStateViewDictionary StateViewTable = ControllerView.StateViewTable;
 
                 IDictionary<IReadOnlyNodeState, IReadOnlyNodeStateView> StateViewTableAsDictionary = StateViewTable;
                 Assert.That(StateViewTableAsDictionary != null);
