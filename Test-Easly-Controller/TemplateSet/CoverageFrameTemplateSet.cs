@@ -5,15 +5,15 @@ using System.Windows.Markup;
 
 namespace TestDebug
 {
-    public class CustomFrameTemplateSet
+    public class CoverageFrameTemplateSet
     {
         #region Init
 #if !TRAVIS
-        static CustomFrameTemplateSet()
+        static CoverageFrameTemplateSet()
         {
-            IFrameTemplateReadOnlyDictionary FrameCustomNodeTemplates = LoadTemplate(FrameTemplateListString);
-            IFrameTemplateReadOnlyDictionary FrameCustomBlockTemplates = LoadTemplate(FrameBlockTemplateString);
-            FrameTemplateSet = new FrameTemplateSet(FrameCustomNodeTemplates, FrameCustomBlockTemplates);
+            IFrameTemplateReadOnlyDictionary FrameCoverageNodeTemplates = LoadTemplate(FrameTemplateListString);
+            IFrameTemplateReadOnlyDictionary FrameCoverageBlockTemplates = LoadTemplate(FrameBlockTemplateString);
+            FrameTemplateSet = new FrameTemplateSet(FrameCoverageNodeTemplates, FrameCoverageBlockTemplates);
         }
 
         private static IFrameTemplateReadOnlyDictionary LoadTemplate(string s)
@@ -35,7 +35,7 @@ namespace TestDebug
             }
         }
 
-        private CustomFrameTemplateSet()
+        private CoverageFrameTemplateSet()
         {
         }
 #endif
@@ -52,7 +52,52 @@ namespace TestDebug
     xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""
     xmlns:xaml=""clr-namespace:EaslyController.Xaml;assembly=Easly-Controller""
     xmlns:easly=""clr-namespace:BaseNode;assembly=Easly-Language""
+    xmlns:cov=""clr-namespace:Coverage;assembly=Test-Easly-Controller""
     xmlns:const=""clr-namespace:EaslyController.Constants;assembly=Easly-Controller"">
+    <FrameNodeTemplate NodeType=""{xaml:Type cov:ILeaf}"">
+        <FrameTextValueFrame PropertyName=""Text""/>
+    </FrameNodeTemplate>
+    <FrameNodeTemplate NodeType=""{xaml:Type cov:ITree}"">
+        <FrameVerticalPanelFrame>
+            <FramePlaceholderFrame PropertyName=""Placeholder""/>
+            <FrameDiscreteFrame PropertyName=""ValueBoolean"">
+                <FrameKeywordFrame>True</FrameKeywordFrame>
+                <FrameKeywordFrame>False</FrameKeywordFrame>
+            </FrameDiscreteFrame>
+            <FrameDiscreteFrame PropertyName=""ValueEnum"">
+                <FrameKeywordFrame>Any</FrameKeywordFrame>
+                <FrameKeywordFrame>Reference</FrameKeywordFrame>
+                <FrameKeywordFrame>Value</FrameKeywordFrame>
+            </FrameDiscreteFrame>
+        </FrameVerticalPanelFrame>
+    </FrameNodeTemplate>
+    <FrameNodeTemplate NodeType=""{xaml:Type cov:IMain}"">
+        <FrameHorizontalPanelFrame>
+            <FramePlaceholderFrame PropertyName=""PlaceholderTree""/>
+            <FramePlaceholderFrame PropertyName=""PlaceholderLeaf""/>
+            <FrameOptionalFrame PropertyName=""UnassignedOptionalLeaf"" />
+            <FrameOptionalFrame PropertyName=""AssignedOptionalTree"" />
+            <FrameOptionalFrame PropertyName=""AssignedOptionalLeaf"" />
+            <FrameHorizontalBlockListFrame PropertyName=""LeafBlocks"" />
+            <FrameHorizontalListFrame PropertyName=""LeafPath"" />
+            <FrameDiscreteFrame PropertyName=""ValueBoolean"">
+                <FrameKeywordFrame>True</FrameKeywordFrame>
+                <FrameKeywordFrame>False</FrameKeywordFrame>
+            </FrameDiscreteFrame>
+            <FrameDiscreteFrame PropertyName=""ValueEnum"">
+                <FrameKeywordFrame>Any</FrameKeywordFrame>
+                <FrameKeywordFrame>Reference</FrameKeywordFrame>
+                <FrameKeywordFrame>Value</FrameKeywordFrame>
+            </FrameDiscreteFrame>
+            <FrameTextValueFrame PropertyName=""ValueString""/>
+        </FrameHorizontalPanelFrame>
+    </FrameNodeTemplate>
+    <FrameNodeTemplate NodeType=""{xaml:Type cov:IRoot}"">
+        <FrameHorizontalPanelFrame>
+            <FrameHorizontalBlockListFrame PropertyName=""MainBlocks"" />
+            <FrameOptionalFrame PropertyName=""UnassignedOptionalMain"" />
+        </FrameHorizontalPanelFrame>
+    </FrameNodeTemplate>
     <FrameNodeTemplate NodeType=""{xaml:Type easly:IAssertion}"">
         <FrameHorizontalPanelFrame>
             <FrameHorizontalPanelFrame>
@@ -1780,7 +1825,47 @@ namespace TestDebug
     xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""
     xmlns:xaml=""clr-namespace:EaslyController.Xaml;assembly=Easly-Controller""
     xmlns:easly=""clr-namespace:BaseNode;assembly=Easly-Language""
+    xmlns:cov=""clr-namespace:Coverage;assembly=Test-Easly-Controller""
     xmlns:const=""clr-namespace:EaslyController.Constants;assembly=Easly-Controller"">
+    <FrameBlockTemplate NodeType=""{xaml:Type easly:IBlock,cov:ILeaf,cov:Leaf}"">
+        <FrameHorizontalPanelFrame>
+            <FrameHorizontalPanelFrame>
+                <FrameKeywordFrame>Replicate</FrameKeywordFrame>
+                <FramePlaceholderFrame PropertyName=""ReplicationPattern""/>
+                <FrameKeywordFrame>From</FrameKeywordFrame>
+                <FramePlaceholderFrame PropertyName=""SourceIdentifier""/>
+                <FrameKeywordFrame>All</FrameKeywordFrame>
+            </FrameHorizontalPanelFrame>
+            <FrameHorizontalCollectionPlaceholderFrame/>
+            <FrameKeywordFrame Text=""end""/>
+        </FrameHorizontalPanelFrame>
+    </FrameBlockTemplate>
+    <FrameBlockTemplate NodeType=""{xaml:Type easly:IBlock,cov:ITree,cov:Tree}"">
+        <FrameHorizontalPanelFrame>
+            <FrameHorizontalPanelFrame>
+                <FrameKeywordFrame>Replicate</FrameKeywordFrame>
+                <FramePlaceholderFrame PropertyName=""ReplicationPattern""/>
+                <FrameKeywordFrame>From</FrameKeywordFrame>
+                <FramePlaceholderFrame PropertyName=""SourceIdentifier""/>
+                <FrameKeywordFrame>All</FrameKeywordFrame>
+            </FrameHorizontalPanelFrame>
+            <FrameHorizontalCollectionPlaceholderFrame/>
+            <FrameKeywordFrame Text=""end""/>
+        </FrameHorizontalPanelFrame>
+    </FrameBlockTemplate>
+    <FrameBlockTemplate NodeType=""{xaml:Type easly:IBlock,cov:IMain,cov:Main}"">
+        <FrameHorizontalPanelFrame>
+            <FrameHorizontalPanelFrame>
+                <FrameKeywordFrame>Replicate</FrameKeywordFrame>
+                <FramePlaceholderFrame PropertyName=""ReplicationPattern""/>
+                <FrameKeywordFrame>From</FrameKeywordFrame>
+                <FramePlaceholderFrame PropertyName=""SourceIdentifier""/>
+                <FrameKeywordFrame>All</FrameKeywordFrame>
+            </FrameHorizontalPanelFrame>
+            <FrameHorizontalCollectionPlaceholderFrame/>
+            <FrameKeywordFrame Text=""end""/>
+        </FrameHorizontalPanelFrame>
+    </FrameBlockTemplate>
     <FrameBlockTemplate NodeType=""{xaml:Type easly:IBlock,easly:IArgument,easly:Argument}"">
         <FrameHorizontalPanelFrame>
             <FrameHorizontalPanelFrame>

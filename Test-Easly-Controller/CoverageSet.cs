@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Threading;
 using EaslyController;
+using EaslyController.Frame;
 using EaslyController.ReadOnly;
 using EaslyController.Writeable;
 using NUnit.Framework;
@@ -2485,6 +2486,7 @@ namespace Coverage
                 IReadOnlyListInner LeafPathInner = RootState.PropertyToInner(nameof(IMain.LeafPath)) as IReadOnlyListInner;
                 Assert.That(LeafPathInner != null);
 
+                //System.Diagnostics.Debug.Assert(false);
                 IWriteablePlaceholderNodeState FirstNodeState = LeafBlocksInner.FirstNodeState;
                 IWriteableBlockStateList DebugBlockStateList = DebugObjects.GetReferenceByInterface(typeof(IWriteableBlockStateList)) as IWriteableBlockStateList;
                 if (DebugBlockStateList != null)
@@ -2629,6 +2631,7 @@ namespace Coverage
 
                 // IWriteableInnerDictionary
 
+                //System.Diagnostics.Debug.Assert(false);
                 IWriteableInnerDictionary<string> InnerTableModify = DebugObjects.GetReferenceByInterface(typeof(IWriteableInnerDictionary<string>)) as IWriteableInnerDictionary<string>;
                 Assert.That(InnerTableModify != null);
                 Assert.That(InnerTableModify.Count > 0);
@@ -2678,7 +2681,6 @@ namespace Coverage
 
                 // WriteableNodeStateList
 
-                //System.Diagnostics.Debug.Assert(false);
                 FirstNodeState = LeafPathInner.FirstNodeState as IWriteablePlaceholderNodeState;
                 Assert.That(FirstNodeState != null);
 
@@ -2788,6 +2790,2331 @@ namespace Coverage
 
                 // IWriteableStateViewDictionary
                 IWriteableStateViewDictionary StateViewTable = ControllerView.StateViewTable;
+
+                IDictionary<IReadOnlyNodeState, IReadOnlyNodeStateView> StateViewTableAsDictionary = StateViewTable;
+                Assert.That(StateViewTableAsDictionary != null);
+                Assert.That(StateViewTableAsDictionary.TryGetValue(RootState, out IReadOnlyNodeStateView StateViewTableAsDictionaryValue) == StateViewTable.TryGetValue(RootState, out IReadOnlyNodeStateView StateViewTableValue));
+                Assert.That(StateViewTableAsDictionary.Keys != null);
+                Assert.That(StateViewTableAsDictionary.Values != null);
+
+                ICollection<KeyValuePair<IReadOnlyNodeState, IReadOnlyNodeStateView>> StateViewTableAsCollection = StateViewTable;
+                Assert.That(!StateViewTableAsCollection.IsReadOnly);
+
+                foreach (KeyValuePair<IReadOnlyNodeState, IReadOnlyNodeStateView> Entry in StateViewTableAsCollection)
+                {
+                    Assert.That(StateViewTableAsCollection.Contains(Entry));
+                    StateViewTableAsCollection.Remove(Entry);
+                    StateViewTableAsCollection.Add(Entry);
+                    StateViewTableAsCollection.CopyTo(new KeyValuePair<IReadOnlyNodeState, IReadOnlyNodeStateView>[StateViewTable.Count], 0);
+                    break;
+                }
+            }
+        }
+        #endregion
+
+        #region Frame
+        [Test]
+        [Category("Coverage")]
+        public static void FrameCreation()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFrameRootNodeIndex RootIndex;
+            IFrameController Controller;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+            try
+            {
+                RootIndex = new FrameRootNodeIndex(RootNode);
+                Controller = FrameController.Create(RootIndex);
+            }
+            catch (Exception e)
+            {
+                Assert.Fail($"#0: {e}");
+            }
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.BadGuid);
+            Assert.That(!BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+            try
+            {
+                RootIndex = new FrameRootNodeIndex(RootNode);
+                Assert.Fail($"#1: no exception");
+            }
+            catch (ArgumentException e)
+            {
+                Assert.That(e.Message == "node", $"#1: wrong exception message '{e.Message}'");
+            }
+            catch (Exception e)
+            {
+                Assert.Fail($"#1: {e}");
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FrameProperties()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFrameRootNodeIndex RootIndex0;
+            IFrameRootNodeIndex RootIndex1;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+            RootIndex0 = new FrameRootNodeIndex(RootNode);
+            Assert.That(RootIndex0.Node == RootNode);
+            Assert.That(RootIndex0.IsEqual(CompareEqual.New(), RootIndex0));
+
+            RootIndex1 = new FrameRootNodeIndex(RootNode);
+            Assert.That(RootIndex1.Node == RootNode);
+            Assert.That(CompareEqual.CoverIsEqual(RootIndex0, RootIndex1));
+
+            IFrameController Controller0 = FrameController.Create(RootIndex0);
+            Assert.That(Controller0.RootIndex == RootIndex0);
+
+            Stats Stats = Controller0.Stats;
+            Assert.That(Stats.NodeCount >= 0);
+            Assert.That(Stats.PlaceholderNodeCount >= 0);
+            Assert.That(Stats.OptionalNodeCount >= 0);
+            Assert.That(Stats.AssignedOptionalNodeCount >= 0);
+            Assert.That(Stats.ListCount >= 0);
+            Assert.That(Stats.BlockListCount >= 0);
+            Assert.That(Stats.BlockCount >= 0);
+
+            IFramePlaceholderNodeState RootState = Controller0.RootState;
+            Assert.That(RootState.ParentIndex == RootIndex0);
+
+            Assert.That(Controller0.Contains(RootIndex0));
+            Assert.That(Controller0.IndexToState(RootIndex0) == RootState);
+
+            Assert.That(RootState.InnerTable.Count == 7);
+            Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.PlaceholderTree)));
+            Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.PlaceholderLeaf)));
+            Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.UnassignedOptionalLeaf)));
+            Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.AssignedOptionalTree)));
+            Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.AssignedOptionalLeaf)));
+            Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.LeafBlocks)));
+            Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.LeafPath)));
+
+            IFramePlaceholderInner MainPlaceholderTreeInner = RootState.PropertyToInner(nameof(IMain.PlaceholderTree)) as IFramePlaceholderInner;
+            Assert.That(MainPlaceholderTreeInner != null);
+            Assert.That(MainPlaceholderTreeInner.InterfaceType == typeof(ITree));
+            Assert.That(MainPlaceholderTreeInner.ChildState != null);
+            Assert.That(MainPlaceholderTreeInner.ChildState.ParentInner == MainPlaceholderTreeInner);
+
+            IFramePlaceholderInner MainPlaceholderLeafInner = RootState.PropertyToInner(nameof(IMain.PlaceholderLeaf)) as IFramePlaceholderInner;
+            Assert.That(MainPlaceholderLeafInner != null);
+            Assert.That(MainPlaceholderLeafInner.InterfaceType == typeof(ILeaf));
+            Assert.That(MainPlaceholderLeafInner.ChildState != null);
+            Assert.That(MainPlaceholderLeafInner.ChildState.ParentInner == MainPlaceholderLeafInner);
+
+            IFrameOptionalInner MainUnassignedOptionalInner = RootState.PropertyToInner(nameof(IMain.UnassignedOptionalLeaf)) as IFrameOptionalInner;
+            Assert.That(MainUnassignedOptionalInner != null);
+            Assert.That(MainUnassignedOptionalInner.InterfaceType == typeof(ILeaf));
+            Assert.That(!MainUnassignedOptionalInner.IsAssigned);
+            Assert.That(MainUnassignedOptionalInner.ChildState != null);
+            Assert.That(MainUnassignedOptionalInner.ChildState.ParentInner == MainUnassignedOptionalInner);
+
+            IFrameOptionalInner MainAssignedOptionalTreeInner = RootState.PropertyToInner(nameof(IMain.AssignedOptionalTree)) as IFrameOptionalInner;
+            Assert.That(MainAssignedOptionalTreeInner != null);
+            Assert.That(MainAssignedOptionalTreeInner.InterfaceType == typeof(ITree));
+            Assert.That(MainAssignedOptionalTreeInner.IsAssigned);
+
+            IFrameNodeState AssignedOptionalTreeState = MainAssignedOptionalTreeInner.ChildState;
+            Assert.That(AssignedOptionalTreeState != null);
+            Assert.That(AssignedOptionalTreeState.ParentInner == MainAssignedOptionalTreeInner);
+            Assert.That(AssignedOptionalTreeState.ParentState == RootState);
+
+            IFrameNodeStateReadOnlyList AssignedOptionalTreeAllChildren = AssignedOptionalTreeState.GetAllChildren() as IFrameNodeStateReadOnlyList;
+            Assert.That(AssignedOptionalTreeAllChildren != null);
+            Assert.That(AssignedOptionalTreeAllChildren.Count == 2, $"New count: {AssignedOptionalTreeAllChildren.Count}");
+
+            IFrameOptionalInner MainAssignedOptionalLeafInner = RootState.PropertyToInner(nameof(IMain.AssignedOptionalLeaf)) as IFrameOptionalInner;
+            Assert.That(MainAssignedOptionalLeafInner != null);
+            Assert.That(MainAssignedOptionalLeafInner.InterfaceType == typeof(ILeaf));
+            Assert.That(MainAssignedOptionalLeafInner.IsAssigned);
+            Assert.That(MainAssignedOptionalLeafInner.ChildState != null);
+            Assert.That(MainAssignedOptionalLeafInner.ChildState.ParentInner == MainAssignedOptionalLeafInner);
+
+            IFrameBlockListInner MainLeafBlocksInner = RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IFrameBlockListInner;
+            Assert.That(MainLeafBlocksInner != null);
+            Assert.That(!MainLeafBlocksInner.IsNeverEmpty);
+            Assert.That(!MainLeafBlocksInner.IsEmpty);
+            Assert.That(!MainLeafBlocksInner.IsSingle);
+            Assert.That(MainLeafBlocksInner.InterfaceType == typeof(ILeaf));
+            Assert.That(MainLeafBlocksInner.BlockType == typeof(BaseNode.IBlock<ILeaf, Leaf>));
+            Assert.That(MainLeafBlocksInner.ItemType == typeof(Leaf));
+            Assert.That(MainLeafBlocksInner.Count == 4);
+            Assert.That(MainLeafBlocksInner.BlockStateList != null);
+            Assert.That(MainLeafBlocksInner.BlockStateList.Count == 3);
+            Assert.That(MainLeafBlocksInner.AllIndexes().Count == MainLeafBlocksInner.Count);
+
+            IFrameBlockState LeafBlock = MainLeafBlocksInner.BlockStateList[0];
+            Assert.That(LeafBlock != null);
+            Assert.That(LeafBlock.StateList != null);
+            Assert.That(LeafBlock.StateList.Count == 1);
+            Assert.That(MainLeafBlocksInner.FirstNodeState == LeafBlock.StateList[0]);
+            Assert.That(MainLeafBlocksInner.IndexAt(0, 0) == MainLeafBlocksInner.FirstNodeState.ParentIndex);
+
+            IFramePlaceholderInner PatternInner = LeafBlock.PropertyToInner(nameof(BaseNode.IBlock.ReplicationPattern)) as IFramePlaceholderInner;
+            Assert.That(PatternInner != null);
+
+            IFramePlaceholderInner SourceInner = LeafBlock.PropertyToInner(nameof(BaseNode.IBlock.SourceIdentifier)) as IFramePlaceholderInner;
+            Assert.That(SourceInner != null);
+
+            IFramePatternState PatternState = LeafBlock.PatternState;
+            Assert.That(PatternState != null);
+            Assert.That(PatternState.ParentBlockState == LeafBlock);
+            Assert.That(PatternState.ParentInner == PatternInner);
+            Assert.That(PatternState.ParentIndex == LeafBlock.PatternIndex);
+            Assert.That(PatternState.ParentState == RootState);
+            Assert.That(PatternState.InnerTable.Count == 0);
+            Assert.That(PatternState is IFramePlaceholderNodeState AsPlaceholderPatternNodeState && AsPlaceholderPatternNodeState.ParentIndex == LeafBlock.PatternIndex);
+            Assert.That(PatternState.GetAllChildren().Count == 1);
+
+            IFrameSourceState SourceState = LeafBlock.SourceState;
+            Assert.That(SourceState != null);
+            Assert.That(SourceState.ParentBlockState == LeafBlock);
+            Assert.That(SourceState.ParentInner == SourceInner);
+            Assert.That(SourceState.ParentIndex == LeafBlock.SourceIndex);
+            Assert.That(SourceState.ParentState == RootState);
+            Assert.That(SourceState.InnerTable.Count == 0);
+            Assert.That(SourceState is IFramePlaceholderNodeState AsPlaceholderSourceNodeState && AsPlaceholderSourceNodeState.ParentIndex == LeafBlock.SourceIndex);
+            Assert.That(SourceState.GetAllChildren().Count == 1);
+
+            Assert.That(MainLeafBlocksInner.FirstNodeState == LeafBlock.StateList[0]);
+
+            IFrameListInner MainLeafPathInner = RootState.PropertyToInner(nameof(IMain.LeafPath)) as IFrameListInner;
+            Assert.That(MainLeafPathInner != null);
+            Assert.That(!MainLeafPathInner.IsNeverEmpty);
+            Assert.That(MainLeafPathInner.InterfaceType == typeof(ILeaf));
+            Assert.That(MainLeafPathInner.Count == 2);
+            Assert.That(MainLeafPathInner.StateList != null);
+            Assert.That(MainLeafPathInner.StateList.Count == 2);
+            Assert.That(MainLeafPathInner.FirstNodeState == MainLeafPathInner.StateList[0]);
+            Assert.That(MainLeafPathInner.IndexAt(0) == MainLeafPathInner.FirstNodeState.ParentIndex);
+            Assert.That(MainLeafPathInner.AllIndexes().Count == MainLeafPathInner.Count);
+
+            IFrameNodeStateReadOnlyList AllChildren = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+            Assert.That(AllChildren.Count == 19, $"New count: {AllChildren.Count}");
+
+            IFramePlaceholderInner PlaceholderInner = RootState.InnerTable[nameof(IMain.PlaceholderLeaf)] as IFramePlaceholderInner;
+            Assert.That(PlaceholderInner != null);
+
+            IFrameBrowsingPlaceholderNodeIndex PlaceholderNodeIndex = PlaceholderInner.ChildState.ParentIndex as IFrameBrowsingPlaceholderNodeIndex;
+            Assert.That(PlaceholderNodeIndex != null);
+            Assert.That(Controller0.Contains(PlaceholderNodeIndex));
+
+            IFrameOptionalInner UnassignedOptionalInner = RootState.InnerTable[nameof(IMain.UnassignedOptionalLeaf)] as IFrameOptionalInner;
+            Assert.That(UnassignedOptionalInner != null);
+
+            IFrameBrowsingOptionalNodeIndex UnassignedOptionalNodeIndex = UnassignedOptionalInner.ChildState.ParentIndex;
+            Assert.That(UnassignedOptionalNodeIndex != null);
+            Assert.That(Controller0.Contains(UnassignedOptionalNodeIndex));
+            Assert.That(Controller0.IsAssigned(UnassignedOptionalNodeIndex) == false);
+
+            IFrameOptionalInner AssignedOptionalInner = RootState.InnerTable[nameof(IMain.AssignedOptionalLeaf)] as IFrameOptionalInner;
+            Assert.That(AssignedOptionalInner != null);
+
+            IFrameBrowsingOptionalNodeIndex AssignedOptionalNodeIndex = AssignedOptionalInner.ChildState.ParentIndex;
+            Assert.That(AssignedOptionalNodeIndex != null);
+            Assert.That(Controller0.Contains(AssignedOptionalNodeIndex));
+            Assert.That(Controller0.IsAssigned(AssignedOptionalNodeIndex) == true);
+
+            int Min, Max;
+            object ReadValue;
+
+            RootState.PropertyToValue(nameof(IMain.ValueBoolean), out ReadValue, out Min, out Max);
+            bool ReadAsBoolean = ((int)ReadValue) != 0;
+            Assert.That(ReadAsBoolean == true);
+            Assert.That(Controller0.GetDiscreteValue(RootIndex0, nameof(IMain.ValueBoolean)) == (ReadAsBoolean ? 1 : 0));
+            Assert.That(Min == 0);
+            Assert.That(Max == 1);
+
+            RootState.PropertyToValue(nameof(IMain.ValueEnum), out ReadValue, out Min, out Max);
+            BaseNode.CopySemantic ReadAsEnum = (BaseNode.CopySemantic)(int)ReadValue;
+            Assert.That(ReadAsEnum == BaseNode.CopySemantic.Value);
+            Assert.That(Controller0.GetDiscreteValue(RootIndex0, nameof(IMain.ValueEnum)) == (int)ReadAsEnum);
+            Assert.That(Min == 0);
+            Assert.That(Max == 2);
+
+            RootState.PropertyToValue(nameof(IMain.ValueString), out ReadValue, out Min, out Max);
+            string ReadAsString = ReadValue as string;
+            Assert.That(ReadAsString == "string");
+            Assert.That(Controller0.GetStringValue(RootIndex0, nameof(IMain.ValueString)) == ReadAsString);
+
+            RootState.PropertyToValue(nameof(IMain.ValueGuid), out ReadValue, out Min, out Max);
+            Guid ReadAsGuid = (Guid)ReadValue;
+            Assert.That(ReadAsGuid == ValueGuid0);
+            Assert.That(Controller0.GetGuidValue(RootIndex0, nameof(IMain.ValueGuid)) == ReadAsGuid);
+
+            IFrameController Controller1 = FrameController.Create(RootIndex0);
+            Assert.That(Controller0.IsEqual(CompareEqual.New(), Controller0));
+
+            //System.Diagnostics.Debug.Assert(false);
+            Assert.That(CompareEqual.CoverIsEqual(Controller0, Controller1));
+
+            Assert.That(!Controller0.CanUndo);
+            Assert.That(!Controller0.CanRedo);
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FrameClone()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+
+            IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(RootNode);
+            Assert.That(RootIndex != null);
+
+            IFrameController Controller = FrameController.Create(RootIndex);
+            Assert.That(Controller != null);
+
+            IFramePlaceholderNodeState RootState = Controller.RootState;
+            Assert.That(RootState != null);
+
+            BaseNode.INode ClonedNode = RootState.CloneNode();
+            Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(ClonedNode));
+
+            IFrameRootNodeIndex CloneRootIndex = new FrameRootNodeIndex(ClonedNode);
+            Assert.That(CloneRootIndex != null);
+
+            IFrameController CloneController = FrameController.Create(CloneRootIndex);
+            Assert.That(CloneController != null);
+
+            IFramePlaceholderNodeState CloneRootState = Controller.RootState;
+            Assert.That(CloneRootState != null);
+
+            IFrameNodeStateReadOnlyList AllChildren = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+            IFrameNodeStateReadOnlyList CloneAllChildren = (IFrameNodeStateReadOnlyList)CloneRootState.GetAllChildren();
+            Assert.That(AllChildren.Count == CloneAllChildren.Count);
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FrameViews()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFrameRootNodeIndex RootIndex;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FrameRootNodeIndex(RootNode);
+
+            IFrameController Controller = FrameController.Create(RootIndex);
+
+            using (IFrameControllerView ControllerView0 = FrameControllerView.Create(Controller, TestDebug.CoverageFrameTemplateSet.FrameTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                using (IFrameControllerView ControllerView1 = FrameControllerView.Create(Controller, TestDebug.CoverageFrameTemplateSet.FrameTemplateSet))
+                {
+                    Assert.That(ControllerView0.IsEqual(CompareEqual.New(), ControllerView0));
+                    Assert.That(CompareEqual.CoverIsEqual(ControllerView0, ControllerView1));
+                }
+
+                foreach (KeyValuePair<IFrameBlockState, IFrameBlockStateView> Entry in ControllerView0.BlockStateViewTable)
+                {
+                    IFrameBlockState BlockState = Entry.Key;
+                    Assert.That(BlockState != null);
+
+                    IFrameBlockStateView BlockStateView = Entry.Value;
+                    Assert.That(BlockStateView != null);
+                    Assert.That(BlockStateView.BlockState == BlockState);
+
+                    Assert.That(BlockStateView.ControllerView == ControllerView0);
+                }
+
+                foreach (KeyValuePair<IFrameNodeState, IFrameNodeStateView> Entry in ControllerView0.StateViewTable)
+                {
+                    IFrameNodeState State = Entry.Key;
+                    Assert.That(State != null);
+
+                    IFrameNodeStateView StateView = Entry.Value;
+                    Assert.That(StateView != null);
+                    Assert.That(StateView.State == State);
+
+                    IFrameIndex ParentIndex = State.ParentIndex;
+                    Assert.That(ParentIndex != null);
+
+                    Assert.That(Controller.Contains(ParentIndex));
+                    Assert.That(StateView.ControllerView == ControllerView0);
+
+                    switch (StateView)
+                    {
+                        case IFramePatternStateView AsPatternStateView:
+                            Assert.That(AsPatternStateView.State == State);
+                            Assert.That(AsPatternStateView is IFramePlaceholderNodeStateView AsPlaceholderPatternNodeStateView && AsPlaceholderPatternNodeStateView.State == State);
+                            break;
+
+                        case IFrameSourceStateView AsSourceStateView:
+                            Assert.That(AsSourceStateView.State == State);
+                            Assert.That(AsSourceStateView is IFramePlaceholderNodeStateView AsPlaceholderSourceNodeStateView && AsPlaceholderSourceNodeStateView.State == State);
+                            break;
+
+                        case IFramePlaceholderNodeStateView AsPlaceholderNodeStateView:
+                            Assert.That(AsPlaceholderNodeStateView.State == State);
+                            break;
+
+                        case IFrameOptionalNodeStateView AsOptionalNodeStateView:
+                            Assert.That(AsOptionalNodeStateView.State == State);
+                            break;
+                    }
+                }
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FrameInsert()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFrameRootNodeIndex RootIndex;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FrameRootNodeIndex(RootNode);
+
+            IFrameController ControllerBase = FrameController.Create(RootIndex);
+            IFrameController Controller = FrameController.Create(RootIndex);
+
+            using (IFrameControllerView ControllerView0 = FrameControllerView.Create(Controller, TestDebug.CoverageFrameTemplateSet.FrameTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IFrameNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IFrameListInner LeafPathInner = RootState.PropertyToInner(nameof(IMain.LeafPath)) as IFrameListInner;
+                Assert.That(LeafPathInner != null);
+
+                int PathCount = LeafPathInner.Count;
+                Assert.That(PathCount == 2);
+
+                IFrameBrowsingListNodeIndex ExistingIndex = LeafPathInner.IndexAt(0) as IFrameBrowsingListNodeIndex;
+
+                Leaf NewItem0 = CreateLeaf(Guid.NewGuid());
+
+                IFrameInsertionListNodeIndex InsertionIndex0;
+                InsertionIndex0 = ExistingIndex.ToInsertionIndex(RootNode, NewItem0) as IFrameInsertionListNodeIndex;
+                Assert.That(InsertionIndex0.ParentNode == RootNode);
+                Assert.That(InsertionIndex0.Node == NewItem0);
+                Assert.That(CompareEqual.CoverIsEqual(InsertionIndex0, InsertionIndex0));
+
+                IFrameNodeStateReadOnlyList AllChildren0 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren0.Count == 19, $"New count: {AllChildren0.Count}");
+
+                Controller.Insert(LeafPathInner, InsertionIndex0, out IWriteableBrowsingCollectionNodeIndex NewItemIndex0);
+                Assert.That(Controller.Contains(NewItemIndex0));
+
+                IFrameBrowsingListNodeIndex DuplicateExistingIndex0 = InsertionIndex0.ToBrowsingIndex() as IFrameBrowsingListNodeIndex;
+                Assert.That(CompareEqual.CoverIsEqual(NewItemIndex0 as IFrameBrowsingListNodeIndex, DuplicateExistingIndex0));
+                Assert.That(CompareEqual.CoverIsEqual(DuplicateExistingIndex0, NewItemIndex0 as IFrameBrowsingListNodeIndex));
+
+                Assert.That(LeafPathInner.Count == PathCount + 1);
+                Assert.That(LeafPathInner.StateList.Count == PathCount + 1);
+
+                IFramePlaceholderNodeState NewItemState0 = LeafPathInner.StateList[0];
+                Assert.That(NewItemState0.Node == NewItem0);
+                Assert.That(NewItemState0.ParentIndex == NewItemIndex0);
+
+                IFrameNodeStateReadOnlyList AllChildren1 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren1.Count == AllChildren0.Count + 1, $"New count: {AllChildren1.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+
+
+                IFrameBlockListInner LeafBlocksInner = RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IFrameBlockListInner;
+                Assert.That(LeafBlocksInner != null);
+
+                int BlockNodeCount = LeafBlocksInner.Count;
+                int NodeCount = LeafBlocksInner.BlockStateList[0].StateList.Count;
+                Assert.That(BlockNodeCount == 4);
+
+                IFrameBrowsingExistingBlockNodeIndex ExistingIndex1 = LeafBlocksInner.IndexAt(0, 0) as IFrameBrowsingExistingBlockNodeIndex;
+
+                Leaf NewItem1 = CreateLeaf(Guid.NewGuid());
+                IFrameInsertionExistingBlockNodeIndex InsertionIndex1;
+                InsertionIndex1 = ExistingIndex1.ToInsertionIndex(RootNode, NewItem1) as IFrameInsertionExistingBlockNodeIndex;
+                Assert.That(InsertionIndex1.ParentNode == RootNode);
+                Assert.That(InsertionIndex1.Node == NewItem1);
+                Assert.That(CompareEqual.CoverIsEqual(InsertionIndex1, InsertionIndex1));
+
+                Controller.Insert(LeafBlocksInner, InsertionIndex1, out IWriteableBrowsingCollectionNodeIndex NewItemIndex1);
+                Assert.That(Controller.Contains(NewItemIndex1));
+
+                IFrameBrowsingExistingBlockNodeIndex DuplicateExistingIndex1 = InsertionIndex1.ToBrowsingIndex() as IFrameBrowsingExistingBlockNodeIndex;
+                Assert.That(CompareEqual.CoverIsEqual(NewItemIndex1 as IFrameBrowsingExistingBlockNodeIndex, DuplicateExistingIndex1));
+                Assert.That(CompareEqual.CoverIsEqual(DuplicateExistingIndex1, NewItemIndex1 as IFrameBrowsingExistingBlockNodeIndex));
+
+                Assert.That(LeafBlocksInner.Count == BlockNodeCount + 1);
+                Assert.That(LeafBlocksInner.BlockStateList[0].StateList.Count == NodeCount + 1);
+
+                IFramePlaceholderNodeState NewItemState1 = LeafBlocksInner.BlockStateList[0].StateList[0];
+                Assert.That(NewItemState1.Node == NewItem1);
+                Assert.That(NewItemState1.ParentIndex == NewItemIndex1);
+                Assert.That(NewItemState1.ParentState == RootState);
+
+                IFrameNodeStateReadOnlyList AllChildren2 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren2.Count == AllChildren1.Count + 1, $"New count: {AllChildren2.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+
+
+
+                Leaf NewItem2 = CreateLeaf(Guid.NewGuid());
+                BaseNode.IPattern NewPattern = BaseNodeHelper.NodeHelper.CreateSimplePattern("");
+                BaseNode.IIdentifier NewSource = BaseNodeHelper.NodeHelper.CreateSimpleIdentifier("");
+
+                IFrameInsertionNewBlockNodeIndex InsertionIndex2 = new FrameInsertionNewBlockNodeIndex(RootNode, nameof(IMain.LeafBlocks), NewItem2, 0, NewPattern, NewSource);
+                Assert.That(CompareEqual.CoverIsEqual(InsertionIndex2, InsertionIndex2));
+
+                int BlockCount = LeafBlocksInner.BlockStateList.Count;
+                Assert.That(BlockCount == 3);
+
+                Controller.Insert(LeafBlocksInner, InsertionIndex2, out IWriteableBrowsingCollectionNodeIndex NewItemIndex2);
+                Assert.That(Controller.Contains(NewItemIndex2));
+
+                IFrameBrowsingExistingBlockNodeIndex DuplicateExistingIndex2 = InsertionIndex2.ToBrowsingIndex() as IFrameBrowsingExistingBlockNodeIndex;
+                Assert.That(CompareEqual.CoverIsEqual(NewItemIndex2 as IFrameBrowsingExistingBlockNodeIndex, DuplicateExistingIndex2));
+                Assert.That(CompareEqual.CoverIsEqual(DuplicateExistingIndex2, NewItemIndex2 as IFrameBrowsingExistingBlockNodeIndex));
+
+                Assert.That(LeafBlocksInner.Count == BlockNodeCount + 2);
+                Assert.That(LeafBlocksInner.BlockStateList.Count == BlockCount + 1);
+                Assert.That(LeafBlocksInner.BlockStateList[0].StateList.Count == 1, $"Count: {LeafBlocksInner.BlockStateList[0].StateList.Count}");
+                Assert.That(LeafBlocksInner.BlockStateList[1].StateList.Count == 2, $"Count: {LeafBlocksInner.BlockStateList[1].StateList.Count}");
+                Assert.That(LeafBlocksInner.BlockStateList[2].StateList.Count == 2, $"Count: {LeafBlocksInner.BlockStateList[2].StateList.Count}");
+
+                IFramePlaceholderNodeState NewItemState2 = LeafBlocksInner.BlockStateList[0].StateList[0];
+                Assert.That(NewItemState2.Node == NewItem2);
+                Assert.That(NewItemState2.ParentIndex == NewItemIndex2);
+
+                IFrameNodeStateReadOnlyList AllChildren3 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren3.Count == AllChildren2.Count + 3, $"New count: {AllChildren3.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+
+                Controller.Redo();
+                Controller.Undo();
+
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FrameRemove()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFrameRootNodeIndex RootIndex;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FrameRootNodeIndex(RootNode);
+
+            IFrameController ControllerBase = FrameController.Create(RootIndex);
+            IFrameController Controller = FrameController.Create(RootIndex);
+
+            using (IFrameControllerView ControllerView0 = FrameControllerView.Create(Controller, TestDebug.CoverageFrameTemplateSet.FrameTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IFrameNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IFrameListInner LeafPathInner = RootState.PropertyToInner(nameof(IMain.LeafPath)) as IFrameListInner;
+                Assert.That(LeafPathInner != null);
+
+                IFrameBrowsingListNodeIndex RemovedLeafIndex0 = LeafPathInner.StateList[0].ParentIndex as IFrameBrowsingListNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex0));
+
+                int PathCount = LeafPathInner.Count;
+                Assert.That(PathCount == 2);
+
+                IFrameNodeStateReadOnlyList AllChildren0 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren0.Count == 19, $"New count: {AllChildren0.Count}");
+
+                Assert.That(Controller.IsRemoveable(LeafPathInner, RemovedLeafIndex0));
+
+                Controller.Remove(LeafPathInner, RemovedLeafIndex0);
+                Assert.That(!Controller.Contains(RemovedLeafIndex0));
+
+                Assert.That(LeafPathInner.Count == PathCount - 1);
+                Assert.That(LeafPathInner.StateList.Count == PathCount - 1);
+
+                IFrameNodeStateReadOnlyList AllChildren1 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren1.Count == AllChildren0.Count - 1, $"New count: {AllChildren1.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                RemovedLeafIndex0 = LeafPathInner.StateList[0].ParentIndex as IFrameBrowsingListNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex0));
+
+                Assert.That(LeafPathInner.Count == 1);
+
+                Assert.That(Controller.IsRemoveable(LeafPathInner, RemovedLeafIndex0));
+
+                IDictionary<Type, string[]> NeverEmptyCollectionTable = BaseNodeHelper.NodeHelper.NeverEmptyCollectionTable as IDictionary<Type, string[]>;
+                NeverEmptyCollectionTable.Add(typeof(IMain), new string[] { nameof(IMain.LeafPath) });
+                Assert.That(!Controller.IsRemoveable(LeafPathInner, RemovedLeafIndex0));
+
+
+
+                IFrameBlockListInner LeafBlocksInner = RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IFrameBlockListInner;
+                Assert.That(LeafBlocksInner != null);
+
+                IFrameBrowsingExistingBlockNodeIndex RemovedLeafIndex1 = LeafBlocksInner.BlockStateList[1].StateList[0].ParentIndex as IFrameBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex1));
+
+                int BlockNodeCount = LeafBlocksInner.Count;
+                int NodeCount = LeafBlocksInner.BlockStateList[1].StateList.Count;
+                Assert.That(BlockNodeCount == 4, $"New count: {BlockNodeCount}");
+
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex1));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex1);
+                Assert.That(!Controller.Contains(RemovedLeafIndex1));
+
+                Assert.That(LeafBlocksInner.Count == BlockNodeCount - 1);
+                Assert.That(LeafBlocksInner.BlockStateList[1].StateList.Count == NodeCount - 1);
+
+                IFrameNodeStateReadOnlyList AllChildren2 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren2.Count == AllChildren1.Count - 1, $"New count: {AllChildren2.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+
+
+                IFrameBrowsingExistingBlockNodeIndex RemovedLeafIndex2 = LeafBlocksInner.BlockStateList[1].StateList[0].ParentIndex as IFrameBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex2));
+
+
+                int BlockCount = LeafBlocksInner.BlockStateList.Count;
+                Assert.That(BlockCount == 3);
+
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex2));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex2);
+                Assert.That(!Controller.Contains(RemovedLeafIndex2));
+
+                Assert.That(LeafBlocksInner.Count == BlockNodeCount - 2);
+                Assert.That(LeafBlocksInner.BlockStateList.Count == BlockCount - 1);
+                Assert.That(LeafBlocksInner.BlockStateList[0].StateList.Count == 1, $"Count: {LeafBlocksInner.BlockStateList[0].StateList.Count}");
+
+                IFrameNodeStateReadOnlyList AllChildren3 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren3.Count == AllChildren2.Count - 3, $"New count: {AllChildren3.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+
+                NeverEmptyCollectionTable.Remove(typeof(IMain));
+                Assert.That(Controller.IsRemoveable(LeafPathInner, RemovedLeafIndex0));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+
+                Controller.Redo();
+                Controller.Undo();
+
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FrameMove()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFrameRootNodeIndex RootIndex;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FrameRootNodeIndex(RootNode);
+
+            IFrameController ControllerBase = FrameController.Create(RootIndex);
+            IFrameController Controller = FrameController.Create(RootIndex);
+
+            using (IFrameControllerView ControllerView0 = FrameControllerView.Create(Controller, TestDebug.CoverageFrameTemplateSet.FrameTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IFrameNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IFrameListInner LeafPathInner = RootState.PropertyToInner(nameof(IMain.LeafPath)) as IFrameListInner;
+                Assert.That(LeafPathInner != null);
+
+                IFrameBrowsingListNodeIndex MovedLeafIndex0 = LeafPathInner.IndexAt(0) as IFrameBrowsingListNodeIndex;
+                Assert.That(Controller.Contains(MovedLeafIndex0));
+
+                int PathCount = LeafPathInner.Count;
+                Assert.That(PathCount == 2);
+
+                IFrameNodeStateReadOnlyList AllChildren0 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren0.Count == 19, $"New count: {AllChildren0.Count}");
+
+                Assert.That(Controller.IsMoveable(LeafPathInner, MovedLeafIndex0, +1));
+
+                Controller.Move(LeafPathInner, MovedLeafIndex0, +1);
+                Assert.That(Controller.Contains(MovedLeafIndex0));
+
+                Assert.That(LeafPathInner.Count == PathCount);
+                Assert.That(LeafPathInner.StateList.Count == PathCount);
+
+                //System.Diagnostics.Debug.Assert(false);
+                IFrameBrowsingListNodeIndex NewLeafIndex0 = LeafPathInner.IndexAt(1) as IFrameBrowsingListNodeIndex;
+                Assert.That(NewLeafIndex0 == MovedLeafIndex0);
+
+                IFrameNodeStateReadOnlyList AllChildren1 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren1.Count == AllChildren0.Count, $"New count: {AllChildren1.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+
+
+
+                IFrameBlockListInner LeafBlocksInner = RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IFrameBlockListInner;
+                Assert.That(LeafBlocksInner != null);
+
+                IFrameBrowsingExistingBlockNodeIndex MovedLeafIndex1 = LeafBlocksInner.IndexAt(1, 1) as IFrameBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(MovedLeafIndex1));
+
+                int BlockNodeCount = LeafBlocksInner.Count;
+                int NodeCount = LeafBlocksInner.BlockStateList[1].StateList.Count;
+                Assert.That(BlockNodeCount == 4, $"New count: {BlockNodeCount}");
+
+                Assert.That(Controller.IsMoveable(LeafBlocksInner, MovedLeafIndex1, -1));
+                Controller.Move(LeafBlocksInner, MovedLeafIndex1, -1);
+                Assert.That(Controller.Contains(MovedLeafIndex1));
+
+                Assert.That(LeafBlocksInner.Count == BlockNodeCount);
+                Assert.That(LeafBlocksInner.BlockStateList[1].StateList.Count == NodeCount);
+
+                IFrameBrowsingExistingBlockNodeIndex NewLeafIndex1 = LeafBlocksInner.IndexAt(1, 0) as IFrameBrowsingExistingBlockNodeIndex;
+                Assert.That(NewLeafIndex1 == MovedLeafIndex1);
+
+                IFrameNodeStateReadOnlyList AllChildren2 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren2.Count == AllChildren1.Count, $"New count: {AllChildren2.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+
+                Controller.Redo();
+                Controller.Undo();
+
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FrameMoveBlock()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFrameRootNodeIndex RootIndex;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FrameRootNodeIndex(RootNode);
+
+            IFrameController ControllerBase = FrameController.Create(RootIndex);
+            IFrameController Controller = FrameController.Create(RootIndex);
+
+            using (IFrameControllerView ControllerView0 = FrameControllerView.Create(Controller, TestDebug.CoverageFrameTemplateSet.FrameTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IFrameNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IFrameNodeStateReadOnlyList AllChildren1 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren1.Count == 19, $"New count: {AllChildren1.Count}");
+
+                IFrameBlockListInner LeafBlocksInner = RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IFrameBlockListInner;
+                Assert.That(LeafBlocksInner != null);
+
+                IFrameBrowsingExistingBlockNodeIndex MovedLeafIndex1 = LeafBlocksInner.IndexAt(1, 0) as IFrameBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(MovedLeafIndex1));
+
+                int BlockNodeCount = LeafBlocksInner.Count;
+                int NodeCount = LeafBlocksInner.BlockStateList[1].StateList.Count;
+                Assert.That(BlockNodeCount == 4, $"New count: {BlockNodeCount}");
+
+                Assert.That(Controller.IsBlockMoveable(LeafBlocksInner, 1, -1));
+                Controller.MoveBlock(LeafBlocksInner, 1, -1);
+                Assert.That(Controller.Contains(MovedLeafIndex1));
+
+                Assert.That(LeafBlocksInner.Count == BlockNodeCount);
+                Assert.That(LeafBlocksInner.BlockStateList[0].StateList.Count == NodeCount);
+
+                IFrameBrowsingExistingBlockNodeIndex NewLeafIndex1 = LeafBlocksInner.IndexAt(0, 0) as IFrameBrowsingExistingBlockNodeIndex;
+                Assert.That(NewLeafIndex1 == MovedLeafIndex1);
+
+                IFrameNodeStateReadOnlyList AllChildren2 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren2.Count == AllChildren1.Count, $"New count: {AllChildren2.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+
+                Controller.Redo();
+                Controller.Undo();
+
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FrameChangeDiscreteValue()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFrameRootNodeIndex RootIndex;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FrameRootNodeIndex(RootNode);
+
+            IFrameController ControllerBase = FrameController.Create(RootIndex);
+            IFrameController Controller = FrameController.Create(RootIndex);
+
+            using (IFrameControllerView ControllerView0 = FrameControllerView.Create(Controller, TestDebug.CoverageFrameTemplateSet.FrameTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IFrameNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                Assert.That(BaseNodeHelper.NodeTreeHelper.GetEnumValue(RootState.Node, nameof(IMain.ValueEnum)) == (int)BaseNode.CopySemantic.Value);
+
+                Controller.ChangeDiscreteValue(RootIndex, nameof(IMain.ValueEnum), (int)BaseNode.CopySemantic.Reference);
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+                Assert.That(BaseNodeHelper.NodeTreeHelper.GetEnumValue(RootNode, nameof(IMain.ValueEnum)) == (int)BaseNode.CopySemantic.Reference);
+
+                IFramePlaceholderInner PlaceholderTreeInner = RootState.PropertyToInner(nameof(IMain.PlaceholderTree)) as IFramePlaceholderInner;
+                IFramePlaceholderNodeState PlaceholderTreeState = PlaceholderTreeInner.ChildState as IFramePlaceholderNodeState;
+
+                Assert.That(BaseNodeHelper.NodeTreeHelper.GetEnumValue(PlaceholderTreeState.Node, nameof(ITree.ValueEnum)) == (int)BaseNode.CopySemantic.Value);
+
+                Controller.ChangeDiscreteValue(PlaceholderTreeState.ParentIndex, nameof(ITree.ValueEnum), (int)BaseNode.CopySemantic.Any);
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+                Assert.That(BaseNodeHelper.NodeTreeHelper.GetEnumValue(PlaceholderTreeState.Node, nameof(ITree.ValueEnum)) == (int)BaseNode.CopySemantic.Any);
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+
+                Controller.Redo();
+                Controller.Undo();
+
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FrameReplace()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFrameRootNodeIndex RootIndex;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FrameRootNodeIndex(RootNode);
+
+            IFrameController ControllerBase = FrameController.Create(RootIndex);
+            IFrameController Controller = FrameController.Create(RootIndex);
+
+            using (IFrameControllerView ControllerView0 = FrameControllerView.Create(Controller, TestDebug.CoverageFrameTemplateSet.FrameTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IFrameNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                Leaf NewItem0 = CreateLeaf(Guid.NewGuid());
+                IFrameInsertionListNodeIndex ReplacementIndex0 = new FrameInsertionListNodeIndex(RootNode, nameof(IMain.LeafPath), NewItem0, 0);
+
+                IFrameListInner LeafPathInner = RootState.PropertyToInner(nameof(IMain.LeafPath)) as IFrameListInner;
+                Assert.That(LeafPathInner != null);
+
+                int PathCount = LeafPathInner.Count;
+                Assert.That(PathCount == 2);
+
+                IFrameNodeStateReadOnlyList AllChildren0 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren0.Count == 19, $"New count: {AllChildren0.Count}");
+
+                Controller.Replace(LeafPathInner, ReplacementIndex0, out IWriteableBrowsingChildIndex NewItemIndex0);
+                Assert.That(Controller.Contains(NewItemIndex0));
+
+                Assert.That(LeafPathInner.Count == PathCount);
+                Assert.That(LeafPathInner.StateList.Count == PathCount);
+
+                IFramePlaceholderNodeState NewItemState0 = LeafPathInner.StateList[0];
+                Assert.That(NewItemState0.Node == NewItem0);
+                Assert.That(NewItemState0.ParentIndex == NewItemIndex0);
+
+                IFrameNodeStateReadOnlyList AllChildren1 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren1.Count == AllChildren0.Count, $"New count: {AllChildren1.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+
+
+                Leaf NewItem1 = CreateLeaf(Guid.NewGuid());
+                IFrameInsertionExistingBlockNodeIndex ReplacementIndex1 = new FrameInsertionExistingBlockNodeIndex(RootNode, nameof(IMain.LeafBlocks), NewItem1, 0, 0);
+
+                IFrameBlockListInner LeafBlocksInner = RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IFrameBlockListInner;
+                Assert.That(LeafBlocksInner != null);
+
+                IFrameBlockState BlockState = LeafBlocksInner.BlockStateList[0];
+
+                int BlockNodeCount = LeafBlocksInner.Count;
+                int NodeCount = BlockState.StateList.Count;
+                Assert.That(BlockNodeCount == 4);
+
+                Controller.Replace(LeafBlocksInner, ReplacementIndex1, out IWriteableBrowsingChildIndex NewItemIndex1);
+                Assert.That(Controller.Contains(NewItemIndex1));
+
+                Assert.That(LeafBlocksInner.Count == BlockNodeCount);
+                Assert.That(BlockState.StateList.Count == NodeCount);
+
+                IFramePlaceholderNodeState NewItemState1 = BlockState.StateList[0];
+                Assert.That(NewItemState1.Node == NewItem1);
+                Assert.That(NewItemState1.ParentIndex == NewItemIndex1);
+
+                IFrameNodeStateReadOnlyList AllChildren2 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren2.Count == AllChildren1.Count, $"New count: {AllChildren2.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+
+
+                IFramePlaceholderInner PlaceholderTreeInner = RootState.PropertyToInner(nameof(IMain.PlaceholderTree)) as IFramePlaceholderInner;
+                Assert.That(PlaceholderTreeInner != null);
+
+                IFrameBrowsingPlaceholderNodeIndex ExistingIndex2 = PlaceholderTreeInner.ChildState.ParentIndex as IFrameBrowsingPlaceholderNodeIndex;
+
+                Tree NewItem2 = CreateTree();
+                IFrameInsertionPlaceholderNodeIndex ReplacementIndex2;
+                ReplacementIndex2 = ExistingIndex2.ToInsertionIndex(RootNode, NewItem2) as IFrameInsertionPlaceholderNodeIndex;
+
+                Controller.Replace(PlaceholderTreeInner, ReplacementIndex2, out IWriteableBrowsingChildIndex NewItemIndex2);
+                Assert.That(Controller.Contains(NewItemIndex2));
+
+                IFramePlaceholderNodeState NewItemState2 = PlaceholderTreeInner.ChildState as IFramePlaceholderNodeState;
+                Assert.That(NewItemState2.Node == NewItem2);
+                Assert.That(NewItemState2.ParentIndex == NewItemIndex2);
+
+                IFrameBrowsingPlaceholderNodeIndex DuplicateExistingIndex2 = ReplacementIndex2.ToBrowsingIndex() as IFrameBrowsingPlaceholderNodeIndex;
+                Assert.That(CompareEqual.CoverIsEqual(NewItemIndex2 as IFrameBrowsingPlaceholderNodeIndex, DuplicateExistingIndex2));
+                Assert.That(CompareEqual.CoverIsEqual(DuplicateExistingIndex2, NewItemIndex2 as IFrameBrowsingPlaceholderNodeIndex));
+
+                IFrameNodeStateReadOnlyList AllChildren3 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren3.Count == AllChildren2.Count, $"New count: {AllChildren3.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+
+
+                IFramePlaceholderInner PlaceholderLeafInner = NewItemState2.PropertyToInner(nameof(ITree.Placeholder)) as IFramePlaceholderInner;
+                Assert.That(PlaceholderLeafInner != null);
+
+                IFrameBrowsingPlaceholderNodeIndex ExistingIndex3 = PlaceholderLeafInner.ChildState.ParentIndex as IFrameBrowsingPlaceholderNodeIndex;
+
+                Leaf NewItem3 = CreateLeaf(Guid.NewGuid());
+                IFrameInsertionPlaceholderNodeIndex ReplacementIndex3;
+                ReplacementIndex3 = ExistingIndex3.ToInsertionIndex(NewItem2, NewItem3) as IFrameInsertionPlaceholderNodeIndex;
+                Assert.That(CompareEqual.CoverIsEqual(ReplacementIndex3, ReplacementIndex3));
+
+                Controller.Replace(PlaceholderLeafInner, ReplacementIndex3, out IWriteableBrowsingChildIndex NewItemIndex3);
+                Assert.That(Controller.Contains(NewItemIndex3));
+
+                IFramePlaceholderNodeState NewItemState3 = PlaceholderLeafInner.ChildState as IFramePlaceholderNodeState;
+                Assert.That(NewItemState3.Node == NewItem3);
+                Assert.That(NewItemState3.ParentIndex == NewItemIndex3);
+
+                IFrameNodeStateReadOnlyList AllChildren4 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren4.Count == AllChildren3.Count, $"New count: {AllChildren4.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+
+
+
+                IFrameOptionalInner OptionalLeafInner = RootState.PropertyToInner(nameof(IMain.AssignedOptionalLeaf)) as IFrameOptionalInner;
+                Assert.That(OptionalLeafInner != null);
+
+                IFrameBrowsingOptionalNodeIndex ExistingIndex4 = OptionalLeafInner.ChildState.ParentIndex as IFrameBrowsingOptionalNodeIndex;
+
+                Leaf NewItem4 = CreateLeaf(Guid.NewGuid());
+                IFrameInsertionOptionalNodeIndex ReplacementIndex4;
+                ReplacementIndex4 = ExistingIndex4.ToInsertionIndex(RootNode, NewItem4) as IFrameInsertionOptionalNodeIndex;
+                Assert.That(ReplacementIndex4.ParentNode == RootNode);
+                Assert.That(ReplacementIndex4.PropertyName == OptionalLeafInner.PropertyName);
+                Assert.That(CompareEqual.CoverIsEqual(ReplacementIndex4, ReplacementIndex4));
+
+                Controller.Replace(OptionalLeafInner, ReplacementIndex4, out IWriteableBrowsingChildIndex NewItemIndex4);
+                Assert.That(Controller.Contains(NewItemIndex4));
+
+                Assert.That(OptionalLeafInner.IsAssigned);
+                IFrameOptionalNodeState NewItemState4 = OptionalLeafInner.ChildState as IFrameOptionalNodeState;
+                Assert.That(NewItemState4.Node == NewItem4);
+                Assert.That(NewItemState4.ParentIndex == NewItemIndex4);
+
+                IFrameBrowsingOptionalNodeIndex DuplicateExistingIndex4 = ReplacementIndex4.ToBrowsingIndex() as IFrameBrowsingOptionalNodeIndex;
+                Assert.That(CompareEqual.CoverIsEqual(NewItemIndex4 as IFrameBrowsingOptionalNodeIndex, DuplicateExistingIndex4));
+                Assert.That(CompareEqual.CoverIsEqual(DuplicateExistingIndex4, NewItemIndex4 as IFrameBrowsingOptionalNodeIndex));
+
+                IFrameNodeStateReadOnlyList AllChildren5 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren5.Count == AllChildren4.Count, $"New count: {AllChildren5.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+
+
+                IFrameBrowsingOptionalNodeIndex ExistingIndex5 = OptionalLeafInner.ChildState.ParentIndex as IFrameBrowsingOptionalNodeIndex;
+
+                Leaf NewItem5 = CreateLeaf(Guid.NewGuid());
+                IFrameInsertionOptionalClearIndex ReplacementIndex5;
+                ReplacementIndex5 = ExistingIndex5.ToInsertionIndex(RootNode, null) as IFrameInsertionOptionalClearIndex;
+                Assert.That(ReplacementIndex5.ParentNode == RootNode);
+                Assert.That(ReplacementIndex5.PropertyName == OptionalLeafInner.PropertyName);
+                Assert.That(CompareEqual.CoverIsEqual(ReplacementIndex5, ReplacementIndex5));
+
+                Controller.Replace(OptionalLeafInner, ReplacementIndex5, out IWriteableBrowsingChildIndex NewItemIndex5);
+                Assert.That(Controller.Contains(NewItemIndex5));
+
+                Assert.That(!OptionalLeafInner.IsAssigned);
+                IFrameOptionalNodeState NewItemState5 = OptionalLeafInner.ChildState as IFrameOptionalNodeState;
+                Assert.That(NewItemState5.ParentIndex == NewItemIndex5);
+
+                IFrameBrowsingOptionalNodeIndex DuplicateExistingIndex5 = ReplacementIndex5.ToBrowsingIndex() as IFrameBrowsingOptionalNodeIndex;
+                Assert.That(CompareEqual.CoverIsEqual(NewItemIndex5 as IFrameBrowsingOptionalNodeIndex, DuplicateExistingIndex5));
+                Assert.That(CompareEqual.CoverIsEqual(DuplicateExistingIndex5, NewItemIndex5 as IFrameBrowsingOptionalNodeIndex));
+
+                IFrameNodeStateReadOnlyList AllChildren6 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren6.Count == AllChildren5.Count - 1, $"New count: {AllChildren6.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+
+                Controller.Redo();
+                Controller.Undo();
+
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FrameAssign()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFrameRootNodeIndex RootIndex;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FrameRootNodeIndex(RootNode);
+
+            IFrameController ControllerBase = FrameController.Create(RootIndex);
+            IFrameController Controller = FrameController.Create(RootIndex);
+
+            //System.Diagnostics.Debug.Assert(false);
+            using (IFrameControllerView ControllerView0 = FrameControllerView.Create(Controller, TestDebug.CoverageFrameTemplateSet.FrameTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IFrameNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IFrameOptionalInner UnassignedOptionalLeafInner = RootState.PropertyToInner(nameof(IMain.UnassignedOptionalLeaf)) as IFrameOptionalInner;
+                Assert.That(UnassignedOptionalLeafInner != null);
+                Assert.That(!UnassignedOptionalLeafInner.IsAssigned);
+
+                IFrameBrowsingOptionalNodeIndex AssignmentIndex0 = UnassignedOptionalLeafInner.ChildState.ParentIndex;
+                Assert.That(AssignmentIndex0 != null);
+
+                IFrameNodeStateReadOnlyList AllChildren0 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren0.Count == 19, $"New count: {AllChildren0.Count}");
+
+                Controller.Assign(AssignmentIndex0, out bool IsChanged);
+                Assert.That(IsChanged);
+                Assert.That(UnassignedOptionalLeafInner.IsAssigned);
+
+                IFrameNodeStateReadOnlyList AllChildren1 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren1.Count == AllChildren0.Count + 1, $"New count: {AllChildren1.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Controller.Assign(AssignmentIndex0, out IsChanged);
+                Assert.That(!IsChanged);
+                Assert.That(UnassignedOptionalLeafInner.IsAssigned);
+
+                IFrameNodeStateReadOnlyList AllChildren2 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren2.Count == AllChildren1.Count, $"New count: {AllChildren2.Count}");
+
+                Controller.Unassign(AssignmentIndex0, out IsChanged);
+                Assert.That(IsChanged);
+                Assert.That(!UnassignedOptionalLeafInner.IsAssigned);
+
+                IFrameNodeStateReadOnlyList AllChildren3 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren3.Count == AllChildren2.Count - 1, $"New count: {AllChildren3.Count}");
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+
+                Controller.Redo();
+                Controller.Undo();
+
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FrameUnassign()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFrameRootNodeIndex RootIndex;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FrameRootNodeIndex(RootNode);
+
+            IFrameController ControllerBase = FrameController.Create(RootIndex);
+            IFrameController Controller = FrameController.Create(RootIndex);
+
+            using (IFrameControllerView ControllerView0 = FrameControllerView.Create(Controller, TestDebug.CoverageFrameTemplateSet.FrameTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IFrameNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IFrameOptionalInner AssignedOptionalLeafInner = RootState.PropertyToInner(nameof(IMain.AssignedOptionalLeaf)) as IFrameOptionalInner;
+                Assert.That(AssignedOptionalLeafInner != null);
+                Assert.That(AssignedOptionalLeafInner.IsAssigned);
+
+                IFrameBrowsingOptionalNodeIndex AssignmentIndex0 = AssignedOptionalLeafInner.ChildState.ParentIndex;
+                Assert.That(AssignmentIndex0 != null);
+
+                IFrameNodeStateReadOnlyList AllChildren0 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren0.Count == 19, $"New count: {AllChildren0.Count}");
+
+                Controller.Unassign(AssignmentIndex0, out bool IsChanged);
+                Assert.That(IsChanged);
+                Assert.That(!AssignedOptionalLeafInner.IsAssigned);
+
+                IFrameNodeStateReadOnlyList AllChildren1 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren1.Count == AllChildren0.Count - 1, $"New count: {AllChildren1.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Controller.Unassign(AssignmentIndex0, out IsChanged);
+                Assert.That(!IsChanged);
+                Assert.That(!AssignedOptionalLeafInner.IsAssigned);
+
+                IFrameNodeStateReadOnlyList AllChildren2 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren2.Count == AllChildren1.Count, $"New count: {AllChildren2.Count}");
+
+                Controller.Assign(AssignmentIndex0, out IsChanged);
+                Assert.That(IsChanged);
+                Assert.That(AssignedOptionalLeafInner.IsAssigned);
+
+                IFrameNodeStateReadOnlyList AllChildren3 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren3.Count == AllChildren2.Count + 1, $"New count: {AllChildren3.Count}");
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+
+                Controller.Redo();
+                Controller.Undo();
+
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FrameChangeReplication()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFrameRootNodeIndex RootIndex;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FrameRootNodeIndex(RootNode);
+
+            IFrameController ControllerBase = FrameController.Create(RootIndex);
+            IFrameController Controller = FrameController.Create(RootIndex);
+
+            using (IFrameControllerView ControllerView0 = FrameControllerView.Create(Controller, TestDebug.CoverageFrameTemplateSet.FrameTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IFrameNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IFrameBlockListInner LeafBlocksInner = RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IFrameBlockListInner;
+                Assert.That(LeafBlocksInner != null);
+
+                IFrameNodeStateReadOnlyList AllChildren0 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren0.Count == 19, $"New count: {AllChildren0.Count}");
+
+                IFrameBlockState BlockState = LeafBlocksInner.BlockStateList[0];
+                Assert.That(BlockState != null);
+                Assert.That(BlockState.ParentInner == LeafBlocksInner);
+                BaseNode.IBlock ChildBlock = BlockState.ChildBlock;
+                Assert.That(ChildBlock.Replication == BaseNode.ReplicationStatus.Normal);
+
+                Controller.ChangeReplication(LeafBlocksInner, 0, BaseNode.ReplicationStatus.Replicated);
+
+                Assert.That(ChildBlock.Replication == BaseNode.ReplicationStatus.Replicated);
+
+                IFrameNodeStateReadOnlyList AllChildren1 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren1.Count == AllChildren0.Count, $"New count: {AllChildren1.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+
+                Controller.Redo();
+                Controller.Undo();
+
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FrameSplit()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFrameRootNodeIndex RootIndex;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FrameRootNodeIndex(RootNode);
+
+            IFrameController ControllerBase = FrameController.Create(RootIndex);
+            IFrameController Controller = FrameController.Create(RootIndex);
+
+            using (IFrameControllerView ControllerView0 = FrameControllerView.Create(Controller, TestDebug.CoverageFrameTemplateSet.FrameTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IFrameNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IFrameBlockListInner LeafBlocksInner = RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IFrameBlockListInner;
+                Assert.That(LeafBlocksInner != null);
+
+                IFrameNodeStateReadOnlyList AllChildren0 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren0.Count == 19, $"New count: {AllChildren0.Count}");
+
+                IFrameBlockState BlockState0 = LeafBlocksInner.BlockStateList[0];
+                Assert.That(BlockState0 != null);
+                BaseNode.IBlock ChildBlock0 = BlockState0.ChildBlock;
+                Assert.That(ChildBlock0.NodeList.Count == 1);
+
+                IFrameBlockState BlockState1 = LeafBlocksInner.BlockStateList[1];
+                Assert.That(BlockState1 != null);
+                BaseNode.IBlock ChildBlock1 = BlockState1.ChildBlock;
+                Assert.That(ChildBlock1.NodeList.Count == 2);
+
+                Assert.That(LeafBlocksInner.Count == 4);
+                Assert.That(LeafBlocksInner.BlockStateList.Count == 3);
+
+                IFrameBrowsingExistingBlockNodeIndex SplitIndex0 = LeafBlocksInner.IndexAt(1, 1) as IFrameBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.IsSplittable(LeafBlocksInner, SplitIndex0));
+
+                Controller.SplitBlock(LeafBlocksInner, SplitIndex0);
+
+                Assert.That(LeafBlocksInner.BlockStateList.Count == 4);
+                Assert.That(ChildBlock0 == LeafBlocksInner.BlockStateList[0].ChildBlock);
+                Assert.That(ChildBlock1 == LeafBlocksInner.BlockStateList[2].ChildBlock);
+                Assert.That(ChildBlock1.NodeList.Count == 1);
+
+                IFrameBlockState BlockState12 = LeafBlocksInner.BlockStateList[1];
+                Assert.That(BlockState12.ChildBlock.NodeList.Count == 1);
+
+                IFrameNodeStateReadOnlyList AllChildren1 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren1.Count == AllChildren0.Count + 2, $"New count: {AllChildren1.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+
+                Controller.Redo();
+                Controller.Undo();
+
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FrameMerge()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFrameRootNodeIndex RootIndex;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FrameRootNodeIndex(RootNode);
+
+            IFrameController ControllerBase = FrameController.Create(RootIndex);
+            IFrameController Controller = FrameController.Create(RootIndex);
+
+            using (IFrameControllerView ControllerView0 = FrameControllerView.Create(Controller, TestDebug.CoverageFrameTemplateSet.FrameTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IFrameNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IFrameBlockListInner LeafBlocksInner = RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IFrameBlockListInner;
+                Assert.That(LeafBlocksInner != null);
+
+                IFrameNodeStateReadOnlyList AllChildren0 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren0.Count == 19, $"New count: {AllChildren0.Count}");
+
+                IFrameBlockState BlockState0 = LeafBlocksInner.BlockStateList[0];
+                Assert.That(BlockState0 != null);
+                BaseNode.IBlock ChildBlock0 = BlockState0.ChildBlock;
+                Assert.That(ChildBlock0.NodeList.Count == 1);
+
+                IFrameBlockState BlockState1 = LeafBlocksInner.BlockStateList[1];
+                Assert.That(BlockState1 != null);
+                BaseNode.IBlock ChildBlock1 = BlockState1.ChildBlock;
+                Assert.That(ChildBlock1.NodeList.Count == 2);
+
+                Assert.That(LeafBlocksInner.Count == 4);
+
+                IFrameBrowsingExistingBlockNodeIndex MergeIndex0 = LeafBlocksInner.IndexAt(1, 0) as IFrameBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.IsMergeable(LeafBlocksInner, MergeIndex0));
+
+                Assert.That(LeafBlocksInner.BlockStateList.Count == 3);
+
+                Controller.MergeBlocks(LeafBlocksInner, MergeIndex0);
+
+                Assert.That(LeafBlocksInner.BlockStateList.Count == 2);
+                Assert.That(ChildBlock1 == LeafBlocksInner.BlockStateList[0].ChildBlock);
+                Assert.That(ChildBlock1.NodeList.Count == 3);
+
+                Assert.That(LeafBlocksInner.BlockStateList[0] == BlockState1);
+
+                IFrameNodeStateReadOnlyList AllChildren1 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren1.Count == AllChildren0.Count - 2, $"New count: {AllChildren1.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+
+                Controller.Redo();
+                Controller.Undo();
+
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FrameExpand()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFrameRootNodeIndex RootIndex;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FrameRootNodeIndex(RootNode);
+
+            IFrameController ControllerBase = FrameController.Create(RootIndex);
+            IFrameController Controller = FrameController.Create(RootIndex);
+
+            using (IFrameControllerView ControllerView0 = FrameControllerView.Create(Controller, TestDebug.CoverageFrameTemplateSet.FrameTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IFrameNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IFrameNodeStateReadOnlyList AllChildren0 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren0.Count == 19, $"New count: {AllChildren0.Count}");
+
+                Controller.Expand(RootIndex, out bool IsChanged);
+                Assert.That(IsChanged);
+
+                IFrameNodeStateReadOnlyList AllChildren1 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren1.Count == AllChildren0.Count + 1, $"New count: {AllChildren1.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Controller.Expand(RootIndex, out IsChanged);
+                Assert.That(!IsChanged);
+
+                IFrameNodeStateReadOnlyList AllChildren2 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren2.Count == AllChildren1.Count, $"New count: {AllChildren2.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                IFrameOptionalInner OptionalLeafInner = RootState.PropertyToInner(nameof(IMain.AssignedOptionalLeaf)) as IFrameOptionalInner;
+                Assert.That(OptionalLeafInner != null);
+
+                IFrameInsertionOptionalClearIndex ReplacementIndex5 = new FrameInsertionOptionalClearIndex(RootNode, nameof(IMain.AssignedOptionalLeaf));
+
+                Controller.Replace(OptionalLeafInner, ReplacementIndex5, out IWriteableBrowsingChildIndex NewItemIndex5);
+                Assert.That(Controller.Contains(NewItemIndex5));
+
+                IFrameNodeStateReadOnlyList AllChildren3 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren3.Count == AllChildren2.Count - 1, $"New count: {AllChildren3.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Controller.Expand(RootIndex, out IsChanged);
+                Assert.That(IsChanged);
+
+                IFrameNodeStateReadOnlyList AllChildren4 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren4.Count == AllChildren3.Count + 1, $"New count: {AllChildren4.Count}");
+
+
+
+                IFrameBlockListInner LeafBlocksInner = RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IFrameBlockListInner;
+                Assert.That(LeafBlocksInner != null);
+
+                IFrameBrowsingExistingBlockNodeIndex RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IFrameBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IFrameBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IFrameBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IFrameBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                IFrameNodeStateReadOnlyList AllChildren5 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren5.Count == AllChildren4.Count - 10, $"New count: {AllChildren5.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+                Assert.That(LeafBlocksInner.IsEmpty);
+
+                Controller.Expand(RootIndex, out IsChanged);
+                Assert.That(!IsChanged);
+
+                IFrameNodeStateReadOnlyList AllChildren6 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren6.Count == AllChildren5.Count, $"New count: {AllChildren6.Count}");
+
+                IDictionary<Type, string[]> WithExpandCollectionTable = BaseNodeHelper.NodeHelper.WithExpandCollectionTable as IDictionary<Type, string[]>;
+                WithExpandCollectionTable.Add(typeof(IMain), new string[] { nameof(IMain.LeafBlocks) });
+
+                Controller.Expand(RootIndex, out IsChanged);
+                Assert.That(IsChanged);
+
+                IFrameNodeStateReadOnlyList AllChildren7 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren7.Count == AllChildren6.Count + 3, $"New count: {AllChildren7.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+                Assert.That(!LeafBlocksInner.IsEmpty);
+                Assert.That(LeafBlocksInner.IsSingle);
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                WithExpandCollectionTable.Remove(typeof(IMain));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+
+                Controller.Redo();
+                Controller.Undo();
+
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FrameReduce()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFrameRootNodeIndex RootIndex;
+            bool IsChanged;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FrameRootNodeIndex(RootNode);
+
+            IFrameController ControllerBase = FrameController.Create(RootIndex);
+            IFrameController Controller = FrameController.Create(RootIndex);
+
+            using (IFrameControllerView ControllerView0 = FrameControllerView.Create(Controller, TestDebug.CoverageFrameTemplateSet.FrameTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IFrameNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IFrameBlockListInner LeafBlocksInner = RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IFrameBlockListInner;
+                Assert.That(LeafBlocksInner != null);
+
+                IFrameBrowsingExistingBlockNodeIndex RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IFrameBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IFrameBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IFrameBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IFrameBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+                Assert.That(LeafBlocksInner.IsEmpty);
+
+                IFrameNodeStateReadOnlyList AllChildren0 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren0.Count == 9, $"New count: {AllChildren0.Count}");
+
+                IDictionary<Type, string[]> WithExpandCollectionTable = BaseNodeHelper.NodeHelper.WithExpandCollectionTable as IDictionary<Type, string[]>;
+                WithExpandCollectionTable.Add(typeof(IMain), new string[] { nameof(IMain.LeafBlocks) });
+
+                Controller.Expand(RootIndex, out IsChanged);
+                Assert.That(IsChanged);
+
+                IFrameNodeStateReadOnlyList AllChildren1 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren1.Count == AllChildren0.Count + 4, $"New count: {AllChildren1.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                //System.Diagnostics.Debug.Assert(false);
+                Controller.Reduce(RootIndex, out IsChanged);
+                Assert.That(IsChanged);
+
+                IFrameNodeStateReadOnlyList AllChildren2 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren2.Count == AllChildren1.Count - 7, $"New count: {AllChildren2.Count}");
+
+                Controller.Reduce(RootIndex, out IsChanged);
+                Assert.That(!IsChanged);
+
+                IFrameNodeStateReadOnlyList AllChildren3 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren3.Count == AllChildren2.Count, $"New count: {AllChildren3.Count}");
+
+                Controller.Expand(RootIndex, out IsChanged);
+                Assert.That(IsChanged);
+
+                IFrameNodeStateReadOnlyList AllChildren4 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren4.Count == AllChildren3.Count + 7, $"New count: {AllChildren4.Count}");
+
+                BaseNode.IBlock ChildBlock = LeafBlocksInner.BlockStateList[0].ChildBlock;
+                ILeaf FirstNode = ChildBlock.NodeList[0] as ILeaf;
+                Assert.That(FirstNode != null);
+                BaseNodeHelper.NodeTreeHelper.SetString(FirstNode, nameof(ILeaf.Text), "!");
+
+                //System.Diagnostics.Debug.Assert(false);
+                Controller.Reduce(RootIndex, out IsChanged);
+                Assert.That(IsChanged);
+
+                IFrameNodeStateReadOnlyList AllChildren5 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren5.Count == AllChildren4.Count - 4, $"New count: {AllChildren5.Count}");
+
+                BaseNodeHelper.NodeTreeHelper.SetString(FirstNode, nameof(ILeaf.Text), "");
+
+                //System.Diagnostics.Debug.Assert(false);
+                Controller.Reduce(RootIndex, out IsChanged);
+                Assert.That(IsChanged);
+
+                IFrameNodeStateReadOnlyList AllChildren6 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren6.Count == AllChildren5.Count - 3, $"New count: {AllChildren6.Count}");
+
+                Controller.Expand(RootIndex, out IsChanged);
+                Assert.That(IsChanged);
+
+                WithExpandCollectionTable.Remove(typeof(IMain));
+
+                //System.Diagnostics.Debug.Assert(false);
+                Controller.Reduce(RootIndex, out IsChanged);
+                Assert.That(IsChanged);
+
+                IFrameNodeStateReadOnlyList AllChildren7 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren7.Count == AllChildren6.Count + 3, $"New count: {AllChildren7.Count}");
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                WithExpandCollectionTable.Add(typeof(IMain), new string[] { nameof(IMain.LeafBlocks) });
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                WithExpandCollectionTable.Remove(typeof(IMain));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+
+                Controller.Redo();
+                Controller.Undo();
+
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FrameCanonicalize()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFrameRootNodeIndex RootIndex;
+            bool IsChanged;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FrameRootNodeIndex(RootNode);
+
+            IFrameController ControllerBase = FrameController.Create(RootIndex);
+            IFrameController Controller = FrameController.Create(RootIndex);
+
+            using (IFrameControllerView ControllerView0 = FrameControllerView.Create(Controller, TestDebug.CoverageFrameTemplateSet.FrameTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IFrameNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IFrameBlockListInner LeafBlocksInner = RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IFrameBlockListInner;
+                Assert.That(LeafBlocksInner != null);
+
+                IFrameBrowsingExistingBlockNodeIndex RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IFrameBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                Assert.That(Controller.CanUndo);
+                IFrameOperationGroup LastOperation = Controller.OperationStack[Controller.RedoIndex - 1];
+                Assert.That(LastOperation.MainOperation is IFrameRemoveOperation);
+
+                RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IFrameBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IFrameBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                RemovedLeafIndex = LeafBlocksInner.BlockStateList[0].StateList[0].ParentIndex as IFrameBrowsingExistingBlockNodeIndex;
+                Assert.That(Controller.Contains(RemovedLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafBlocksInner, RemovedLeafIndex));
+
+                Controller.Remove(LeafBlocksInner, RemovedLeafIndex);
+                Assert.That(!Controller.Contains(RemovedLeafIndex));
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+                Assert.That(LeafBlocksInner.IsEmpty);
+
+                IFrameListInner LeafPathInner = RootState.PropertyToInner(nameof(IMain.LeafPath)) as IFrameListInner;
+                Assert.That(LeafPathInner != null);
+                Assert.That(LeafPathInner.Count == 2);
+
+                IFrameBrowsingListNodeIndex RemovedListLeafIndex = LeafPathInner.StateList[0].ParentIndex as IFrameBrowsingListNodeIndex;
+                Assert.That(Controller.Contains(RemovedListLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafPathInner, RemovedListLeafIndex));
+
+                Controller.Remove(LeafPathInner, RemovedListLeafIndex);
+                Assert.That(!Controller.Contains(RemovedListLeafIndex));
+
+                IDictionary<Type, string[]> NeverEmptyCollectionTable = BaseNodeHelper.NodeHelper.NeverEmptyCollectionTable as IDictionary<Type, string[]>;
+                NeverEmptyCollectionTable.Add(typeof(IMain), new string[] { nameof(IMain.PlaceholderTree) });
+
+                RemovedListLeafIndex = LeafPathInner.StateList[0].ParentIndex as IFrameBrowsingListNodeIndex;
+                Assert.That(Controller.Contains(RemovedListLeafIndex));
+                Assert.That(Controller.IsRemoveable(LeafPathInner, RemovedListLeafIndex));
+
+                Controller.Remove(LeafPathInner, RemovedListLeafIndex);
+                Assert.That(!Controller.Contains(RemovedListLeafIndex));
+                Assert.That(LeafPathInner.Count == 0);
+
+                NeverEmptyCollectionTable.Remove(typeof(IMain));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                IFrameNodeStateReadOnlyList AllChildren0 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren0.Count == 12, $"New count: {AllChildren0.Count}");
+
+                IDictionary<Type, string[]> WithExpandCollectionTable = BaseNodeHelper.NodeHelper.WithExpandCollectionTable as IDictionary<Type, string[]>;
+                WithExpandCollectionTable.Add(typeof(IMain), new string[] { nameof(IMain.LeafBlocks) });
+
+                //System.Diagnostics.Debug.Assert(false);
+                Controller.Expand(RootIndex, out IsChanged);
+                Assert.That(IsChanged);
+
+                IFrameNodeStateReadOnlyList AllChildren1 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren1.Count == AllChildren0.Count + 1, $"New count: {AllChildren1.Count}");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                Controller.Canonicalize(out IsChanged);
+                Assert.That(IsChanged);
+
+                IFrameNodeStateReadOnlyList AllChildren2 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren2.Count == AllChildren1.Count - 4, $"New count: {AllChildren2.Count}");
+
+                Controller.Undo();
+                Controller.Redo();
+
+                Controller.Canonicalize(out IsChanged);
+                Assert.That(!IsChanged);
+
+                IFrameNodeStateReadOnlyList AllChildren3 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
+                Assert.That(AllChildren3.Count == AllChildren2.Count, $"New count: {AllChildren3.Count}");
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                NeverEmptyCollectionTable.Add(typeof(IMain), new string[] { nameof(IMain.LeafBlocks) });
+                Assert.That(LeafBlocksInner.BlockStateList.Count == 1);
+                Assert.That(LeafBlocksInner.BlockStateList[0].StateList.Count == 1, LeafBlocksInner.BlockStateList[0].StateList.Count.ToString());
+
+                Controller.Canonicalize(out IsChanged);
+                Assert.That(IsChanged);
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                NeverEmptyCollectionTable.Remove(typeof(IMain));
+
+                WithExpandCollectionTable.Remove(typeof(IMain));
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+
+                Controller.Redo();
+                Controller.Undo();
+
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FramePrune()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain MainItem = CreateRoot(ValueGuid0, Imperfections.None);
+            IRoot RootNode = new Root();
+            BaseNode.IDocument RootDocument = BaseNodeHelper.NodeHelper.CreateSimpleDocumentation("root doc", Guid.NewGuid());
+            BaseNodeHelper.NodeTreeHelper.SetDocumentation(RootNode, RootDocument);
+            BaseNode.IBlockList<IMain, Main> MainBlocks = BaseNodeHelper.BlockListHelper<IMain, Main>.CreateSimpleBlockList(MainItem);
+
+            IMain UnassignedOptionalMain = CreateRoot(ValueGuid1, Imperfections.None);
+            Easly.IOptionalReference<IMain> UnassignedOptional = BaseNodeHelper.OptionalReferenceHelper<IMain>.CreateReference(UnassignedOptionalMain);
+
+            BaseNodeHelper.NodeTreeHelperBlockList.SetBlockList(RootNode, nameof(IRoot.MainBlocks), (BaseNode.IBlockList)MainBlocks);
+            BaseNodeHelper.NodeTreeHelperOptional.SetOptionalReference(RootNode, nameof(IRoot.UnassignedOptionalMain), (Easly.IOptionalReference)UnassignedOptional);
+
+            //System.Diagnostics.Debug.Assert(false);
+            IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(RootNode);
+
+            IFrameController ControllerBase = FrameController.Create(RootIndex);
+            IFrameController Controller = FrameController.Create(RootIndex);
+
+            using (IFrameControllerView ControllerView0 = FrameControllerView.Create(Controller, TestDebug.CoverageFrameTemplateSet.FrameTemplateSet))
+            {
+                Assert.That(ControllerView0.Controller == Controller);
+
+                IFrameNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IFrameBlockListInner MainInner = RootState.PropertyToInner(nameof(IRoot.MainBlocks)) as IFrameBlockListInner;
+                Assert.That(MainInner != null);
+
+                IFrameBrowsingExistingBlockNodeIndex MainIndex = MainInner.IndexAt(0, 0) as IFrameBrowsingExistingBlockNodeIndex;
+                Controller.Remove(MainInner, MainIndex);
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+
+                Assert.That(!Controller.CanUndo);
+                Assert.That(Controller.CanRedo);
+
+                Controller.Redo();
+                Controller.Undo();
+
+                MainIndex = MainInner.IndexAt(0, 0) as IFrameBrowsingExistingBlockNodeIndex;
+                Controller.Remove(MainInner, MainIndex);
+
+                Controller.Undo();
+                Controller.Redo();
+                Controller.Undo();
+
+                Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+            }
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void FrameCollections()
+        {
+            ControllerTools.ResetExpectedName();
+
+            IMain RootNode;
+            IFrameRootNodeIndex RootIndex;
+            bool IsReadOnly;
+            IReadOnlyBlockState FirstBlockState;
+            IReadOnlyBrowsingBlockNodeIndex FirstBlockNodeIndex;
+            IReadOnlyBrowsingListNodeIndex FirstListNodeIndex;
+
+            RootNode = CreateRoot(ValueGuid0, Imperfections.None);
+            RootIndex = new FrameRootNodeIndex(RootNode);
+
+            IFrameController ControllerBase = FrameController.Create(RootIndex);
+            IFrameController Controller = FrameController.Create(RootIndex);
+
+            IReadOnlyIndexNodeStateDictionary ControllerStateTable = DebugObjects.GetReferenceByInterface(typeof(IFrameIndexNodeStateDictionary)) as IReadOnlyIndexNodeStateDictionary;
+
+            using (IFrameControllerView ControllerView = FrameControllerView.Create(Controller, TestDebug.CoverageFrameTemplateSet.FrameTemplateSet))
+            {
+                // IReadOnlyBlockStateViewDictionary 
+                IReadOnlyBlockStateViewDictionary BlockStateViewTable = ControllerView.BlockStateViewTable;
+
+                foreach (KeyValuePair<IReadOnlyBlockState, IReadOnlyBlockStateView> Entry in BlockStateViewTable)
+                {
+                    IReadOnlyBlockStateView StateView = BlockStateViewTable[Entry.Key];
+                    BlockStateViewTable.TryGetValue(Entry.Key, out IReadOnlyBlockStateView Value);
+                    BlockStateViewTable.Contains(Entry);
+                    BlockStateViewTable.Remove(Entry.Key);
+                    BlockStateViewTable.Add(Entry.Key, Entry.Value);
+                    ICollection<IReadOnlyBlockState> Keys = BlockStateViewTable.Keys;
+                    ICollection<IReadOnlyBlockStateView> Values = BlockStateViewTable.Values;
+
+                    break;
+                }
+
+                IDictionary<IReadOnlyBlockState, IReadOnlyBlockStateView> BlockStateViewTableAsDictionary = BlockStateViewTable;
+                foreach (KeyValuePair<IReadOnlyBlockState, IReadOnlyBlockStateView> Entry in BlockStateViewTableAsDictionary)
+                {
+                    IReadOnlyBlockStateView StateView = BlockStateViewTableAsDictionary[Entry.Key];
+                    break;
+                }
+
+                ICollection<KeyValuePair<IReadOnlyBlockState, IReadOnlyBlockStateView>> BlockStateViewTableAsCollection = BlockStateViewTable;
+                IsReadOnly = BlockStateViewTableAsCollection.IsReadOnly;
+                foreach (KeyValuePair<IReadOnlyBlockState, IReadOnlyBlockStateView> Entry in BlockStateViewTableAsCollection)
+                {
+                    BlockStateViewTableAsCollection.Contains(Entry);
+                    BlockStateViewTableAsCollection.Remove(Entry);
+                    BlockStateViewTableAsCollection.Add(Entry);
+                    BlockStateViewTableAsCollection.CopyTo(new KeyValuePair<IReadOnlyBlockState, IReadOnlyBlockStateView>[BlockStateViewTableAsCollection.Count], 0);
+                    break;
+                }
+
+                IEnumerable<KeyValuePair<IReadOnlyBlockState, IReadOnlyBlockStateView>> BlockStateViewTableAsEnumerable = BlockStateViewTable;
+                foreach (KeyValuePair<IReadOnlyBlockState, IReadOnlyBlockStateView> Entry in BlockStateViewTableAsEnumerable)
+                {
+                    break;
+                }
+
+                // IFrameBlockStateList
+
+                IFrameNodeState RootState = Controller.RootState;
+                Assert.That(RootState != null);
+
+                IFrameBlockListInner LeafBlocksInner = RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IFrameBlockListInner;
+                Assert.That(LeafBlocksInner != null);
+
+                IReadOnlyListInner LeafPathInner = RootState.PropertyToInner(nameof(IMain.LeafPath)) as IReadOnlyListInner;
+                Assert.That(LeafPathInner != null);
+
+                IFramePlaceholderNodeState FirstNodeState = LeafBlocksInner.FirstNodeState;
+                IFrameBlockStateList DebugBlockStateList = DebugObjects.GetReferenceByInterface(typeof(IFrameBlockStateList)) as IFrameBlockStateList;
+                if (DebugBlockStateList != null)
+                {
+                    Assert.That(DebugBlockStateList.Count > 0);
+                    IsReadOnly = ((IReadOnlyBlockStateList)DebugBlockStateList).IsReadOnly;
+                    FirstBlockState = DebugBlockStateList[0];
+                    Assert.That(DebugBlockStateList.Contains(FirstBlockState));
+                    Assert.That(DebugBlockStateList.IndexOf(FirstBlockState) == 0);
+                    DebugBlockStateList.Remove(FirstBlockState);
+                    DebugBlockStateList.Add(FirstBlockState);
+                    DebugBlockStateList.Remove(FirstBlockState);
+                    DebugBlockStateList.Insert(0, FirstBlockState);
+                    DebugBlockStateList.CopyTo((IReadOnlyBlockState[])(new IFrameBlockState[DebugBlockStateList.Count]), 0);
+
+                    IEnumerable<IReadOnlyBlockState> BlockStateListAsEnumerable = DebugBlockStateList;
+                    foreach (IReadOnlyBlockState Item in BlockStateListAsEnumerable)
+                    {
+                        break;
+                    }
+
+                    IList<IReadOnlyBlockState> BlockStateListAsIlist = DebugBlockStateList;
+                    Assert.That(BlockStateListAsIlist[0] == FirstBlockState);
+
+                    IReadOnlyList<IReadOnlyBlockState> BlockStateListAsIReadOnlylist = DebugBlockStateList;
+                    Assert.That(BlockStateListAsIReadOnlylist[0] == FirstBlockState);
+                }
+
+                IFrameBlockStateReadOnlyList BlockStateList = LeafBlocksInner.BlockStateList;
+                Assert.That(BlockStateList.Count > 0);
+                FirstBlockState = BlockStateList[0];
+                Assert.That(BlockStateList.Contains(FirstBlockState));
+                Assert.That(BlockStateList.IndexOf(FirstBlockState) == 0);
+
+                // IFrameBrowsingBlockNodeIndexList
+
+                IFrameBrowsingBlockNodeIndexList BlockNodeIndexList = LeafBlocksInner.AllIndexes() as IFrameBrowsingBlockNodeIndexList;
+                Assert.That(BlockNodeIndexList.Count > 0);
+                IsReadOnly = ((IReadOnlyBrowsingBlockNodeIndexList)BlockNodeIndexList).IsReadOnly;
+                FirstBlockNodeIndex = BlockNodeIndexList[0];
+                Assert.That(BlockNodeIndexList.Contains(FirstBlockNodeIndex));
+                Assert.That(BlockNodeIndexList.IndexOf(FirstBlockNodeIndex) == 0);
+                BlockNodeIndexList.Remove(FirstBlockNodeIndex);
+                BlockNodeIndexList.Add(FirstBlockNodeIndex);
+                BlockNodeIndexList.Remove(FirstBlockNodeIndex);
+                BlockNodeIndexList.Insert(0, FirstBlockNodeIndex);
+                BlockNodeIndexList.CopyTo((IReadOnlyBrowsingBlockNodeIndex[])(new IFrameBrowsingBlockNodeIndex[BlockNodeIndexList.Count]), 0);
+
+                IEnumerable<IReadOnlyBrowsingBlockNodeIndex> BlockNodeIndexListAsEnumerable = BlockNodeIndexList;
+                foreach (IReadOnlyBrowsingBlockNodeIndex Item in BlockNodeIndexListAsEnumerable)
+                {
+                    break;
+                }
+
+                IList<IReadOnlyBrowsingBlockNodeIndex> BlockNodeIndexListAsIlist = BlockNodeIndexList;
+                Assert.That(BlockNodeIndexListAsIlist[0] == FirstBlockNodeIndex);
+
+                IReadOnlyList<IReadOnlyBrowsingBlockNodeIndex> BlockNodeIndexListAsIReadOnlylist = BlockNodeIndexList;
+                Assert.That(BlockNodeIndexListAsIReadOnlylist[0] == FirstBlockNodeIndex);
+
+                IReadOnlyBrowsingBlockNodeIndexList BlockNodeIndexListAsReadOnly = BlockNodeIndexList;
+                Assert.That(BlockNodeIndexListAsReadOnly[0] == FirstBlockNodeIndex);
+
+                // IFrameBrowsingListNodeIndexList
+
+                IFrameBrowsingListNodeIndexList ListNodeIndexList = LeafPathInner.AllIndexes() as IFrameBrowsingListNodeIndexList;
+                Assert.That(ListNodeIndexList.Count > 0);
+                IsReadOnly = ((IReadOnlyBrowsingListNodeIndexList)ListNodeIndexList).IsReadOnly;
+                FirstListNodeIndex = ListNodeIndexList[0];
+                Assert.That(ListNodeIndexList.Contains(FirstListNodeIndex));
+                Assert.That(ListNodeIndexList.IndexOf(FirstListNodeIndex) == 0);
+                ListNodeIndexList.Remove(FirstListNodeIndex);
+                ListNodeIndexList.Add(FirstListNodeIndex);
+                ListNodeIndexList.Remove(FirstListNodeIndex);
+                ListNodeIndexList.Insert(0, FirstListNodeIndex);
+                ListNodeIndexList.CopyTo((IReadOnlyBrowsingListNodeIndex[])(new IFrameBrowsingListNodeIndex[ListNodeIndexList.Count]), 0);
+
+                IEnumerable<IReadOnlyBrowsingListNodeIndex> ListNodeIndexListAsEnumerable = ListNodeIndexList;
+                foreach (IReadOnlyBrowsingListNodeIndex Item in ListNodeIndexListAsEnumerable)
+                {
+                    break;
+                }
+
+                IList<IReadOnlyBrowsingListNodeIndex> ListNodeIndexListAsIlist = ListNodeIndexList;
+                Assert.That(ListNodeIndexListAsIlist[0] == FirstListNodeIndex);
+
+                IReadOnlyList<IReadOnlyBrowsingListNodeIndex> ListNodeIndexListAsIReadOnlylist = ListNodeIndexList;
+                Assert.That(ListNodeIndexListAsIReadOnlylist[0] == FirstListNodeIndex);
+
+                IReadOnlyBrowsingListNodeIndexList ListNodeIndexListAsReadOnly = ListNodeIndexList;
+                Assert.That(ListNodeIndexListAsReadOnly[0] == FirstListNodeIndex);
+
+                // IFrameIndexNodeStateDictionary
+                if (ControllerStateTable != null)
+                {
+                    foreach (KeyValuePair<IReadOnlyIndex, IReadOnlyNodeState> Entry in ControllerStateTable)
+                    {
+                        IReadOnlyNodeState StateView = ControllerStateTable[Entry.Key];
+                        ControllerStateTable.TryGetValue(Entry.Key, out IReadOnlyNodeState Value);
+                        ControllerStateTable.Contains(Entry);
+                        ControllerStateTable.Remove(Entry.Key);
+                        ControllerStateTable.Add(Entry.Key, Entry.Value);
+                        ICollection<IReadOnlyIndex> Keys = ControllerStateTable.Keys;
+                        ICollection<IReadOnlyNodeState> Values = ControllerStateTable.Values;
+
+                        break;
+                    }
+
+                    IDictionary<IReadOnlyIndex, IReadOnlyNodeState> ControllerStateTableAsDictionary = ControllerStateTable;
+                    foreach (KeyValuePair<IReadOnlyIndex, IReadOnlyNodeState> Entry in ControllerStateTableAsDictionary)
+                    {
+                        IReadOnlyNodeState StateView = ControllerStateTableAsDictionary[Entry.Key];
+                        Assert.That(ControllerStateTableAsDictionary.ContainsKey(Entry.Key));
+                        break;
+                    }
+
+                    ICollection<KeyValuePair<IReadOnlyIndex, IReadOnlyNodeState>> ControllerStateTableAsCollection = ControllerStateTable;
+                    IsReadOnly = ControllerStateTableAsCollection.IsReadOnly;
+                    foreach (KeyValuePair<IReadOnlyIndex, IReadOnlyNodeState> Entry in ControllerStateTableAsCollection)
+                    {
+                        ControllerStateTableAsCollection.Contains(Entry);
+                        ControllerStateTableAsCollection.Remove(Entry);
+                        ControllerStateTableAsCollection.Add(Entry);
+                        ControllerStateTableAsCollection.CopyTo(new KeyValuePair<IReadOnlyIndex, IReadOnlyNodeState>[ControllerStateTableAsCollection.Count], 0);
+                        break;
+                    }
+
+                    IEnumerable<KeyValuePair<IReadOnlyIndex, IReadOnlyNodeState>> ControllerStateTableAsEnumerable = ControllerStateTable;
+                    foreach (KeyValuePair<IReadOnlyIndex, IReadOnlyNodeState> Entry in ControllerStateTableAsEnumerable)
+                    {
+                        break;
+                    }
+                }
+
+                // IFrameIndexNodeStateReadOnlyDictionary
+
+                IReadOnlyIndexNodeStateReadOnlyDictionary StateTable = Controller.StateTable;
+                IReadOnlyDictionary<IReadOnlyIndex, IReadOnlyNodeState> StateTableAsDictionary = StateTable;
+                Assert.That(StateTable.TryGetValue(RootIndex, out IReadOnlyNodeState RootStateValue) == StateTableAsDictionary.TryGetValue(RootIndex, out IReadOnlyNodeState RootStateValueFromDictionary) && RootStateValue == RootStateValueFromDictionary);
+                Assert.That(StateTableAsDictionary.Keys != null);
+                Assert.That(StateTableAsDictionary.Values != null);
+
+                // IFrameInnerDictionary
+
+                IFrameInnerDictionary<string> InnerTableModify = DebugObjects.GetReferenceByInterface(typeof(IFrameInnerDictionary<string>)) as IFrameInnerDictionary<string>;
+                Assert.That(InnerTableModify != null);
+                Assert.That(InnerTableModify.Count > 0);
+
+                IDictionary<string, IReadOnlyInner> InnerTableModifyAsDictionary = InnerTableModify;
+                Assert.That(InnerTableModifyAsDictionary.Keys != null);
+                Assert.That(InnerTableModifyAsDictionary.Values != null);
+
+                foreach (KeyValuePair<string, IFrameInner> Entry in InnerTableModify)
+                {
+                    Assert.That(InnerTableModifyAsDictionary.ContainsKey(Entry.Key));
+                    Assert.That(InnerTableModifyAsDictionary[Entry.Key] == Entry.Value);
+                }
+
+                ICollection<KeyValuePair<string, IReadOnlyInner>> InnerTableModifyAsCollection = InnerTableModify;
+                Assert.That(!InnerTableModifyAsCollection.IsReadOnly);
+
+                IEnumerable<KeyValuePair<string, IReadOnlyInner>> InnerTableModifyAsEnumerable = InnerTableModify;
+                IEnumerator<KeyValuePair<string, IReadOnlyInner>> InnerTableModifyAsEnumerableEnumerator = InnerTableModifyAsEnumerable.GetEnumerator();
+
+                foreach (KeyValuePair<string, IReadOnlyInner> Entry in InnerTableModifyAsEnumerable)
+                {
+                    Assert.That(InnerTableModifyAsDictionary.ContainsKey(Entry.Key));
+                    Assert.That(InnerTableModifyAsDictionary[Entry.Key] == Entry.Value);
+                    Assert.That(InnerTableModify.TryGetValue(Entry.Key, out IReadOnlyInner ReadOnlyInnerValue) == InnerTableModify.TryGetValue(Entry.Key, out IFrameInner FrameInnerValue));
+
+                    Assert.That(InnerTableModify.Contains(Entry));
+                    InnerTableModify.Remove(Entry);
+                    InnerTableModify.Add(Entry);
+                    InnerTableModify.CopyTo(new KeyValuePair<string, IReadOnlyInner>[InnerTableModify.Count], 0);
+                    break;
+                }
+
+                // IFrameInnerReadOnlyDictionary
+
+                IFrameInnerReadOnlyDictionary<string> InnerTable = RootState.InnerTable;
+
+                IReadOnlyDictionary<string, IReadOnlyInner> InnerTableAsDictionary = InnerTable;
+                Assert.That(InnerTableAsDictionary.Keys != null);
+                Assert.That(InnerTableAsDictionary.Values != null);
+
+                foreach (KeyValuePair<string, IFrameInner> Entry in InnerTable)
+                {
+                    Assert.That(InnerTable.TryGetValue(Entry.Key, out IReadOnlyInner ReadOnlyInnerValue) == InnerTable.TryGetValue(Entry.Key, out IFrameInner FrameInnerValue));
+                    break;
+                }
+
+                // FrameNodeStateList
+
+                //System.Diagnostics.Debug.Assert(false);
+                FirstNodeState = LeafPathInner.FirstNodeState as IFramePlaceholderNodeState;
+                Assert.That(FirstNodeState != null);
+
+                IFrameNodeStateList NodeStateListModify = DebugObjects.GetReferenceByInterface(typeof(IFrameNodeStateList)) as IFrameNodeStateList;
+                Assert.That(NodeStateListModify != null);
+                Assert.That(NodeStateListModify.Count > 0);
+                FirstNodeState = NodeStateListModify[0] as IFramePlaceholderNodeState;
+                Assert.That(NodeStateListModify.Contains((IReadOnlyNodeState)FirstNodeState));
+                Assert.That(NodeStateListModify.IndexOf((IReadOnlyNodeState)FirstNodeState) == 0);
+
+                NodeStateListModify.Remove((IReadOnlyNodeState)FirstNodeState);
+                NodeStateListModify.Insert(0, (IReadOnlyNodeState)FirstNodeState);
+                NodeStateListModify.CopyTo((IReadOnlyNodeState[])(new IFrameNodeState[NodeStateListModify.Count]), 0);
+
+                IReadOnlyNodeStateList NodeStateListModifyAsReadOnly = NodeStateListModify as IReadOnlyNodeStateList;
+                Assert.That(NodeStateListModifyAsReadOnly != null);
+                Assert.That(NodeStateListModifyAsReadOnly[0] == NodeStateListModify[0]);
+
+                IList<IReadOnlyNodeState> NodeStateListModifyAsIList = NodeStateListModify as IList<IReadOnlyNodeState>;
+                Assert.That(NodeStateListModifyAsIList != null);
+                Assert.That(NodeStateListModifyAsIList[0] == NodeStateListModify[0]);
+
+                IReadOnlyList<IReadOnlyNodeState> NodeStateListModifyAsIReadOnlyList = NodeStateListModify as IReadOnlyList<IReadOnlyNodeState>;
+                Assert.That(NodeStateListModifyAsIReadOnlyList != null);
+                Assert.That(NodeStateListModifyAsIReadOnlyList[0] == NodeStateListModify[0]);
+
+                ICollection<IReadOnlyNodeState> NodeStateListModifyAsCollection = NodeStateListModify as ICollection<IReadOnlyNodeState>;
+                Assert.That(NodeStateListModifyAsCollection != null);
+                Assert.That(!NodeStateListModifyAsCollection.IsReadOnly);
+
+                IEnumerable<IReadOnlyNodeState> NodeStateListModifyAsEnumerable = NodeStateListModify as IEnumerable<IReadOnlyNodeState>;
+                Assert.That(NodeStateListModifyAsEnumerable != null);
+                Assert.That(NodeStateListModifyAsEnumerable.GetEnumerator() != null);
+
+                // FrameNodeStateReadOnlyList
+
+                IFrameNodeStateReadOnlyList NodeStateList = NodeStateListModify.ToReadOnly() as IFrameNodeStateReadOnlyList;
+                Assert.That(NodeStateList != null);
+                Assert.That(NodeStateList.Count > 0);
+                FirstNodeState = NodeStateList[0] as IFramePlaceholderNodeState;
+                Assert.That(NodeStateList.Contains((IReadOnlyNodeState)FirstNodeState));
+                Assert.That(NodeStateList.IndexOf((IReadOnlyNodeState)FirstNodeState) == 0);
+
+                IReadOnlyList<IReadOnlyNodeState> NodeStateListAsIReadOnlyList = NodeStateList as IReadOnlyList<IReadOnlyNodeState>;
+                Assert.That(NodeStateListAsIReadOnlyList[0] == FirstNodeState);
+
+                IEnumerable<IReadOnlyNodeState> NodeStateListAsEnumerable = NodeStateList as IEnumerable<IReadOnlyNodeState>;
+                Assert.That(NodeStateListAsEnumerable != null);
+                Assert.That(NodeStateListAsEnumerable.GetEnumerator() != null);
+
+                // FramePlaceholderNodeStateList
+
+                FirstNodeState = LeafPathInner.FirstNodeState as IFramePlaceholderNodeState;
+                Assert.That(FirstNodeState != null);
+
+                IFramePlaceholderNodeStateList PlaceholderNodeStateListModify = DebugObjects.GetReferenceByInterface(typeof(IFramePlaceholderNodeStateList)) as IFramePlaceholderNodeStateList;
+                if (PlaceholderNodeStateListModify != null)
+                {
+                    Assert.That(PlaceholderNodeStateListModify.Count > 0);
+                    FirstNodeState = PlaceholderNodeStateListModify[0] as IFramePlaceholderNodeState;
+                    Assert.That(PlaceholderNodeStateListModify.Contains((IReadOnlyPlaceholderNodeState)FirstNodeState));
+                    Assert.That(PlaceholderNodeStateListModify.IndexOf((IReadOnlyPlaceholderNodeState)FirstNodeState) == 0);
+
+                    PlaceholderNodeStateListModify.Remove((IReadOnlyPlaceholderNodeState)FirstNodeState);
+                    PlaceholderNodeStateListModify.Add((IReadOnlyPlaceholderNodeState)FirstNodeState);
+                    PlaceholderNodeStateListModify.Remove((IReadOnlyPlaceholderNodeState)FirstNodeState);
+                    PlaceholderNodeStateListModify.Insert(0, (IReadOnlyPlaceholderNodeState)FirstNodeState);
+                    PlaceholderNodeStateListModify.CopyTo((IReadOnlyPlaceholderNodeState[])(new IFramePlaceholderNodeState[PlaceholderNodeStateListModify.Count]), 0);
+
+                    IReadOnlyPlaceholderNodeStateList PlaceholderNodeStateListModifyAsReadOnly = PlaceholderNodeStateListModify as IReadOnlyPlaceholderNodeStateList;
+                    Assert.That(PlaceholderNodeStateListModifyAsReadOnly != null);
+                    Assert.That(PlaceholderNodeStateListModifyAsReadOnly[0] == PlaceholderNodeStateListModify[0]);
+
+                    IList<IReadOnlyPlaceholderNodeState> PlaceholderNodeStateListModifyAsIList = PlaceholderNodeStateListModify as IList<IReadOnlyPlaceholderNodeState>;
+                    Assert.That(PlaceholderNodeStateListModifyAsIList != null);
+                    Assert.That(PlaceholderNodeStateListModifyAsIList[0] == PlaceholderNodeStateListModify[0]);
+
+                    IReadOnlyList<IReadOnlyPlaceholderNodeState> PlaceholderNodeStateListModifyAsIReadOnlyList = PlaceholderNodeStateListModify as IReadOnlyList<IReadOnlyPlaceholderNodeState>;
+                    Assert.That(PlaceholderNodeStateListModifyAsIReadOnlyList != null);
+                    Assert.That(PlaceholderNodeStateListModifyAsIReadOnlyList[0] == PlaceholderNodeStateListModify[0]);
+
+                    ICollection<IReadOnlyPlaceholderNodeState> PlaceholderNodeStateListModifyAsCollection = PlaceholderNodeStateListModify as ICollection<IReadOnlyPlaceholderNodeState>;
+                    Assert.That(PlaceholderNodeStateListModifyAsCollection != null);
+                    Assert.That(!PlaceholderNodeStateListModifyAsCollection.IsReadOnly);
+
+                    IEnumerable<IReadOnlyPlaceholderNodeState> PlaceholderNodeStateListModifyAsEnumerable = PlaceholderNodeStateListModify as IEnumerable<IReadOnlyPlaceholderNodeState>;
+                    Assert.That(PlaceholderNodeStateListModifyAsEnumerable != null);
+                    Assert.That(PlaceholderNodeStateListModifyAsEnumerable.GetEnumerator() != null);
+                }
+
+                // FramePlaceholderNodeStateReadOnlyList
+
+                IFramePlaceholderNodeStateReadOnlyList PlaceholderNodeStateList = LeafPathInner.StateList as IFramePlaceholderNodeStateReadOnlyList;
+                Assert.That(PlaceholderNodeStateList != null);
+                Assert.That(PlaceholderNodeStateList.Count > 0);
+                FirstNodeState = PlaceholderNodeStateList[0] as IFramePlaceholderNodeState;
+                Assert.That(PlaceholderNodeStateList.Contains((IReadOnlyPlaceholderNodeState)FirstNodeState));
+                Assert.That(PlaceholderNodeStateList.IndexOf((IReadOnlyPlaceholderNodeState)FirstNodeState) == 0);
+
+                IReadOnlyList<IReadOnlyPlaceholderNodeState> PlaceholderNodeStateListAsIReadOnlyList = PlaceholderNodeStateList as IReadOnlyList<IReadOnlyPlaceholderNodeState>;
+                Assert.That(PlaceholderNodeStateListAsIReadOnlyList[0] == FirstNodeState);
+
+                IEnumerable<IReadOnlyPlaceholderNodeState> PlaceholderNodeStateListAsEnumerable = PlaceholderNodeStateList as IEnumerable<IReadOnlyPlaceholderNodeState>;
+                Assert.That(PlaceholderNodeStateListAsEnumerable != null);
+                Assert.That(PlaceholderNodeStateListAsEnumerable.GetEnumerator() != null);
+
+                // IFrameStateViewDictionary
+                IFrameStateViewDictionary StateViewTable = ControllerView.StateViewTable;
 
                 IDictionary<IReadOnlyNodeState, IReadOnlyNodeStateView> StateViewTableAsDictionary = StateViewTable;
                 Assert.That(StateViewTableAsDictionary != null);
