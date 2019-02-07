@@ -4371,7 +4371,7 @@ namespace Test
 
                 ControllerView.MoveFocus(Direction);
 
-                if (ControllerView.IsItemCyclableThrough(out IFocusNodeState state, out int cyclePosition))
+                if (ControllerView.IsItemCyclableThrough(out IFocusCyclableNodeState state, out int cyclePosition))
                     Controller.Replace(state.ParentInner, state.CycleIndexList, cyclePosition, out IFocusBrowsingChildIndex nodeIndex);
             }
 

@@ -60,10 +60,12 @@ namespace TestDebug
     <FrameNodeTemplate NodeType=""{xaml:Type cov:ITree}"">
         <FrameVerticalPanelFrame>
             <FramePlaceholderFrame PropertyName=""Placeholder""/>
+            <FrameSymbolFrame Symbol=""{x:Static const:Symbols.LeftBracket}""/>
             <FrameDiscreteFrame PropertyName=""ValueBoolean"">
                 <FrameKeywordFrame>True</FrameKeywordFrame>
                 <FrameKeywordFrame>False</FrameKeywordFrame>
             </FrameDiscreteFrame>
+            <FrameSymbolFrame Symbol=""{x:Static const:Symbols.RightBracket}""/>
             <FrameDiscreteFrame PropertyName=""ValueEnum"">
                 <FrameKeywordFrame>Any</FrameKeywordFrame>
                 <FrameKeywordFrame>Reference</FrameKeywordFrame>
@@ -78,7 +80,8 @@ namespace TestDebug
             <FrameOptionalFrame PropertyName=""UnassignedOptionalLeaf"" />
             <FrameOptionalFrame PropertyName=""AssignedOptionalTree"" />
             <FrameOptionalFrame PropertyName=""AssignedOptionalLeaf"" />
-            <FrameHorizontalBlockListFrame PropertyName=""LeafBlocks"" />
+            <FrameInsertFrame CollectionName=""LeafBlocks"" />
+            <FrameVerticalBlockListFrame PropertyName=""LeafBlocks"" />
             <FrameHorizontalListFrame PropertyName=""LeafPath"" />
             <FrameDiscreteFrame PropertyName=""ValueBoolean"">
                 <FrameKeywordFrame>True</FrameKeywordFrame>
@@ -97,6 +100,7 @@ namespace TestDebug
             <FrameHorizontalBlockListFrame PropertyName=""MainBlocks"" />
             <FrameOptionalFrame PropertyName=""UnassignedOptionalMain"" />
             <FrameTextValueFrame PropertyName=""ValueString""/>
+            <FrameVerticalListFrame PropertyName=""LeafPath"" />
         </FrameHorizontalPanelFrame>
     </FrameNodeTemplate>
     <FrameNodeTemplate NodeType=""{xaml:Type easly:IAssertion}"">
@@ -711,7 +715,7 @@ namespace TestDebug
             <FrameVerticalPanelFrame>
                 <FrameHorizontalPanelFrame>
                     <FrameKeywordFrame>getter</FrameKeywordFrame>
-                    <FrameKeywordFrame>deferred</FrameKeywordFrame>
+                    <FrameKeywordFrame IsFocusable=""true"">deferred</FrameKeywordFrame>
                 </FrameHorizontalPanelFrame>
             </FrameVerticalPanelFrame>
             <FrameVerticalPanelFrame>
@@ -793,7 +797,7 @@ namespace TestDebug
             <FrameVerticalPanelFrame>
                 <FrameHorizontalPanelFrame>
                     <FrameKeywordFrame>getter</FrameKeywordFrame>
-                    <FrameKeywordFrame>extern</FrameKeywordFrame>
+                    <FrameKeywordFrame IsFocusable=""true"">extern</FrameKeywordFrame>
                 </FrameHorizontalPanelFrame>
             </FrameVerticalPanelFrame>
             <FrameVerticalPanelFrame>
@@ -1837,7 +1841,7 @@ namespace TestDebug
                 <FramePlaceholderFrame PropertyName=""SourceIdentifier""/>
                 <FrameKeywordFrame>All</FrameKeywordFrame>
             </FrameHorizontalPanelFrame>
-            <FrameHorizontalCollectionPlaceholderFrame/>
+            <FrameVerticalCollectionPlaceholderFrame/>
             <FrameKeywordFrame Text=""end""/>
         </FrameHorizontalPanelFrame>
     </FrameBlockTemplate>
