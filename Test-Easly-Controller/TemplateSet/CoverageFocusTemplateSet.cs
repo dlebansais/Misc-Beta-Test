@@ -11,17 +11,19 @@ namespace TestDebug
 #if !TRAVIS
         static CoverageFocusTemplateSet()
         {
-            IFocusTemplateReadOnlyDictionary FocusCoverageNodeTemplates = LoadTemplate(FocusTemplateListString);
-            IFocusTemplateReadOnlyDictionary FocusCoverageBlockTemplates = LoadTemplate(FocusBlockTemplateString);
-            FocusTemplateSet = new FocusTemplateSet(FocusCoverageNodeTemplates, FocusCoverageBlockTemplates);
+            NodeTemplateDictionary = LoadTemplate(FocusTemplateListString);
+            IFocusTemplateReadOnlyDictionary FocusCustomNodeTemplates = NodeTemplateDictionary.ToReadOnly() as IFocusTemplateReadOnlyDictionary;
+            BlockTemplateDictionary = LoadTemplate(FocusBlockTemplateString);
+            IFocusTemplateReadOnlyDictionary FocusCustomBlockTemplates = BlockTemplateDictionary.ToReadOnly() as IFocusTemplateReadOnlyDictionary;
+            FocusTemplateSet = new FocusTemplateSet(FocusCustomNodeTemplates, FocusCustomBlockTemplates);
         }
 
-        private static IFocusTemplateReadOnlyDictionary LoadTemplate(string s)
+        private static IFocusTemplateDictionary LoadTemplate(string s)
         {
             byte[] ByteArray = Encoding.UTF8.GetBytes(s);
             using (MemoryStream ms = new MemoryStream(ByteArray))
             {
-                IFocusTemplateList Templates = XamlReader.Parse(s) as IFocusTemplateList;
+                Templates = XamlReader.Parse(s) as IFocusTemplateList;
 
                 FocusTemplateDictionary TemplateDictionary = new FocusTemplateDictionary();
                 foreach (IFocusTemplate Item in Templates)
@@ -30,8 +32,7 @@ namespace TestDebug
                     TemplateDictionary.Add(Item.NodeType, Item);
                 }
 
-                IFocusTemplateReadOnlyDictionary Result = new FocusTemplateReadOnlyDictionary(TemplateDictionary);
-                return Result;
+                return TemplateDictionary;
             }
         }
 
@@ -42,7 +43,10 @@ namespace TestDebug
         #endregion
 
         #region Properties
+        public static IFocusTemplateDictionary NodeTemplateDictionary { get; private set; }
+        public static IFocusTemplateDictionary BlockTemplateDictionary { get; private set; }
         public static IFocusTemplateSet FocusTemplateSet { get; private set; }
+        public static IFocusTemplateList Templates { get; private set; }
         #endregion
 
         #region Node Templates

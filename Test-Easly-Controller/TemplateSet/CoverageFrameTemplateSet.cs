@@ -11,17 +11,19 @@ namespace TestDebug
 #if !TRAVIS
         static CoverageFrameTemplateSet()
         {
-            IFrameTemplateReadOnlyDictionary FrameCoverageNodeTemplates = LoadTemplate(FrameTemplateListString);
-            IFrameTemplateReadOnlyDictionary FrameCoverageBlockTemplates = LoadTemplate(FrameBlockTemplateString);
-            FrameTemplateSet = new FrameTemplateSet(FrameCoverageNodeTemplates, FrameCoverageBlockTemplates);
+            NodeTemplateDictionary = LoadTemplate(FrameTemplateListString);
+            IFrameTemplateReadOnlyDictionary FrameCustomNodeTemplates = NodeTemplateDictionary.ToReadOnly();
+            BlockTemplateDictionary = LoadTemplate(FrameBlockTemplateString);
+            IFrameTemplateReadOnlyDictionary FrameCustomBlockTemplates = BlockTemplateDictionary.ToReadOnly();
+            FrameTemplateSet = new FrameTemplateSet(FrameCustomNodeTemplates, FrameCustomBlockTemplates);
         }
 
-        private static IFrameTemplateReadOnlyDictionary LoadTemplate(string s)
+        private static IFrameTemplateDictionary LoadTemplate(string s)
         {
             byte[] ByteArray = Encoding.UTF8.GetBytes(s);
             using (MemoryStream ms = new MemoryStream(ByteArray))
             {
-                IFrameTemplateList Templates = XamlReader.Parse(s) as IFrameTemplateList;
+                Templates = XamlReader.Parse(s) as IFrameTemplateList;
 
                 FrameTemplateDictionary TemplateDictionary = new FrameTemplateDictionary();
                 foreach (IFrameTemplate Item in Templates)
@@ -30,8 +32,7 @@ namespace TestDebug
                     TemplateDictionary.Add(Item.NodeType, Item);
                 }
 
-                IFrameTemplateReadOnlyDictionary Result = new FrameTemplateReadOnlyDictionary(TemplateDictionary);
-                return Result;
+                return TemplateDictionary;
             }
         }
 
@@ -42,7 +43,10 @@ namespace TestDebug
         #endregion
 
         #region Properties
+        public static IFrameTemplateDictionary NodeTemplateDictionary { get; private set; }
+        public static IFrameTemplateDictionary BlockTemplateDictionary { get; private set; }
         public static IFrameTemplateSet FrameTemplateSet { get; private set; }
+        public static IFrameTemplateList Templates { get; private set; }
         #endregion
 
         #region Node Templates

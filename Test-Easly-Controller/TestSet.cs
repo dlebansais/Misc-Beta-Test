@@ -3070,10 +3070,10 @@ namespace Test
                         Assert.That(NodeTreeHelper.IsStringProperty(ChildNode, PropertyName) && PropertyName == "Text");
                         break;
                     case IFocusFocusableCellView AsFocusable: // Insert
-                        Assert.That(Frame is IFocusInsertFrame);
+                        Assert.That((Frame is IFocusInsertFrame) || (Frame is IFocusKeywordFrame AsFocusableKeywordFrame && AsFocusableKeywordFrame.IsFocusable));
                         break;
                     case IFocusVisibleCellView AsVisible: // Others
-                        Assert.That(((Frame is IFocusKeywordFrame AsKeywordFrame) && !string.IsNullOrEmpty(AsKeywordFrame.Text)) || (Frame is IFocusSymbolFrame AsSymbolFrame));
+                        Assert.That(((Frame is IFocusKeywordFrame AsKeywordFrame && !AsKeywordFrame.IsFocusable) && !string.IsNullOrEmpty(AsKeywordFrame.Text)) || (Frame is IFocusSymbolFrame AsSymbolFrame));
                         break;
                 }
             }
@@ -4522,6 +4522,10 @@ namespace Test
 
             if (State is IFocusPlaceholderNodeState AsPlaceholderState)
                 Node = AsPlaceholderState.Node;
+            else if (State is IFocusPatternState AsPatternState)
+                Node = AsPatternState.Node;
+            else if (State is IFocusSourceState AsSourceState)
+                Node = AsSourceState.Node;
             else
             {
                 Assert.That(State is IFocusOptionalNodeState, "Focus #5");

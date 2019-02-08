@@ -5084,7 +5084,8 @@ namespace Coverage
                         break;
                     }
 
-                    foreach (KeyValuePair<IWriteableIndex, IWriteableNodeState> Entry in (IWriteableIndexNodeStateDictionary)ControllerStateTable)
+                    IWriteableIndexNodeStateDictionary WriteableControllerStateTable = ControllerStateTable as IWriteableIndexNodeStateDictionary;
+                    foreach (KeyValuePair<IWriteableIndex, IWriteableNodeState> Entry in WriteableControllerStateTable)
                     {
                         break;
                     }
@@ -5194,6 +5195,7 @@ namespace Coverage
 
                 foreach (KeyValuePair<string, IFrameInner> Entry in FrameInnerTableModify)
                 {
+                    Assert.That(WriteableInnerTableModify[Entry.Key] == Entry.Value);
                     Assert.That(WriteableInnerTableModifyAsDictionary.ContainsKey(Entry.Key));
                     Assert.That(WriteableInnerTableModifyAsDictionary[Entry.Key] == Entry.Value);
                     WriteableInnerTableModifyAsDictionary.Remove(Entry.Key);
@@ -7809,6 +7811,46 @@ namespace Coverage
                     break;
                 }
 
+                IWriteableBlockStateViewDictionary WriteableBlockStateViewTable = ControllerView.BlockStateViewTable;
+
+                foreach (KeyValuePair<IWriteableBlockState, IWriteableBlockStateView> Entry in WriteableBlockStateViewTable)
+                {
+                    IWriteableBlockStateView StateView = WriteableBlockStateViewTable[Entry.Key];
+                    WriteableBlockStateViewTable.TryGetValue(Entry.Key, out IWriteableBlockStateView Value);
+                    WriteableBlockStateViewTable.Contains(Entry);
+                    WriteableBlockStateViewTable.Remove(Entry.Key);
+                    WriteableBlockStateViewTable.Add(Entry.Key, Entry.Value);
+                    ICollection<IWriteableBlockState> Keys = ((IDictionary<IWriteableBlockState, IWriteableBlockStateView>)WriteableBlockStateViewTable).Keys;
+                    ICollection<IWriteableBlockStateView> Values = ((IDictionary<IWriteableBlockState, IWriteableBlockStateView>)WriteableBlockStateViewTable).Values;
+
+                    break;
+                }
+
+                IDictionary<IWriteableBlockState, IWriteableBlockStateView> WriteableBlockStateViewTableAsDictionary = WriteableBlockStateViewTable;
+                foreach (KeyValuePair<IWriteableBlockState, IWriteableBlockStateView> Entry in WriteableBlockStateViewTableAsDictionary)
+                {
+                    IWriteableBlockStateView StateView = WriteableBlockStateViewTableAsDictionary[Entry.Key];
+                    break;
+                }
+
+                ICollection<KeyValuePair<IWriteableBlockState, IWriteableBlockStateView>> WriteableBlockStateViewTableAsCollection = WriteableBlockStateViewTable;
+                IsReadOnly = WriteableBlockStateViewTableAsCollection.IsReadOnly;
+
+                foreach (KeyValuePair<IWriteableBlockState, IWriteableBlockStateView> Entry in WriteableBlockStateViewTableAsCollection)
+                {
+                    WriteableBlockStateViewTableAsCollection.Contains(Entry);
+                    WriteableBlockStateViewTableAsCollection.Remove(Entry);
+                    WriteableBlockStateViewTableAsCollection.Add(Entry);
+                    WriteableBlockStateViewTableAsCollection.CopyTo(new KeyValuePair<IWriteableBlockState, IWriteableBlockStateView>[WriteableBlockStateViewTableAsCollection.Count], 0);
+                    break;
+                }
+
+                IEnumerable<KeyValuePair<IWriteableBlockState, IWriteableBlockStateView>> WriteableBlockStateViewTableAsEnumerable = WriteableBlockStateViewTable;
+                foreach (KeyValuePair<IWriteableBlockState, IWriteableBlockStateView> Entry in WriteableBlockStateViewTableAsEnumerable)
+                {
+                    break;
+                }
+
                 IFrameBlockStateViewDictionary FrameBlockStateViewTable = ControllerView.BlockStateViewTable;
 
                 foreach (KeyValuePair<IFrameBlockState, IFrameBlockStateView> Entry in FrameBlockStateViewTable)
@@ -7865,20 +7907,17 @@ namespace Coverage
                 if (DebugBlockStateList != null)
                 {
                     Assert.That(DebugBlockStateList.Count > 0);
-                    IsReadOnly = ((ICollection<IReadOnlyBlockState>)DebugBlockStateList).IsReadOnly;
-                    IsReadOnly = ((IList<IReadOnlyBlockState>)DebugBlockStateList).IsReadOnly;
-                    IsReadOnly = ((ICollection<IFrameBlockState>)DebugBlockStateList).IsReadOnly;
-                    IsReadOnly = ((IList<IFrameBlockState>)DebugBlockStateList).IsReadOnly;
                     FirstBlockState = DebugBlockStateList[0];
-                    Assert.That(((IFrameBlockStateList)DebugBlockStateList)[0] == FirstBlockState);
                     Assert.That(DebugBlockStateList.Contains(FirstBlockState));
                     Assert.That(DebugBlockStateList.IndexOf(FirstBlockState) == 0);
                     DebugBlockStateList.Remove(FirstBlockState);
                     DebugBlockStateList.Add(FirstBlockState);
                     DebugBlockStateList.Remove(FirstBlockState);
                     DebugBlockStateList.Insert(0, FirstBlockState);
+
+                    IsReadOnly = ((ICollection<IReadOnlyBlockState>)DebugBlockStateList).IsReadOnly;
+                    IsReadOnly = ((IList<IReadOnlyBlockState>)DebugBlockStateList).IsReadOnly;
                     DebugBlockStateList.CopyTo((IReadOnlyBlockState[])(new IFocusBlockState[DebugBlockStateList.Count]), 0);
-                    DebugBlockStateList.CopyTo((IFrameBlockState[])(new IFocusBlockState[DebugBlockStateList.Count]), 0);
 
                     IEnumerable<IReadOnlyBlockState> BlockStateListAsReadOnlyEnumerable = DebugBlockStateList;
                     foreach (IReadOnlyBlockState Item in BlockStateListAsReadOnlyEnumerable)
@@ -7886,14 +7925,49 @@ namespace Coverage
                         break;
                     }
 
+                    IList<IReadOnlyBlockState> BlockStateListAsReadOnlyIlist = DebugBlockStateList;
+                    Assert.That(BlockStateListAsReadOnlyIlist[0] == FirstBlockState);
+
+                    IReadOnlyList<IReadOnlyBlockState> BlockStateListAsReadOnlyIReadOnlylist = DebugBlockStateList;
+                    Assert.That(BlockStateListAsReadOnlyIReadOnlylist[0] == FirstBlockState);
+
+                    IsReadOnly = ((ICollection<IWriteableBlockState>)DebugBlockStateList).IsReadOnly;
+                    IsReadOnly = ((IList<IWriteableBlockState>)DebugBlockStateList).IsReadOnly;
+                    Assert.That(((IWriteableBlockStateList)DebugBlockStateList)[0] == FirstBlockState);
+                    DebugBlockStateList.CopyTo((IWriteableBlockState[])(new IFocusBlockState[DebugBlockStateList.Count]), 0);
+
+                    IEnumerable<IWriteableBlockState> BlockStateListAsWriteableEnumerable = DebugBlockStateList;
+                    foreach (IWriteableBlockState Item in BlockStateListAsWriteableEnumerable)
+                    {
+                        break;
+                    }
+
+                    IList<IWriteableBlockState> BlockStateListAsWriteableIList = DebugBlockStateList;
+                    Assert.That(BlockStateListAsWriteableIList[0] == FirstBlockState);
+                    Assert.That(BlockStateListAsWriteableIList.Contains((IWriteableBlockState)FirstBlockState));
+                    Assert.That(BlockStateListAsWriteableIList.IndexOf((IWriteableBlockState)FirstBlockState) == 0);
+
+                    ICollection<IWriteableBlockState> BlockStateListAsWriteableICollection = DebugBlockStateList;
+                    Assert.That(BlockStateListAsWriteableICollection.Contains((IWriteableBlockState)FirstBlockState));
+                    BlockStateListAsWriteableICollection.Remove((IWriteableBlockState)FirstBlockState);
+                    BlockStateListAsWriteableICollection.Add((IWriteableBlockState)FirstBlockState);
+                    BlockStateListAsWriteableICollection.Remove((IWriteableBlockState)FirstBlockState);
+                    BlockStateListAsWriteableIList.Insert(0, (IWriteableBlockState)FirstBlockState);
+
+                    IReadOnlyList<IWriteableBlockState> BlockStateListAsWriteableIReadOnlylist = DebugBlockStateList;
+                    Assert.That(BlockStateListAsWriteableIReadOnlylist[0] == FirstBlockState);
+                    IEnumerator<IWriteableBlockState> DebugBlockStateListWriteableEnumerator = ((IWriteableBlockStateList)DebugBlockStateList).GetEnumerator();
+
+                    IsReadOnly = ((ICollection<IFrameBlockState>)DebugBlockStateList).IsReadOnly;
+                    IsReadOnly = ((IList<IFrameBlockState>)DebugBlockStateList).IsReadOnly;
+                    Assert.That(((IFrameBlockStateList)DebugBlockStateList)[0] == FirstBlockState);
+                    DebugBlockStateList.CopyTo((IFrameBlockState[])(new IFocusBlockState[DebugBlockStateList.Count]), 0);
+
                     IEnumerable<IFrameBlockState> BlockStateListAsFrameEnumerable = DebugBlockStateList;
                     foreach (IFrameBlockState Item in BlockStateListAsFrameEnumerable)
                     {
                         break;
                     }
-
-                    IList<IReadOnlyBlockState> BlockStateListAsReadOnlyIlist = DebugBlockStateList;
-                    Assert.That(BlockStateListAsReadOnlyIlist[0] == FirstBlockState);
 
                     IList<IFrameBlockState> BlockStateListAsFrameIList = DebugBlockStateList;
                     Assert.That(BlockStateListAsFrameIList[0] == FirstBlockState);
@@ -7907,143 +7981,179 @@ namespace Coverage
                     BlockStateListAsFrameICollection.Remove((IFrameBlockState)FirstBlockState);
                     BlockStateListAsFrameIList.Insert(0, (IFrameBlockState)FirstBlockState);
 
-                    IReadOnlyList<IReadOnlyBlockState> BlockStateListAsReadOnlyIReadOnlylist = DebugBlockStateList;
-                    Assert.That(BlockStateListAsReadOnlyIReadOnlylist[0] == FirstBlockState);
-
                     IReadOnlyList<IFrameBlockState> BlockStateListAsFrameIReadOnlylist = DebugBlockStateList;
                     Assert.That(BlockStateListAsFrameIReadOnlylist[0] == FirstBlockState);
-
                     IEnumerator<IFrameBlockState> DebugBlockStateListFrameEnumerator = ((IFrameBlockStateList)DebugBlockStateList).GetEnumerator();
                 }
+
+                // IFocusBlockStateReadOnlyList
 
                 IFocusBlockStateReadOnlyList FocusBlockStateList = LeafBlocksInner.BlockStateList;
                 Assert.That(FocusBlockStateList.Count > 0);
                 FirstBlockState = FocusBlockStateList[0];
                 Assert.That(FocusBlockStateList.Contains(FirstBlockState));
                 Assert.That(FocusBlockStateList.IndexOf(FirstBlockState) == 0);
-                Assert.That(FocusBlockStateList.Contains((IFrameBlockState)FirstBlockState));
-                Assert.That(FocusBlockStateList.IndexOf((IFrameBlockState)FirstBlockState) == 0);
                 Assert.That(FocusBlockStateList.Contains((IFocusBlockState)FirstBlockState));
                 Assert.That(FocusBlockStateList.IndexOf((IFocusBlockState)FirstBlockState) == 0);
 
-                IEnumerable<IFrameBlockState> FocusBlockStateListAsIEnumerable = FocusBlockStateList;
-                IEnumerator<IFrameBlockState> FocusBlockStateListAsIEnumerableEnumerator = FocusBlockStateListAsIEnumerable.GetEnumerator();
+                IEnumerable<IWriteableBlockState> WriteableFocusBlockStateListAsIEnumerable = FocusBlockStateList;
+                IEnumerator<IWriteableBlockState> WriteableFocusBlockStateListAsIEnumerableEnumerator = WriteableFocusBlockStateListAsIEnumerable.GetEnumerator();
+                Assert.That(FocusBlockStateList.Contains((IWriteableBlockState)FirstBlockState));
+                Assert.That(FocusBlockStateList.IndexOf((IWriteableBlockState)FirstBlockState) == 0);
+                IReadOnlyList<IWriteableBlockState> WriteableFocusBlockStateListAsIReadOnlyList = FocusBlockStateList;
+                Assert.That(WriteableFocusBlockStateListAsIReadOnlyList[0] == FirstBlockState);
 
-                IReadOnlyList<IFrameBlockState> FocusBlockStateListAsIReadOnlyList = FocusBlockStateList;
-                Assert.That(FocusBlockStateListAsIReadOnlyList[0] == FirstBlockState);
+                IEnumerable<IFrameBlockState> FrameFocusBlockStateListAsIEnumerable = FocusBlockStateList;
+                IEnumerator<IFrameBlockState> FrameFocusBlockStateListAsIEnumerableEnumerator = FrameFocusBlockStateListAsIEnumerable.GetEnumerator();
+                Assert.That(FocusBlockStateList.Contains((IFrameBlockState)FirstBlockState));
+                Assert.That(FocusBlockStateList.IndexOf((IFrameBlockState)FirstBlockState) == 0);
+                IReadOnlyList<IFrameBlockState> FrameFocusBlockStateListAsIReadOnlyList = FocusBlockStateList;
+                Assert.That(FrameFocusBlockStateListAsIReadOnlyList[0] == FirstBlockState);
 
                 // IFocusBrowsingBlockNodeIndexList
 
                 IFocusBrowsingBlockNodeIndexList BlockNodeIndexList = LeafBlocksInner.AllIndexes() as IFocusBrowsingBlockNodeIndexList;
                 Assert.That(BlockNodeIndexList.Count > 0);
-                IsReadOnly = ((ICollection<IReadOnlyBrowsingBlockNodeIndex>)BlockNodeIndexList).IsReadOnly;
-                IsReadOnly = ((IList<IReadOnlyBrowsingBlockNodeIndex>)BlockNodeIndexList).IsReadOnly;
-                IsReadOnly = ((ICollection<IFrameBrowsingBlockNodeIndex>)BlockNodeIndexList).IsReadOnly;
-                IsReadOnly = ((IList<IFrameBrowsingBlockNodeIndex>)BlockNodeIndexList).IsReadOnly;
                 FirstBlockNodeIndex = BlockNodeIndexList[0];
-                Assert.That(((IFrameBrowsingBlockNodeIndexList)BlockNodeIndexList)[0] == FirstBlockNodeIndex);
                 Assert.That(BlockNodeIndexList.Contains(FirstBlockNodeIndex));
                 Assert.That(BlockNodeIndexList.IndexOf(FirstBlockNodeIndex) == 0);
                 BlockNodeIndexList.Remove(FirstBlockNodeIndex);
                 BlockNodeIndexList.Add(FirstBlockNodeIndex);
                 BlockNodeIndexList.Remove(FirstBlockNodeIndex);
                 BlockNodeIndexList.Insert(0, FirstBlockNodeIndex);
-                BlockNodeIndexList.CopyTo((IReadOnlyBrowsingBlockNodeIndex[])(new IFocusBrowsingBlockNodeIndex[BlockNodeIndexList.Count]), 0);
-                BlockNodeIndexList.CopyTo((IFrameBrowsingBlockNodeIndex[])(new IFocusBrowsingBlockNodeIndex[BlockNodeIndexList.Count]), 0);
 
+                IsReadOnly = ((ICollection<IReadOnlyBrowsingBlockNodeIndex>)BlockNodeIndexList).IsReadOnly;
+                IsReadOnly = ((IList<IReadOnlyBrowsingBlockNodeIndex>)BlockNodeIndexList).IsReadOnly;
+                BlockNodeIndexList.CopyTo((IReadOnlyBrowsingBlockNodeIndex[])(new IFocusBrowsingBlockNodeIndex[BlockNodeIndexList.Count]), 0);
                 IEnumerable<IReadOnlyBrowsingBlockNodeIndex> BlockNodeIndexListAsReadOnlyEnumerable = BlockNodeIndexList;
                 foreach (IReadOnlyBrowsingBlockNodeIndex Item in BlockNodeIndexListAsReadOnlyEnumerable)
                 {
                     break;
                 }
+                IList<IReadOnlyBrowsingBlockNodeIndex> BlockNodeIndexListAsReadOnlyIList = BlockNodeIndexList;
+                Assert.That(BlockNodeIndexListAsReadOnlyIList[0] == FirstBlockNodeIndex);
+                IReadOnlyList<IReadOnlyBrowsingBlockNodeIndex> BlockNodeIndexListAsReadOnlyIReadOnlylist = BlockNodeIndexList;
+                Assert.That(BlockNodeIndexListAsReadOnlyIReadOnlylist[0] == FirstBlockNodeIndex);
 
+                IsReadOnly = ((ICollection<IWriteableBrowsingBlockNodeIndex>)BlockNodeIndexList).IsReadOnly;
+                IsReadOnly = ((IList<IWriteableBrowsingBlockNodeIndex>)BlockNodeIndexList).IsReadOnly;
+                Assert.That(((IWriteableBrowsingBlockNodeIndexList)BlockNodeIndexList)[0] == FirstBlockNodeIndex);
+                BlockNodeIndexList.CopyTo((IWriteableBrowsingBlockNodeIndex[])(new IFocusBrowsingBlockNodeIndex[BlockNodeIndexList.Count]), 0);
+                IEnumerable<IWriteableBrowsingBlockNodeIndex> BlockNodeIndexListAsWriteableEnumerable = BlockNodeIndexList;
+                foreach (IWriteableBrowsingBlockNodeIndex Item in BlockNodeIndexListAsWriteableEnumerable)
+                {
+                    break;
+                }
+                IList<IWriteableBrowsingBlockNodeIndex> BlockNodeIndexListAsWriteableIList = BlockNodeIndexList;
+                Assert.That(BlockNodeIndexListAsWriteableIList[0] == FirstBlockNodeIndex);
+                Assert.That(BlockNodeIndexListAsWriteableIList.Contains((IWriteableBrowsingBlockNodeIndex)FirstBlockNodeIndex));
+                Assert.That(BlockNodeIndexListAsWriteableIList.IndexOf((IWriteableBrowsingBlockNodeIndex)FirstBlockNodeIndex) == 0);
+                ICollection<IWriteableBrowsingBlockNodeIndex> BrowsingBlockNodeIndexListAsWriteableICollection = BlockNodeIndexList;
+                Assert.That(BrowsingBlockNodeIndexListAsWriteableICollection.Contains((IWriteableBrowsingBlockNodeIndex)FirstBlockNodeIndex));
+                BrowsingBlockNodeIndexListAsWriteableICollection.Remove((IWriteableBrowsingBlockNodeIndex)FirstBlockNodeIndex);
+                BrowsingBlockNodeIndexListAsWriteableICollection.Add((IWriteableBrowsingBlockNodeIndex)FirstBlockNodeIndex);
+                BrowsingBlockNodeIndexListAsWriteableICollection.Remove((IWriteableBrowsingBlockNodeIndex)FirstBlockNodeIndex);
+                BlockNodeIndexListAsWriteableIList.Insert(0, (IWriteableBrowsingBlockNodeIndex)FirstBlockNodeIndex);
+                IReadOnlyList<IWriteableBrowsingBlockNodeIndex> BlockNodeIndexListAsWriteableIReadOnlylist = BlockNodeIndexList;
+                Assert.That(BlockNodeIndexListAsWriteableIReadOnlylist[0] == FirstBlockNodeIndex);
+                IEnumerator<IWriteableBrowsingBlockNodeIndex> BlockNodeIndexListWriteableEnumerator = ((IWriteableBrowsingBlockNodeIndexList)BlockNodeIndexList).GetEnumerator();
+
+                IsReadOnly = ((ICollection<IFrameBrowsingBlockNodeIndex>)BlockNodeIndexList).IsReadOnly;
+                IsReadOnly = ((IList<IFrameBrowsingBlockNodeIndex>)BlockNodeIndexList).IsReadOnly;
+                Assert.That(((IFrameBrowsingBlockNodeIndexList)BlockNodeIndexList)[0] == FirstBlockNodeIndex);
+                BlockNodeIndexList.CopyTo((IFrameBrowsingBlockNodeIndex[])(new IFocusBrowsingBlockNodeIndex[BlockNodeIndexList.Count]), 0);
                 IEnumerable<IFrameBrowsingBlockNodeIndex> BlockNodeIndexListAsFrameEnumerable = BlockNodeIndexList;
                 foreach (IFrameBrowsingBlockNodeIndex Item in BlockNodeIndexListAsFrameEnumerable)
                 {
                     break;
                 }
-
-                IList<IReadOnlyBrowsingBlockNodeIndex> BlockNodeIndexListAsReadOnlyIList = BlockNodeIndexList;
-                Assert.That(BlockNodeIndexListAsReadOnlyIList[0] == FirstBlockNodeIndex);
-
                 IList<IFrameBrowsingBlockNodeIndex> BlockNodeIndexListAsFrameIList = BlockNodeIndexList;
                 Assert.That(BlockNodeIndexListAsFrameIList[0] == FirstBlockNodeIndex);
                 Assert.That(BlockNodeIndexListAsFrameIList.Contains((IFrameBrowsingBlockNodeIndex)FirstBlockNodeIndex));
                 Assert.That(BlockNodeIndexListAsFrameIList.IndexOf((IFrameBrowsingBlockNodeIndex)FirstBlockNodeIndex) == 0);
-
                 ICollection<IFrameBrowsingBlockNodeIndex> BrowsingBlockNodeIndexListAsFrameICollection = BlockNodeIndexList;
                 Assert.That(BrowsingBlockNodeIndexListAsFrameICollection.Contains((IFrameBrowsingBlockNodeIndex)FirstBlockNodeIndex));
                 BrowsingBlockNodeIndexListAsFrameICollection.Remove((IFrameBrowsingBlockNodeIndex)FirstBlockNodeIndex);
                 BrowsingBlockNodeIndexListAsFrameICollection.Add((IFrameBrowsingBlockNodeIndex)FirstBlockNodeIndex);
                 BrowsingBlockNodeIndexListAsFrameICollection.Remove((IFrameBrowsingBlockNodeIndex)FirstBlockNodeIndex);
                 BlockNodeIndexListAsFrameIList.Insert(0, (IFrameBrowsingBlockNodeIndex)FirstBlockNodeIndex);
-
-                IReadOnlyList<IReadOnlyBrowsingBlockNodeIndex> BlockNodeIndexListAsReadOnlyIReadOnlylist = BlockNodeIndexList;
-                Assert.That(BlockNodeIndexListAsReadOnlyIReadOnlylist[0] == FirstBlockNodeIndex);
-
                 IReadOnlyList<IFrameBrowsingBlockNodeIndex> BlockNodeIndexListAsFrameIReadOnlylist = BlockNodeIndexList;
                 Assert.That(BlockNodeIndexListAsFrameIReadOnlylist[0] == FirstBlockNodeIndex);
-
                 IReadOnlyBrowsingBlockNodeIndexList BlockNodeIndexListAsReadOnly = BlockNodeIndexList;
                 Assert.That(BlockNodeIndexListAsReadOnly[0] == FirstBlockNodeIndex);
-
                 IEnumerator<IFrameBrowsingBlockNodeIndex> BlockNodeIndexListFrameEnumerator = ((IFrameBrowsingBlockNodeIndexList)BlockNodeIndexList).GetEnumerator();
 
                 // IFocusBrowsingListNodeIndexList
 
                 IFocusBrowsingListNodeIndexList ListNodeIndexList = LeafPathInner.AllIndexes() as IFocusBrowsingListNodeIndexList;
                 Assert.That(ListNodeIndexList.Count > 0);
-                IsReadOnly = ((ICollection<IReadOnlyBrowsingListNodeIndex>)ListNodeIndexList).IsReadOnly;
-                IsReadOnly = ((IList<IReadOnlyBrowsingListNodeIndex>)ListNodeIndexList).IsReadOnly;
-                IsReadOnly = ((ICollection<IFrameBrowsingListNodeIndex>)ListNodeIndexList).IsReadOnly;
-                IsReadOnly = ((IList<IFrameBrowsingListNodeIndex>)ListNodeIndexList).IsReadOnly;
                 FirstListNodeIndex = ListNodeIndexList[0];
-                Assert.That(((IFrameBrowsingListNodeIndexList)ListNodeIndexList)[0] == FirstListNodeIndex);
                 Assert.That(ListNodeIndexList.Contains(FirstListNodeIndex));
                 Assert.That(ListNodeIndexList.IndexOf(FirstListNodeIndex) == 0);
                 ListNodeIndexList.Remove(FirstListNodeIndex);
                 ListNodeIndexList.Add(FirstListNodeIndex);
                 ListNodeIndexList.Remove(FirstListNodeIndex);
                 ListNodeIndexList.Insert(0, FirstListNodeIndex);
-                ListNodeIndexList.CopyTo((IReadOnlyBrowsingListNodeIndex[])(new IFocusBrowsingListNodeIndex[ListNodeIndexList.Count]), 0);
-                ListNodeIndexList.CopyTo((IFrameBrowsingListNodeIndex[])(new IFocusBrowsingListNodeIndex[ListNodeIndexList.Count]), 0);
 
+                IsReadOnly = ((ICollection<IReadOnlyBrowsingListNodeIndex>)ListNodeIndexList).IsReadOnly;
+                IsReadOnly = ((IList<IReadOnlyBrowsingListNodeIndex>)ListNodeIndexList).IsReadOnly;
+                ListNodeIndexList.CopyTo((IReadOnlyBrowsingListNodeIndex[])(new IFocusBrowsingListNodeIndex[ListNodeIndexList.Count]), 0);
                 IEnumerable<IReadOnlyBrowsingListNodeIndex> ListNodeIndexListAsReadOnlyEnumerable = ListNodeIndexList;
                 foreach (IReadOnlyBrowsingListNodeIndex Item in ListNodeIndexListAsReadOnlyEnumerable)
                 {
                     break;
                 }
+                IList<IReadOnlyBrowsingListNodeIndex> ListNodeIndexListAsReadOnlyIList = ListNodeIndexList;
+                Assert.That(ListNodeIndexListAsReadOnlyIList[0] == FirstListNodeIndex);
+                IReadOnlyList<IReadOnlyBrowsingListNodeIndex> ListNodeIndexListAsReadOnlyIReadOnlylist = ListNodeIndexList;
+                Assert.That(ListNodeIndexListAsReadOnlyIReadOnlylist[0] == FirstListNodeIndex);
 
+                IsReadOnly = ((ICollection<IWriteableBrowsingListNodeIndex>)ListNodeIndexList).IsReadOnly;
+                IsReadOnly = ((IList<IWriteableBrowsingListNodeIndex>)ListNodeIndexList).IsReadOnly;
+                Assert.That(((IWriteableBrowsingListNodeIndexList)ListNodeIndexList)[0] == FirstListNodeIndex);
+                ListNodeIndexList.CopyTo((IWriteableBrowsingListNodeIndex[])(new IFocusBrowsingListNodeIndex[ListNodeIndexList.Count]), 0);
+                IEnumerable<IWriteableBrowsingListNodeIndex> ListNodeIndexListAsWriteableEnumerable = ListNodeIndexList;
+                foreach (IWriteableBrowsingListNodeIndex Item in ListNodeIndexListAsWriteableEnumerable)
+                {
+                    break;
+                }
+                IList<IWriteableBrowsingListNodeIndex> ListNodeIndexListAsWriteableIList = ListNodeIndexList;
+                Assert.That(ListNodeIndexListAsWriteableIList[0] == FirstListNodeIndex);
+                Assert.That(ListNodeIndexListAsWriteableIList.Contains((IWriteableBrowsingListNodeIndex)FirstListNodeIndex));
+                Assert.That(ListNodeIndexListAsWriteableIList.IndexOf((IWriteableBrowsingListNodeIndex)FirstListNodeIndex) == 0);
+                ICollection<IWriteableBrowsingListNodeIndex> BrowsingListNodeIndexListAsWriteableICollection = ListNodeIndexList;
+                Assert.That(BrowsingListNodeIndexListAsWriteableICollection.Contains((IWriteableBrowsingListNodeIndex)FirstListNodeIndex));
+                BrowsingListNodeIndexListAsWriteableICollection.Remove((IWriteableBrowsingListNodeIndex)FirstListNodeIndex);
+                BrowsingListNodeIndexListAsWriteableICollection.Add((IWriteableBrowsingListNodeIndex)FirstListNodeIndex);
+                BrowsingListNodeIndexListAsWriteableICollection.Remove((IWriteableBrowsingListNodeIndex)FirstListNodeIndex);
+                ListNodeIndexListAsWriteableIList.Insert(0, (IWriteableBrowsingListNodeIndex)FirstListNodeIndex);
+                IReadOnlyList<IWriteableBrowsingListNodeIndex> ListNodeIndexListAsWriteableIReadOnlylist = ListNodeIndexList;
+                Assert.That(ListNodeIndexListAsWriteableIReadOnlylist[0] == FirstListNodeIndex);
+                IEnumerator<IWriteableBrowsingListNodeIndex> ListNodeIndexListWriteableEnumerator = ((IWriteableBrowsingListNodeIndexList)ListNodeIndexList).GetEnumerator();
+
+                IsReadOnly = ((ICollection<IFrameBrowsingListNodeIndex>)ListNodeIndexList).IsReadOnly;
+                IsReadOnly = ((IList<IFrameBrowsingListNodeIndex>)ListNodeIndexList).IsReadOnly;
+                Assert.That(((IFrameBrowsingListNodeIndexList)ListNodeIndexList)[0] == FirstListNodeIndex);
+                ListNodeIndexList.CopyTo((IFrameBrowsingListNodeIndex[])(new IFocusBrowsingListNodeIndex[ListNodeIndexList.Count]), 0);
                 IEnumerable<IFrameBrowsingListNodeIndex> ListNodeIndexListAsFrameEnumerable = ListNodeIndexList;
                 foreach (IFrameBrowsingListNodeIndex Item in ListNodeIndexListAsFrameEnumerable)
                 {
                     break;
                 }
-
-                IList<IReadOnlyBrowsingListNodeIndex> ListNodeIndexListAsReadOnlyIList = ListNodeIndexList;
-                Assert.That(ListNodeIndexListAsReadOnlyIList[0] == FirstListNodeIndex);
-
                 IList<IFrameBrowsingListNodeIndex> ListNodeIndexListAsFrameIList = ListNodeIndexList;
                 Assert.That(ListNodeIndexListAsFrameIList[0] == FirstListNodeIndex);
                 Assert.That(ListNodeIndexListAsFrameIList.Contains((IFrameBrowsingListNodeIndex)FirstListNodeIndex));
                 Assert.That(ListNodeIndexListAsFrameIList.IndexOf((IFrameBrowsingListNodeIndex)FirstListNodeIndex) == 0);
-
                 ICollection<IFrameBrowsingListNodeIndex> BrowsingListNodeIndexListAsFrameICollection = ListNodeIndexList;
                 Assert.That(BrowsingListNodeIndexListAsFrameICollection.Contains((IFrameBrowsingListNodeIndex)FirstListNodeIndex));
                 BrowsingListNodeIndexListAsFrameICollection.Remove((IFrameBrowsingListNodeIndex)FirstListNodeIndex);
                 BrowsingListNodeIndexListAsFrameICollection.Add((IFrameBrowsingListNodeIndex)FirstListNodeIndex);
                 BrowsingListNodeIndexListAsFrameICollection.Remove((IFrameBrowsingListNodeIndex)FirstListNodeIndex);
                 ListNodeIndexListAsFrameIList.Insert(0, (IFrameBrowsingListNodeIndex)FirstListNodeIndex);
-
-                IReadOnlyList<IReadOnlyBrowsingListNodeIndex> ListNodeIndexListAsReadOnlyIReadOnlylist = ListNodeIndexList;
-                Assert.That(ListNodeIndexListAsReadOnlyIReadOnlylist[0] == FirstListNodeIndex);
-
                 IReadOnlyList<IFrameBrowsingListNodeIndex> ListNodeIndexListAsFrameIReadOnlylist = ListNodeIndexList;
                 Assert.That(ListNodeIndexListAsFrameIReadOnlylist[0] == FirstListNodeIndex);
-
                 IReadOnlyBrowsingListNodeIndexList ListNodeIndexListAsReadOnly = ListNodeIndexList;
                 Assert.That(ListNodeIndexListAsReadOnly[0] == FirstListNodeIndex);
-
                 IEnumerator<IFrameBrowsingListNodeIndex> ListNodeIndexListFrameEnumerator = ((IFrameBrowsingListNodeIndexList)ListNodeIndexList).GetEnumerator();
 
                 // IFocusIndexNodeStateDictionary
@@ -8061,12 +8171,6 @@ namespace Coverage
 
                         break;
                     }
-
-                    foreach (KeyValuePair<IFrameIndex, IFrameNodeState> Entry in (IFrameIndexNodeStateDictionary)ControllerStateTable)
-                    {
-                        break;
-                    }
-
                     IDictionary<IReadOnlyIndex, IReadOnlyNodeState> ReadOnlyControllerStateTableAsDictionary = ControllerStateTable;
                     foreach (KeyValuePair<IReadOnlyIndex, IReadOnlyNodeState> Entry in ReadOnlyControllerStateTableAsDictionary)
                     {
@@ -8074,7 +8178,61 @@ namespace Coverage
                         Assert.That(ReadOnlyControllerStateTableAsDictionary.ContainsKey(Entry.Key));
                         break;
                     }
+                    ICollection<KeyValuePair<IReadOnlyIndex, IReadOnlyNodeState>> ReadOnlyControllerStateTableAsCollection = ControllerStateTable;
+                    IsReadOnly = ReadOnlyControllerStateTableAsCollection.IsReadOnly;
+                    foreach (KeyValuePair<IReadOnlyIndex, IReadOnlyNodeState> Entry in ReadOnlyControllerStateTableAsCollection)
+                    {
+                        Assert.That(ReadOnlyControllerStateTableAsCollection.Contains(Entry));
+                        ReadOnlyControllerStateTableAsCollection.Remove(Entry);
+                        ReadOnlyControllerStateTableAsCollection.Add(Entry);
+                        ReadOnlyControllerStateTableAsCollection.CopyTo(new KeyValuePair<IReadOnlyIndex, IReadOnlyNodeState>[ReadOnlyControllerStateTableAsCollection.Count], 0);
+                        break;
+                    }
+                    IEnumerable<KeyValuePair<IReadOnlyIndex, IReadOnlyNodeState>> ReadOnlyControllerStateTableAsEnumerable = ControllerStateTable;
+                    foreach (KeyValuePair<IReadOnlyIndex, IReadOnlyNodeState> Entry in ReadOnlyControllerStateTableAsEnumerable)
+                    {
+                        break;
+                    }
 
+
+                    IWriteableIndexNodeStateDictionary WriteableControllerStateTable = ControllerStateTable as IWriteableIndexNodeStateDictionary;
+                    foreach (KeyValuePair<IWriteableIndex, IWriteableNodeState> Entry in WriteableControllerStateTable)
+                    {
+                        break;
+                    }
+                    IDictionary<IWriteableIndex, IWriteableNodeState> WriteableControllerStateTableAsDictionary = ControllerStateTable as IDictionary<IWriteableIndex, IWriteableNodeState>;
+                    foreach (KeyValuePair<IWriteableIndex, IWriteableNodeState> Entry in WriteableControllerStateTableAsDictionary)
+                    {
+                        IWriteableNodeState StateView = WriteableControllerStateTableAsDictionary[Entry.Key];
+                        Assert.That(WriteableControllerStateTableAsDictionary.ContainsKey(Entry.Key));
+                        WriteableControllerStateTableAsDictionary.Remove(Entry.Key);
+                        WriteableControllerStateTableAsDictionary.Add(Entry.Key, Entry.Value);
+                        Assert.That(WriteableControllerStateTableAsDictionary.Keys != null);
+                        Assert.That(WriteableControllerStateTableAsDictionary.Values != null);
+                        Assert.That(WriteableControllerStateTableAsDictionary.TryGetValue(Entry.Key, out IWriteableNodeState Value));
+                        break;
+                    }
+                    ICollection<KeyValuePair<IWriteableIndex, IWriteableNodeState>> WriteableControllerStateTableAsCollection = ControllerStateTable as ICollection<KeyValuePair<IWriteableIndex, IWriteableNodeState>>;
+                    IsReadOnly = WriteableControllerStateTableAsCollection.IsReadOnly;
+                    foreach (KeyValuePair<IWriteableIndex, IWriteableNodeState> Entry in WriteableControllerStateTableAsCollection)
+                    {
+                        Assert.That(WriteableControllerStateTableAsCollection.Contains(Entry));
+                        WriteableControllerStateTableAsCollection.Remove(Entry);
+                        WriteableControllerStateTableAsCollection.Add(Entry);
+                        WriteableControllerStateTableAsCollection.CopyTo(new KeyValuePair<IWriteableIndex, IWriteableNodeState>[WriteableControllerStateTableAsCollection.Count], 0);
+                        break;
+                    }
+                    IEnumerable<KeyValuePair<IWriteableIndex, IWriteableNodeState>> WriteableControllerStateTableAsEnumerable = ControllerStateTable as IEnumerable<KeyValuePair<IWriteableIndex, IWriteableNodeState>>;
+                    foreach (KeyValuePair<IWriteableIndex, IWriteableNodeState> Entry in WriteableControllerStateTableAsEnumerable)
+                    {
+                        break;
+                    }
+
+
+                    foreach (KeyValuePair<IFrameIndex, IFrameNodeState> Entry in (IFrameIndexNodeStateDictionary)ControllerStateTable)
+                    {
+                        break;
+                    }
                     IDictionary<IFrameIndex, IFrameNodeState> FrameControllerStateTableAsDictionary = ControllerStateTable as IDictionary<IFrameIndex, IFrameNodeState>;
                     foreach (KeyValuePair<IFrameIndex, IFrameNodeState> Entry in FrameControllerStateTableAsDictionary)
                     {
@@ -8087,18 +8245,6 @@ namespace Coverage
                         Assert.That(FrameControllerStateTableAsDictionary.TryGetValue(Entry.Key, out IFrameNodeState Value));
                         break;
                     }
-
-                    ICollection<KeyValuePair<IReadOnlyIndex, IReadOnlyNodeState>> ReadOnlyControllerStateTableAsCollection = ControllerStateTable;
-                    IsReadOnly = ReadOnlyControllerStateTableAsCollection.IsReadOnly;
-                    foreach (KeyValuePair<IReadOnlyIndex, IReadOnlyNodeState> Entry in ReadOnlyControllerStateTableAsCollection)
-                    {
-                        Assert.That(ReadOnlyControllerStateTableAsCollection.Contains(Entry));
-                        ReadOnlyControllerStateTableAsCollection.Remove(Entry);
-                        ReadOnlyControllerStateTableAsCollection.Add(Entry);
-                        ReadOnlyControllerStateTableAsCollection.CopyTo(new KeyValuePair<IReadOnlyIndex, IReadOnlyNodeState>[ReadOnlyControllerStateTableAsCollection.Count], 0);
-                        break;
-                    }
-
                     ICollection<KeyValuePair<IFrameIndex, IFrameNodeState>> FrameControllerStateTableAsCollection = ControllerStateTable as ICollection<KeyValuePair<IFrameIndex, IFrameNodeState>>;
                     IsReadOnly = FrameControllerStateTableAsCollection.IsReadOnly;
                     foreach (KeyValuePair<IFrameIndex, IFrameNodeState> Entry in FrameControllerStateTableAsCollection)
@@ -8109,13 +8255,6 @@ namespace Coverage
                         FrameControllerStateTableAsCollection.CopyTo(new KeyValuePair<IFrameIndex, IFrameNodeState>[FrameControllerStateTableAsCollection.Count], 0);
                         break;
                     }
-
-                    IEnumerable<KeyValuePair<IReadOnlyIndex, IReadOnlyNodeState>> ReadOnlyControllerStateTableAsEnumerable = ControllerStateTable;
-                    foreach (KeyValuePair<IReadOnlyIndex, IReadOnlyNodeState> Entry in ReadOnlyControllerStateTableAsEnumerable)
-                    {
-                        break;
-                    }
-
                     IEnumerable<KeyValuePair<IFrameIndex, IFrameNodeState>> FrameControllerStateTableAsEnumerable = ControllerStateTable as IEnumerable<KeyValuePair<IFrameIndex, IFrameNodeState>>;
                     foreach (KeyValuePair<IFrameIndex, IFrameNodeState> Entry in FrameControllerStateTableAsEnumerable)
                     {
@@ -8126,10 +8265,6 @@ namespace Coverage
                 // IFocusIndexNodeStateReadOnlyDictionary
 
                 IReadOnlyIndexNodeStateReadOnlyDictionary ReadOnlyStateTable = Controller.StateTable;
-                IFrameIndexNodeStateReadOnlyDictionary FrameStateTable = Controller.StateTable;
-                Assert.That(FrameStateTable.ContainsKey(RootIndex));
-                Assert.That(FrameStateTable[RootIndex] == ReadOnlyStateTable[RootIndex]);
-                FrameStateTable.GetEnumerator();
 
                 IReadOnlyDictionary<IReadOnlyIndex, IReadOnlyNodeState> ReadOnlyStateTableAsDictionary = ReadOnlyStateTable;
                 Assert.That(ReadOnlyStateTable.TryGetValue(RootIndex, out IReadOnlyNodeState ReadOnlyRootStateValue) == ReadOnlyStateTableAsDictionary.TryGetValue(RootIndex, out IReadOnlyNodeState ReadOnlyRootStateValueFromDictionary) && ReadOnlyRootStateValue == ReadOnlyRootStateValueFromDictionary);
@@ -8137,13 +8272,30 @@ namespace Coverage
                 Assert.That(ReadOnlyStateTableAsDictionary.Values != null);
                 ReadOnlyStateTableAsDictionary.GetEnumerator();
 
+                IWriteableIndexNodeStateReadOnlyDictionary WriteableStateTable = Controller.StateTable;
+                Assert.That(WriteableStateTable.ContainsKey(RootIndex));
+                Assert.That(WriteableStateTable[RootIndex] == ReadOnlyStateTable[RootIndex]);
+                WriteableStateTable.GetEnumerator();
+                IReadOnlyDictionary<IWriteableIndex, IWriteableNodeState> WriteableStateTableAsDictionary = ReadOnlyStateTable as IReadOnlyDictionary<IWriteableIndex, IWriteableNodeState>;
+                Assert.That(WriteableStateTable.TryGetValue(RootIndex, out IWriteableNodeState WriteableRootStateValue) == WriteableStateTableAsDictionary.TryGetValue(RootIndex, out IWriteableNodeState WriteableRootStateValueFromDictionary) && WriteableRootStateValue == WriteableRootStateValueFromDictionary);
+                Assert.That(WriteableStateTableAsDictionary.ContainsKey(RootIndex));
+                Assert.That(WriteableStateTableAsDictionary[RootIndex] == ReadOnlyStateTable[RootIndex]);
+                Assert.That(WriteableStateTableAsDictionary.Keys != null);
+                Assert.That(WriteableStateTableAsDictionary.Values != null);
+                IEnumerable<KeyValuePair<IWriteableIndex, IWriteableNodeState>> WriteableStateTableAsEnumerable = ReadOnlyStateTable as IEnumerable<KeyValuePair<IWriteableIndex, IWriteableNodeState>>;
+                WriteableStateTableAsEnumerable.GetEnumerator();
+
+
+                IFrameIndexNodeStateReadOnlyDictionary FrameStateTable = Controller.StateTable;
+                Assert.That(FrameStateTable.ContainsKey(RootIndex));
+                Assert.That(FrameStateTable[RootIndex] == ReadOnlyStateTable[RootIndex]);
+                FrameStateTable.GetEnumerator();
                 IReadOnlyDictionary<IFrameIndex, IFrameNodeState> FrameStateTableAsDictionary = ReadOnlyStateTable as IReadOnlyDictionary<IFrameIndex, IFrameNodeState>;
                 Assert.That(FrameStateTable.TryGetValue(RootIndex, out IFrameNodeState FrameRootStateValue) == FrameStateTableAsDictionary.TryGetValue(RootIndex, out IFrameNodeState FrameRootStateValueFromDictionary) && FrameRootStateValue == FrameRootStateValueFromDictionary);
                 Assert.That(FrameStateTableAsDictionary.ContainsKey(RootIndex));
                 Assert.That(FrameStateTableAsDictionary[RootIndex] == ReadOnlyStateTable[RootIndex]);
                 Assert.That(FrameStateTableAsDictionary.Keys != null);
                 Assert.That(FrameStateTableAsDictionary.Values != null);
-
                 IEnumerable<KeyValuePair<IFrameIndex, IFrameNodeState>> FrameStateTableAsEnumerable = ReadOnlyStateTable as IEnumerable<KeyValuePair<IFrameIndex, IFrameNodeState>>;
                 FrameStateTableAsEnumerable.GetEnumerator();
 
@@ -8153,51 +8305,19 @@ namespace Coverage
                 Assert.That(FocusInnerTableModify != null);
                 Assert.That(FocusInnerTableModify.Count > 0);
 
-                IFrameInnerDictionary<string> FrameInnerTableModify = FocusInnerTableModify;
-                FrameInnerTableModify.GetEnumerator();
 
                 IDictionary<string, IReadOnlyInner> ReadOnlyInnerTableModifyAsDictionary = FocusInnerTableModify;
                 Assert.That(ReadOnlyInnerTableModifyAsDictionary.Keys != null);
                 Assert.That(ReadOnlyInnerTableModifyAsDictionary.Values != null);
-
                 foreach (KeyValuePair<string, IFocusInner> Entry in FocusInnerTableModify)
                 {
                     Assert.That(ReadOnlyInnerTableModifyAsDictionary.ContainsKey(Entry.Key));
                     Assert.That(ReadOnlyInnerTableModifyAsDictionary[Entry.Key] == Entry.Value);
                 }
-
-                IDictionary<string, IFrameInner> FrameInnerTableModifyAsDictionary = FocusInnerTableModify;
-                Assert.That(FrameInnerTableModifyAsDictionary.Keys != null);
-                Assert.That(FrameInnerTableModifyAsDictionary.Values != null);
-
-                foreach (KeyValuePair<string, IFocusInner> Entry in FocusInnerTableModify)
-                {
-                    Assert.That(FrameInnerTableModifyAsDictionary.ContainsKey(Entry.Key));
-                    Assert.That(FrameInnerTableModifyAsDictionary[Entry.Key] == Entry.Value);
-                    FrameInnerTableModifyAsDictionary.Remove(Entry.Key);
-                    FrameInnerTableModifyAsDictionary.Add(Entry.Key, Entry.Value);
-                    FrameInnerTableModifyAsDictionary.TryGetValue(Entry.Key, out IFrameInner InnerValue);
-                    break;
-                }
-
                 ICollection<KeyValuePair<string, IReadOnlyInner>> ReadOnlyInnerTableModifyAsCollection = FocusInnerTableModify;
                 Assert.That(!ReadOnlyInnerTableModifyAsCollection.IsReadOnly);
-
-                ICollection<KeyValuePair<string, IFrameInner>> FrameInnerTableModifyAsCollection = FocusInnerTableModify;
-                Assert.That(!FrameInnerTableModifyAsCollection.IsReadOnly);
-                FrameInnerTableModifyAsCollection.CopyTo(new KeyValuePair<string, IFrameInner>[FrameInnerTableModifyAsCollection.Count], 0);
-
-                foreach (KeyValuePair<string, IFrameInner> Entry in FrameInnerTableModifyAsCollection)
-                {
-                    Assert.That(FrameInnerTableModifyAsCollection.Contains(Entry));
-                    FrameInnerTableModifyAsCollection.Remove(Entry);
-                    FrameInnerTableModifyAsCollection.Add(Entry);
-                    break;
-                }
-
                 IEnumerable<KeyValuePair<string, IReadOnlyInner>> ReadOnlyInnerTableModifyAsEnumerable = FocusInnerTableModify;
                 IEnumerator<KeyValuePair<string, IReadOnlyInner>> ReadOnlyInnerTableModifyAsEnumerableEnumerator = ReadOnlyInnerTableModifyAsEnumerable.GetEnumerator();
-
                 foreach (KeyValuePair<string, IReadOnlyInner> Entry in ReadOnlyInnerTableModifyAsEnumerable)
                 {
                     Assert.That(ReadOnlyInnerTableModifyAsDictionary.ContainsKey(Entry.Key));
@@ -8211,30 +8331,103 @@ namespace Coverage
                     break;
                 }
 
+
+                IWriteableInnerDictionary<string> WriteableInnerTableModify = FocusInnerTableModify;
+                WriteableInnerTableModify.GetEnumerator();
+                IDictionary<string, IWriteableInner> WriteableInnerTableModifyAsDictionary = FocusInnerTableModify;
+                Assert.That(WriteableInnerTableModifyAsDictionary.Keys != null);
+                Assert.That(WriteableInnerTableModifyAsDictionary.Values != null);
+                foreach (KeyValuePair<string, IFocusInner> Entry in FocusInnerTableModify)
+                {
+                    Assert.That(WriteableInnerTableModify[Entry.Key] == Entry.Value);
+                    Assert.That(WriteableInnerTableModifyAsDictionary.ContainsKey(Entry.Key));
+                    Assert.That(WriteableInnerTableModifyAsDictionary[Entry.Key] == Entry.Value);
+                    WriteableInnerTableModifyAsDictionary.Remove(Entry.Key);
+                    WriteableInnerTableModifyAsDictionary.Add(Entry.Key, Entry.Value);
+                    WriteableInnerTableModifyAsDictionary.TryGetValue(Entry.Key, out IWriteableInner WriteableInnerValue);
+                    break;
+                }
+                ICollection<KeyValuePair<string, IWriteableInner>> WriteableInnerTableModifyAsCollection = FocusInnerTableModify;
+                Assert.That(!WriteableInnerTableModifyAsCollection.IsReadOnly);
+                WriteableInnerTableModifyAsCollection.CopyTo(new KeyValuePair<string, IWriteableInner>[WriteableInnerTableModifyAsCollection.Count], 0);
+                foreach (KeyValuePair<string, IWriteableInner> Entry in WriteableInnerTableModifyAsCollection)
+                {
+                    Assert.That(WriteableInnerTableModifyAsCollection.Contains(Entry));
+                    WriteableInnerTableModifyAsCollection.Remove(Entry);
+                    WriteableInnerTableModifyAsCollection.Add(Entry);
+                    break;
+                }
+                IEnumerable<KeyValuePair<string, IWriteableInner>> WriteableInnerTableModifyAsEnumerable = FocusInnerTableModify;
+                IEnumerator<KeyValuePair<string, IWriteableInner>> WriteableInnerTableModifyAsEnumerableEnumerator = WriteableInnerTableModifyAsEnumerable.GetEnumerator();
+
+
+                IFrameInnerDictionary<string> FrameInnerTableModify = FocusInnerTableModify;
+                FrameInnerTableModify.GetEnumerator();
+                IDictionary<string, IFrameInner> FrameInnerTableModifyAsDictionary = FocusInnerTableModify;
+                Assert.That(FrameInnerTableModifyAsDictionary.Keys != null);
+                Assert.That(FrameInnerTableModifyAsDictionary.Values != null);
+                foreach (KeyValuePair<string, IFocusInner> Entry in FocusInnerTableModify)
+                {
+                    Assert.That(FrameInnerTableModify[Entry.Key] == Entry.Value);
+                    Assert.That(FrameInnerTableModifyAsDictionary.ContainsKey(Entry.Key));
+                    Assert.That(FrameInnerTableModifyAsDictionary[Entry.Key] == Entry.Value);
+                    FrameInnerTableModifyAsDictionary.Remove(Entry.Key);
+                    FrameInnerTableModifyAsDictionary.Add(Entry.Key, Entry.Value);
+                    FrameInnerTableModifyAsDictionary.TryGetValue(Entry.Key, out IFrameInner FrameInnerValue);
+                    break;
+                }
+                ICollection<KeyValuePair<string, IFrameInner>> FrameInnerTableModifyAsCollection = FocusInnerTableModify;
+                Assert.That(!FrameInnerTableModifyAsCollection.IsReadOnly);
+                FrameInnerTableModifyAsCollection.CopyTo(new KeyValuePair<string, IFrameInner>[FrameInnerTableModifyAsCollection.Count], 0);
+                foreach (KeyValuePair<string, IFrameInner> Entry in FrameInnerTableModifyAsCollection)
+                {
+                    Assert.That(FrameInnerTableModifyAsCollection.Contains(Entry));
+                    FrameInnerTableModifyAsCollection.Remove(Entry);
+                    FrameInnerTableModifyAsCollection.Add(Entry);
+                    break;
+                }
                 IEnumerable<KeyValuePair<string, IFrameInner>> FrameInnerTableModifyAsEnumerable = FocusInnerTableModify;
                 IEnumerator<KeyValuePair<string, IFrameInner>> FrameInnerTableModifyAsEnumerableEnumerator = FrameInnerTableModifyAsEnumerable.GetEnumerator();
+
 
                 // IFocusInnerReadOnlyDictionary
 
                 IFocusInnerReadOnlyDictionary<string> FocusInnerTable = RootState.InnerTable;
-                IFrameInnerReadOnlyDictionary<string> FrameInnerTable = RootState.InnerTable;
 
                 IReadOnlyDictionary<string, IReadOnlyInner> ReadOnlyInnerTableAsDictionary = FocusInnerTable;
                 Assert.That(ReadOnlyInnerTableAsDictionary.Keys != null);
                 Assert.That(ReadOnlyInnerTableAsDictionary.Values != null);
+                foreach (KeyValuePair<string, IFocusInner> Entry in FocusInnerTable)
+                {
+                    Assert.That(FocusInnerTable.TryGetValue(Entry.Key, out IReadOnlyInner ReadOnlyInnerValue) == FocusInnerTable.TryGetValue(Entry.Key, out IFocusInner FocusInnerValue));
+                    break;
+                }
 
+
+                IWriteableInnerReadOnlyDictionary<string> WriteableInnerTable = RootState.InnerTable;
+                IReadOnlyDictionary<string, IWriteableInner> WriteableInnerTableAsDictionary = FocusInnerTable;
+                Assert.That(WriteableInnerTableAsDictionary.Keys != null);
+                Assert.That(WriteableInnerTableAsDictionary.Values != null);
+                IEnumerable<KeyValuePair<string, IWriteableInner>> WriteableInnerTableAsIEnumerable = FocusInnerTable;
+                WriteableInnerTableAsIEnumerable.GetEnumerator();
+                foreach (KeyValuePair<string, IFocusInner> Entry in FocusInnerTable)
+                {
+                    Assert.That(WriteableInnerTableAsDictionary[Entry.Key] == Entry.Value);
+                    Assert.That(FocusInnerTable.TryGetValue(Entry.Key, out IWriteableInner WriteableInnerValue) == FocusInnerTable.TryGetValue(Entry.Key, out IFocusInner FocusInnerValue));
+                    break;
+                }
+
+
+                IFrameInnerReadOnlyDictionary<string> FrameInnerTable = RootState.InnerTable;
                 IReadOnlyDictionary<string, IFrameInner> FrameInnerTableAsDictionary = FocusInnerTable;
                 Assert.That(FrameInnerTableAsDictionary.Keys != null);
                 Assert.That(FrameInnerTableAsDictionary.Values != null);
-
                 IEnumerable<KeyValuePair<string, IFrameInner>> FrameInnerTableAsIEnumerable = FocusInnerTable;
                 FrameInnerTableAsIEnumerable.GetEnumerator();
-
                 foreach (KeyValuePair<string, IFocusInner> Entry in FocusInnerTable)
                 {
                     Assert.That(FrameInnerTableAsDictionary[Entry.Key] == Entry.Value);
-                    Assert.That(FocusInnerTable.TryGetValue(Entry.Key, out IReadOnlyInner ReadOnlyInnerValue) == FocusInnerTable.TryGetValue(Entry.Key, out IFocusInner FocusInnerValue));
-                    Assert.That(FocusInnerTable.TryGetValue(Entry.Key, out IFrameInner FrameInnerValue) == FocusInnerTable.TryGetValue(Entry.Key, out FocusInnerValue));
+                    Assert.That(FocusInnerTable.TryGetValue(Entry.Key, out IFrameInner FrameInnerValue) == FocusInnerTable.TryGetValue(Entry.Key, out IFocusInner FocusInnerValue));
                     break;
                 }
 
@@ -8242,50 +8435,73 @@ namespace Coverage
 
                 FirstNodeState = LeafPathInner.FirstNodeState;
                 Assert.That(FirstNodeState != null);
-
                 IFocusNodeStateList FocusNodeStateListModify = DebugObjects.GetReferenceByInterface(typeof(IFocusNodeStateList)) as IFocusNodeStateList;
                 Assert.That(FocusNodeStateListModify != null);
                 Assert.That(FocusNodeStateListModify.Count > 0);
                 FirstNodeState = FocusNodeStateListModify[0] as IFocusPlaceholderNodeState;
+
                 Assert.That(FocusNodeStateListModify.Contains((IReadOnlyNodeState)FirstNodeState));
                 Assert.That(FocusNodeStateListModify.IndexOf((IReadOnlyNodeState)FirstNodeState) == 0);
-
                 FocusNodeStateListModify.Remove((IReadOnlyNodeState)FirstNodeState);
                 FocusNodeStateListModify.Insert(0, (IReadOnlyNodeState)FirstNodeState);
                 FocusNodeStateListModify.CopyTo((IReadOnlyNodeState[])(new IFocusNodeState[FocusNodeStateListModify.Count]), 0);
-
                 IReadOnlyNodeStateList FocusNodeStateListModifyAsReadOnly = FocusNodeStateListModify as IReadOnlyNodeStateList;
                 Assert.That(FocusNodeStateListModifyAsReadOnly != null);
                 Assert.That(FocusNodeStateListModifyAsReadOnly[0] == FocusNodeStateListModify[0]);
+                IList<IReadOnlyNodeState> ReadOnlyNodeStateListModifyAsIList = FocusNodeStateListModify as IList<IReadOnlyNodeState>;
+                Assert.That(ReadOnlyNodeStateListModifyAsIList != null);
+                Assert.That(ReadOnlyNodeStateListModifyAsIList[0] == FocusNodeStateListModify[0]);
+                IReadOnlyList<IReadOnlyNodeState> ReadOnlyNodeStateListModifyAsIReadOnlyList = FocusNodeStateListModify as IReadOnlyList<IReadOnlyNodeState>;
+                Assert.That(ReadOnlyNodeStateListModifyAsIReadOnlyList != null);
+                Assert.That(ReadOnlyNodeStateListModifyAsIReadOnlyList[0] == FocusNodeStateListModify[0]);
+                ICollection<IReadOnlyNodeState> ReadOnlyNodeStateListModifyAsCollection = FocusNodeStateListModify as ICollection<IReadOnlyNodeState>;
+                Assert.That(ReadOnlyNodeStateListModifyAsCollection != null);
+                Assert.That(!ReadOnlyNodeStateListModifyAsCollection.IsReadOnly);
+                IEnumerable<IReadOnlyNodeState> ReadOnlyNodeStateListModifyAsEnumerable = FocusNodeStateListModify as IEnumerable<IReadOnlyNodeState>;
+                Assert.That(ReadOnlyNodeStateListModifyAsEnumerable != null);
+                Assert.That(ReadOnlyNodeStateListModifyAsEnumerable.GetEnumerator() != null);
+
+
+                IWriteableNodeStateList FocusNodeStateListModifyAsWriteable = FocusNodeStateListModify as IWriteableNodeStateList;
+                Assert.That(FocusNodeStateListModifyAsWriteable != null);
+                Assert.That(FocusNodeStateListModifyAsWriteable[0] == FocusNodeStateListModify[0]);
+                FocusNodeStateListModifyAsWriteable.GetEnumerator();
+                IList<IWriteableNodeState> WriteableNodeStateListModifyAsIList = FocusNodeStateListModify as IList<IWriteableNodeState>;
+                Assert.That(WriteableNodeStateListModifyAsIList != null);
+                Assert.That(WriteableNodeStateListModifyAsIList[0] == FocusNodeStateListModify[0]);
+                Assert.That(WriteableNodeStateListModifyAsIList.IndexOf(FirstNodeState) == 0);
+                WriteableNodeStateListModifyAsIList.Remove(FirstNodeState);
+                WriteableNodeStateListModifyAsIList.Insert(0, FirstNodeState);
+                IReadOnlyList<IWriteableNodeState> WriteableNodeStateListModifyAsIReadOnlyList = FocusNodeStateListModify as IReadOnlyList<IWriteableNodeState>;
+                Assert.That(WriteableNodeStateListModifyAsIReadOnlyList != null);
+                Assert.That(WriteableNodeStateListModifyAsIReadOnlyList[0] == FocusNodeStateListModify[0]);
+                ICollection<IWriteableNodeState> WriteableNodeStateListModifyAsCollection = FocusNodeStateListModify as ICollection<IWriteableNodeState>;
+                Assert.That(WriteableNodeStateListModifyAsCollection != null);
+                Assert.That(!WriteableNodeStateListModifyAsCollection.IsReadOnly);
+                Assert.That(WriteableNodeStateListModifyAsCollection.Contains(FirstNodeState));
+                WriteableNodeStateListModifyAsCollection.Remove(FirstNodeState);
+                WriteableNodeStateListModifyAsCollection.Add(FirstNodeState);
+                WriteableNodeStateListModifyAsCollection.Remove(FirstNodeState);
+                FocusNodeStateListModify.Insert(0, FirstNodeState);
+                WriteableNodeStateListModifyAsCollection.CopyTo(new IFocusNodeState[WriteableNodeStateListModifyAsCollection.Count], 0);
+                IEnumerable<IWriteableNodeState> WriteableNodeStateListModifyAsEnumerable = FocusNodeStateListModify as IEnumerable<IWriteableNodeState>;
+                Assert.That(WriteableNodeStateListModifyAsEnumerable != null);
+                Assert.That(WriteableNodeStateListModifyAsEnumerable.GetEnumerator() != null);
+
 
                 IFrameNodeStateList FocusNodeStateListModifyAsFrame = FocusNodeStateListModify as IFrameNodeStateList;
                 Assert.That(FocusNodeStateListModifyAsFrame != null);
                 Assert.That(FocusNodeStateListModifyAsFrame[0] == FocusNodeStateListModify[0]);
                 FocusNodeStateListModifyAsFrame.GetEnumerator();
-
-                IList<IReadOnlyNodeState> ReadOnlyNodeStateListModifyAsIList = FocusNodeStateListModify as IList<IReadOnlyNodeState>;
-                Assert.That(ReadOnlyNodeStateListModifyAsIList != null);
-                Assert.That(ReadOnlyNodeStateListModifyAsIList[0] == FocusNodeStateListModify[0]);
-
                 IList<IFrameNodeState> FrameNodeStateListModifyAsIList = FocusNodeStateListModify as IList<IFrameNodeState>;
                 Assert.That(FrameNodeStateListModifyAsIList != null);
                 Assert.That(FrameNodeStateListModifyAsIList[0] == FocusNodeStateListModify[0]);
                 Assert.That(FrameNodeStateListModifyAsIList.IndexOf(FirstNodeState) == 0);
                 FrameNodeStateListModifyAsIList.Remove(FirstNodeState);
                 FrameNodeStateListModifyAsIList.Insert(0, FirstNodeState);
-
-                IReadOnlyList<IReadOnlyNodeState> ReadOnlyNodeStateListModifyAsIReadOnlyList = FocusNodeStateListModify as IReadOnlyList<IReadOnlyNodeState>;
-                Assert.That(ReadOnlyNodeStateListModifyAsIReadOnlyList != null);
-                Assert.That(ReadOnlyNodeStateListModifyAsIReadOnlyList[0] == FocusNodeStateListModify[0]);
-
                 IReadOnlyList<IFrameNodeState> FrameNodeStateListModifyAsIReadOnlyList = FocusNodeStateListModify as IReadOnlyList<IFrameNodeState>;
                 Assert.That(FrameNodeStateListModifyAsIReadOnlyList != null);
                 Assert.That(FrameNodeStateListModifyAsIReadOnlyList[0] == FocusNodeStateListModify[0]);
-
-                ICollection<IReadOnlyNodeState> ReadOnlyNodeStateListModifyAsCollection = FocusNodeStateListModify as ICollection<IReadOnlyNodeState>;
-                Assert.That(ReadOnlyNodeStateListModifyAsCollection != null);
-                Assert.That(!ReadOnlyNodeStateListModifyAsCollection.IsReadOnly);
-
                 ICollection<IFrameNodeState> FrameNodeStateListModifyAsCollection = FocusNodeStateListModify as ICollection<IFrameNodeState>;
                 Assert.That(FrameNodeStateListModifyAsCollection != null);
                 Assert.That(!FrameNodeStateListModifyAsCollection.IsReadOnly);
@@ -8295,11 +8511,6 @@ namespace Coverage
                 FrameNodeStateListModifyAsCollection.Remove(FirstNodeState);
                 FocusNodeStateListModify.Insert(0, FirstNodeState);
                 FrameNodeStateListModifyAsCollection.CopyTo(new IFocusNodeState[FrameNodeStateListModifyAsCollection.Count], 0);
-
-                IEnumerable<IReadOnlyNodeState> ReadOnlyNodeStateListModifyAsEnumerable = FocusNodeStateListModify as IEnumerable<IReadOnlyNodeState>;
-                Assert.That(ReadOnlyNodeStateListModifyAsEnumerable != null);
-                Assert.That(ReadOnlyNodeStateListModifyAsEnumerable.GetEnumerator() != null);
-
                 IEnumerable<IFrameNodeState> FrameNodeStateListModifyAsEnumerable = FocusNodeStateListModify as IEnumerable<IFrameNodeState>;
                 Assert.That(FrameNodeStateListModifyAsEnumerable != null);
                 Assert.That(FrameNodeStateListModifyAsEnumerable.GetEnumerator() != null);
@@ -8310,25 +8521,35 @@ namespace Coverage
                 Assert.That(FocusNodeStateList != null);
                 Assert.That(FocusNodeStateList.Count > 0);
                 FirstNodeState = FocusNodeStateList[0] as IFocusPlaceholderNodeState;
+
                 Assert.That(FocusNodeStateList.Contains((IReadOnlyNodeState)FirstNodeState));
                 Assert.That(FocusNodeStateList.IndexOf((IReadOnlyNodeState)FirstNodeState) == 0);
+                IReadOnlyList<IReadOnlyNodeState> ReadOnlyNodeStateListAsIReadOnlyList = FocusNodeStateList as IReadOnlyList<IReadOnlyNodeState>;
+                Assert.That(ReadOnlyNodeStateListAsIReadOnlyList[0] == FirstNodeState);
+                IEnumerable<IReadOnlyNodeState> ReadOnlyNodeStateListAsEnumerable = FocusNodeStateList as IEnumerable<IReadOnlyNodeState>;
+                Assert.That(ReadOnlyNodeStateListAsEnumerable != null);
+                Assert.That(ReadOnlyNodeStateListAsEnumerable.GetEnumerator() != null);
+
+
+                IWriteableNodeStateReadOnlyList WriteableNodeStateList = FocusNodeStateList;
+                Assert.That(WriteableNodeStateList.Contains(FirstNodeState));
+                Assert.That(WriteableNodeStateList.IndexOf(FirstNodeState) == 0);
+                Assert.That(WriteableNodeStateList[0] == FocusNodeStateList[0]);
+                WriteableNodeStateList.GetEnumerator();
+                IReadOnlyList<IWriteableNodeState> WriteableNodeStateListAsIReadOnlyList = FocusNodeStateList as IReadOnlyList<IWriteableNodeState>;
+                Assert.That(WriteableNodeStateListAsIReadOnlyList[0] == FirstNodeState);
+                IEnumerable<IWriteableNodeState> WriteableNodeStateListAsEnumerable = FocusNodeStateList as IEnumerable<IWriteableNodeState>;
+                Assert.That(WriteableNodeStateListAsEnumerable != null);
+                Assert.That(WriteableNodeStateListAsEnumerable.GetEnumerator() != null);
+
 
                 IFrameNodeStateReadOnlyList FrameNodeStateList = FocusNodeStateList;
                 Assert.That(FrameNodeStateList.Contains(FirstNodeState));
                 Assert.That(FrameNodeStateList.IndexOf(FirstNodeState) == 0);
                 Assert.That(FrameNodeStateList[0] == FocusNodeStateList[0]);
                 FrameNodeStateList.GetEnumerator();
-
-                IReadOnlyList<IReadOnlyNodeState> ReadOnlyNodeStateListAsIReadOnlyList = FocusNodeStateList as IReadOnlyList<IReadOnlyNodeState>;
-                Assert.That(ReadOnlyNodeStateListAsIReadOnlyList[0] == FirstNodeState);
-
                 IReadOnlyList<IFrameNodeState> FrameNodeStateListAsIReadOnlyList = FocusNodeStateList as IReadOnlyList<IFrameNodeState>;
                 Assert.That(FrameNodeStateListAsIReadOnlyList[0] == FirstNodeState);
-
-                IEnumerable<IReadOnlyNodeState> ReadOnlyNodeStateListAsEnumerable = FocusNodeStateList as IEnumerable<IReadOnlyNodeState>;
-                Assert.That(ReadOnlyNodeStateListAsEnumerable != null);
-                Assert.That(ReadOnlyNodeStateListAsEnumerable.GetEnumerator() != null);
-
                 IEnumerable<IFrameNodeState> FrameNodeStateListAsEnumerable = FocusNodeStateList as IEnumerable<IFrameNodeState>;
                 Assert.That(FrameNodeStateListAsEnumerable != null);
                 Assert.That(FrameNodeStateListAsEnumerable.GetEnumerator() != null);
@@ -8339,21 +8560,44 @@ namespace Coverage
 
                 Assert.That(FocusOperationStack.Count > 0);
                 IFocusOperationGroup FirstOperationGroup = FocusOperationStack[0];
-
                 IFocusOperationGroupList FocusOperationGroupList = DebugObjects.GetReferenceByInterface(typeof(IFocusOperationGroupList)) as IFocusOperationGroupList;
                 if (FocusOperationGroupList != null)
                 {
+                    IWriteableOperationGroupList WriteableOperationGroupList = FocusOperationGroupList;
+                    Assert.That(WriteableOperationGroupList.Count > 0);
+                    Assert.That(WriteableOperationGroupList[0] == FirstOperationGroup);
+                    WriteableOperationGroupList.GetEnumerator();
+                    IList<IWriteableOperationGroup> WriteableOperationGroupAsIList = WriteableOperationGroupList;
+                    Assert.That(WriteableOperationGroupAsIList.Count > 0);
+                    Assert.That(WriteableOperationGroupAsIList[0] == FirstOperationGroup);
+                    Assert.That(WriteableOperationGroupAsIList.IndexOf(FirstOperationGroup) == 0);
+                    WriteableOperationGroupAsIList.Remove(FirstOperationGroup);
+                    WriteableOperationGroupAsIList.Insert(0, FirstOperationGroup);
+                    ICollection<IWriteableOperationGroup> WriteableOperationGroupAsICollection = WriteableOperationGroupList;
+                    Assert.That(WriteableOperationGroupAsICollection.Count > 0);
+                    Assert.That(!WriteableOperationGroupAsICollection.IsReadOnly);
+                    Assert.That(WriteableOperationGroupAsICollection.Contains(FirstOperationGroup));
+                    WriteableOperationGroupAsICollection.Remove(FirstOperationGroup);
+                    WriteableOperationGroupAsICollection.Add(FirstOperationGroup);
+                    WriteableOperationGroupAsICollection.Remove(FirstOperationGroup);
+                    WriteableOperationGroupAsIList.Insert(0, FirstOperationGroup);
+                    WriteableOperationGroupAsICollection.CopyTo(new IFocusOperationGroup[WriteableOperationGroupAsICollection.Count], 0);
+                    IEnumerable<IWriteableOperationGroup> WriteableOperationGroupAsIEnumerable = WriteableOperationGroupList;
+                    WriteableOperationGroupAsIEnumerable.GetEnumerator();
+                    IReadOnlyList<IWriteableOperationGroup> WriteableOperationGroupAsIReadOnlyList = WriteableOperationGroupList;
+                    Assert.That(WriteableOperationGroupAsIReadOnlyList.Count > 0);
+                    Assert.That(WriteableOperationGroupAsIReadOnlyList[0] == FirstOperationGroup);
+
                     IFrameOperationGroupList FrameOperationGroupList = FocusOperationGroupList;
                     Assert.That(FrameOperationGroupList.Count > 0);
                     Assert.That(FrameOperationGroupList[0] == FirstOperationGroup);
-
+                    FrameOperationGroupList.GetEnumerator();
                     IList<IFrameOperationGroup> FrameOperationGroupAsIList = FrameOperationGroupList;
                     Assert.That(FrameOperationGroupAsIList.Count > 0);
                     Assert.That(FrameOperationGroupAsIList[0] == FirstOperationGroup);
                     Assert.That(FrameOperationGroupAsIList.IndexOf(FirstOperationGroup) == 0);
                     FrameOperationGroupAsIList.Remove(FirstOperationGroup);
                     FrameOperationGroupAsIList.Insert(0, FirstOperationGroup);
-
                     ICollection<IFrameOperationGroup> FrameOperationGroupAsICollection = FrameOperationGroupList;
                     Assert.That(FrameOperationGroupAsICollection.Count > 0);
                     Assert.That(!FrameOperationGroupAsICollection.IsReadOnly);
@@ -8363,10 +8607,8 @@ namespace Coverage
                     FrameOperationGroupAsICollection.Remove(FirstOperationGroup);
                     FrameOperationGroupAsIList.Insert(0, FirstOperationGroup);
                     FrameOperationGroupAsICollection.CopyTo(new IFocusOperationGroup[FrameOperationGroupAsICollection.Count], 0);
-
                     IEnumerable<IFrameOperationGroup> FrameOperationGroupAsIEnumerable = FrameOperationGroupList;
                     FrameOperationGroupAsIEnumerable.GetEnumerator();
-
                     IReadOnlyList<IFrameOperationGroup> FrameOperationGroupAsIReadOnlyList = FrameOperationGroupList;
                     Assert.That(FrameOperationGroupAsIReadOnlyList.Count > 0);
                     Assert.That(FrameOperationGroupAsIReadOnlyList[0] == FirstOperationGroup);
@@ -8374,34 +8616,66 @@ namespace Coverage
 
                 // IFocusOperationGroupReadOnlyList
 
+                IWriteableOperationGroupReadOnlyList WriteableOperationStack = FocusOperationStack;
+                Assert.That(WriteableOperationStack.Contains(FirstOperationGroup));
+                Assert.That(WriteableOperationStack.IndexOf(FirstOperationGroup) == 0);
+                IEnumerable<IWriteableOperationGroup> WriteableOperationStackAsIEnumerable = WriteableOperationStack;
+                WriteableOperationStackAsIEnumerable.GetEnumerator();
+
+
                 IFrameOperationGroupReadOnlyList FrameOperationStack = FocusOperationStack;
                 Assert.That(FrameOperationStack.Contains(FirstOperationGroup));
                 Assert.That(FrameOperationStack.IndexOf(FirstOperationGroup) == 0);
-
+                Assert.That(FrameOperationStack[0] == FirstOperationGroup);
+                FrameOperationStack.GetEnumerator();
                 IEnumerable<IFrameOperationGroup> FrameOperationStackAsIEnumerable = FrameOperationStack;
                 FrameOperationStackAsIEnumerable.GetEnumerator();
+                IReadOnlyList<IFrameOperationGroup> FrameOperationStackAsIReadOnlyList = FrameOperationStack;
+                Assert.That(FrameOperationStackAsIReadOnlyList[0] == FirstOperationGroup);
 
                 // IFocusOperationList
 
                 IFocusOperationReadOnlyList FocusOperationReadOnlyList = FirstOperationGroup.OperationList;
-
                 Assert.That(FocusOperationReadOnlyList.Count > 0);
                 IFocusOperation FirstOperation = FocusOperationReadOnlyList[0];
-
                 IFocusOperationList FocusOperationList = DebugObjects.GetReferenceByInterface(typeof(IFocusOperationList)) as IFocusOperationList;
                 if (FocusOperationList != null)
                 {
+                    IWriteableOperationList WriteableOperationList = FocusOperationList;
+                    Assert.That(WriteableOperationList.Count > 0);
+                    Assert.That(WriteableOperationList[0] == FirstOperation);
+                    IList<IWriteableOperation> WriteableOperationAsIList = WriteableOperationList;
+                    Assert.That(WriteableOperationAsIList.Count > 0);
+                    Assert.That(WriteableOperationAsIList[0] == FirstOperation);
+                    Assert.That(WriteableOperationAsIList.IndexOf(FirstOperation) == 0);
+                    WriteableOperationAsIList.Remove(FirstOperation);
+                    WriteableOperationAsIList.Insert(0, FirstOperation);
+                    ICollection<IWriteableOperation> WriteableOperationAsICollection = WriteableOperationList;
+                    Assert.That(WriteableOperationAsICollection.Count > 0);
+                    Assert.That(!WriteableOperationAsICollection.IsReadOnly);
+                    Assert.That(WriteableOperationAsICollection.Contains(FirstOperation));
+                    WriteableOperationAsICollection.Remove(FirstOperation);
+                    WriteableOperationAsICollection.Add(FirstOperation);
+                    WriteableOperationAsICollection.Remove(FirstOperation);
+                    WriteableOperationAsIList.Insert(0, FirstOperation);
+                    WriteableOperationAsICollection.CopyTo(new IFocusOperation[WriteableOperationAsICollection.Count], 0);
+                    IEnumerable<IWriteableOperation> WriteableOperationAsIEnumerable = WriteableOperationList;
+                    WriteableOperationAsIEnumerable.GetEnumerator();
+                    IReadOnlyList<IWriteableOperation> WriteableOperationAsIReadOnlyList = WriteableOperationList;
+                    Assert.That(WriteableOperationAsIReadOnlyList.Count > 0);
+                    Assert.That(WriteableOperationAsIReadOnlyList[0] == FirstOperation);
+
+
                     IFrameOperationList FrameOperationList = FocusOperationList;
                     Assert.That(FrameOperationList.Count > 0);
                     Assert.That(FrameOperationList[0] == FirstOperation);
-
+                    FrameOperationList.GetEnumerator();
                     IList<IFrameOperation> FrameOperationAsIList = FrameOperationList;
                     Assert.That(FrameOperationAsIList.Count > 0);
                     Assert.That(FrameOperationAsIList[0] == FirstOperation);
                     Assert.That(FrameOperationAsIList.IndexOf(FirstOperation) == 0);
                     FrameOperationAsIList.Remove(FirstOperation);
                     FrameOperationAsIList.Insert(0, FirstOperation);
-
                     ICollection<IFrameOperation> FrameOperationAsICollection = FrameOperationList;
                     Assert.That(FrameOperationAsICollection.Count > 0);
                     Assert.That(!FrameOperationAsICollection.IsReadOnly);
@@ -8411,77 +8685,107 @@ namespace Coverage
                     FrameOperationAsICollection.Remove(FirstOperation);
                     FrameOperationAsIList.Insert(0, FirstOperation);
                     FrameOperationAsICollection.CopyTo(new IFocusOperation[FrameOperationAsICollection.Count], 0);
-
                     IEnumerable<IFrameOperation> FrameOperationAsIEnumerable = FrameOperationList;
                     FrameOperationAsIEnumerable.GetEnumerator();
-
                     IReadOnlyList<IFrameOperation> FrameOperationAsIReadOnlyList = FrameOperationList;
                     Assert.That(FrameOperationAsIReadOnlyList.Count > 0);
                     Assert.That(FrameOperationAsIReadOnlyList[0] == FirstOperation);
                 }
 
                 // IFocusOperationReadOnlyList
+                IWriteableOperationReadOnlyList WriteableOperationReadOnlyList = FocusOperationReadOnlyList;
+                Assert.That(WriteableOperationReadOnlyList.Contains(FirstOperation));
+                Assert.That(WriteableOperationReadOnlyList.IndexOf(FirstOperation) == 0);
+                IEnumerable<IWriteableOperation> WriteableOperationReadOnlyListAsIEnumerable = WriteableOperationReadOnlyList;
+                WriteableOperationReadOnlyListAsIEnumerable.GetEnumerator();
+
+
                 IFrameOperationReadOnlyList FrameOperationReadOnlyList = FocusOperationReadOnlyList;
                 Assert.That(FrameOperationReadOnlyList.Contains(FirstOperation));
                 Assert.That(FrameOperationReadOnlyList.IndexOf(FirstOperation) == 0);
-
+                Assert.That(FrameOperationReadOnlyList[0] == FirstOperation);
+                FrameOperationReadOnlyList.GetEnumerator();
                 IEnumerable<IFrameOperation> FrameOperationReadOnlyListAsIEnumerable = FrameOperationReadOnlyList;
                 FrameOperationReadOnlyListAsIEnumerable.GetEnumerator();
+                IReadOnlyList<IFrameOperation> FrameOperationReadOnlyListAsIReadOnlyList = FrameOperationReadOnlyList;
+                Assert.That(FrameOperationReadOnlyListAsIReadOnlyList[0] == FirstOperation);
 
                 // FocusPlaceholderNodeStateList
 
-                //System.Diagnostics.Debug.Assert(false);
                 FirstNodeState = LeafPathInner.FirstNodeState;
                 Assert.That(FirstNodeState != null);
-
                 IFocusPlaceholderNodeStateList FocusPlaceholderNodeStateListModify = DebugObjects.GetReferenceByInterface(typeof(IFocusPlaceholderNodeStateList)) as IFocusPlaceholderNodeStateList;
                 if (FocusPlaceholderNodeStateListModify != null)
                 {
                     Assert.That(FocusPlaceholderNodeStateListModify.Count > 0);
                     FirstNodeState = FocusPlaceholderNodeStateListModify[0] as IFocusPlaceholderNodeState;
+
                     Assert.That(FocusPlaceholderNodeStateListModify.Contains((IReadOnlyPlaceholderNodeState)FirstNodeState));
                     Assert.That(FocusPlaceholderNodeStateListModify.IndexOf((IReadOnlyPlaceholderNodeState)FirstNodeState) == 0);
-
                     FocusPlaceholderNodeStateListModify.Remove((IReadOnlyPlaceholderNodeState)FirstNodeState);
                     FocusPlaceholderNodeStateListModify.Insert(0, (IReadOnlyPlaceholderNodeState)FirstNodeState);
                     FocusPlaceholderNodeStateListModify.CopyTo((IReadOnlyPlaceholderNodeState[])(new IFocusPlaceholderNodeState[FocusPlaceholderNodeStateListModify.Count]), 0);
-
                     IReadOnlyPlaceholderNodeStateList FocusPlaceholderNodeStateListModifyAsReadOnly = FocusPlaceholderNodeStateListModify as IReadOnlyPlaceholderNodeStateList;
                     Assert.That(FocusPlaceholderNodeStateListModifyAsReadOnly != null);
                     Assert.That(FocusPlaceholderNodeStateListModifyAsReadOnly[0] == FocusPlaceholderNodeStateListModify[0]);
-
-                    IFramePlaceholderNodeStateList FocusPlaceholderNodeStateListModifyAsFrame = FocusPlaceholderNodeStateListModify as IFramePlaceholderNodeStateList;
-                    Assert.That(FocusPlaceholderNodeStateListModifyAsFrame != null);
-                    Assert.That(FocusPlaceholderNodeStateListModifyAsFrame[0] == FocusPlaceholderNodeStateListModify[0]);
-                    FocusPlaceholderNodeStateListModifyAsFrame.GetEnumerator();
-
                     IList<IReadOnlyPlaceholderNodeState> ReadOnlyPlaceholderNodeStateListModifyAsIList = FocusPlaceholderNodeStateListModify as IList<IReadOnlyPlaceholderNodeState>;
                     Assert.That(ReadOnlyPlaceholderNodeStateListModifyAsIList != null);
                     Assert.That(ReadOnlyPlaceholderNodeStateListModifyAsIList[0] == FocusPlaceholderNodeStateListModify[0]);
-
-                    IList<IFramePlaceholderNodeState> FramePlaceholderNodeStateListModifyAsIList = FocusPlaceholderNodeStateListModify as IList<IFramePlaceholderNodeState>;
-                    Assert.That(FramePlaceholderNodeStateListModifyAsIList != null);
-                    Assert.That(FramePlaceholderNodeStateListModifyAsIList[0] == FocusPlaceholderNodeStateListModify[0]);
-                    Assert.That(FramePlaceholderNodeStateListModifyAsIList.IndexOf(FirstNodeState) == 0);
-                    FramePlaceholderNodeStateListModifyAsIList.Remove(FirstNodeState);
-                    FramePlaceholderNodeStateListModifyAsIList.Insert(0, FirstNodeState);
-
                     IReadOnlyList<IReadOnlyPlaceholderNodeState> ReadOnlyPlaceholderNodeStateListModifyAsIReadOnlyList = FocusPlaceholderNodeStateListModify as IReadOnlyList<IReadOnlyPlaceholderNodeState>;
                     Assert.That(ReadOnlyPlaceholderNodeStateListModifyAsIReadOnlyList != null);
                     Assert.That(ReadOnlyPlaceholderNodeStateListModifyAsIReadOnlyList[0] == FocusPlaceholderNodeStateListModify[0]);
-
-                    IReadOnlyList<IFramePlaceholderNodeState> FramePlaceholderNodeStateListModifyAsIReadOnlyList = FocusPlaceholderNodeStateListModify as IReadOnlyList<IFramePlaceholderNodeState>;
-                    Assert.That(FramePlaceholderNodeStateListModifyAsIReadOnlyList != null);
-                    Assert.That(FramePlaceholderNodeStateListModifyAsIReadOnlyList[0] == FocusPlaceholderNodeStateListModify[0]);
-
                     ICollection<IReadOnlyPlaceholderNodeState> ReadOnlyPlaceholderNodeStateListModifyAsCollection = FocusPlaceholderNodeStateListModify as ICollection<IReadOnlyPlaceholderNodeState>;
                     Assert.That(ReadOnlyPlaceholderNodeStateListModifyAsCollection != null);
                     Assert.That(!ReadOnlyPlaceholderNodeStateListModifyAsCollection.IsReadOnly);
                     ReadOnlyPlaceholderNodeStateListModifyAsCollection.Remove(FirstNodeState);
                     ReadOnlyPlaceholderNodeStateListModifyAsCollection.Add(FirstNodeState);
                     ReadOnlyPlaceholderNodeStateListModifyAsCollection.Remove(FirstNodeState);
-                    FramePlaceholderNodeStateListModifyAsIList.Insert(0, FirstNodeState);
+                    ReadOnlyPlaceholderNodeStateListModifyAsIList.Insert(0, FirstNodeState);
+                    IEnumerable<IReadOnlyPlaceholderNodeState> ReadOnlyPlaceholderNodeStateListModifyAsEnumerable = FocusPlaceholderNodeStateListModify as IEnumerable<IReadOnlyPlaceholderNodeState>;
+                    Assert.That(ReadOnlyPlaceholderNodeStateListModifyAsEnumerable != null);
+                    Assert.That(ReadOnlyPlaceholderNodeStateListModifyAsEnumerable.GetEnumerator() != null);
 
+
+                    IWriteablePlaceholderNodeStateList FocusPlaceholderNodeStateListModifyAsWriteable = FocusPlaceholderNodeStateListModify as IWriteablePlaceholderNodeStateList;
+                    Assert.That(FocusPlaceholderNodeStateListModifyAsWriteable != null);
+                    Assert.That(FocusPlaceholderNodeStateListModifyAsWriteable[0] == FocusPlaceholderNodeStateListModify[0]);
+                    FocusPlaceholderNodeStateListModifyAsWriteable.GetEnumerator();
+                    IList<IWriteablePlaceholderNodeState> WriteablePlaceholderNodeStateListModifyAsIList = FocusPlaceholderNodeStateListModify as IList<IWriteablePlaceholderNodeState>;
+                    Assert.That(WriteablePlaceholderNodeStateListModifyAsIList != null);
+                    Assert.That(WriteablePlaceholderNodeStateListModifyAsIList[0] == FocusPlaceholderNodeStateListModify[0]);
+                    Assert.That(WriteablePlaceholderNodeStateListModifyAsIList.IndexOf(FirstNodeState) == 0);
+                    WriteablePlaceholderNodeStateListModifyAsIList.Remove(FirstNodeState);
+                    WriteablePlaceholderNodeStateListModifyAsIList.Insert(0, FirstNodeState);
+                    IReadOnlyList<IWriteablePlaceholderNodeState> WriteablePlaceholderNodeStateListModifyAsIReadOnlyList = FocusPlaceholderNodeStateListModify as IReadOnlyList<IWriteablePlaceholderNodeState>;
+                    Assert.That(WriteablePlaceholderNodeStateListModifyAsIReadOnlyList != null);
+                    Assert.That(WriteablePlaceholderNodeStateListModifyAsIReadOnlyList[0] == FocusPlaceholderNodeStateListModify[0]);
+                    ICollection<IWriteablePlaceholderNodeState> WriteablePlaceholderNodeStateListModifyAsCollection = FocusPlaceholderNodeStateListModify as ICollection<IWriteablePlaceholderNodeState>;
+                    Assert.That(WriteablePlaceholderNodeStateListModifyAsCollection != null);
+                    Assert.That(!WriteablePlaceholderNodeStateListModifyAsCollection.IsReadOnly);
+                    Assert.That(WriteablePlaceholderNodeStateListModifyAsCollection.Contains(FirstNodeState));
+                    WriteablePlaceholderNodeStateListModifyAsCollection.Remove(FirstNodeState);
+                    WriteablePlaceholderNodeStateListModifyAsCollection.Add(FirstNodeState);
+                    WriteablePlaceholderNodeStateListModifyAsCollection.Remove(FirstNodeState);
+                    FocusPlaceholderNodeStateListModify.Insert(0, FirstNodeState);
+                    WriteablePlaceholderNodeStateListModifyAsCollection.CopyTo(new IFocusPlaceholderNodeState[WriteablePlaceholderNodeStateListModifyAsCollection.Count], 0);
+                    IEnumerable<IWriteablePlaceholderNodeState> WriteablePlaceholderNodeStateListModifyAsEnumerable = FocusPlaceholderNodeStateListModify as IEnumerable<IWriteablePlaceholderNodeState>;
+                    Assert.That(WriteablePlaceholderNodeStateListModifyAsEnumerable != null);
+                    Assert.That(WriteablePlaceholderNodeStateListModifyAsEnumerable.GetEnumerator() != null);
+
+
+                    IFramePlaceholderNodeStateList FocusPlaceholderNodeStateListModifyAsFrame = FocusPlaceholderNodeStateListModify as IFramePlaceholderNodeStateList;
+                    Assert.That(FocusPlaceholderNodeStateListModifyAsFrame != null);
+                    Assert.That(FocusPlaceholderNodeStateListModifyAsFrame[0] == FocusPlaceholderNodeStateListModify[0]);
+                    FocusPlaceholderNodeStateListModifyAsFrame.GetEnumerator();
+                    IList<IFramePlaceholderNodeState> FramePlaceholderNodeStateListModifyAsIList = FocusPlaceholderNodeStateListModify as IList<IFramePlaceholderNodeState>;
+                    Assert.That(FramePlaceholderNodeStateListModifyAsIList != null);
+                    Assert.That(FramePlaceholderNodeStateListModifyAsIList[0] == FocusPlaceholderNodeStateListModify[0]);
+                    Assert.That(FramePlaceholderNodeStateListModifyAsIList.IndexOf(FirstNodeState) == 0);
+                    FramePlaceholderNodeStateListModifyAsIList.Remove(FirstNodeState);
+                    FramePlaceholderNodeStateListModifyAsIList.Insert(0, FirstNodeState);
+                    IReadOnlyList<IFramePlaceholderNodeState> FramePlaceholderNodeStateListModifyAsIReadOnlyList = FocusPlaceholderNodeStateListModify as IReadOnlyList<IFramePlaceholderNodeState>;
+                    Assert.That(FramePlaceholderNodeStateListModifyAsIReadOnlyList != null);
+                    Assert.That(FramePlaceholderNodeStateListModifyAsIReadOnlyList[0] == FocusPlaceholderNodeStateListModify[0]);
                     ICollection<IFramePlaceholderNodeState> FramePlaceholderNodeStateListModifyAsCollection = FocusPlaceholderNodeStateListModify as ICollection<IFramePlaceholderNodeState>;
                     Assert.That(FramePlaceholderNodeStateListModifyAsCollection != null);
                     Assert.That(!FramePlaceholderNodeStateListModifyAsCollection.IsReadOnly);
@@ -8491,11 +8795,6 @@ namespace Coverage
                     FramePlaceholderNodeStateListModifyAsCollection.Remove(FirstNodeState);
                     FocusPlaceholderNodeStateListModify.Insert(0, FirstNodeState);
                     FramePlaceholderNodeStateListModifyAsCollection.CopyTo(new IFocusPlaceholderNodeState[FramePlaceholderNodeStateListModifyAsCollection.Count], 0);
-
-                    IEnumerable<IReadOnlyPlaceholderNodeState> ReadOnlyPlaceholderNodeStateListModifyAsEnumerable = FocusPlaceholderNodeStateListModify as IEnumerable<IReadOnlyPlaceholderNodeState>;
-                    Assert.That(ReadOnlyPlaceholderNodeStateListModifyAsEnumerable != null);
-                    Assert.That(ReadOnlyPlaceholderNodeStateListModifyAsEnumerable.GetEnumerator() != null);
-
                     IEnumerable<IFramePlaceholderNodeState> FramePlaceholderNodeStateListModifyAsEnumerable = FocusPlaceholderNodeStateListModify as IEnumerable<IFramePlaceholderNodeState>;
                     Assert.That(FramePlaceholderNodeStateListModifyAsEnumerable != null);
                     Assert.That(FramePlaceholderNodeStateListModifyAsEnumerable.GetEnumerator() != null);
@@ -8504,30 +8803,39 @@ namespace Coverage
                 // FocusPlaceholderNodeStateReadOnlyList
 
                 IFocusPlaceholderNodeStateReadOnlyList FocusPlaceholderNodeStateList = FocusPlaceholderNodeStateListModify != null ? FocusPlaceholderNodeStateListModify.ToReadOnly() as IFocusPlaceholderNodeStateReadOnlyList : null;
-
                 if (FocusPlaceholderNodeStateList != null)
                 {
                     Assert.That(FocusPlaceholderNodeStateList.Count > 0);
                     FirstNodeState = FocusPlaceholderNodeStateList[0] as IFocusPlaceholderNodeState;
+
                     Assert.That(FocusPlaceholderNodeStateList.Contains((IReadOnlyPlaceholderNodeState)FirstNodeState));
                     Assert.That(FocusPlaceholderNodeStateList.IndexOf((IReadOnlyPlaceholderNodeState)FirstNodeState) == 0);
+                    IReadOnlyList<IReadOnlyPlaceholderNodeState> ReadOnlyPlaceholderNodeStateListAsIReadOnlyList = FocusPlaceholderNodeStateList as IReadOnlyList<IReadOnlyPlaceholderNodeState>;
+                    Assert.That(ReadOnlyPlaceholderNodeStateListAsIReadOnlyList[0] == FirstNodeState);
+                    IEnumerable<IReadOnlyPlaceholderNodeState> ReadOnlyPlaceholderNodeStateListAsEnumerable = FocusPlaceholderNodeStateList as IEnumerable<IReadOnlyPlaceholderNodeState>;
+                    Assert.That(ReadOnlyPlaceholderNodeStateListAsEnumerable != null);
+                    Assert.That(ReadOnlyPlaceholderNodeStateListAsEnumerable.GetEnumerator() != null);
+
+
+                    IWriteablePlaceholderNodeStateReadOnlyList WriteablePlaceholderNodeStateList = FocusPlaceholderNodeStateList;
+                    Assert.That(WriteablePlaceholderNodeStateList.Contains(FirstNodeState));
+                    Assert.That(WriteablePlaceholderNodeStateList.IndexOf(FirstNodeState) == 0);
+                    Assert.That(WriteablePlaceholderNodeStateList[0] == FocusPlaceholderNodeStateList[0]);
+                    WriteablePlaceholderNodeStateList.GetEnumerator();
+                    IReadOnlyList<IWriteablePlaceholderNodeState> WriteablePlaceholderNodeStateListAsIReadOnlyList = FocusPlaceholderNodeStateList as IReadOnlyList<IWriteablePlaceholderNodeState>;
+                    Assert.That(WriteablePlaceholderNodeStateListAsIReadOnlyList[0] == FirstNodeState);
+                    IEnumerable<IWriteablePlaceholderNodeState> WriteablePlaceholderNodeStateListAsEnumerable = FocusPlaceholderNodeStateList as IEnumerable<IWriteablePlaceholderNodeState>;
+                    Assert.That(WriteablePlaceholderNodeStateListAsEnumerable != null);
+                    Assert.That(WriteablePlaceholderNodeStateListAsEnumerable.GetEnumerator() != null);
+
 
                     IFramePlaceholderNodeStateReadOnlyList FramePlaceholderNodeStateList = FocusPlaceholderNodeStateList;
                     Assert.That(FramePlaceholderNodeStateList.Contains(FirstNodeState));
                     Assert.That(FramePlaceholderNodeStateList.IndexOf(FirstNodeState) == 0);
                     Assert.That(FramePlaceholderNodeStateList[0] == FocusPlaceholderNodeStateList[0]);
                     FramePlaceholderNodeStateList.GetEnumerator();
-
-                    IReadOnlyList<IReadOnlyPlaceholderNodeState> ReadOnlyPlaceholderNodeStateListAsIReadOnlyList = FocusPlaceholderNodeStateList as IReadOnlyList<IReadOnlyPlaceholderNodeState>;
-                    Assert.That(ReadOnlyPlaceholderNodeStateListAsIReadOnlyList[0] == FirstNodeState);
-
                     IReadOnlyList<IFramePlaceholderNodeState> FramePlaceholderNodeStateListAsIReadOnlyList = FocusPlaceholderNodeStateList as IReadOnlyList<IFramePlaceholderNodeState>;
                     Assert.That(FramePlaceholderNodeStateListAsIReadOnlyList[0] == FirstNodeState);
-
-                    IEnumerable<IReadOnlyPlaceholderNodeState> ReadOnlyPlaceholderNodeStateListAsEnumerable = FocusPlaceholderNodeStateList as IEnumerable<IReadOnlyPlaceholderNodeState>;
-                    Assert.That(ReadOnlyPlaceholderNodeStateListAsEnumerable != null);
-                    Assert.That(ReadOnlyPlaceholderNodeStateListAsEnumerable.GetEnumerator() != null);
-
                     IEnumerable<IFramePlaceholderNodeState> FramePlaceholderNodeStateListAsEnumerable = FocusPlaceholderNodeStateList as IEnumerable<IFramePlaceholderNodeState>;
                     Assert.That(FramePlaceholderNodeStateListAsEnumerable != null);
                     Assert.That(FramePlaceholderNodeStateListAsEnumerable.GetEnumerator() != null);
@@ -8535,6 +8843,8 @@ namespace Coverage
 
                 // IFocusStateViewDictionary
                 IFocusStateViewDictionary FocusStateViewTable = ControllerView.StateViewTable;
+                IWriteableStateViewDictionary WriteableStateViewTable = ControllerView.StateViewTable;
+                WriteableStateViewTable.GetEnumerator();
                 IFrameStateViewDictionary FrameStateViewTable = ControllerView.StateViewTable;
                 FrameStateViewTable.GetEnumerator();
 
@@ -8543,40 +8853,63 @@ namespace Coverage
                 Assert.That(ReadOnlyStateViewTableAsDictionary.TryGetValue(RootState, out IReadOnlyNodeStateView StateViewTableAsDictionaryValue) == FocusStateViewTable.TryGetValue(RootState, out IReadOnlyNodeStateView StateViewTableValue));
                 Assert.That(ReadOnlyStateViewTableAsDictionary.Keys != null);
                 Assert.That(ReadOnlyStateViewTableAsDictionary.Values != null);
-
                 ICollection<KeyValuePair<IReadOnlyNodeState, IReadOnlyNodeStateView>> ReadOnlyStateViewTableAsCollection = FocusStateViewTable;
                 Assert.That(!ReadOnlyStateViewTableAsCollection.IsReadOnly);
-
-                ICollection<KeyValuePair<IFrameNodeState, IFrameNodeStateView>> FrameStateViewTableAsCollection = FocusStateViewTable;
-                Assert.That(!FrameStateViewTableAsCollection.IsReadOnly);
-
-                IDictionary<IFrameNodeState, IFrameNodeStateView> FrameStateViewTableAsDictionary = FocusStateViewTable;
-                Assert.That(FrameStateViewTableAsDictionary != null);
-                Assert.That(FrameStateViewTableAsDictionary.TryGetValue(RootState, out IFrameNodeStateView FrameStateViewTableAsDictionaryValue) == FocusStateViewTable.TryGetValue(RootState, out StateViewTableValue));
-                Assert.That(FrameStateViewTableAsDictionary.Keys != null);
-                Assert.That(FrameStateViewTableAsDictionary.Values != null);
-
                 foreach (KeyValuePair<IReadOnlyNodeState, IReadOnlyNodeStateView> Entry in ReadOnlyStateViewTableAsCollection)
                 {
                     Assert.That(ReadOnlyStateViewTableAsCollection.Contains(Entry));
                     ReadOnlyStateViewTableAsCollection.Remove(Entry);
                     ReadOnlyStateViewTableAsCollection.Add(Entry);
                     ReadOnlyStateViewTableAsCollection.CopyTo(new KeyValuePair<IReadOnlyNodeState, IReadOnlyNodeStateView>[FocusStateViewTable.Count], 0);
+                    break;
+                }
 
+
+                ICollection<KeyValuePair<IWriteableNodeState, IWriteableNodeStateView>> WriteableStateViewTableAsCollection = FocusStateViewTable;
+                Assert.That(!WriteableStateViewTableAsCollection.IsReadOnly);
+                IDictionary<IWriteableNodeState, IWriteableNodeStateView> WriteableStateViewTableAsDictionary = FocusStateViewTable;
+                Assert.That(WriteableStateViewTableAsDictionary != null);
+                Assert.That(WriteableStateViewTableAsDictionary.TryGetValue(RootState, out IWriteableNodeStateView WriteableStateViewTableAsDictionaryValue) == FocusStateViewTable.TryGetValue(RootState, out StateViewTableValue));
+                Assert.That(WriteableStateViewTableAsDictionary.Keys != null);
+                Assert.That(WriteableStateViewTableAsDictionary.Values != null);
+                foreach (KeyValuePair<IWriteableNodeState, IWriteableNodeStateView> Entry in WriteableStateViewTableAsCollection)
+                {
+                    Assert.That(WriteableStateViewTableAsDictionary.ContainsKey(Entry.Key));
+                    Assert.That(WriteableStateViewTableAsDictionary[Entry.Key] == Entry.Value);
+                    WriteableStateViewTableAsDictionary.Remove(Entry.Key);
+                    WriteableStateViewTableAsDictionary.Add(Entry.Key, Entry.Value);
+                    Assert.That(WriteableStateViewTableAsCollection.Contains(Entry));
+                    WriteableStateViewTableAsCollection.Remove(Entry);
+                    WriteableStateViewTableAsCollection.Add(Entry);
+                    WriteableStateViewTableAsCollection.CopyTo(new KeyValuePair<IWriteableNodeState, IWriteableNodeStateView>[FocusStateViewTable.Count], 0);
+
+                    break;
+                }
+                IEnumerable<KeyValuePair<IWriteableNodeState, IWriteableNodeStateView>> WriteableStateViewTableAsEnumerable = FocusStateViewTable;
+                WriteableStateViewTableAsEnumerable.GetEnumerator();
+
+
+                ICollection<KeyValuePair<IFrameNodeState, IFrameNodeStateView>> FrameStateViewTableAsCollection = FocusStateViewTable;
+                Assert.That(!FrameStateViewTableAsCollection.IsReadOnly);
+                IDictionary<IFrameNodeState, IFrameNodeStateView> FrameStateViewTableAsDictionary = FocusStateViewTable;
+                Assert.That(FrameStateViewTableAsDictionary != null);
+                Assert.That(FrameStateViewTableAsDictionary.TryGetValue(RootState, out IFrameNodeStateView FrameStateViewTableAsDictionaryValue) == FocusStateViewTable.TryGetValue(RootState, out StateViewTableValue));
+                Assert.That(FrameStateViewTableAsDictionary.Keys != null);
+                Assert.That(FrameStateViewTableAsDictionary.Values != null);
+                foreach (KeyValuePair<IReadOnlyNodeState, IReadOnlyNodeStateView> Entry in ReadOnlyStateViewTableAsCollection)
+                {
                     Assert.That(FrameStateViewTableAsDictionary.ContainsKey((IFrameNodeState)Entry.Key));
                     FrameStateViewTableAsDictionary.Remove((IFrameNodeState)Entry.Key);
                     FrameStateViewTableAsDictionary.Add((IFrameNodeState)Entry.Key, (IFrameNodeStateView)Entry.Value);
 
                     break;
                 }
-
                 foreach (KeyValuePair<IFrameNodeState, IFrameNodeStateView> Entry in FrameStateViewTableAsCollection)
                 {
                     Assert.That(FrameStateViewTableAsDictionary.ContainsKey(Entry.Key));
                     Assert.That(FrameStateViewTableAsDictionary[Entry.Key] == Entry.Value);
                     FrameStateViewTableAsDictionary.Remove(Entry.Key);
                     FrameStateViewTableAsDictionary.Add(Entry.Key, Entry.Value);
-
                     Assert.That(FrameStateViewTableAsCollection.Contains(Entry));
                     FrameStateViewTableAsCollection.Remove(Entry);
                     FrameStateViewTableAsCollection.Add(Entry);
@@ -8584,11 +8917,209 @@ namespace Coverage
 
                     break;
                 }
-
                 IEnumerable<KeyValuePair<IFrameNodeState, IFrameNodeStateView>> FrameStateViewTableAsEnumerable = FocusStateViewTable;
                 FrameStateViewTableAsEnumerable.GetEnumerator();
-
             }
+
+            IFocusTemplateSet FocusTemplateSet = TestDebug.CoverageFocusTemplateSet.FocusTemplateSet;
+            using (IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet))
+            {
+                // IFocusAssignableCellViewDictionary
+
+                IFocusAssignableCellViewDictionary<string> ActualCellViewTable = DebugObjects.GetReferenceByInterface(typeof(IFocusAssignableCellViewDictionary<string>)) as IFocusAssignableCellViewDictionary<string>;
+                if (ActualCellViewTable != null)
+                {
+                    IFrameAssignableCellViewDictionary<string> FrameActualCellViewTable = ActualCellViewTable;
+                    Assert.That(FrameActualCellViewTable.Keys != null);
+                    Assert.That(FrameActualCellViewTable.Values != null);
+                    ICollection<KeyValuePair<string, IFrameAssignableCellView>> FrameActualCellViewTableAsCollection = FrameActualCellViewTable;
+                    FrameActualCellViewTableAsCollection.CopyTo(new KeyValuePair<string, IFrameAssignableCellView>[FrameActualCellViewTableAsCollection.Count], 0);
+                    Assert.That(!FrameActualCellViewTableAsCollection.IsReadOnly);
+                    foreach (KeyValuePair<string, IFrameAssignableCellView> Entry in FrameActualCellViewTable)
+                    {
+                        Assert.That(FrameActualCellViewTable.TryGetValue(Entry.Key, out IFrameAssignableCellView FrameCellView) == ActualCellViewTable.TryGetValue(Entry.Key, out IFocusAssignableCellView FocusCellView));
+                        Assert.That(FrameActualCellViewTableAsCollection.Contains(Entry));
+                        FrameActualCellViewTableAsCollection.Remove(Entry);
+                        FrameActualCellViewTableAsCollection.Add(Entry);
+                        break;
+                    }
+
+                    // IFocusAssignableCellViewReadOnlyDictionary
+
+                    IFocusAssignableCellViewReadOnlyDictionary<string> FrameActualCellViewTableReadOnly = ActualCellViewTable.ToReadOnly() as IFocusAssignableCellViewReadOnlyDictionary<string>;
+                    IReadOnlyDictionary<string, IFrameAssignableCellView> FrameActualCellViewTableReadOnlyAsDictionary = FrameActualCellViewTableReadOnly;
+                    Assert.That(FrameActualCellViewTableReadOnlyAsDictionary.Keys != null);
+                    Assert.That(FrameActualCellViewTableReadOnlyAsDictionary.Values != null);
+                    foreach (KeyValuePair<string, IFrameAssignableCellView> Entry in FrameActualCellViewTableReadOnlyAsDictionary)
+                    {
+                        Assert.That(FrameActualCellViewTableReadOnlyAsDictionary.TryGetValue(Entry.Key, out IFrameAssignableCellView FrameCellView) == ActualCellViewTable.TryGetValue(Entry.Key, out IFocusAssignableCellView FocusCellView));
+                        break;
+                    }
+
+                    // FocusCellViewList
+
+                    Assert.That(ActualCellViewTable.ContainsKey("LeafBlocks"));
+                    IFocusCellViewCollection CellViewCollection = ActualCellViewTable["LeafBlocks"] as IFocusCellViewCollection;
+                    Assert.That(CellViewCollection != null);
+                    IFocusCellViewList CellViewList = CellViewCollection.CellViewList;
+                    Assert.That(CellViewList.Count > 0);
+                    IFocusCellView FirstCellView = CellViewList[0];
+
+                    IFrameCellViewList FrameCellViewList = CellViewList;
+                    IList<IFrameCellView> FrameCellViewListAsList = FrameCellViewList;
+                    Assert.That(FrameCellViewListAsList[0] == FirstCellView);
+                    ICollection<IFrameCellView> FrameCellViewListAsCollection = FrameCellViewList;
+                    FrameCellViewListAsCollection.CopyTo(new IFocusCellView[FrameCellViewListAsCollection.Count], 0);
+                    Assert.That(!FrameCellViewListAsCollection.IsReadOnly);
+                    FrameCellViewListAsCollection.Remove(FirstCellView);
+                    FrameCellViewListAsCollection.Add(FirstCellView);
+                    FrameCellViewListAsCollection.Remove(FirstCellView);
+                    CellViewList.Insert(0, FirstCellView);
+                    IReadOnlyList<IFrameCellView> FrameCellViewListAsReadOnlyList = FrameCellViewList;
+                    Assert.That(FrameCellViewListAsReadOnlyList[0] == FirstCellView);
+
+                    // IFocusFrameList 
+
+                    IFocusHorizontalPanelFrame HorizontalPanelFrame = CellViewCollection.StateView.Template.Root as IFocusHorizontalPanelFrame;
+                    Assert.That(HorizontalPanelFrame != null);
+                    IFocusFrameList FrameList = HorizontalPanelFrame.Items;
+                    Assert.That(FrameList.Count > 0);
+                    IFocusFrame FirstFrame = FrameList[0];
+
+                    //System.Diagnostics.Debug.Assert(false);
+                    IFrameFrameList FrameFrameList = FrameList;
+                    Assert.That(FrameFrameList[0] == FirstFrame);
+                    IList<IFrameFrame> FrameFrameListAsList = FrameFrameList;
+                    Assert.That(FrameFrameListAsList[0] == FirstFrame);
+                    Assert.That(FrameFrameListAsList.IndexOf(FirstFrame) == 0);
+                    ICollection<IFrameFrame> FrameFrameListAsCollection = FrameFrameList;
+                    Assert.That(!FrameFrameListAsCollection.IsReadOnly);
+                    Assert.That(FrameFrameListAsCollection.Contains(FirstFrame));
+                    FrameFrameListAsCollection.Remove(FirstFrame);
+                    FrameFrameListAsCollection.Add(FirstFrame);
+                    FrameFrameListAsCollection.Remove(FirstFrame);
+                    FrameFrameListAsList.Insert(0, FirstFrame);
+                    FrameFrameListAsCollection.CopyTo(new IFocusFrame[FrameFrameListAsCollection.Count], 0);
+                    IReadOnlyList<IFrameFrame> FrameFrameListAsReadOnlyList = FrameFrameList;
+                    Assert.That(FrameFrameListAsReadOnlyList[0] == FirstFrame);
+
+                    // IFocusKeywordFrameList
+
+                    IFocusDiscreteFrame FirstDiscreteFrame = null;
+                    foreach (IFocusFrame Item in FrameList)
+                        if (Item is IFocusDiscreteFrame)
+                        {
+                            FirstDiscreteFrame = Item as IFocusDiscreteFrame;
+                            break;
+                        }
+                    Assert.That(FirstDiscreteFrame != null);
+                    IFocusKeywordFrameList KeywordFrameList  = FirstDiscreteFrame.Items;
+                    Assert.That(KeywordFrameList.Count > 0);
+                    IFocusKeywordFrame FirstKeywordFrame = KeywordFrameList[0];
+
+
+                    IFrameKeywordFrameList FrameKeywordFrameList = KeywordFrameList;
+                    Assert.That(FrameKeywordFrameList[0] == FirstKeywordFrame);
+                    IList<IFrameKeywordFrame> FrameKeywordFrameListAsList = FrameKeywordFrameList;
+                    Assert.That(FrameKeywordFrameListAsList[0] == FirstKeywordFrame);
+                    Assert.That(FrameKeywordFrameListAsList.IndexOf(FirstKeywordFrame) == 0);
+                    ICollection<IFrameKeywordFrame> FrameKeywordFrameListAsCollection = FrameKeywordFrameList;
+                    Assert.That(!FrameKeywordFrameListAsCollection.IsReadOnly);
+                    Assert.That(FrameKeywordFrameListAsCollection.Contains(FirstKeywordFrame));
+                    FrameKeywordFrameListAsCollection.Remove(FirstKeywordFrame);
+                    FrameKeywordFrameListAsCollection.Add(FirstKeywordFrame);
+                    FrameKeywordFrameListAsCollection.Remove(FirstKeywordFrame);
+                    FrameKeywordFrameListAsList.Insert(0, FirstKeywordFrame);
+                    FrameKeywordFrameListAsCollection.CopyTo(new IFocusKeywordFrame[FrameKeywordFrameListAsCollection.Count], 0);
+                    IReadOnlyList<IFrameKeywordFrame> FrameKeywordFrameListAsReadOnlyList = FrameKeywordFrameList;
+                    Assert.That(FrameKeywordFrameListAsReadOnlyList[0] == FirstKeywordFrame);
+                }
+
+                // IFocusVisibleCellViewList
+
+                IFocusVisibleCellViewList VisibleCellViewList = new FocusVisibleCellViewList();
+                ControllerView.EnumerateVisibleCellViews(VisibleCellViewList);
+                Assert.That(VisibleCellViewList.Count> 0);
+                IFocusVisibleCellView FirstVisibleCellView = VisibleCellViewList[0];
+
+                IFrameVisibleCellViewList FrameVisibleCellViewList = VisibleCellViewList;
+                Assert.That(FrameVisibleCellViewList[0] == FirstVisibleCellView);
+                IList<IFrameVisibleCellView> FrameVisibleCellViewListAsList = FrameVisibleCellViewList;
+                Assert.That(FrameVisibleCellViewListAsList[0] == FirstVisibleCellView);
+                Assert.That(FrameVisibleCellViewListAsList.IndexOf(FirstVisibleCellView) == 0);
+                ICollection<IFrameVisibleCellView> FrameVisibleCellViewListAsCollection = FrameVisibleCellViewList;
+                Assert.That(!FrameVisibleCellViewListAsCollection.IsReadOnly);
+                FrameVisibleCellViewListAsCollection.Contains(FirstVisibleCellView);
+                FrameVisibleCellViewListAsCollection.Remove(FirstVisibleCellView);
+                FrameVisibleCellViewListAsCollection.Add(FirstVisibleCellView);
+                FrameVisibleCellViewListAsCollection.Remove(FirstVisibleCellView);
+                FrameVisibleCellViewListAsList.Insert(0, FirstVisibleCellView);
+                FrameVisibleCellViewListAsCollection.CopyTo(new IFocusVisibleCellView[FrameVisibleCellViewListAsCollection.Count], 0);
+                IEnumerable<IFrameVisibleCellView> FrameVisibleCellViewListAsEnumerable = FrameVisibleCellViewList;
+                FrameVisibleCellViewListAsEnumerable.GetEnumerator();
+                IReadOnlyList<IFrameVisibleCellView> FrameVisibleCellViewListAsReadOnlyList = FrameVisibleCellViewList;
+                Assert.That(FrameVisibleCellViewListAsReadOnlyList[0] == FirstVisibleCellView);
+            }
+
+            // IFocusTemplateDictionary
+
+            IFocusTemplateDictionary NodeTemplateDictionary = TestDebug.CoverageFocusTemplateSet.NodeTemplateDictionary;
+            Assert.That(NodeTemplateDictionary.ContainsKey(typeof(ILeaf)));
+            IFocusTemplate LeafTemplate = NodeTemplateDictionary[typeof(ILeaf)];
+
+            IFrameTemplateDictionary FrameNodeTemplateDictionary = NodeTemplateDictionary;
+            IDictionary<Type, IFrameTemplate> FrameNodeTemplateDictionaryAsDictionary = FrameNodeTemplateDictionary;
+            Assert.That(FrameNodeTemplateDictionaryAsDictionary.Keys != null);
+            Assert.That(FrameNodeTemplateDictionaryAsDictionary.Values != null);
+            Assert.That(FrameNodeTemplateDictionaryAsDictionary.ContainsKey(typeof(ILeaf)));
+            FrameNodeTemplateDictionaryAsDictionary.Remove(typeof(ILeaf));
+            FrameNodeTemplateDictionaryAsDictionary.Add(typeof(ILeaf), LeafTemplate);
+            Assert.That(FrameNodeTemplateDictionaryAsDictionary.TryGetValue(typeof(ILeaf), out IFrameTemplate AsFrameTemplate) == NodeTemplateDictionary.TryGetValue(typeof(ILeaf), out IFocusTemplate AsFocusTemplate));
+            ICollection<KeyValuePair<Type, IFrameTemplate>> FrameNodeTemplateDictionaryAsCollection = FrameNodeTemplateDictionary;
+            Assert.That(!FrameNodeTemplateDictionaryAsCollection.IsReadOnly);
+            foreach (KeyValuePair<Type, IFrameTemplate> Entry in FrameNodeTemplateDictionary)
+            {
+                Assert.That(FrameNodeTemplateDictionaryAsCollection.Contains(Entry));
+                FrameNodeTemplateDictionaryAsCollection.Remove(Entry);
+                FrameNodeTemplateDictionaryAsCollection.Add(Entry);
+                break;
+            }
+            FrameNodeTemplateDictionaryAsCollection.CopyTo(new KeyValuePair<Type, IFrameTemplate>[FrameNodeTemplateDictionaryAsCollection.Count], 0);
+
+            // IFocusTemplateReadOnlyDictionary
+
+            IFocusTemplateReadOnlyDictionary NodeTemplateDictionaryReadOnly = FocusTemplateSet.NodeTemplateTable;
+
+            IFrameTemplateReadOnlyDictionary FrameNodeTemplateDictionaryReadOnly = NodeTemplateDictionaryReadOnly;
+            IReadOnlyDictionary<Type, IFrameTemplate> FrameNodeTemplateDictionaryReadOnlyAsDictionary = FrameNodeTemplateDictionaryReadOnly;
+            Assert.That(FrameNodeTemplateDictionaryReadOnlyAsDictionary.ContainsKey(typeof(ILeaf)));
+            Assert.That(FrameNodeTemplateDictionaryReadOnlyAsDictionary.Keys != null);
+            Assert.That(FrameNodeTemplateDictionaryReadOnlyAsDictionary.Values != null);
+            Assert.That(FrameNodeTemplateDictionaryReadOnlyAsDictionary.TryGetValue(typeof(ILeaf), out AsFrameTemplate) == NodeTemplateDictionary.TryGetValue(typeof(ILeaf), out AsFocusTemplate));
+
+            // IFocusTemplateList 
+
+            IFocusTemplateList TemplateList = TestDebug.CoverageFocusTemplateSet.Templates;
+            Assert.That(TemplateList.Count > 0);
+            IFocusTemplate FirstTemplate = TemplateList[0];
+
+            IFrameTemplateList FrameTemplateList = TemplateList;
+            Assert.That(FrameTemplateList[0] == FirstTemplate);
+            IList<IFrameTemplate> FrameTemplateListAsList = FrameTemplateList;
+            Assert.That(FrameTemplateListAsList[0] == FirstTemplate);
+            Assert.That(FrameTemplateListAsList.IndexOf(FirstTemplate) == 0);
+            ICollection<IFrameTemplate> FrameTemplateListAsCollection = FrameTemplateList;
+            Assert.That(!FrameTemplateListAsCollection.IsReadOnly);
+            FrameTemplateListAsCollection.Contains(FirstTemplate);
+            FrameTemplateListAsCollection.Remove(FirstTemplate);
+            FrameTemplateListAsCollection.Add(FirstTemplate);
+            FrameTemplateListAsCollection.Remove(FirstTemplate);
+            FrameTemplateListAsList.Insert(0, FirstTemplate);
+            FrameTemplateListAsCollection.CopyTo(new IFocusTemplate[FrameTemplateListAsCollection.Count], 0);
+            IEnumerable<IFrameTemplate> FrameTemplateListAsEnumerable = FrameTemplateList;
+            FrameTemplateListAsEnumerable.GetEnumerator();
+            IReadOnlyList<IFrameTemplate> FrameTemplateListAsReadOnlyList = FrameTemplateList;
+            Assert.That(FrameTemplateListAsReadOnlyList[0] == FirstTemplate);
         }
         #endregion
     }
