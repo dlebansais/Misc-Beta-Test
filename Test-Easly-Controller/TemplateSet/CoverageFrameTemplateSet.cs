@@ -101,10 +101,12 @@ namespace TestDebug
     </FrameNodeTemplate>
     <FrameNodeTemplate NodeType=""{xaml:Type cov:IRoot}"">
         <FrameHorizontalPanelFrame>
-            <FrameHorizontalBlockListFrame PropertyName=""MainBlocks"" />
+            <FrameHorizontalBlockListFrame PropertyName=""MainBlocksH"" />
+            <FrameVerticalBlockListFrame PropertyName=""MainBlocksV"" />
             <FrameOptionalFrame PropertyName=""UnassignedOptionalMain"" />
             <FrameTextValueFrame PropertyName=""ValueString""/>
-            <FrameVerticalListFrame PropertyName=""LeafPath"" />
+            <FrameHorizontalListFrame PropertyName=""LeafPathH"" />
+            <FrameVerticalListFrame PropertyName=""LeafPathV"" />
         </FrameHorizontalPanelFrame>
     </FrameNodeTemplate>
     <FrameNodeTemplate NodeType=""{xaml:Type easly:IAssertion}"">

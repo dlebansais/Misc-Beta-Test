@@ -211,6 +211,10 @@ namespace Test
 
             if (State is IReadOnlyPlaceholderNodeState AsPlaceholderState)
                 Node = AsPlaceholderState.Node;
+            else if (State is IReadOnlyPatternState AsPatternState)
+                Node = AsPatternState.Node;
+            else if (State is IReadOnlySourceState AsSourceState)
+                Node = AsSourceState.Node;
             else
             {
                 Assert.That(State is IReadOnlyOptionalNodeState, "ReadOnly #5");
@@ -1431,6 +1435,10 @@ namespace Test
 
             if (State is IWriteablePlaceholderNodeState AsPlaceholderState)
                 Node = AsPlaceholderState.Node;
+            else if (State is IWriteablePatternState AsPatternState)
+                Node = AsPatternState.Node;
+            else if (State is IWriteableSourceState AsSourceState)
+                Node = AsSourceState.Node;
             else
             {
                 Assert.That(State is IWriteableOptionalNodeState, "Writeable #5");
@@ -1530,6 +1538,10 @@ namespace Test
 
             if (State is IWriteablePlaceholderNodeState AsPlaceholderState)
                 Node = AsPlaceholderState.Node;
+            else if (State is IWriteablePatternState AsPatternState)
+                Node = AsPatternState.Node;
+            else if (State is IWriteableSourceState AsSourceState)
+                Node = AsSourceState.Node;
             else
             {
                 Assert.That(State is IWriteableOptionalNodeState, "Writeable #11");
@@ -1745,11 +1757,11 @@ namespace Test
                         PropertyName = AsTextFocusable.PropertyName;
                         Assert.That(NodeTreeHelper.IsStringProperty(ChildNode, PropertyName) && PropertyName == "Text");
                         break;
-                    case IFrameFocusableCellView AsFocusable: // Insert
-                        Assert.That(Frame is IFrameInsertFrame);
+                    case IFrameFocusableCellView AsFrameable: // Insert
+                        Assert.That((Frame is IFrameInsertFrame) || (Frame is IFrameKeywordFrame AsFocusableKeywordFrame && AsFocusableKeywordFrame.IsFocusable));
                         break;
                     case IFrameVisibleCellView AsVisible: // Others
-                        Assert.That(((Frame is IFrameKeywordFrame AsKeywordFrame) && !string.IsNullOrEmpty(AsKeywordFrame.Text)) || (Frame is IFrameSymbolFrame AsSymbolFrame));
+                        Assert.That(((Frame is IFrameKeywordFrame AsKeywordFrame && !AsKeywordFrame.IsFocusable) && !string.IsNullOrEmpty(AsKeywordFrame.Text)) || (Frame is IFrameSymbolFrame AsSymbolFrame));
                         break;
                 }
             }
@@ -2839,6 +2851,10 @@ namespace Test
 
             if (State is IFramePlaceholderNodeState AsPlaceholderState)
                 Node = AsPlaceholderState.Node;
+            else if (State is IFramePatternState AsPatternState)
+                Node = AsPatternState.Node;
+            else if (State is IFrameSourceState AsSourceState)
+                Node = AsSourceState.Node;
             else
             {
                 Assert.That(State is IFrameOptionalNodeState, "Frame #5");

@@ -50,6 +50,7 @@ namespace Coverage
 
         private static Guid ValueGuid0 = new Guid("{FFFFFFFF-C70B-4BAF-AE1B-C342CD9BFA00}");
         private static Guid ValueGuid1 = new Guid("{FFFFFFFF-C70B-4BAF-AE1B-C342CD9BFA01}");
+        private static Guid ValueGuid2 = new Guid("{FFFFFFFF-C70B-4BAF-AE1B-C342CD9BFA02}");
 
         private static Leaf CreateLeaf(Guid guid0)
         {
@@ -2364,21 +2365,26 @@ namespace Coverage
         {
             ControllerTools.ResetExpectedName();
 
-            IMain MainItem = CreateRoot(ValueGuid0, Imperfections.None);
+            IMain MainItemH = CreateRoot(ValueGuid0, Imperfections.None);
+            IMain MainItemV = CreateRoot(ValueGuid1, Imperfections.None);
             IRoot RootNode = new Root();
             BaseNode.IDocument RootDocument = BaseNodeHelper.NodeHelper.CreateSimpleDocumentation("root doc", Guid.NewGuid());
             BaseNodeHelper.NodeTreeHelper.SetDocumentation(RootNode, RootDocument);
-            BaseNode.IBlockList<IMain, Main> MainBlocks = BaseNodeHelper.BlockListHelper<IMain, Main>.CreateSimpleBlockList(MainItem);
+            BaseNode.IBlockList<IMain, Main> MainBlocksH = BaseNodeHelper.BlockListHelper<IMain, Main>.CreateSimpleBlockList(MainItemH);
+            BaseNode.IBlockList<IMain, Main> MainBlocksV = BaseNodeHelper.BlockListHelper<IMain, Main>.CreateSimpleBlockList(MainItemV);
 
-            IMain UnassignedOptionalMain = CreateRoot(ValueGuid1, Imperfections.None);
+            IMain UnassignedOptionalMain = CreateRoot(ValueGuid2, Imperfections.None);
             Easly.IOptionalReference<IMain> UnassignedOptional = BaseNodeHelper.OptionalReferenceHelper<IMain>.CreateReference(UnassignedOptionalMain);
 
-            IList<ILeaf> LeafPath = new List<ILeaf>();
+            IList<ILeaf> LeafPathH = new List<ILeaf>();
+            IList<ILeaf> LeafPathV = new List<ILeaf>();
 
-            BaseNodeHelper.NodeTreeHelperBlockList.SetBlockList(RootNode, nameof(IRoot.MainBlocks), (BaseNode.IBlockList)MainBlocks);
+            BaseNodeHelper.NodeTreeHelperBlockList.SetBlockList(RootNode, nameof(IRoot.MainBlocksH), (BaseNode.IBlockList)MainBlocksH);
+            BaseNodeHelper.NodeTreeHelperBlockList.SetBlockList(RootNode, nameof(IRoot.MainBlocksV), (BaseNode.IBlockList)MainBlocksV);
             BaseNodeHelper.NodeTreeHelperOptional.SetOptionalReference(RootNode, nameof(IRoot.UnassignedOptionalMain), (Easly.IOptionalReference)UnassignedOptional);
             BaseNodeHelper.NodeTreeHelper.SetString(RootNode, nameof(IRoot.ValueString), "root string");
-            BaseNodeHelper.NodeTreeHelperList.SetChildNodeList(RootNode, nameof(IRoot.LeafPath), (IList)LeafPath);
+            BaseNodeHelper.NodeTreeHelperList.SetChildNodeList(RootNode, nameof(IRoot.LeafPathH), (IList)LeafPathH);
+            BaseNodeHelper.NodeTreeHelperList.SetChildNodeList(RootNode, nameof(IRoot.LeafPathV), (IList)LeafPathV);
 
             //System.Diagnostics.Debug.Assert(false);
             IWriteableRootNodeIndex RootIndex = new WriteableRootNodeIndex(RootNode);
@@ -2393,11 +2399,11 @@ namespace Coverage
                 IWriteableNodeState RootState = Controller.RootState;
                 Assert.That(RootState != null);
 
-                IWriteableBlockListInner MainInner = RootState.PropertyToInner(nameof(IRoot.MainBlocks)) as IWriteableBlockListInner;
-                Assert.That(MainInner != null);
+                IWriteableBlockListInner MainInnerH = RootState.PropertyToInner(nameof(IRoot.MainBlocksH)) as IWriteableBlockListInner;
+                Assert.That(MainInnerH != null);
 
-                IWriteableBrowsingExistingBlockNodeIndex MainIndex = MainInner.IndexAt(0, 0) as IWriteableBrowsingExistingBlockNodeIndex;
-                Controller.Remove(MainInner, MainIndex);
+                IWriteableBrowsingExistingBlockNodeIndex MainIndex = MainInnerH.IndexAt(0, 0) as IWriteableBrowsingExistingBlockNodeIndex;
+                Controller.Remove(MainInnerH, MainIndex);
 
                 Assert.That(Controller.CanUndo);
                 Controller.Undo();
@@ -2408,8 +2414,8 @@ namespace Coverage
                 Controller.Redo();
                 Controller.Undo();
 
-                MainIndex = MainInner.IndexAt(0, 0) as IWriteableBrowsingExistingBlockNodeIndex;
-                Controller.Remove(MainInner, MainIndex);
+                MainIndex = MainInnerH.IndexAt(0, 0) as IWriteableBrowsingExistingBlockNodeIndex;
+                Controller.Remove(MainInnerH, MainIndex);
 
                 Controller.Undo();
                 Controller.Redo();
@@ -4709,21 +4715,26 @@ namespace Coverage
         {
             ControllerTools.ResetExpectedName();
 
-            IMain MainItem = CreateRoot(ValueGuid0, Imperfections.None);
+            IMain MainItemH = CreateRoot(ValueGuid0, Imperfections.None);
+            IMain MainItemV = CreateRoot(ValueGuid1, Imperfections.None);
             IRoot RootNode = new Root();
             BaseNode.IDocument RootDocument = BaseNodeHelper.NodeHelper.CreateSimpleDocumentation("root doc", Guid.NewGuid());
             BaseNodeHelper.NodeTreeHelper.SetDocumentation(RootNode, RootDocument);
-            BaseNode.IBlockList<IMain, Main> MainBlocks = BaseNodeHelper.BlockListHelper<IMain, Main>.CreateSimpleBlockList(MainItem);
+            BaseNode.IBlockList<IMain, Main> MainBlocksH = BaseNodeHelper.BlockListHelper<IMain, Main>.CreateSimpleBlockList(MainItemH);
+            BaseNode.IBlockList<IMain, Main> MainBlocksV = BaseNodeHelper.BlockListHelper<IMain, Main>.CreateSimpleBlockList(MainItemV);
 
-            IMain UnassignedOptionalMain = CreateRoot(ValueGuid1, Imperfections.None);
+            IMain UnassignedOptionalMain = CreateRoot(ValueGuid2, Imperfections.None);
             Easly.IOptionalReference<IMain> UnassignedOptional = BaseNodeHelper.OptionalReferenceHelper<IMain>.CreateReference(UnassignedOptionalMain);
 
-            IList<ILeaf> LeafPath = new List<ILeaf>();
+            IList<ILeaf> LeafPathH = new List<ILeaf>();
+            IList<ILeaf> LeafPathV = new List<ILeaf>();
 
-            BaseNodeHelper.NodeTreeHelperBlockList.SetBlockList(RootNode, nameof(IRoot.MainBlocks), (BaseNode.IBlockList)MainBlocks);
+            BaseNodeHelper.NodeTreeHelperBlockList.SetBlockList(RootNode, nameof(IRoot.MainBlocksH), (BaseNode.IBlockList)MainBlocksH);
+            BaseNodeHelper.NodeTreeHelperBlockList.SetBlockList(RootNode, nameof(IRoot.MainBlocksV), (BaseNode.IBlockList)MainBlocksV);
             BaseNodeHelper.NodeTreeHelperOptional.SetOptionalReference(RootNode, nameof(IRoot.UnassignedOptionalMain), (Easly.IOptionalReference)UnassignedOptional);
             BaseNodeHelper.NodeTreeHelper.SetString(RootNode, nameof(IRoot.ValueString), "root string");
-            BaseNodeHelper.NodeTreeHelperList.SetChildNodeList(RootNode, nameof(IRoot.LeafPath), (IList)LeafPath);
+            BaseNodeHelper.NodeTreeHelperList.SetChildNodeList(RootNode, nameof(IRoot.LeafPathH), (IList)LeafPathH);
+            BaseNodeHelper.NodeTreeHelperList.SetChildNodeList(RootNode, nameof(IRoot.LeafPathV), (IList)LeafPathV);
 
             //System.Diagnostics.Debug.Assert(false);
             IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(RootNode);
@@ -4738,11 +4749,11 @@ namespace Coverage
                 IFrameNodeState RootState = Controller.RootState;
                 Assert.That(RootState != null);
 
-                IFrameBlockListInner MainInner = RootState.PropertyToInner(nameof(IRoot.MainBlocks)) as IFrameBlockListInner;
-                Assert.That(MainInner != null);
+                IFrameBlockListInner MainInnerH = RootState.PropertyToInner(nameof(IRoot.MainBlocksH)) as IFrameBlockListInner;
+                Assert.That(MainInnerH != null);
 
-                IFrameBrowsingExistingBlockNodeIndex MainIndex = MainInner.IndexAt(0, 0) as IFrameBrowsingExistingBlockNodeIndex;
-                Controller.Remove(MainInner, MainIndex);
+                IFrameBrowsingExistingBlockNodeIndex MainIndex = MainInnerH.IndexAt(0, 0) as IFrameBrowsingExistingBlockNodeIndex;
+                Controller.Remove(MainInnerH, MainIndex);
 
                 Assert.That(Controller.CanUndo);
                 Controller.Undo();
@@ -4753,8 +4764,8 @@ namespace Coverage
                 Controller.Redo();
                 Controller.Undo();
 
-                MainIndex = MainInner.IndexAt(0, 0) as IFrameBrowsingExistingBlockNodeIndex;
-                Controller.Remove(MainInner, MainIndex);
+                MainIndex = MainInnerH.IndexAt(0, 0) as IFrameBrowsingExistingBlockNodeIndex;
+                Controller.Remove(MainInnerH, MainIndex);
 
                 Controller.Undo();
                 Controller.Redo();
@@ -6010,6 +6021,8 @@ namespace Coverage
                 ControllerView0.MoveFocus(ControllerView0.MinFocusMove);
                 Assert.That(ControllerView0.MinFocusMove == 0);
 
+                //System.Diagnostics.Debug.Assert(false);
+
                 while (ControllerView0.MaxFocusMove > 0)
                 {
                     IFocusInner Inner;
@@ -6024,6 +6037,45 @@ namespace Coverage
                     int BlockIndex;
                     BaseNode.ReplicationStatus Replication;
 
+                    bool IsUserVisible = ControllerView0.IsUserVisible;
+                    bool IsNewItemInsertable = ControllerView0.IsNewItemInsertable(out CollectionInner, out InsertionCollectionIndex);
+                    bool IsItemRemoveable = ControllerView0.IsItemRemoveable(out CollectionInner, out BrowsingCollectionIndex);
+                    bool IsItemMoveable = ControllerView0.IsItemMoveable(-1, out CollectionInner, out BrowsingCollectionIndex);
+                    bool IsItemSplittable = ControllerView0.IsItemSplittable(out BlockListInner, out ExistingBlockNodeIndex);
+                    bool IsReplicationModifiable = ControllerView0.IsReplicationModifiable(out BlockListInner, out BlockIndex, out Replication);
+                    bool IsItemMergeable = ControllerView0.IsItemMergeable(out BlockListInner, out ExistingBlockNodeIndex);
+                    bool IsBlockMoveable = ControllerView0.IsBlockMoveable(-1, out BlockListInner, out BlockIndex);
+                    bool IsItemSimplifiable = ControllerView0.IsItemSimplifiable(out Inner, out InsertionIndex);
+                    bool IsIdentifierSplittable = ControllerView0.IsIdentifierSplittable(out ListInner, out ReplacementListNodeIndex, out InsertionListNodeIndex);
+
+                    ControllerView0.MoveFocus(+1);
+                }
+
+                IFocusBlockListInner MainLeafBlocksInner = Controller.RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IFocusBlockListInner;
+                while (!MainLeafBlocksInner.IsEmpty)
+                {
+                    IWriteableBrowsingExistingBlockNodeIndex NodeIndex = MainLeafBlocksInner.IndexAt(0, 0) as IWriteableBrowsingExistingBlockNodeIndex;
+                    Controller.Remove(MainLeafBlocksInner, NodeIndex);
+                }
+
+                ControllerView0.MoveFocus(ControllerView0.MinFocusMove);
+                Assert.That(ControllerView0.MinFocusMove == 0);
+
+                while (ControllerView0.MaxFocusMove > 0)
+                {
+                    IFocusInner Inner;
+                    IFocusInsertionChildIndex InsertionIndex;
+                    IFocusCollectionInner CollectionInner;
+                    IFocusBlockListInner BlockListInner;
+                    IFocusListInner ListInner;
+                    IFocusInsertionCollectionNodeIndex InsertionCollectionIndex;
+                    IFocusBrowsingCollectionNodeIndex BrowsingCollectionIndex;
+                    IFocusBrowsingExistingBlockNodeIndex ExistingBlockNodeIndex;
+                    IFocusInsertionListNodeIndex ReplacementListNodeIndex, InsertionListNodeIndex;
+                    int BlockIndex;
+                    BaseNode.ReplicationStatus Replication;
+
+                    bool IsUserVisible = ControllerView0.IsUserVisible;
                     bool IsNewItemInsertable = ControllerView0.IsNewItemInsertable(out CollectionInner, out InsertionCollectionIndex);
                     bool IsItemRemoveable = ControllerView0.IsItemRemoveable(out CollectionInner, out BrowsingCollectionIndex);
                     bool IsItemMoveable = ControllerView0.IsItemMoveable(-1, out CollectionInner, out BrowsingCollectionIndex);
@@ -6694,6 +6746,7 @@ namespace Coverage
 
                 IFocusBrowsingOptionalNodeIndex ExistingIndex5 = OptionalLeafInner.ChildState.ParentIndex as IFocusBrowsingOptionalNodeIndex;
 
+                //System.Diagnostics.Debug.Assert(false);
                 Leaf NewItem5 = CreateLeaf(Guid.NewGuid());
                 IFocusInsertionOptionalClearIndex ReplacementIndex5;
                 ReplacementIndex5 = ExistingIndex5.ToInsertionIndex(RootNode, null) as IFocusInsertionOptionalClearIndex;
@@ -7559,17 +7612,26 @@ namespace Coverage
             BaseNode.IClass RootNode;
             IFocusRootNodeIndex RootIndex;
 
-            RootNode = BaseNodeHelper.NodeHelper.CreateSimpleClass("");
+            RootNode = BaseNodeHelper.NodeHelper.CreateSimpleClass("Class!");
 
-            BaseNode.IFeature RootFeature = BaseNodeHelper.NodeHelper.CreateEmptyFunctionFeature();
-            ((BaseNode.Class)RootNode).FeatureBlocks = BaseNodeHelper.BlockListHelper<BaseNode.IFeature, BaseNode.Feature>.CreateSimpleBlockList(RootFeature);
+            BaseNode.IFunctionFeature FunctionFeature = BaseNodeHelper.NodeHelper.CreateEmptyFunctionFeature();
+            BaseNode.IPropertyFeature PropertyFeature = BaseNodeHelper.NodeHelper.CreateEmptyPropertyFeature();
+            ((BaseNode.PropertyFeature)PropertyFeature).PropertyKind = BaseNode.UtilityType.WriteOnly;
+            ((BaseNode.PropertyFeature)PropertyFeature).GetterBody.Assign();
+            ((BaseNode.PropertyFeature)PropertyFeature).SetterBody.Assign();
 
-            BaseNode.ICommandInstruction FirstInstruction = BaseNodeHelper.NodeHelper.CreateSimpleCommandInstruction("test!") as BaseNode.ICommandInstruction;
+            ((BaseNode.Class)RootNode).FeatureBlocks = BaseNodeHelper.BlockListHelper<BaseNode.IFeature, BaseNode.Feature>.CreateSimpleBlockList(FunctionFeature);
+            RootNode.FeatureBlocks.NodeBlockList[0].NodeList.Add(PropertyFeature);
+
+            BaseNode.ICommandInstruction FunctionFirstInstruction = BaseNodeHelper.NodeHelper.CreateSimpleCommandInstruction("test!") as BaseNode.ICommandInstruction;
             BaseNode.IFunctionFeature FirstFeature = (BaseNode.IFunctionFeature)RootNode.FeatureBlocks.NodeBlockList[0].NodeList[0];
             BaseNode.IQueryOverload FirstOverload = FirstFeature.OverloadBlocks.NodeBlockList[0].NodeList[0];
             BaseNode.EffectiveBody FirstOverloadBody = (BaseNode.EffectiveBody)FirstOverload.QueryBody;
+            FirstOverloadBody.BodyInstructionBlocks = BaseNodeHelper.BlockListHelper<BaseNode.IInstruction, BaseNode.Instruction>.CreateSimpleBlockList(FunctionFirstInstruction);
 
-            FirstOverloadBody.BodyInstructionBlocks = BaseNodeHelper.BlockListHelper<BaseNode.IInstruction, BaseNode.Instruction>.CreateSimpleBlockList(FirstInstruction);
+            BaseNode.ICommandInstruction PropertyFirstInstruction = BaseNodeHelper.NodeHelper.CreateSimpleCommandInstruction("test?") as BaseNode.ICommandInstruction;
+            BaseNode.EffectiveBody PropertyBody = ((BaseNode.PropertyFeature)PropertyFeature).GetterBody.Item as BaseNode.EffectiveBody;
+            PropertyBody.BodyInstructionBlocks = BaseNodeHelper.BlockListHelper<BaseNode.IInstruction, BaseNode.Instruction>.CreateSimpleBlockList(PropertyFirstInstruction);
 
             RootIndex = new FocusRootNodeIndex(RootNode);
 
@@ -7582,10 +7644,15 @@ namespace Coverage
                 int CyclePosition;
                 bool IsItemCyclableThrough;
 
+                Assert.That(!ControllerView0.SetCaretPosition(0));
+                Assert.That(!ControllerView0.SetCaretPosition(-1));
+                Assert.That(ControllerView0.SetCaretPosition(1000));
+                Assert.That(ControllerView0.SetCaretPosition(1));
+
                 IsItemCyclableThrough = ControllerView0.IsItemCyclableThrough(out State, out CyclePosition);
                 Assert.That(!IsItemCyclableThrough);
 
-                while (ControllerView0.MaxFocusMove > 0 && !(ControllerView0.FocusedCellView.StateView.State.Node is BaseNode.IFeature))
+                while (ControllerView0.MaxFocusMove > 0 && !(ControllerView0.FocusedCellView.StateView.State.Node is BaseNode.IFunctionFeature))
                     ControllerView0.MoveFocus(+1);
 
                 IFocusNodeStateView StateView = ControllerView0.FocusedCellView.StateView;
@@ -7596,13 +7663,13 @@ namespace Coverage
                 Assert.That(CurrentState != null && CurrentState.Node is BaseNode.IFeature);
 
                 IFocusInsertionChildNodeIndexList CycleIndexList;
-                int CycleCount = 10;
+                int FeatureCycleCount = 14;
                 IFocusBrowsingChildIndex NewItemIndex0;
 
                 ControllerView0.SetUserVisible(true);
                 ControllerView0.SetUserVisible(false);
 
-                for (int i = 0; i < CycleCount; i++)
+                for (int i = 0; i < FeatureCycleCount; i++)
                 {
                     IsItemCyclableThrough = ControllerView0.IsItemCyclableThrough(out State, out CyclePosition);
                     Assert.That(IsItemCyclableThrough);
@@ -7613,7 +7680,7 @@ namespace Coverage
                     Controller.Replace(State.ParentInner, CycleIndexList, CyclePosition, out NewItemIndex0);
                 }
 
-                for (int i = 0; i < CycleCount; i++)
+                for (int i = 0; i < FeatureCycleCount; i++)
                 {
                     Assert.That(Controller.CanUndo);
                     Controller.Undo();
@@ -7627,17 +7694,15 @@ namespace Coverage
 
                 Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
 
+                int BodyCycleCount = 8;
 
-
-                //System.Diagnostics.Debug.Assert(false);
-
-                for (int i = 0; i < CycleCount; i++)
+                for (int i = 0; i < BodyCycleCount; i++)
                 {
                     ControllerView0.MoveFocus(ControllerView0.MinFocusMove);
 
                     while (ControllerView0.MaxFocusMove > 0)
                     {
-                        if (ControllerView0.FocusedCellView.StateView.State.Node is BaseNode.IIdentifier AsIdentifier && AsIdentifier.Text == FirstInstruction.Command.Path[0].Text)
+                        if (ControllerView0.FocusedCellView.StateView.State.Node is BaseNode.IIdentifier AsIdentifier && AsIdentifier.Text == FunctionFirstInstruction.Command.Path[0].Text)
                             break;
 
                         if (ControllerView0.FocusedCellView.Frame is IFocusKeywordFrame AsFocusableKeywordFrame && (AsFocusableKeywordFrame.Text == "deferred" || AsFocusableKeywordFrame.Text == "extern" || AsFocusableKeywordFrame.Text == "precursor"))
@@ -7648,7 +7713,7 @@ namespace Coverage
 
                     StateView = ControllerView0.FocusedCellView.StateView;
                     CurrentState = StateView.State;
-                    if (CurrentState.Node is BaseNode.IIdentifier AsStateIdentifier && AsStateIdentifier.Text == FirstInstruction.Command.Path[0].Text)
+                    if (CurrentState.Node is BaseNode.IIdentifier AsStateIdentifier && AsStateIdentifier.Text == FunctionFirstInstruction.Command.Path[0].Text)
                     {
                         Assert.That(ControllerView0.IsFirstItem(StateView));
 
@@ -7667,7 +7732,7 @@ namespace Coverage
                     Controller.Replace(State.ParentInner, CycleIndexList, CyclePosition, out NewItemIndex0);
                 }
 
-                for (int i = 0; i < CycleCount; i++)
+                for (int i = 0; i < BodyCycleCount; i++)
                 {
                     Assert.That(Controller.CanUndo);
                     Controller.Undo();
@@ -7680,6 +7745,98 @@ namespace Coverage
                 Controller.Undo();
 
                 Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+
+                for (int i = 0; i < BodyCycleCount; i++)
+                {
+                    ControllerView0.MoveFocus(ControllerView0.MinFocusMove);
+
+                    while (ControllerView0.MaxFocusMove > 0)
+                    {
+                        if (ControllerView0.FocusedCellView.StateView.State.Node is BaseNode.IIdentifier AsIdentifier && AsIdentifier.Text == PropertyFirstInstruction.Command.Path[0].Text)
+                            break;
+
+                        if (ControllerView0.FocusedCellView.Frame is IFocusKeywordFrame AsFocusableKeywordFrame && (AsFocusableKeywordFrame.Text == "deferred" || AsFocusableKeywordFrame.Text == "extern" || AsFocusableKeywordFrame.Text == "precursor"))
+                            break;
+
+                        ControllerView0.MoveFocus(+1);
+                    }
+
+                    StateView = ControllerView0.FocusedCellView.StateView;
+                    CurrentState = StateView.State;
+                    if (CurrentState.Node is BaseNode.IIdentifier AsStateIdentifier && AsStateIdentifier.Text == PropertyFirstInstruction.Command.Path[0].Text)
+                    {
+                        Assert.That(ControllerView0.IsFirstItem(StateView));
+
+                        IFocusNodeState ParentState = CurrentState.ParentState;
+                        Assert.That(ControllerView0.StateViewTable.ContainsKey(ParentState));
+                        IFocusNodeStateView ParentStateView = ControllerView0.StateViewTable[ParentState];
+                        Assert.That(ControllerView0.CollectionHasItems(ParentStateView, nameof(BaseNode.IQualifiedName.Path)));
+                    }
+
+                    IsItemCyclableThrough = ControllerView0.IsItemCyclableThrough(out State, out CyclePosition);
+                    Assert.That(IsItemCyclableThrough);
+
+                    CycleIndexList = State.CycleIndexList;
+
+                    CyclePosition = (CyclePosition + 1) % CycleIndexList.Count;
+                    Controller.Replace(State.ParentInner, CycleIndexList, CyclePosition, out NewItemIndex0);
+                }
+
+                for (int i = 0; i < BodyCycleCount; i++)
+                {
+                    Assert.That(Controller.CanUndo);
+                    Controller.Undo();
+                }
+
+                ControllerView0.MoveFocus(ControllerView0.MinFocusMove);
+                Assert.That(ControllerView0.MinFocusMove == 0);
+
+                int MaxIdentifierSplit = 10;
+                int MaxIdentifierMerge = 10;
+                int IdentifierSplitCount = 0;
+                int IdentifierMergeCount = 0;
+                ControllerView0.SetUserVisible(true);
+
+                //System.Diagnostics.Debug.Assert(false);
+
+                while (ControllerView0.MaxFocusMove > 0)
+                {
+                    IFocusInner Inner;
+                    IFocusInsertionChildIndex InsertionIndex;
+                    IFocusCollectionInner CollectionInner;
+                    IFocusBlockListInner BlockListInner;
+                    IFocusListInner ListInner;
+                    IFocusInsertionCollectionNodeIndex InsertionCollectionIndex;
+                    IFocusBrowsingCollectionNodeIndex BrowsingCollectionIndex;
+                    IFocusBrowsingExistingBlockNodeIndex ExistingBlockNodeIndex;
+                    IFocusInsertionListNodeIndex ReplacementListNodeIndex, InsertionListNodeIndex;
+                    int BlockIndex;
+                    BaseNode.ReplicationStatus Replication;
+
+                    bool IsUserVisible = ControllerView0.IsUserVisible;
+                    bool IsNewItemInsertable = ControllerView0.IsNewItemInsertable(out CollectionInner, out InsertionCollectionIndex);
+                    bool IsItemRemoveable = ControllerView0.IsItemRemoveable(out CollectionInner, out BrowsingCollectionIndex);
+                    bool IsItemMoveable = ControllerView0.IsItemMoveable(-1, out CollectionInner, out BrowsingCollectionIndex);
+                    bool IsItemSplittable = ControllerView0.IsItemSplittable(out BlockListInner, out ExistingBlockNodeIndex);
+                    bool IsReplicationModifiable = ControllerView0.IsReplicationModifiable(out BlockListInner, out BlockIndex, out Replication);
+                    bool IsItemMergeable = ControllerView0.IsItemMergeable(out BlockListInner, out ExistingBlockNodeIndex);
+                    bool IsBlockMoveable = ControllerView0.IsBlockMoveable(-1, out BlockListInner, out BlockIndex);
+
+                    bool IsItemSimplifiable = ControllerView0.IsItemSimplifiable(out Inner, out InsertionIndex);
+                    if (IsItemSimplifiable && IdentifierMergeCount++ < MaxIdentifierMerge)
+                    {
+                        ControllerView0.Controller.Replace(Inner, InsertionIndex, out IWriteableBrowsingChildIndex nodeIndex);
+                    }
+
+                    bool IsIdentifierSplittable = ControllerView0.IsIdentifierSplittable(out ListInner, out ReplacementListNodeIndex, out InsertionListNodeIndex);
+                    if (IsIdentifierSplittable && IdentifierSplitCount++ < MaxIdentifierSplit)
+                    {
+                        ControllerView0.Controller.Replace(ListInner, ReplacementListNodeIndex, out IWriteableBrowsingChildIndex FirstIndex);
+                        ControllerView0.Controller.Insert(ListInner, InsertionListNodeIndex, out IWriteableBrowsingCollectionNodeIndex SecondIndex);
+                    }
+
+                    ControllerView0.MoveFocus(+1);
+                }
             }
         }
 
@@ -7689,21 +7846,31 @@ namespace Coverage
         {
             ControllerTools.ResetExpectedName();
 
-            IMain MainItem = CreateRoot(ValueGuid0, Imperfections.None);
+            IMain MainItemH = CreateRoot(ValueGuid0, Imperfections.None);
+            IMain MainItemV = CreateRoot(ValueGuid1, Imperfections.None);
             IRoot RootNode = new Root();
             BaseNode.IDocument RootDocument = BaseNodeHelper.NodeHelper.CreateSimpleDocumentation("root doc", Guid.NewGuid());
             BaseNodeHelper.NodeTreeHelper.SetDocumentation(RootNode, RootDocument);
-            BaseNode.IBlockList<IMain, Main> MainBlocks = BaseNodeHelper.BlockListHelper<IMain, Main>.CreateSimpleBlockList(MainItem);
+            BaseNode.IBlockList<IMain, Main> MainBlocksH = BaseNodeHelper.BlockListHelper<IMain, Main>.CreateSimpleBlockList(MainItemH);
+            BaseNode.IBlockList<IMain, Main> MainBlocksV = BaseNodeHelper.BlockListHelper<IMain, Main>.CreateSimpleBlockList(MainItemV);
 
-            IMain UnassignedOptionalMain = CreateRoot(ValueGuid1, Imperfections.None);
+            IMain UnassignedOptionalMain = CreateRoot(ValueGuid2, Imperfections.None);
             Easly.IOptionalReference<IMain> UnassignedOptional = BaseNodeHelper.OptionalReferenceHelper<IMain>.CreateReference(UnassignedOptionalMain);
 
-            IList<ILeaf> LeafPath = new List<ILeaf>();
+            IList<ILeaf> LeafPathH = new List<ILeaf>();
+            ILeaf FirstLeafH = CreateLeaf(Guid.NewGuid());
+            LeafPathH.Add(FirstLeafH);
 
-            BaseNodeHelper.NodeTreeHelperBlockList.SetBlockList(RootNode, nameof(IRoot.MainBlocks), (BaseNode.IBlockList)MainBlocks);
+            IList<ILeaf> LeafPathV = new List<ILeaf>();
+            ILeaf FirstLeafV = CreateLeaf(Guid.NewGuid());
+            LeafPathV.Add(FirstLeafV);
+
+            BaseNodeHelper.NodeTreeHelperBlockList.SetBlockList(RootNode, nameof(IRoot.MainBlocksH), (BaseNode.IBlockList)MainBlocksH);
+            BaseNodeHelper.NodeTreeHelperBlockList.SetBlockList(RootNode, nameof(IRoot.MainBlocksV), (BaseNode.IBlockList)MainBlocksV);
             BaseNodeHelper.NodeTreeHelperOptional.SetOptionalReference(RootNode, nameof(IRoot.UnassignedOptionalMain), (Easly.IOptionalReference)UnassignedOptional);
             BaseNodeHelper.NodeTreeHelper.SetString(RootNode, nameof(IRoot.ValueString), "root string");
-            BaseNodeHelper.NodeTreeHelperList.SetChildNodeList(RootNode, nameof(IRoot.LeafPath), (IList)LeafPath);
+            BaseNodeHelper.NodeTreeHelperList.SetChildNodeList(RootNode, nameof(IRoot.LeafPathH), (IList)LeafPathH);
+            BaseNodeHelper.NodeTreeHelperList.SetChildNodeList(RootNode, nameof(IRoot.LeafPathV), (IList)LeafPathV);
 
             //System.Diagnostics.Debug.Assert(false);
             IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(RootNode);
@@ -7718,11 +7885,14 @@ namespace Coverage
                 IFocusNodeState RootState = Controller.RootState;
                 Assert.That(RootState != null);
 
-                IFocusBlockListInner MainInner = RootState.PropertyToInner(nameof(IRoot.MainBlocks)) as IFocusBlockListInner;
-                Assert.That(MainInner != null);
+                IFocusBlockListInner MainInnerH = RootState.PropertyToInner(nameof(IRoot.MainBlocksH)) as IFocusBlockListInner;
+                Assert.That(MainInnerH != null);
 
-                IFocusBrowsingExistingBlockNodeIndex MainIndex = MainInner.IndexAt(0, 0) as IFocusBrowsingExistingBlockNodeIndex;
-                Controller.Remove(MainInner, MainIndex);
+                IFocusBlockListInner MainInnerV = RootState.PropertyToInner(nameof(IRoot.MainBlocksV)) as IFocusBlockListInner;
+                Assert.That(MainInnerV != null);
+
+                IFocusBrowsingExistingBlockNodeIndex MainIndex = MainInnerH.IndexAt(0, 0) as IFocusBrowsingExistingBlockNodeIndex;
+                Controller.Remove(MainInnerH, MainIndex);
 
                 Assert.That(Controller.CanUndo);
                 Controller.Undo();
@@ -7733,14 +7903,53 @@ namespace Coverage
                 Controller.Redo();
                 Controller.Undo();
 
-                MainIndex = MainInner.IndexAt(0, 0) as IFocusBrowsingExistingBlockNodeIndex;
-                Controller.Remove(MainInner, MainIndex);
+                MainIndex = MainInnerH.IndexAt(0, 0) as IFocusBrowsingExistingBlockNodeIndex;
+                Controller.Remove(MainInnerH, MainIndex);
 
                 Controller.Undo();
                 Controller.Redo();
                 Controller.Undo();
 
                 Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
+
+                MainIndex = MainInnerH.IndexAt(0, 0) as IFocusBrowsingExistingBlockNodeIndex;
+                Controller.Remove(MainInnerH, MainIndex);
+                Controller.Undo();
+
+                MainIndex = MainInnerV.IndexAt(0, 0) as IFocusBrowsingExistingBlockNodeIndex;
+                Controller.Remove(MainInnerV, MainIndex);
+                Controller.Undo();
+
+                IFocusListInner LeafInnerH = RootState.PropertyToInner(nameof(IRoot.LeafPathH)) as IFocusListInner;
+                Assert.That(LeafInnerH != null);
+
+                IFocusBrowsingListNodeIndex LeafIndexH = LeafInnerH.IndexAt(0) as IFocusBrowsingListNodeIndex;
+                Controller.Remove(LeafInnerH, LeafIndexH);
+                Controller.Undo();
+
+                IFocusListInner LeafInnerV = RootState.PropertyToInner(nameof(IRoot.LeafPathV)) as IFocusListInner;
+                Assert.That(LeafInnerV != null);
+
+                IFocusBrowsingListNodeIndex LeafIndexV = LeafInnerV.IndexAt(0) as IFocusBrowsingListNodeIndex;
+                Controller.Remove(LeafInnerV, LeafIndexV);
+                Controller.Undo();
+
+                ControllerView0.MoveFocus(ControllerView0.MinFocusMove);
+                Assert.That(ControllerView0.MinFocusMove == 0);
+
+                //System.Diagnostics.Debug.Assert(false);
+
+                UnassignedOptional.Assign();
+
+                while (ControllerView0.MaxFocusMove > 0)
+                {
+                    IFocusCollectionInner CollectionInner;
+                    IFocusInsertionCollectionNodeIndex InsertionCollectionIndex;
+
+                    bool IsNewItemInsertable = ControllerView0.IsNewItemInsertable(out CollectionInner, out InsertionCollectionIndex);
+
+                    ControllerView0.MoveFocus(+1);
+                }
             }
         }
 
@@ -9089,6 +9298,7 @@ namespace Coverage
             // IFocusTemplateReadOnlyDictionary
 
             IFocusTemplateReadOnlyDictionary NodeTemplateDictionaryReadOnly = FocusTemplateSet.NodeTemplateTable;
+            IFocusTemplateReadOnlyDictionary BlockTemplateTableReadOnly = FocusTemplateSet.BlockTemplateTable;
 
             IFrameTemplateReadOnlyDictionary FrameNodeTemplateDictionaryReadOnly = NodeTemplateDictionaryReadOnly;
             IReadOnlyDictionary<Type, IFrameTemplate> FrameNodeTemplateDictionaryReadOnlyAsDictionary = FrameNodeTemplateDictionaryReadOnly;

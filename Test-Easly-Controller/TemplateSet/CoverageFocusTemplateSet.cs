@@ -29,6 +29,7 @@ namespace TestDebug
                 foreach (IFocusTemplate Item in Templates)
                 {
                     Item.Root.UpdateParent(Item, FocusFrame.FocusRoot);
+                    RecursivelyCheckParent(Item.Root, Item.Root);
                     TemplateDictionary.Add(Item.NodeType, Item);
                 }
 
@@ -39,6 +40,42 @@ namespace TestDebug
         private CoverageFocusTemplateSet()
         {
         }
+
+        private static void RecursivelyCheckParent(IFocusFrame rootFrame, IFocusFrame frame)
+        {
+            EaslyController.Frame.IFrameFrame AsFrameRootFrame = rootFrame;
+            EaslyController.Frame.IFrameFrame AsFrameFrame = frame;
+
+            System.Diagnostics.Debug.Assert(rootFrame.ParentTemplate == frame.ParentTemplate);
+            System.Diagnostics.Debug.Assert(AsFrameRootFrame.ParentTemplate == AsFrameFrame.ParentTemplate);
+
+            if (frame is IFocusPanelFrame AsPanelFrame)
+            {
+                foreach (IFocusFrame Item in AsPanelFrame.Items)
+                {
+                    EaslyController.Frame.IFrameFrame AsFrameItem = Item;
+
+                    System.Diagnostics.Debug.Assert(Item.ParentFrame == AsPanelFrame);
+                    System.Diagnostics.Debug.Assert(AsFrameItem.ParentFrame == AsPanelFrame);
+
+                    RecursivelyCheckParent(rootFrame, Item);
+                }
+            }
+
+            else if (frame is IFocusSelectionFrame AsSelectionFrame)
+            {
+                foreach (IFocusFrame Item in AsSelectionFrame.Items)
+                {
+                    EaslyController.Frame.IFrameFrame AsFrameItem = Item;
+
+                    System.Diagnostics.Debug.Assert(Item.ParentFrame == AsSelectionFrame);
+                    System.Diagnostics.Debug.Assert(AsFrameItem.ParentFrame == AsSelectionFrame);
+
+                    RecursivelyCheckParent(rootFrame, Item);
+                }
+            }
+        }
+
 #endif
         #endregion
 
@@ -59,7 +96,19 @@ namespace TestDebug
     xmlns:cov=""clr-namespace:Coverage;assembly=Test-Easly-Controller""
     xmlns:const=""clr-namespace:EaslyController.Constants;assembly=Easly-Controller"">
     <FocusNodeTemplate NodeType=""{xaml:Type cov:ILeaf}"" IsComplex=""True"" IsSimple=""True"">
-        <FocusTextValueFrame PropertyName=""Text""/>
+        <FocusVerticalPanelFrame>
+            <FocusTextValueFrame PropertyName=""Text""/>
+            <FocusKeywordFrame Text=""first"">
+                <FocusKeywordFrame.Visibility>
+                    <FocusNotFirstItemFrameVisibility/>
+                </FocusKeywordFrame.Visibility>
+            </FocusKeywordFrame>
+            <FocusKeywordFrame Text=""not first"">
+                <FocusKeywordFrame.Visibility>
+                    <FocusNotFirstItemFrameVisibility/>
+                </FocusKeywordFrame.Visibility>
+            </FocusKeywordFrame>
+        </FocusVerticalPanelFrame>
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type cov:ITree}"">
         <FocusVerticalPanelFrame>
@@ -88,31 +137,89 @@ namespace TestDebug
             <FocusOptionalFrame PropertyName=""UnassignedOptionalLeaf"" />
             <FocusOptionalFrame PropertyName=""AssignedOptionalTree"" />
             <FocusOptionalFrame PropertyName=""AssignedOptionalLeaf"" />
-            <FocusInsertFrame CollectionName=""LeafBlocks"" />
+            <FocusInsertFrame CollectionName=""LeafBlocks""/>
             <FocusHorizontalBlockListFrame PropertyName=""LeafBlocks"">
+                <FocusHorizontalBlockListFrame.Visibility>
+                    <FocusCountFrameVisibility PropertyName=""LeafPath""/>
+                </FocusHorizontalBlockListFrame.Visibility>
                 <FocusHorizontalBlockListFrame.Selectors>
                     <FocusFrameSelector SelectorType=""{xaml:Type easly:IIdentifier}"" SelectorName=""Identifier""/>
                 </FocusHorizontalBlockListFrame.Selectors>
             </FocusHorizontalBlockListFrame>
-            <FocusHorizontalListFrame PropertyName=""LeafPath"" />
-            <FocusDiscreteFrame PropertyName=""ValueBoolean"">
-                <FocusKeywordFrame>True</FocusKeywordFrame>
-                <FocusKeywordFrame>False</FocusKeywordFrame>
-            </FocusDiscreteFrame>
+            <FocusVerticalListFrame PropertyName=""LeafPath"" IsPreferred=""True"">
+                <FocusVerticalListFrame.Visibility>
+                    <FocusCountFrameVisibility PropertyName=""LeafBlocks""/>
+                </FocusVerticalListFrame.Visibility>
+            </FocusVerticalListFrame>
+            <FocusVerticalPanelFrame>
+                <FocusVerticalPanelFrame.Visibility>
+                    <FocusCountFrameVisibility PropertyName=""LeafBlocks""/>
+                </FocusVerticalPanelFrame.Visibility>
+                <FocusDiscreteFrame PropertyName=""ValueBoolean"">
+                    <FocusKeywordFrame>True</FocusKeywordFrame>
+                    <FocusKeywordFrame>False</FocusKeywordFrame>
+                </FocusDiscreteFrame>
+            </FocusVerticalPanelFrame>
             <FocusDiscreteFrame PropertyName=""ValueEnum"">
                 <FocusKeywordFrame>Any</FocusKeywordFrame>
                 <FocusKeywordFrame>Reference</FocusKeywordFrame>
                 <FocusKeywordFrame>Value</FocusKeywordFrame>
             </FocusDiscreteFrame>
             <FocusTextValueFrame PropertyName=""ValueString""/>
+            <FocusCharacterFrame PropertyName=""ValueString"">
+                <FocusCharacterFrame.Visibility>
+                    <FocusComplexFrameVisibility PropertyName=""PlaceholderTree""/>
+                </FocusCharacterFrame.Visibility>
+            </FocusCharacterFrame>
+            <FocusCharacterFrame PropertyName=""ValueString""/>
+            <FocusNumberFrame PropertyName=""ValueString"">
+                <FocusNumberFrame.Visibility>
+                    <FocusComplexFrameVisibility PropertyName=""PlaceholderTree""/>
+                </FocusNumberFrame.Visibility>
+            </FocusNumberFrame>
+            <FocusNumberFrame PropertyName=""ValueString""/>
+            <FocusKeywordFrame Text=""end"">
+                <FocusKeywordFrame.Visibility>
+                    <FocusMixedFrameVisibility>
+                        <FocusCountFrameVisibility PropertyName=""LeafBlocks""/>
+                        <FocusCountFrameVisibility PropertyName=""LeafPath""/>
+                        <FocusOptionalFrameVisibility PropertyName=""AssignedOptionalTree""/>
+                        <FocusOptionalFrameVisibility PropertyName=""UnassignedOptionalLeaf""/>
+                    </FocusMixedFrameVisibility>
+                </FocusKeywordFrame.Visibility>
+            </FocusKeywordFrame>
         </FocusHorizontalPanelFrame>
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type cov:IRoot}"">
         <FocusHorizontalPanelFrame>
-            <FocusHorizontalBlockListFrame PropertyName=""MainBlocks"" />
+            <FocusHorizontalBlockListFrame PropertyName=""MainBlocksH"">
+                <FocusHorizontalBlockListFrame.Visibility>
+                    <FocusCountFrameVisibility PropertyName=""LeafPathH""/>
+                </FocusHorizontalBlockListFrame.Visibility>
+            </FocusHorizontalBlockListFrame>
+            <FocusVerticalBlockListFrame PropertyName=""MainBlocksV"">
+                <FocusVerticalBlockListFrame.Visibility>
+                    <FocusCountFrameVisibility PropertyName=""LeafPathV""/>
+                </FocusVerticalBlockListFrame.Visibility>
+            </FocusVerticalBlockListFrame>
+            <FocusInsertFrame CollectionName=""UnassignedOptionalMain.LeafBlocks""/>
             <FocusOptionalFrame PropertyName=""UnassignedOptionalMain"" />
-            <FocusTextValueFrame PropertyName=""ValueString""/>
-            <FocusVerticalListFrame PropertyName=""LeafPath"" />
+            <FocusVerticalPanelFrame>
+                <FocusVerticalPanelFrame.Visibility>
+                    <FocusCountFrameVisibility PropertyName=""LeafPathH""/>
+                </FocusVerticalPanelFrame.Visibility>
+                <FocusTextValueFrame PropertyName=""ValueString""/>
+            </FocusVerticalPanelFrame>
+            <FocusHorizontalListFrame PropertyName=""LeafPathH"">
+                <FocusHorizontalListFrame.Visibility>
+                    <FocusCountFrameVisibility PropertyName=""MainBlocksH""/>
+                </FocusHorizontalListFrame.Visibility>
+            </FocusHorizontalListFrame>
+            <FocusVerticalListFrame PropertyName=""LeafPathV"">
+                <FocusVerticalListFrame.Visibility>
+                    <FocusCountFrameVisibility PropertyName=""MainBlocksV""/>
+                </FocusVerticalListFrame.Visibility>
+            </FocusVerticalListFrame >
         </FocusHorizontalPanelFrame>
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IAssertion}"">
@@ -1151,7 +1258,7 @@ namespace TestDebug
                             <FocusKeywordFrame>require</FocusKeywordFrame>
                             <FocusInsertFrame CollectionName=""RequireBlocks"" />
                         </FocusHorizontalPanelFrame>
-                        <FocusVerticalBlockListFrame PropertyName=""RequireBlocks"" />
+                        <FocusHorizontalBlockListFrame PropertyName=""RequireBlocks"" />
                     </FocusVerticalPanelFrame>
                     <FocusVerticalPanelFrame>
                         <FocusVerticalPanelFrame.Visibility>
@@ -1185,7 +1292,7 @@ namespace TestDebug
                             <FocusKeywordFrame IsFocusable=""true"">do</FocusKeywordFrame>
                             <FocusInsertFrame CollectionName=""BodyInstructionBlocks"" ItemType=""{xaml:Type easly:CommandInstruction}""/>
                         </FocusHorizontalPanelFrame>
-                        <FocusVerticalBlockListFrame PropertyName=""BodyInstructionBlocks"" />
+                        <FocusHorizontalBlockListFrame PropertyName=""BodyInstructionBlocks"" />
                     </FocusVerticalPanelFrame>
                     <FocusVerticalPanelFrame>
                         <FocusVerticalPanelFrame.Visibility>
@@ -1219,7 +1326,7 @@ namespace TestDebug
                             <FocusKeywordFrame>require</FocusKeywordFrame>
                             <FocusInsertFrame CollectionName=""RequireBlocks"" />
                         </FocusHorizontalPanelFrame>
-                        <FocusVerticalBlockListFrame PropertyName=""RequireBlocks"" />
+                        <FocusHorizontalBlockListFrame PropertyName=""RequireBlocks"" />
                     </FocusVerticalPanelFrame>
                     <FocusVerticalPanelFrame>
                         <FocusVerticalPanelFrame.Visibility>
@@ -1253,7 +1360,7 @@ namespace TestDebug
                             <FocusKeywordFrame IsFocusable=""true"">getter</FocusKeywordFrame>
                             <FocusInsertFrame CollectionName=""BodyInstructionBlocks"" ItemType=""{xaml:Type easly:CommandInstruction}""/>
                         </FocusHorizontalPanelFrame>
-                        <FocusVerticalBlockListFrame PropertyName=""BodyInstructionBlocks"" />
+                        <FocusHorizontalBlockListFrame PropertyName=""BodyInstructionBlocks"" />
                     </FocusVerticalPanelFrame>
                     <FocusVerticalPanelFrame>
                         <FocusVerticalPanelFrame.Visibility>
@@ -1287,7 +1394,7 @@ namespace TestDebug
                             <FocusKeywordFrame>require</FocusKeywordFrame>
                             <FocusInsertFrame CollectionName=""RequireBlocks"" />
                         </FocusHorizontalPanelFrame>
-                        <FocusVerticalBlockListFrame PropertyName=""RequireBlocks"" />
+                        <FocusHorizontalBlockListFrame PropertyName=""RequireBlocks"" />
                     </FocusVerticalPanelFrame>
                     <FocusVerticalPanelFrame>
                         <FocusVerticalPanelFrame.Visibility>
@@ -1321,7 +1428,7 @@ namespace TestDebug
                             <FocusKeywordFrame IsFocusable=""true"">setter</FocusKeywordFrame>
                             <FocusInsertFrame CollectionName=""BodyInstructionBlocks"" ItemType=""{xaml:Type easly:CommandInstruction}""/>
                         </FocusHorizontalPanelFrame>
-                        <FocusVerticalBlockListFrame PropertyName=""BodyInstructionBlocks"" />
+                        <FocusHorizontalBlockListFrame PropertyName=""BodyInstructionBlocks"" />
                     </FocusVerticalPanelFrame>
                     <FocusVerticalPanelFrame>
                         <FocusVerticalPanelFrame.Visibility>
@@ -2449,6 +2556,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:ICommandInstruction}"">
         <FocusHorizontalPanelFrame>
+            <FocusInsertFrame CollectionName=""Command.Path""/>
             <FocusPlaceholderFrame PropertyName=""Command"" />
             <FocusHorizontalPanelFrame>
                 <FocusSymbolFrame Symbol=""{x:Static const:Symbols.LeftParenthesis}"">
@@ -3076,7 +3184,7 @@ namespace TestDebug
                 </FocusPlaceholderFrame>
                 <FocusKeywordFrame>All</FocusKeywordFrame>
             </FocusHorizontalPanelFrame>
-            <FocusVerticalCollectionPlaceholderFrame/>
+            <FocusHorizontalCollectionPlaceholderFrame/>
             <FocusKeywordFrame Text=""end"">
                 <FocusKeywordFrame.BlockVisibility>
                     <FocusReplicationFrameVisibility/>
@@ -3110,10 +3218,10 @@ namespace TestDebug
     </FocusBlockTemplate>
     <FocusBlockTemplate NodeType=""{xaml:Type easly:IBlock,cov:IMain,cov:Main}"">
         <FocusVerticalPanelFrame>
-            <FocusHorizontalPanelFrame>
-                <FocusHorizontalPanelFrame.BlockVisibility>
+            <FocusVerticalPanelFrame>
+                <FocusVerticalPanelFrame.BlockVisibility>
                     <FocusReplicationFrameVisibility/>
-                </FocusHorizontalPanelFrame.BlockVisibility>
+                </FocusVerticalPanelFrame.BlockVisibility>
                 <FocusKeywordFrame>Replicate</FocusKeywordFrame>
                 <FocusPlaceholderFrame PropertyName=""ReplicationPattern""/>
                 <FocusKeywordFrame>From</FocusKeywordFrame>
@@ -3123,7 +3231,7 @@ namespace TestDebug
                     </FocusPlaceholderFrame.Selectors>
                 </FocusPlaceholderFrame>
                 <FocusKeywordFrame>All</FocusKeywordFrame>
-            </FocusHorizontalPanelFrame>
+            </FocusVerticalPanelFrame>
             <FocusVerticalCollectionPlaceholderFrame/>
             <FocusKeywordFrame Text=""end"">
                 <FocusKeywordFrame.BlockVisibility>
