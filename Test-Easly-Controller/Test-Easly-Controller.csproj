@@ -19,7 +19,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;xREADONLY;xVIEWS;xWRITEABLE;xFRAME;xFOCUS</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;xREADONLY;xVIEWS;xWRITEABLE;xFRAME;xFOCUS;xLAYOUT</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
@@ -75,7 +75,9 @@
     <Compile Include="CoverageLanguage\Tree.cs" />
     <Compile Include="CoverageLanguage\Leaf.cs" />
     <Compile Include="CoverageLanguage\Main.cs" />
+    <Compile Include="TemplateSet\CoverageLayoutTemplateSet.cs" />
     <Compile Include="TemplateSet\CoverageFocusTemplateSet.cs" />
+    <Compile Include="TemplateSet\CustomLayoutTemplateSet.cs" />
     <Compile Include="TemplateSet\CustomFocusTemplateSet.cs" />
     <Compile Include="TemplateSet\CoverageFrameTemplateSet.cs" />
     <Compile Include="TemplateSet\CustomFrameTemplateSet.cs" />
