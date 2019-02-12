@@ -138,7 +138,7 @@ namespace Coverage
             BaseNodeHelper.NodeTreeHelperList.SetChildNodeList(Root, nameof(IMain.LeafPath), (IList)LeafPath);
             BaseNodeHelper.NodeTreeHelper.SetBooleanProperty(Root, nameof(IMain.ValueBoolean), true);
             BaseNodeHelper.NodeTreeHelper.SetEnumProperty(Root, nameof(IMain.ValueEnum), (int)BaseNode.CopySemantic.Value);
-            BaseNodeHelper.NodeTreeHelper.SetStringProperty(Root, nameof(IMain.ValueString), "string");
+            BaseNodeHelper.NodeTreeHelper.SetStringProperty(Root, nameof(IMain.ValueString), "s");
             BaseNodeHelper.NodeTreeHelper.SetGuidProperty(Root, nameof(IMain.ValueGuid), valueGuid);
 
             return Root;
@@ -368,7 +368,7 @@ namespace Coverage
 
             RootState.PropertyToValue(nameof(IMain.ValueString), out ReadValue, out Min, out Max);
             string ReadAsString = ReadValue as string;
-            Assert.That(ReadAsString == "string");
+            Assert.That(ReadAsString == "s");
             Assert.That(Controller0.GetStringValue(RootIndex0, nameof(IMain.ValueString)) == ReadAsString);
 
             RootState.PropertyToValue(nameof(IMain.ValueGuid), out ReadValue, out Min, out Max);
@@ -723,7 +723,7 @@ namespace Coverage
 
             RootState.PropertyToValue(nameof(IMain.ValueString), out ReadValue, out Min, out Max);
             string ReadAsString = ReadValue as string;
-            Assert.That(ReadAsString == "string");
+            Assert.That(ReadAsString == "s");
             Assert.That(Controller0.GetStringValue(RootIndex0, nameof(IMain.ValueString)) == ReadAsString);
 
             RootState.PropertyToValue(nameof(IMain.ValueGuid), out ReadValue, out Min, out Max);
@@ -3066,7 +3066,7 @@ namespace Coverage
 
             RootState.PropertyToValue(nameof(IMain.ValueString), out ReadValue, out Min, out Max);
             string ReadAsString = ReadValue as string;
-            Assert.That(ReadAsString == "string");
+            Assert.That(ReadAsString == "s");
             Assert.That(Controller0.GetStringValue(RootIndex0, nameof(IMain.ValueString)) == ReadAsString);
 
             RootState.PropertyToValue(nameof(IMain.ValueGuid), out ReadValue, out Min, out Max);
@@ -5862,7 +5862,7 @@ namespace Coverage
 
             RootState.PropertyToValue(nameof(IMain.ValueString), out ReadValue, out Min, out Max);
             string ReadAsString = ReadValue as string;
-            Assert.That(ReadAsString == "string");
+            Assert.That(ReadAsString == "s");
             Assert.That(Controller0.GetStringValue(RootIndex0, nameof(IMain.ValueString)) == ReadAsString);
 
             RootState.PropertyToValue(nameof(IMain.ValueGuid), out ReadValue, out Min, out Max);
@@ -9570,7 +9570,7 @@ namespace Coverage
 
             RootState.PropertyToValue(nameof(IMain.ValueString), out ReadValue, out Min, out Max);
             string ReadAsString = ReadValue as string;
-            Assert.That(ReadAsString == "string");
+            Assert.That(ReadAsString == "s");
             Assert.That(Controller0.GetStringValue(RootIndex0, nameof(IMain.ValueString)) == ReadAsString);
 
             RootState.PropertyToValue(nameof(IMain.ValueGuid), out ReadValue, out Min, out Max);
@@ -9638,7 +9638,7 @@ namespace Coverage
             ILayoutTemplateSet DefaultTemplateSet = LayoutTemplateSet.Default;
             DefaultTemplateSet = LayoutTemplateSet.Default;
 
-            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet))
+            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet, TestDebug.LayoutDrawContext.Default))
             {
                 Assert.That(ControllerView0.Controller == Controller);
                 Assert.That(ControllerView0.TemplateSet == TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet);
@@ -9647,7 +9647,7 @@ namespace Coverage
                 ControllerView0.SetCaretMode(EaslyController.Constants.CaretModes.Override);
                 Assert.That(ControllerView0.CaretMode == EaslyController.Constants.CaretModes.Override);
 
-                using (ILayoutControllerView ControllerView1 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet))
+                using (ILayoutControllerView ControllerView1 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet, TestDebug.LayoutDrawContext.Default))
                 {
                     Assert.That(ControllerView0.IsEqual(CompareEqual.New(), ControllerView0));
                     Assert.That(CompareEqual.CoverIsEqual(ControllerView0, ControllerView1));
@@ -9830,7 +9830,7 @@ namespace Coverage
             ILayoutController ControllerBase = LayoutController.Create(RootIndex);
             ILayoutController Controller = LayoutController.Create(RootIndex);
 
-            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet))
+            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet, TestDebug.LayoutDrawContext.Default))
             {
                 Assert.That(ControllerView0.Controller == Controller);
 
@@ -9980,7 +9980,7 @@ namespace Coverage
             ILayoutController ControllerBase = LayoutController.Create(RootIndex);
             ILayoutController Controller = LayoutController.Create(RootIndex);
 
-            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet))
+            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet, TestDebug.LayoutDrawContext.Default))
             {
                 Assert.That(ControllerView0.Controller == Controller);
 
@@ -10109,7 +10109,7 @@ namespace Coverage
             ILayoutController ControllerBase = LayoutController.Create(RootIndex);
             ILayoutController Controller = LayoutController.Create(RootIndex);
 
-            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet))
+            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet, TestDebug.LayoutDrawContext.Default))
             {
                 Assert.That(ControllerView0.Controller == Controller);
 
@@ -10203,7 +10203,7 @@ namespace Coverage
             ILayoutController ControllerBase = LayoutController.Create(RootIndex);
             ILayoutController Controller = LayoutController.Create(RootIndex);
 
-            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet))
+            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet, TestDebug.LayoutDrawContext.Default))
             {
                 Assert.That(ControllerView0.Controller == Controller);
 
@@ -10266,7 +10266,7 @@ namespace Coverage
             ILayoutController ControllerBase = LayoutController.Create(RootIndex);
             ILayoutController Controller = LayoutController.Create(RootIndex);
 
-            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet))
+            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet, TestDebug.LayoutDrawContext.Default))
             {
                 Assert.That(ControllerView0.Controller == Controller);
 
@@ -10320,7 +10320,7 @@ namespace Coverage
             ILayoutController ControllerBase = LayoutController.Create(RootIndex);
             ILayoutController Controller = LayoutController.Create(RootIndex);
 
-            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet))
+            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet, TestDebug.LayoutDrawContext.Default))
             {
                 Assert.That(ControllerView0.Controller == Controller);
 
@@ -10537,7 +10537,7 @@ namespace Coverage
             ILayoutController Controller = LayoutController.Create(RootIndex);
 
             //System.Diagnostics.Debug.Assert(false);
-            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet))
+            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet, TestDebug.LayoutDrawContext.Default))
             {
                 Assert.That(ControllerView0.Controller == Controller);
 
@@ -10607,7 +10607,7 @@ namespace Coverage
             ILayoutController ControllerBase = LayoutController.Create(RootIndex);
             ILayoutController Controller = LayoutController.Create(RootIndex);
 
-            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet))
+            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet, TestDebug.LayoutDrawContext.Default))
             {
                 Assert.That(ControllerView0.Controller == Controller);
 
@@ -10677,7 +10677,7 @@ namespace Coverage
             ILayoutController ControllerBase = LayoutController.Create(RootIndex);
             ILayoutController Controller = LayoutController.Create(RootIndex);
 
-            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet))
+            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet, TestDebug.LayoutDrawContext.Default))
             {
                 Assert.That(ControllerView0.Controller == Controller);
 
@@ -10733,7 +10733,7 @@ namespace Coverage
             ILayoutController ControllerBase = LayoutController.Create(RootIndex);
             ILayoutController Controller = LayoutController.Create(RootIndex);
 
-            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet))
+            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet, TestDebug.LayoutDrawContext.Default))
             {
                 Assert.That(ControllerView0.Controller == Controller);
 
@@ -10805,7 +10805,7 @@ namespace Coverage
             ILayoutController ControllerBase = LayoutController.Create(RootIndex);
             ILayoutController Controller = LayoutController.Create(RootIndex);
 
-            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet))
+            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet, TestDebug.LayoutDrawContext.Default))
             {
                 Assert.That(ControllerView0.Controller == Controller);
 
@@ -10876,7 +10876,7 @@ namespace Coverage
             ILayoutController ControllerBase = LayoutController.Create(RootIndex);
             ILayoutController Controller = LayoutController.Create(RootIndex);
 
-            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet))
+            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet, TestDebug.LayoutDrawContext.Default))
             {
                 Assert.That(ControllerView0.Controller == Controller);
 
@@ -11025,7 +11025,7 @@ namespace Coverage
             ILayoutController ControllerBase = LayoutController.Create(RootIndex);
             ILayoutController Controller = LayoutController.Create(RootIndex);
 
-            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet))
+            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet, TestDebug.LayoutDrawContext.Default))
             {
                 Assert.That(ControllerView0.Controller == Controller);
 
@@ -11187,7 +11187,7 @@ namespace Coverage
             ILayoutController ControllerBase = LayoutController.Create(RootIndex);
             ILayoutController Controller = LayoutController.Create(RootIndex);
 
-            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet))
+            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet, TestDebug.LayoutDrawContext.Default))
             {
                 Assert.That(ControllerView0.Controller == Controller);
 
@@ -11366,7 +11366,7 @@ namespace Coverage
             ILayoutController ControllerBase = LayoutController.Create(RootIndex);
             ILayoutController Controller = LayoutController.Create(RootIndex);
 
-            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet))
+            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet, TestDebug.LayoutDrawContext.Default))
             {
                 IFocusCyclableNodeState State;
                 int CyclePosition;
@@ -11640,7 +11640,7 @@ namespace Coverage
             ILayoutController ControllerBase = LayoutController.Create(RootIndex);
             ILayoutController Controller = LayoutController.Create(RootIndex);
 
-            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet))
+            using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet, TestDebug.LayoutDrawContext.Default))
             {
                 Assert.That(ControllerView0.Controller == Controller);
 
@@ -11736,7 +11736,7 @@ namespace Coverage
 
             IReadOnlyIndexNodeStateDictionary ControllerStateTable = DebugObjects.GetReferenceByInterface(typeof(ILayoutIndexNodeStateDictionary)) as IReadOnlyIndexNodeStateDictionary;
 
-            using (ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet))
+            using (ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet, TestDebug.LayoutDrawContext.Default))
             {
                 Controller.Canonicalize(out bool IsChanged);
 
@@ -13225,7 +13225,7 @@ namespace Coverage
             }
 
             ILayoutTemplateSet LayoutTemplateSet = TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet;
-            using (ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet))
+            using (ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet, TestDebug.LayoutDrawContext.Default))
             {
                 // ILayoutAssignableCellViewDictionary
 

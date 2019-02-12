@@ -53,6 +53,8 @@ namespace TestDebug
             System.Diagnostics.Debug.Assert(AsFrameRootFrame.ParentTemplate == AsFrameFrame.ParentTemplate);
             System.Diagnostics.Debug.Assert(AsFocusRootFrame.ParentTemplate == AsFocusFrame.ParentTemplate);
 
+            System.Diagnostics.Debug.Assert(frame.ParentFrame != null || frame == rootFrame);
+
             if (frame is ILayoutBlockFrame AsBlockFrame)
             {
                 ILayoutBlockFrameVisibility BlockVisibility = AsBlockFrame.BlockVisibility;
@@ -84,6 +86,19 @@ namespace TestDebug
 
                     System.Diagnostics.Debug.Assert(Item.ParentFrame == AsSelectionFrame);
                     System.Diagnostics.Debug.Assert(AsFrameItem.ParentFrame == AsSelectionFrame);
+
+                    RecursivelyCheckParent(rootFrame, Item);
+                }
+            }
+
+            else if (frame is ILayoutDiscreteFrame AsDiscreteFrame)
+            {
+                foreach (ILayoutKeywordFrame Item in AsDiscreteFrame.Items)
+                {
+                    EaslyController.Frame.IFrameFrame AsFrameItem = Item;
+
+                    System.Diagnostics.Debug.Assert(Item.ParentFrame == AsDiscreteFrame);
+                    System.Diagnostics.Debug.Assert(AsFrameItem.ParentFrame == AsDiscreteFrame);
 
                     RecursivelyCheckParent(rootFrame, Item);
                 }
@@ -127,7 +142,7 @@ namespace TestDebug
     <LayoutNodeTemplate NodeType=""{xaml:Type cov:ITree}"">
         <LayoutVerticalPanelFrame>
             <LayoutPlaceholderFrame PropertyName=""Placeholder""/>
-            <LayoutSymbolFrame Symbol=""{x:Static const:Symbols.LeftBracket}"">
+            <LayoutSymbolFrame Symbol=""{x:Static const:Symbols.Dot}"">
                 <LayoutSymbolFrame.Visibility>
                     <LayoutComplexFrameVisibility PropertyName=""Placeholder""/>
                 </LayoutSymbolFrame.Visibility>
@@ -136,7 +151,7 @@ namespace TestDebug
                 <LayoutKeywordFrame>True</LayoutKeywordFrame>
                 <LayoutKeywordFrame>False</LayoutKeywordFrame>
             </LayoutDiscreteFrame>
-            <LayoutSymbolFrame Symbol=""{x:Static const:Symbols.RightBracket}""/>
+            <LayoutSymbolFrame Symbol=""{x:Static const:Symbols.Dot}""/>
             <LayoutDiscreteFrame PropertyName=""ValueEnum"">
                 <LayoutKeywordFrame>Any</LayoutKeywordFrame>
                 <LayoutKeywordFrame>Reference</LayoutKeywordFrame>
@@ -1284,7 +1299,7 @@ namespace TestDebug
                             <LayoutKeywordFrame>require</LayoutKeywordFrame>
                             <LayoutInsertFrame CollectionName=""RequireBlocks"" />
                         </LayoutHorizontalPanelFrame>
-                        <LayoutHorizontalBlockListFrame PropertyName=""RequireBlocks"" />
+                        <LayoutVerticalBlockListFrame PropertyName=""RequireBlocks"" />
                     </LayoutVerticalPanelFrame>
                     <LayoutVerticalPanelFrame>
                         <LayoutVerticalPanelFrame.Visibility>
@@ -1318,7 +1333,7 @@ namespace TestDebug
                             <LayoutKeywordFrame IsFocusable=""true"">do</LayoutKeywordFrame>
                             <LayoutInsertFrame CollectionName=""BodyInstructionBlocks"" ItemType=""{xaml:Type easly:CommandInstruction}""/>
                         </LayoutHorizontalPanelFrame>
-                        <LayoutHorizontalBlockListFrame PropertyName=""BodyInstructionBlocks"" />
+                        <LayoutVerticalBlockListFrame PropertyName=""BodyInstructionBlocks"" />
                     </LayoutVerticalPanelFrame>
                     <LayoutVerticalPanelFrame>
                         <LayoutVerticalPanelFrame.Visibility>
@@ -1352,7 +1367,7 @@ namespace TestDebug
                             <LayoutKeywordFrame>require</LayoutKeywordFrame>
                             <LayoutInsertFrame CollectionName=""RequireBlocks"" />
                         </LayoutHorizontalPanelFrame>
-                        <LayoutHorizontalBlockListFrame PropertyName=""RequireBlocks"" />
+                        <LayoutVerticalBlockListFrame PropertyName=""RequireBlocks"" />
                     </LayoutVerticalPanelFrame>
                     <LayoutVerticalPanelFrame>
                         <LayoutVerticalPanelFrame.Visibility>
@@ -1386,7 +1401,7 @@ namespace TestDebug
                             <LayoutKeywordFrame IsFocusable=""true"">getter</LayoutKeywordFrame>
                             <LayoutInsertFrame CollectionName=""BodyInstructionBlocks"" ItemType=""{xaml:Type easly:CommandInstruction}""/>
                         </LayoutHorizontalPanelFrame>
-                        <LayoutHorizontalBlockListFrame PropertyName=""BodyInstructionBlocks"" />
+                        <LayoutVerticalBlockListFrame PropertyName=""BodyInstructionBlocks"" />
                     </LayoutVerticalPanelFrame>
                     <LayoutVerticalPanelFrame>
                         <LayoutVerticalPanelFrame.Visibility>
@@ -1420,7 +1435,7 @@ namespace TestDebug
                             <LayoutKeywordFrame>require</LayoutKeywordFrame>
                             <LayoutInsertFrame CollectionName=""RequireBlocks"" />
                         </LayoutHorizontalPanelFrame>
-                        <LayoutHorizontalBlockListFrame PropertyName=""RequireBlocks"" />
+                        <LayoutVerticalBlockListFrame PropertyName=""RequireBlocks"" />
                     </LayoutVerticalPanelFrame>
                     <LayoutVerticalPanelFrame>
                         <LayoutVerticalPanelFrame.Visibility>
@@ -1454,7 +1469,7 @@ namespace TestDebug
                             <LayoutKeywordFrame IsFocusable=""true"">setter</LayoutKeywordFrame>
                             <LayoutInsertFrame CollectionName=""BodyInstructionBlocks"" ItemType=""{xaml:Type easly:CommandInstruction}""/>
                         </LayoutHorizontalPanelFrame>
-                        <LayoutHorizontalBlockListFrame PropertyName=""BodyInstructionBlocks"" />
+                        <LayoutVerticalBlockListFrame PropertyName=""BodyInstructionBlocks"" />
                     </LayoutVerticalPanelFrame>
                     <LayoutVerticalPanelFrame>
                         <LayoutVerticalPanelFrame.Visibility>
