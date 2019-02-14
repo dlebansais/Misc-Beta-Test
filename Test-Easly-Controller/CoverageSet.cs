@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Threading;
 using EaslyController;
+using EaslyController.Controller;
 using EaslyController.Focus;
 using EaslyController.Frame;
 using EaslyController.Layout;
@@ -7657,7 +7658,7 @@ namespace Coverage
                     ControllerView0.MoveFocus(+1);
 
                 IFocusNodeStateView StateView = ControllerView0.FocusedCellView.StateView;
-                Assert.That(ControllerView0.CollectionHasItems(StateView, nameof(BaseNode.IFunctionFeature.OverloadBlocks)));
+                Assert.That(ControllerView0.CollectionHasItems(StateView, nameof(BaseNode.IFunctionFeature.OverloadBlocks), 0));
                 Assert.That(ControllerView0.IsFirstItem(StateView));
 
                 IFocusNodeState CurrentState = StateView.State;
@@ -7721,7 +7722,7 @@ namespace Coverage
                         IFocusNodeState ParentState = CurrentState.ParentState;
                         Assert.That(ControllerView0.StateViewTable.ContainsKey(ParentState));
                         IFocusNodeStateView ParentStateView = ControllerView0.StateViewTable[ParentState];
-                        Assert.That(ControllerView0.CollectionHasItems(ParentStateView, nameof(BaseNode.IQualifiedName.Path)));
+                        Assert.That(ControllerView0.CollectionHasItems(ParentStateView, nameof(BaseNode.IQualifiedName.Path), 0));
                     }
 
                     IsItemCyclableThrough = ControllerView0.IsItemCyclableThrough(out State, out CyclePosition);
@@ -7771,7 +7772,7 @@ namespace Coverage
                         IFocusNodeState ParentState = CurrentState.ParentState;
                         Assert.That(ControllerView0.StateViewTable.ContainsKey(ParentState));
                         IFocusNodeStateView ParentStateView = ControllerView0.StateViewTable[ParentState];
-                        Assert.That(ControllerView0.CollectionHasItems(ParentStateView, nameof(BaseNode.IQualifiedName.Path)));
+                        Assert.That(ControllerView0.CollectionHasItems(ParentStateView, nameof(BaseNode.IQualifiedName.Path), 0));
                     }
 
                     IsItemCyclableThrough = ControllerView0.IsItemCyclableThrough(out State, out CyclePosition);
@@ -9653,6 +9654,34 @@ namespace Coverage
                     Assert.That(CompareEqual.CoverIsEqual(ControllerView0, ControllerView1));
                 }
 
+                ILayoutFocusableCellView FocusedCellView = ControllerView0.FocusedCellView;
+                Point CellOrigin = FocusedCellView.CellOrigin;
+                Assert.That(ArrangeHelper.IsFixed(CellOrigin));
+                Assert.That(!ArrangeHelper.IsFloatingHorizontally(CellOrigin));
+                Assert.That(!ArrangeHelper.IsFloatingVertically(CellOrigin));
+                Assert.That(Point.IsEqual(CellOrigin, CellOrigin));
+                Assert.That(CellOrigin.ToString() != null);
+                Assert.That(CellOrigin.ToString(CultureInfo.InvariantCulture) != null);
+                Assert.That(CellOrigin.ToString(null, CultureInfo.InvariantCulture) != null);
+                Size CellSize = FocusedCellView.CellSize;
+                Assert.That(!CellSize.IsEmpty);
+                Assert.That(CellSize.IsVisible);
+                Assert.That(Size.IsEqual(CellSize, CellSize));
+                Assert.That(CellSize.ToString() != null);
+                Assert.That(CellSize.ToString(CultureInfo.InvariantCulture) != null);
+                Assert.That(CellSize.ToString(null, CultureInfo.InvariantCulture) != null);
+                Padding CellPadding = FocusedCellView.CellPadding;
+                Assert.That(Padding.IsEqual(CellPadding, CellPadding));
+                Assert.That(CellPadding.ToString() != null);
+                Assert.That(CellPadding.ToString(CultureInfo.InvariantCulture) != null);
+                Assert.That(CellPadding.ToString(null, CultureInfo.InvariantCulture) != null);
+
+                ILayoutVisibleCellViewList CellList = new LayoutVisibleCellViewList();
+                ControllerView0.EnumerateVisibleCellViews(CellList);
+
+                foreach (ILayoutVisibleCellView CellView in CellList)
+                    CellView.Draw();
+
                 foreach (KeyValuePair<ILayoutBlockState, ILayoutBlockStateView> Entry in ControllerView0.BlockStateViewTable)
                 {
                     ILayoutBlockState BlockState = Entry.Key;
@@ -9691,6 +9720,7 @@ namespace Coverage
                             Assert.That(AsPatternStateView.Template != null);
                             Assert.That(AsPatternStateView.RootCellView != null);
                             Assert.That(AsPatternStateView.CellViewTable != null);
+                            Assert.That(AsPatternStateView.ParentContainer != null);
                             break;
 
                         case ILayoutSourceStateView AsSourceStateView:
@@ -9699,6 +9729,7 @@ namespace Coverage
                             Assert.That(AsSourceStateView.Template != null);
                             Assert.That(AsSourceStateView.RootCellView != null);
                             Assert.That(AsSourceStateView.CellViewTable != null);
+                            Assert.That(AsSourceStateView.ParentContainer != null);
                             break;
 
                         case ILayoutPlaceholderNodeStateView AsPlaceholderNodeStateView:
@@ -9706,6 +9737,7 @@ namespace Coverage
                             Assert.That(AsPlaceholderNodeStateView.Template != null);
                             Assert.That(AsPlaceholderNodeStateView.RootCellView != null);
                             Assert.That(AsPlaceholderNodeStateView.CellViewTable != null);
+                            Assert.That(AsPlaceholderNodeStateView.ParentContainer != null || State == Controller.RootState);
                             break;
 
                         case ILayoutOptionalNodeStateView AsOptionalNodeStateView:
@@ -9713,6 +9745,7 @@ namespace Coverage
                             Assert.That(AsOptionalNodeStateView.Template != null);
                             Assert.That(AsOptionalNodeStateView.RootCellView != null);
                             Assert.That(AsOptionalNodeStateView.CellViewTable != null);
+                            Assert.That(AsOptionalNodeStateView.ParentContainer != null);
                             break;
                     }
                 }
@@ -11384,7 +11417,7 @@ namespace Coverage
                     ControllerView0.MoveFocus(+1);
 
                 ILayoutNodeStateView StateView = ControllerView0.FocusedCellView.StateView;
-                Assert.That(ControllerView0.CollectionHasItems(StateView, nameof(BaseNode.IFunctionFeature.OverloadBlocks)));
+                Assert.That(ControllerView0.CollectionHasItems(StateView, nameof(BaseNode.IFunctionFeature.OverloadBlocks), 0));
                 Assert.That(ControllerView0.IsFirstItem(StateView));
 
                 ILayoutNodeState CurrentState = StateView.State;
@@ -11482,7 +11515,7 @@ namespace Coverage
                         ILayoutNodeState ParentState = CurrentState.ParentState;
                         Assert.That(ControllerView0.StateViewTable.ContainsKey(ParentState));
                         ILayoutNodeStateView ParentStateView = ControllerView0.StateViewTable[ParentState];
-                        Assert.That(ControllerView0.CollectionHasItems(ParentStateView, nameof(BaseNode.IQualifiedName.Path)));
+                        Assert.That(ControllerView0.CollectionHasItems(ParentStateView, nameof(BaseNode.IQualifiedName.Path), 0));
                     }
 
                     IsItemCyclableThrough = ControllerView0.IsItemCyclableThrough(out State, out CyclePosition);
@@ -11532,7 +11565,7 @@ namespace Coverage
                         ILayoutNodeState ParentState = CurrentState.ParentState;
                         Assert.That(ControllerView0.StateViewTable.ContainsKey(ParentState));
                         ILayoutNodeStateView ParentStateView = ControllerView0.StateViewTable[ParentState];
-                        Assert.That(ControllerView0.CollectionHasItems(ParentStateView, nameof(BaseNode.IQualifiedName.Path)));
+                        Assert.That(ControllerView0.CollectionHasItems(ParentStateView, nameof(BaseNode.IQualifiedName.Path), 0));
                     }
 
                     IsItemCyclableThrough = ControllerView0.IsItemCyclableThrough(out State, out CyclePosition);
@@ -13687,9 +13720,9 @@ namespace Coverage
 
                     ILayoutHorizontalPanelFrame RootFrame = TemplateEntry.Value.Root as ILayoutHorizontalPanelFrame;
                     foreach (ILayoutFrame Frame in RootFrame.Items)
-                        if (Frame is ILayoutNodeFrameWithSelector AsNodeFrameWithSelector && AsNodeFrameWithSelector.Selectors.Count > 0)
+                        if (Frame is ILayoutFrameWithSelector AsFrameWithSelector && AsFrameWithSelector.Selectors.Count > 0)
                         {
-                            ILayoutFrameSelectorList FrameSelectorList = AsNodeFrameWithSelector.Selectors;
+                            ILayoutFrameSelectorList FrameSelectorList = AsFrameWithSelector.Selectors;
 
                             Assert.That(FrameSelectorList.Count > 0);
                             ILayoutFrameSelector FirstFrameSelector = FrameSelectorList[0];

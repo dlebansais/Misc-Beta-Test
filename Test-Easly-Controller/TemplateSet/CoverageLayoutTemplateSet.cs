@@ -229,7 +229,7 @@ namespace TestDebug
                     <LayoutFrameSelector SelectorType=""{xaml:Type easly:IDeferredBody}"" SelectorName=""Overload""/>
                 </LayoutHorizontalBlockListFrame.Selectors>
             </LayoutHorizontalBlockListFrame>
-            <LayoutVerticalBlockListFrame PropertyName=""MainBlocksV"">
+            <LayoutVerticalBlockListFrame PropertyName=""MainBlocksV"" HasTabulationMargin=""True"">
                 <LayoutVerticalBlockListFrame.Visibility>
                     <LayoutCountFrameVisibility PropertyName=""LeafPathV""/>
                 </LayoutVerticalBlockListFrame.Visibility>

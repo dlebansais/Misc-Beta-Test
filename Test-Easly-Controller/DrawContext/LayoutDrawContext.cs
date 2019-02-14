@@ -9,6 +9,17 @@ namespace TestDebug
         public static LayoutDrawContext Default = new LayoutDrawContext();
 
         public double LineHeight { get { return 12; } }
+        public double TabulationWidth { get { return 12; } }
+
+        public double GetHorizontalSeparatorWidth(HorizontalSeparators separator)
+        {
+            return 0;
+        }
+
+        public double GetVerticalSeparatorHeight(VerticalSeparators separator)
+        {
+            return 0;
+        }
 
         public Size MeasureSymbol(Symbols symbol)
         {
@@ -29,7 +40,7 @@ namespace TestDebug
             }
         }
 
-        public Size MeasureText(string text)
+        public Size MeasureText(string text, TextStyles textStyle)
         {
             return new Size(text.Length * 20, LineHeight);
         }
@@ -39,11 +50,19 @@ namespace TestDebug
             padding = Padding.Empty;
         }
 
-        public void DrawText(string text, Point origin)
+        public void DrawText(string text, Point origin, TextStyles textStyle)
         {
         }
 
         public void DrawSymbol(Symbols symbol, Point origin)
+        {
+        }
+
+        public void DrawHorizontalSeparator(HorizontalSeparators separator, Point origin, double height)
+        {
+        }
+
+        public void DrawVerticalSeparator(VerticalSeparators separator, Point origin, double width)
         {
         }
     }
