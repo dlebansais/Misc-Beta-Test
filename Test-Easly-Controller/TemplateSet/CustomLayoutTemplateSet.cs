@@ -204,7 +204,7 @@ namespace TestDebug
                     <LayoutKeywordFrame>feature</LayoutKeywordFrame>
                     <LayoutInsertFrame CollectionName=""FeatureBlocks"" ItemType=""{xaml:Type easly:AttributeFeature}""/>
                 </LayoutHorizontalPanelFrame>
-                <LayoutVerticalBlockListFrame PropertyName=""FeatureBlocks"" HasTabulationMargin=""True""/>
+                <LayoutVerticalBlockListFrame PropertyName=""FeatureBlocks"" HasTabulationMargin=""True"" Separator=""Line""/>
             </LayoutVerticalPanelFrame>
             <LayoutVerticalPanelFrame>
                 <LayoutVerticalPanelFrame.Visibility>
@@ -657,10 +657,10 @@ namespace TestDebug
     <LayoutNodeTemplate NodeType=""{xaml:Type easly:ILibrary}"">
         <LayoutVerticalPanelFrame>
             <LayoutHorizontalPanelFrame>
-                <LayoutKeywordFrame>library</LayoutKeywordFrame>
+                <LayoutKeywordFrame RightMargin=""Whitespace"">library</LayoutKeywordFrame>
                 <LayoutPlaceholderFrame PropertyName=""EntityName""/>
                 <LayoutHorizontalPanelFrame>
-                    <LayoutKeywordFrame RightMargin=""Whitespace"">from</LayoutKeywordFrame>
+                    <LayoutKeywordFrame LeftMargin=""Whitespace"" RightMargin=""Whitespace"">from</LayoutKeywordFrame>
                     <LayoutOptionalFrame PropertyName=""FromIdentifier"">
                         <LayoutOptionalFrame.Selectors>
                             <LayoutFrameSelector SelectorType=""{xaml:Type easly:IIdentifier}"" SelectorName=""Feature""/>
@@ -3411,7 +3411,7 @@ namespace TestDebug
                 </LayoutPlaceholderFrame>
                 <LayoutKeywordFrame RightMargin=""Whitespace"">All</LayoutKeywordFrame>
             </LayoutHorizontalPanelFrame>
-            <LayoutVerticalCollectionPlaceholderFrame/>
+            <LayoutVerticalCollectionPlaceholderFrame Separator=""Line""/>
             <LayoutKeywordFrame Text=""end"" LeftMargin=""Whitespace"">
                 <LayoutKeywordFrame.BlockVisibility>
                     <LayoutReplicationFrameVisibility/>

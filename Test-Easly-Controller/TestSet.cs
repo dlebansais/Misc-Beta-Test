@@ -4211,10 +4211,11 @@ namespace Test
 
             int Min = ControllerView.MinFocusMove;
             int Max = ControllerView.MaxFocusMove;
+            bool IsMoved;
 
             for (int i = 0; i < (Max - Min) + 10; i++)
             {
-                ControllerView.MoveFocus(+1);
+                ControllerView.MoveFocus(+1, out IsMoved);
 
                 if (ControllerView.IsNewItemInsertable(out IFocusCollectionInner inner, out IFocusInsertionCollectionNodeIndex index))
                     Controller.Insert(inner, index, out IWriteableBrowsingCollectionNodeIndex nodeIndex);
@@ -4226,7 +4227,7 @@ namespace Test
                 Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction);
+                ControllerView.MoveFocus(Direction, out IsMoved);
 
                 if (ControllerView.IsNewItemInsertable(out IFocusCollectionInner inner, out IFocusInsertionCollectionNodeIndex index))
                     Controller.Insert(inner, index, out IWriteableBrowsingCollectionNodeIndex nodeIndex);
@@ -4252,7 +4253,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction);
+                ControllerView.MoveFocus(Direction, out bool IsMoved);
 
                 if (ControllerView.IsItemRemoveable(out IFocusCollectionInner inner, out IFocusBrowsingCollectionNodeIndex index))
                     Controller.Remove(inner, index);
@@ -4278,7 +4279,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction);
+                ControllerView.MoveFocus(Direction, out bool IsMoved);
 
                 Direction = (RandNext(2) * 2) - 1;
 
@@ -4306,7 +4307,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction);
+                ControllerView.MoveFocus(Direction, out bool IsMoved);
 
                 Direction = (RandNext(2) * 2) - 1;
 
@@ -4334,7 +4335,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction);
+                ControllerView.MoveFocus(Direction, out bool IsMoved);
 
                 if (ControllerView.IsItemSplittable(out IFocusBlockListInner inner, out IFocusBrowsingExistingBlockNodeIndex index))
                     Controller.SplitBlock(inner, index);
@@ -4360,7 +4361,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction);
+                ControllerView.MoveFocus(Direction, out bool IsMoved);
 
                 if (ControllerView.IsItemMergeable(out IFocusBlockListInner inner, out IFocusBrowsingExistingBlockNodeIndex index))
                     Controller.MergeBlocks(inner, index);
@@ -4386,7 +4387,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction);
+                ControllerView.MoveFocus(Direction, out bool IsMoved);
 
                 if (ControllerView.IsItemCyclableThrough(out IFocusCyclableNodeState state, out int cyclePosition))
                     Controller.Replace(state.ParentInner, state.CycleIndexList, cyclePosition, out IFocusBrowsingChildIndex nodeIndex);
@@ -4416,7 +4417,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction);
+                ControllerView.MoveFocus(Direction, out bool IsMoved);
 
                 if (ControllerView.IsItemSimplifiable(out IFocusInner Inner, out IFocusInsertionChildIndex Index))
                 {
@@ -4456,7 +4457,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction);
+                ControllerView.MoveFocus(Direction, out bool IsMoved);
 
                 if (ControllerView.IsIdentifierSplittable(out IFocusListInner Inner, out IFocusInsertionListNodeIndex ReplaceIndex, out IFocusInsertionListNodeIndex InsertIndex))
                 {
@@ -4487,7 +4488,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction);
+                ControllerView.MoveFocus(Direction, out bool IsMoved);
 
                 if (ControllerView.IsReplicationModifiable(out IFocusBlockListInner Inner, out int BlockIndex, out Replication))
                 {
@@ -4628,7 +4629,7 @@ namespace Test
             int MaxFocusMove = controllerView.MaxFocusMove;
 
             int Direction = MinFocusMove + RandNext(MaxFocusMove - MinFocusMove + 1);
-            controllerView.MoveFocus(Direction);
+            controllerView.MoveFocus(Direction, out bool IsMoved);
         }
         #endregion
 
@@ -4741,6 +4742,7 @@ namespace Test
         {
             ILayoutVisibleCellViewList CellViewList = new LayoutVisibleCellViewList();
             controllerView.EnumerateVisibleCellViews(CellViewList);
+            controllerView.Draw();
 
             Assert.That(controllerView.LastLineNumber >= 1);
             Assert.That(controllerView.LastColumnNumber >= 1);
@@ -5899,10 +5901,11 @@ namespace Test
 
             int Min = ControllerView.MinFocusMove;
             int Max = ControllerView.MaxFocusMove;
+            bool IsMoved;
 
             for (int i = 0; i < (Max - Min) + 10; i++)
             {
-                ControllerView.MoveFocus(+1);
+                ControllerView.MoveFocus(+1, out IsMoved);
 
                 if (ControllerView.IsNewItemInsertable(out IFocusCollectionInner inner, out IFocusInsertionCollectionNodeIndex index))
                     Controller.Insert(inner, index, out IWriteableBrowsingCollectionNodeIndex nodeIndex);
@@ -5914,7 +5917,7 @@ namespace Test
                 Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction);
+                ControllerView.MoveFocus(Direction, out IsMoved);
 
                 if (ControllerView.IsNewItemInsertable(out IFocusCollectionInner inner, out IFocusInsertionCollectionNodeIndex index))
                     Controller.Insert(inner, index, out IWriteableBrowsingCollectionNodeIndex nodeIndex);
@@ -5940,7 +5943,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction);
+                ControllerView.MoveFocus(Direction, out bool IsMoved);
 
                 if (ControllerView.IsItemRemoveable(out IFocusCollectionInner inner, out IFocusBrowsingCollectionNodeIndex index))
                     Controller.Remove(inner, index);
@@ -5966,7 +5969,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction);
+                ControllerView.MoveFocus(Direction, out bool IsMoved);
 
                 Direction = (RandNext(2) * 2) - 1;
 
@@ -5994,7 +5997,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction);
+                ControllerView.MoveFocus(Direction, out bool IsMoved);
 
                 Direction = (RandNext(2) * 2) - 1;
 
@@ -6022,7 +6025,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction);
+                ControllerView.MoveFocus(Direction, out bool IsMoved);
 
                 if (ControllerView.IsItemSplittable(out IFocusBlockListInner inner, out IFocusBrowsingExistingBlockNodeIndex index))
                     Controller.SplitBlock(inner, index);
@@ -6048,7 +6051,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction);
+                ControllerView.MoveFocus(Direction, out bool IsMoved);
 
                 if (ControllerView.IsItemMergeable(out IFocusBlockListInner inner, out IFocusBrowsingExistingBlockNodeIndex index))
                     Controller.MergeBlocks(inner, index);
@@ -6074,7 +6077,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction);
+                ControllerView.MoveFocus(Direction, out bool IsMoved);
 
                 if (ControllerView.IsItemCyclableThrough(out IFocusCyclableNodeState state, out int cyclePosition))
                     Controller.Replace(state.ParentInner, state.CycleIndexList, cyclePosition, out IFocusBrowsingChildIndex nodeIndex);
@@ -6111,7 +6114,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction);
+                ControllerView.MoveFocus(Direction, out bool IsMoved);
 
                 if (ControllerView.IsItemSimplifiable(out IFocusInner Inner, out IFocusInsertionChildIndex Index))
                 {
@@ -6152,7 +6155,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction);
+                ControllerView.MoveFocus(Direction, out bool IsMoved);
 
                 if (ControllerView.IsIdentifierSplittable(out IFocusListInner Inner, out IFocusInsertionListNodeIndex ReplaceIndex, out IFocusInsertionListNodeIndex InsertIndex))
                 {
@@ -6183,7 +6186,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction);
+                ControllerView.MoveFocus(Direction, out bool IsMoved);
 
                 if (ControllerView.IsReplicationModifiable(out IFocusBlockListInner Inner, out int BlockIndex, out Replication))
                 {
@@ -6324,7 +6327,7 @@ namespace Test
             int MaxFocusMove = controllerView.MaxFocusMove;
 
             int Direction = MinFocusMove + RandNext(MaxFocusMove - MinFocusMove + 1);
-            controllerView.MoveFocus(Direction);
+            controllerView.MoveFocus(Direction, out bool IsMoved);
         }
         #endregion
     }

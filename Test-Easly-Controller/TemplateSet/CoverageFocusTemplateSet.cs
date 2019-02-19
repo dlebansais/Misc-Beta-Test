@@ -201,6 +201,9 @@ namespace TestDebug
                 <FocusVerticalBlockListFrame.Visibility>
                     <FocusCountFrameVisibility PropertyName=""LeafPathV""/>
                 </FocusVerticalBlockListFrame.Visibility>
+                <FocusVerticalBlockListFrame.Selectors>
+                    <FocusFrameSelector SelectorType=""{xaml:Type easly:IDeferredBody}"" SelectorName=""Overload""/>
+                </FocusVerticalBlockListFrame.Selectors>
             </FocusVerticalBlockListFrame>
             <FocusInsertFrame CollectionName=""UnassignedOptionalMain.LeafBlocks""/>
             <FocusOptionalFrame PropertyName=""UnassignedOptionalMain"" />
@@ -3208,7 +3211,11 @@ namespace TestDebug
                 </FocusPlaceholderFrame>
                 <FocusKeywordFrame>All</FocusKeywordFrame>
             </FocusHorizontalPanelFrame>
-            <FocusVerticalCollectionPlaceholderFrame/>
+            <FocusVerticalCollectionPlaceholderFrame>
+                <FocusVerticalCollectionPlaceholderFrame.Selectors>
+                    <FocusFrameSelector SelectorType=""{xaml:Type easly:IIdentifier}"" SelectorName=""Identifier""/>
+                </FocusVerticalCollectionPlaceholderFrame.Selectors>
+            </FocusVerticalCollectionPlaceholderFrame>
             <FocusKeywordFrame Text=""end"">
                 <FocusKeywordFrame.BlockVisibility>
                     <FocusReplicationFrameVisibility/>

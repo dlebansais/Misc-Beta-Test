@@ -160,64 +160,74 @@ namespace TestDebug
         </LayoutVerticalPanelFrame>
     </LayoutNodeTemplate>
     <LayoutNodeTemplate NodeType=""{xaml:Type cov:IMain}"">
-        <LayoutHorizontalPanelFrame>
-            <LayoutPlaceholderFrame PropertyName=""PlaceholderTree""/>
-            <LayoutPlaceholderFrame PropertyName=""PlaceholderLeaf""/>
-            <LayoutOptionalFrame PropertyName=""UnassignedOptionalLeaf"" />
-            <LayoutOptionalFrame PropertyName=""AssignedOptionalTree"" />
-            <LayoutOptionalFrame PropertyName=""AssignedOptionalLeaf"" />
-            <LayoutInsertFrame CollectionName=""LeafBlocks""/>
-            <LayoutHorizontalBlockListFrame PropertyName=""LeafBlocks"">
-                <LayoutHorizontalBlockListFrame.Visibility>
-                    <LayoutCountFrameVisibility PropertyName=""LeafPath""/>
-                </LayoutHorizontalBlockListFrame.Visibility>
-                <LayoutHorizontalBlockListFrame.Selectors>
-                    <LayoutFrameSelector SelectorType=""{xaml:Type easly:IIdentifier}"" SelectorName=""Identifier""/>
-                </LayoutHorizontalBlockListFrame.Selectors>
-            </LayoutHorizontalBlockListFrame>
-            <LayoutVerticalListFrame PropertyName=""LeafPath"" IsPreferred=""True"">
-                <LayoutVerticalListFrame.Visibility>
-                    <LayoutCountFrameVisibility PropertyName=""LeafBlocks""/>
-                </LayoutVerticalListFrame.Visibility>
-            </LayoutVerticalListFrame>
+        <LayoutVerticalPanelFrame>
+            <LayoutSymbolFrame Symbol=""{x:Static const:Symbols.HorizontalLine}""/>
             <LayoutVerticalPanelFrame>
-                <LayoutVerticalPanelFrame.Visibility>
-                    <LayoutCountFrameVisibility PropertyName=""LeafBlocks""/>
-                </LayoutVerticalPanelFrame.Visibility>
-                <LayoutDiscreteFrame PropertyName=""ValueBoolean"">
-                    <LayoutKeywordFrame>True</LayoutKeywordFrame>
-                    <LayoutKeywordFrame>False</LayoutKeywordFrame>
-                </LayoutDiscreteFrame>
+                <LayoutSymbolFrame Symbol=""{x:Static const:Symbols.HorizontalLine}""/>
             </LayoutVerticalPanelFrame>
-            <LayoutDiscreteFrame PropertyName=""ValueEnum"">
-                <LayoutKeywordFrame>Any</LayoutKeywordFrame>
-                <LayoutKeywordFrame>Reference</LayoutKeywordFrame>
-                <LayoutKeywordFrame>Value</LayoutKeywordFrame>
-            </LayoutDiscreteFrame>
-            <LayoutTextValueFrame PropertyName=""ValueString""/>
-            <LayoutCharacterFrame PropertyName=""ValueString"">
-                <LayoutCharacterFrame.Visibility>
-                    <LayoutComplexFrameVisibility PropertyName=""PlaceholderTree""/>
-                </LayoutCharacterFrame.Visibility>
-            </LayoutCharacterFrame>
-            <LayoutCharacterFrame PropertyName=""ValueString""/>
-            <LayoutNumberFrame PropertyName=""ValueString"">
-                <LayoutNumberFrame.Visibility>
-                    <LayoutComplexFrameVisibility PropertyName=""PlaceholderTree""/>
-                </LayoutNumberFrame.Visibility>
-            </LayoutNumberFrame>
-            <LayoutNumberFrame PropertyName=""ValueString""/>
-            <LayoutKeywordFrame Text=""end"">
-                <LayoutKeywordFrame.Visibility>
-                    <LayoutMixedFrameVisibility>
-                        <LayoutCountFrameVisibility PropertyName=""LeafBlocks""/>
+            <LayoutHorizontalPanelFrame>
+                <LayoutSymbolFrame Symbol=""{x:Static const:Symbols.LeftBracket}""/>
+                <LayoutHorizontalPanelFrame>
+                    <LayoutSymbolFrame Symbol=""{x:Static const:Symbols.LeftBracket}""/>
+                </LayoutHorizontalPanelFrame>
+                <LayoutPlaceholderFrame PropertyName=""PlaceholderTree""/>
+                <LayoutPlaceholderFrame PropertyName=""PlaceholderLeaf""/>
+                <LayoutOptionalFrame PropertyName=""UnassignedOptionalLeaf"" />
+                <LayoutOptionalFrame PropertyName=""AssignedOptionalTree"" />
+                <LayoutOptionalFrame PropertyName=""AssignedOptionalLeaf"" />
+                <LayoutInsertFrame CollectionName=""LeafBlocks""/>
+                <LayoutHorizontalBlockListFrame PropertyName=""LeafBlocks"" Separator=""Comma"">
+                    <LayoutHorizontalBlockListFrame.Visibility>
                         <LayoutCountFrameVisibility PropertyName=""LeafPath""/>
-                        <LayoutOptionalFrameVisibility PropertyName=""AssignedOptionalTree""/>
-                        <LayoutOptionalFrameVisibility PropertyName=""UnassignedOptionalLeaf""/>
-                    </LayoutMixedFrameVisibility>
-                </LayoutKeywordFrame.Visibility>
-            </LayoutKeywordFrame>
-        </LayoutHorizontalPanelFrame>
+                    </LayoutHorizontalBlockListFrame.Visibility>
+                    <LayoutHorizontalBlockListFrame.Selectors>
+                        <LayoutFrameSelector SelectorType=""{xaml:Type easly:IIdentifier}"" SelectorName=""Identifier""/>
+                    </LayoutHorizontalBlockListFrame.Selectors>
+                </LayoutHorizontalBlockListFrame>
+                <LayoutVerticalListFrame PropertyName=""LeafPath"" IsPreferred=""True"">
+                    <LayoutVerticalListFrame.Visibility>
+                        <LayoutCountFrameVisibility PropertyName=""LeafBlocks""/>
+                    </LayoutVerticalListFrame.Visibility>
+                </LayoutVerticalListFrame>
+                <LayoutVerticalPanelFrame>
+                    <LayoutVerticalPanelFrame.Visibility>
+                        <LayoutCountFrameVisibility PropertyName=""LeafBlocks""/>
+                    </LayoutVerticalPanelFrame.Visibility>
+                    <LayoutDiscreteFrame PropertyName=""ValueBoolean"">
+                        <LayoutKeywordFrame>True</LayoutKeywordFrame>
+                        <LayoutKeywordFrame>False</LayoutKeywordFrame>
+                    </LayoutDiscreteFrame>
+                </LayoutVerticalPanelFrame>
+                <LayoutDiscreteFrame PropertyName=""ValueEnum"">
+                    <LayoutKeywordFrame>Any</LayoutKeywordFrame>
+                    <LayoutKeywordFrame>Reference</LayoutKeywordFrame>
+                    <LayoutKeywordFrame>Value</LayoutKeywordFrame>
+                </LayoutDiscreteFrame>
+                <LayoutTextValueFrame PropertyName=""ValueString""/>
+                <LayoutCharacterFrame PropertyName=""ValueString"">
+                    <LayoutCharacterFrame.Visibility>
+                        <LayoutComplexFrameVisibility PropertyName=""PlaceholderTree""/>
+                    </LayoutCharacterFrame.Visibility>
+                </LayoutCharacterFrame>
+                <LayoutCharacterFrame PropertyName=""ValueString""/>
+                <LayoutNumberFrame PropertyName=""ValueString"">
+                    <LayoutNumberFrame.Visibility>
+                        <LayoutComplexFrameVisibility PropertyName=""PlaceholderTree""/>
+                    </LayoutNumberFrame.Visibility>
+                </LayoutNumberFrame>
+                <LayoutNumberFrame PropertyName=""ValueString""/>
+                <LayoutKeywordFrame Text=""end"">
+                    <LayoutKeywordFrame.Visibility>
+                        <LayoutMixedFrameVisibility>
+                            <LayoutCountFrameVisibility PropertyName=""LeafBlocks""/>
+                            <LayoutCountFrameVisibility PropertyName=""LeafPath""/>
+                            <LayoutOptionalFrameVisibility PropertyName=""AssignedOptionalTree""/>
+                            <LayoutOptionalFrameVisibility PropertyName=""UnassignedOptionalLeaf""/>
+                        </LayoutMixedFrameVisibility>
+                    </LayoutKeywordFrame.Visibility>
+                </LayoutKeywordFrame>
+            </LayoutHorizontalPanelFrame>
+        </LayoutVerticalPanelFrame>
     </LayoutNodeTemplate>
     <LayoutNodeTemplate NodeType=""{xaml:Type cov:IRoot}"">
         <LayoutHorizontalPanelFrame>
@@ -229,7 +239,7 @@ namespace TestDebug
                     <LayoutFrameSelector SelectorType=""{xaml:Type easly:IDeferredBody}"" SelectorName=""Overload""/>
                 </LayoutHorizontalBlockListFrame.Selectors>
             </LayoutHorizontalBlockListFrame>
-            <LayoutVerticalBlockListFrame PropertyName=""MainBlocksV"" HasTabulationMargin=""True"">
+            <LayoutVerticalBlockListFrame PropertyName=""MainBlocksV"" HasTabulationMargin=""True"" Separator=""Line"">
                 <LayoutVerticalBlockListFrame.Visibility>
                     <LayoutCountFrameVisibility PropertyName=""LeafPathV""/>
                 </LayoutVerticalBlockListFrame.Visibility>
@@ -245,7 +255,7 @@ namespace TestDebug
                 </LayoutVerticalPanelFrame.Visibility>
                 <LayoutTextValueFrame PropertyName=""ValueString""/>
             </LayoutVerticalPanelFrame>
-            <LayoutHorizontalListFrame PropertyName=""LeafPathH"">
+            <LayoutHorizontalListFrame PropertyName=""LeafPathH"" Separator=""Comma"">
                 <LayoutHorizontalListFrame.Visibility>
                     <LayoutCountFrameVisibility PropertyName=""MainBlocksH""/>
                 </LayoutHorizontalListFrame.Visibility>
@@ -253,7 +263,7 @@ namespace TestDebug
                     <LayoutFrameSelector SelectorType=""{xaml:Type easly:IDeferredBody}"" SelectorName=""Overload""/>
                 </LayoutHorizontalListFrame.Selectors>
             </LayoutHorizontalListFrame>
-            <LayoutVerticalListFrame PropertyName=""LeafPathV"">
+            <LayoutVerticalListFrame PropertyName=""LeafPathV"" Separator=""Line"">
                 <LayoutVerticalListFrame.Visibility>
                     <LayoutCountFrameVisibility PropertyName=""MainBlocksV""/>
                 </LayoutVerticalListFrame.Visibility>
@@ -3249,7 +3259,11 @@ namespace TestDebug
                 </LayoutPlaceholderFrame>
                 <LayoutKeywordFrame>All</LayoutKeywordFrame>
             </LayoutHorizontalPanelFrame>
-            <LayoutVerticalCollectionPlaceholderFrame/>
+            <LayoutVerticalCollectionPlaceholderFrame>
+                <LayoutVerticalCollectionPlaceholderFrame.Selectors>
+                    <LayoutFrameSelector SelectorType=""{xaml:Type easly:IIdentifier}"" SelectorName=""Identifier""/>
+                </LayoutVerticalCollectionPlaceholderFrame.Selectors>
+            </LayoutVerticalCollectionPlaceholderFrame>
             <LayoutKeywordFrame Text=""end"">
                 <LayoutKeywordFrame.BlockVisibility>
                     <LayoutReplicationFrameVisibility/>
