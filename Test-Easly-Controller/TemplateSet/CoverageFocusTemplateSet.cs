@@ -96,23 +96,193 @@ namespace TestDebug
     xmlns:cov=""clr-namespace:Coverage;assembly=Test-Easly-Controller""
     xmlns:const=""clr-namespace:EaslyController.Constants;assembly=Easly-Controller"">
     <FocusNodeTemplate NodeType=""{xaml:Type cov:ILeaf}"" IsComplex=""True"" IsSimple=""True"">
-        <FocusVerticalPanelFrame>
-            <FocusTextValueFrame PropertyName=""Text""/>
-            <FocusKeywordFrame Text=""first"">
-                <FocusKeywordFrame.Visibility>
-                    <FocusNotFirstItemFrameVisibility/>
-                </FocusKeywordFrame.Visibility>
-            </FocusKeywordFrame>
-            <FocusKeywordFrame Text=""not first"">
-                <FocusKeywordFrame.Visibility>
-                    <FocusNotFirstItemFrameVisibility/>
-                </FocusKeywordFrame.Visibility>
-            </FocusKeywordFrame>
-        </FocusVerticalPanelFrame>
+        <FocusSelectionFrame>
+            <FocusSelectableFrame Name=""Leaf0"">
+                <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
+                    <FocusTextValueFrame PropertyName=""Text""/>
+                    <FocusKeywordFrame Text=""first"">
+                        <FocusKeywordFrame.Visibility>
+                            <FocusNotFirstItemFrameVisibility/>
+                        </FocusKeywordFrame.Visibility>
+                    </FocusKeywordFrame>
+                    <FocusKeywordFrame Text=""not first"">
+                        <FocusKeywordFrame.Visibility>
+                            <FocusNotFirstItemFrameVisibility/>
+                        </FocusKeywordFrame.Visibility>
+                    </FocusKeywordFrame>
+                </FocusVerticalPanelFrame>
+            </FocusSelectableFrame>
+            <FocusSelectableFrame Name=""Leaf1"">
+                <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
+                    <FocusTextValueFrame PropertyName=""Text""/>
+                    <FocusKeywordFrame Text=""first"">
+                        <FocusKeywordFrame.Visibility>
+                            <FocusNotFirstItemFrameVisibility/>
+                        </FocusKeywordFrame.Visibility>
+                    </FocusKeywordFrame>
+                    <FocusKeywordFrame Text=""not first"">
+                        <FocusKeywordFrame.Visibility>
+                            <FocusNotFirstItemFrameVisibility/>
+                        </FocusKeywordFrame.Visibility>
+                    </FocusKeywordFrame>
+                </FocusVerticalPanelFrame>
+            </FocusSelectableFrame>
+            <FocusSelectableFrame Name=""Leaf2"">
+                <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
+                    <FocusTextValueFrame PropertyName=""Text""/>
+                    <FocusKeywordFrame Text=""first"">
+                        <FocusKeywordFrame.Visibility>
+                            <FocusNotFirstItemFrameVisibility/>
+                        </FocusKeywordFrame.Visibility>
+                    </FocusKeywordFrame>
+                    <FocusKeywordFrame Text=""not first"">
+                        <FocusKeywordFrame.Visibility>
+                            <FocusNotFirstItemFrameVisibility/>
+                        </FocusKeywordFrame.Visibility>
+                    </FocusKeywordFrame>
+                </FocusVerticalPanelFrame>
+            </FocusSelectableFrame>
+            <FocusSelectableFrame Name=""Leaf3"">
+                <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
+                    <FocusTextValueFrame PropertyName=""Text""/>
+                    <FocusKeywordFrame Text=""first"">
+                        <FocusKeywordFrame.Visibility>
+                            <FocusNotFirstItemFrameVisibility/>
+                        </FocusKeywordFrame.Visibility>
+                    </FocusKeywordFrame>
+                    <FocusKeywordFrame Text=""not first"">
+                        <FocusKeywordFrame.Visibility>
+                            <FocusNotFirstItemFrameVisibility/>
+                        </FocusKeywordFrame.Visibility>
+                    </FocusKeywordFrame>
+                </FocusVerticalPanelFrame>
+            </FocusSelectableFrame>
+            <FocusSelectableFrame Name=""Leaf4"">
+                <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
+                    <FocusTextValueFrame PropertyName=""Text""/>
+                    <FocusKeywordFrame Text=""first"">
+                        <FocusKeywordFrame.Visibility>
+                            <FocusNotFirstItemFrameVisibility/>
+                        </FocusKeywordFrame.Visibility>
+                    </FocusKeywordFrame>
+                    <FocusKeywordFrame Text=""not first"">
+                        <FocusKeywordFrame.Visibility>
+                            <FocusNotFirstItemFrameVisibility/>
+                        </FocusKeywordFrame.Visibility>
+                    </FocusKeywordFrame>
+                </FocusVerticalPanelFrame>
+            </FocusSelectableFrame>
+            <FocusSelectableFrame Name=""Leaf5"">
+                <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
+                    <FocusTextValueFrame PropertyName=""Text""/>
+                    <FocusKeywordFrame Text=""first"">
+                        <FocusKeywordFrame.Visibility>
+                            <FocusNotFirstItemFrameVisibility/>
+                        </FocusKeywordFrame.Visibility>
+                    </FocusKeywordFrame>
+                    <FocusKeywordFrame Text=""not first"">
+                        <FocusKeywordFrame.Visibility>
+                            <FocusNotFirstItemFrameVisibility/>
+                        </FocusKeywordFrame.Visibility>
+                    </FocusKeywordFrame>
+                </FocusVerticalPanelFrame>
+            </FocusSelectableFrame>
+            <FocusSelectableFrame Name=""Leaf6"">
+                <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
+                    <FocusTextValueFrame PropertyName=""Text""/>
+                    <FocusKeywordFrame Text=""first"">
+                        <FocusKeywordFrame.Visibility>
+                            <FocusNotFirstItemFrameVisibility/>
+                        </FocusKeywordFrame.Visibility>
+                    </FocusKeywordFrame>
+                    <FocusKeywordFrame Text=""not first"">
+                        <FocusKeywordFrame.Visibility>
+                            <FocusNotFirstItemFrameVisibility/>
+                        </FocusKeywordFrame.Visibility>
+                    </FocusKeywordFrame>
+                </FocusVerticalPanelFrame>
+            </FocusSelectableFrame>
+            <FocusSelectableFrame Name=""Leaf7"">
+                <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
+                    <FocusTextValueFrame PropertyName=""Text""/>
+                    <FocusKeywordFrame Text=""first"">
+                        <FocusKeywordFrame.Visibility>
+                            <FocusNotFirstItemFrameVisibility/>
+                        </FocusKeywordFrame.Visibility>
+                    </FocusKeywordFrame>
+                    <FocusKeywordFrame Text=""not first"">
+                        <FocusKeywordFrame.Visibility>
+                            <FocusNotFirstItemFrameVisibility/>
+                        </FocusKeywordFrame.Visibility>
+                    </FocusKeywordFrame>
+                </FocusVerticalPanelFrame>
+            </FocusSelectableFrame>
+            <FocusSelectableFrame Name=""Leaf8"">
+                <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
+                    <FocusTextValueFrame PropertyName=""Text""/>
+                    <FocusKeywordFrame Text=""first"">
+                        <FocusKeywordFrame.Visibility>
+                            <FocusNotFirstItemFrameVisibility/>
+                        </FocusKeywordFrame.Visibility>
+                    </FocusKeywordFrame>
+                    <FocusKeywordFrame Text=""not first"">
+                        <FocusKeywordFrame.Visibility>
+                            <FocusNotFirstItemFrameVisibility/>
+                        </FocusKeywordFrame.Visibility>
+                    </FocusKeywordFrame>
+                </FocusVerticalPanelFrame>
+            </FocusSelectableFrame>
+            <FocusSelectableFrame Name=""Leaf9"">
+                <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
+                    <FocusTextValueFrame PropertyName=""Text""/>
+                    <FocusKeywordFrame Text=""first"">
+                        <FocusKeywordFrame.Visibility>
+                            <FocusNotFirstItemFrameVisibility/>
+                        </FocusKeywordFrame.Visibility>
+                    </FocusKeywordFrame>
+                    <FocusKeywordFrame Text=""not first"">
+                        <FocusKeywordFrame.Visibility>
+                            <FocusNotFirstItemFrameVisibility/>
+                        </FocusKeywordFrame.Visibility>
+                    </FocusKeywordFrame>
+                </FocusVerticalPanelFrame>
+            </FocusSelectableFrame>
+            <FocusSelectableFrame Name=""Leaf10"">
+                <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
+                    <FocusTextValueFrame PropertyName=""Text""/>
+                    <FocusKeywordFrame Text=""first"">
+                        <FocusKeywordFrame.Visibility>
+                            <FocusNotFirstItemFrameVisibility/>
+                        </FocusKeywordFrame.Visibility>
+                    </FocusKeywordFrame>
+                    <FocusKeywordFrame Text=""not first"">
+                        <FocusKeywordFrame.Visibility>
+                            <FocusNotFirstItemFrameVisibility/>
+                        </FocusKeywordFrame.Visibility>
+                    </FocusKeywordFrame>
+                </FocusVerticalPanelFrame>
+            </FocusSelectableFrame>
+        </FocusSelectionFrame>
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type cov:ITree}"">
         <FocusVerticalPanelFrame>
-            <FocusPlaceholderFrame PropertyName=""Placeholder""/>
+            <FocusCommentFrame/>
+            <FocusPlaceholderFrame PropertyName=""Placeholder"">
+                <FocusPlaceholderFrame.Selectors>
+                    <FocusFrameSelector SelectorType=""{xaml:Type cov:ILeaf}"" SelectorName=""Leaf2""/>
+                </FocusPlaceholderFrame.Selectors>
+            </FocusPlaceholderFrame>
             <FocusSymbolFrame Symbol=""{x:Static const:Symbols.LeftBracket}"">
                 <FocusSymbolFrame.Visibility>
                     <FocusComplexFrameVisibility PropertyName=""Placeholder""/>
@@ -132,11 +302,24 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type cov:IMain}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusPlaceholderFrame PropertyName=""PlaceholderTree""/>
-            <FocusPlaceholderFrame PropertyName=""PlaceholderLeaf""/>
-            <FocusOptionalFrame PropertyName=""UnassignedOptionalLeaf"" />
+            <FocusPlaceholderFrame PropertyName=""PlaceholderLeaf"">
+                <FocusPlaceholderFrame.Selectors>
+                    <FocusFrameSelector SelectorType=""{xaml:Type cov:ILeaf}"" SelectorName=""Leaf1""/>
+                </FocusPlaceholderFrame.Selectors>
+            </FocusPlaceholderFrame>
+            <FocusOptionalFrame PropertyName=""UnassignedOptionalLeaf"">
+                <FocusOptionalFrame.Selectors>
+                    <FocusFrameSelector SelectorType=""{xaml:Type cov:ILeaf}"" SelectorName=""Leaf0""/>
+                </FocusOptionalFrame.Selectors>
+            </FocusOptionalFrame>
             <FocusOptionalFrame PropertyName=""AssignedOptionalTree"" />
-            <FocusOptionalFrame PropertyName=""AssignedOptionalLeaf"" />
+            <FocusOptionalFrame PropertyName=""AssignedOptionalLeaf"">
+                <FocusOptionalFrame.Selectors>
+                    <FocusFrameSelector SelectorType=""{xaml:Type cov:ILeaf}"" SelectorName=""Leaf3""/>
+                </FocusOptionalFrame.Selectors>
+            </FocusOptionalFrame>
             <FocusInsertFrame CollectionName=""LeafBlocks""/>
             <FocusHorizontalBlockListFrame PropertyName=""LeafBlocks"">
                 <FocusHorizontalBlockListFrame.Visibility>
@@ -144,12 +327,16 @@ namespace TestDebug
                 </FocusHorizontalBlockListFrame.Visibility>
                 <FocusHorizontalBlockListFrame.Selectors>
                     <FocusFrameSelector SelectorType=""{xaml:Type easly:IIdentifier}"" SelectorName=""Identifier""/>
+                    <FocusFrameSelector SelectorType=""{xaml:Type cov:ILeaf}"" SelectorName=""Leaf4""/>
                 </FocusHorizontalBlockListFrame.Selectors>
             </FocusHorizontalBlockListFrame>
             <FocusVerticalListFrame PropertyName=""LeafPath"" IsPreferred=""True"">
                 <FocusVerticalListFrame.Visibility>
                     <FocusCountFrameVisibility PropertyName=""LeafBlocks""/>
                 </FocusVerticalListFrame.Visibility>
+                <FocusVerticalListFrame.Selectors>
+                    <FocusFrameSelector SelectorType=""{xaml:Type cov:ILeaf}"" SelectorName=""Leaf5""/>
+                </FocusVerticalListFrame.Selectors>
             </FocusVerticalListFrame>
             <FocusVerticalPanelFrame>
                 <FocusVerticalPanelFrame.Visibility>
@@ -192,6 +379,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type cov:IRoot}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalBlockListFrame PropertyName=""MainBlocksH"">
                 <FocusHorizontalBlockListFrame.Visibility>
                     <FocusCountFrameVisibility PropertyName=""LeafPathH""/>
@@ -217,12 +405,23 @@ namespace TestDebug
                 <FocusHorizontalListFrame.Visibility>
                     <FocusCountFrameVisibility PropertyName=""MainBlocksH""/>
                 </FocusHorizontalListFrame.Visibility>
+                <FocusHorizontalListFrame.Selectors>
+                    <FocusFrameSelector SelectorType=""{xaml:Type cov:ILeaf}"" SelectorName=""Leaf8""/>
+                </FocusHorizontalListFrame.Selectors>
             </FocusHorizontalListFrame>
             <FocusVerticalListFrame PropertyName=""LeafPathV"">
                 <FocusVerticalListFrame.Visibility>
                     <FocusCountFrameVisibility PropertyName=""MainBlocksV""/>
                 </FocusVerticalListFrame.Visibility>
+                <FocusVerticalListFrame.Selectors>
+                    <FocusFrameSelector SelectorType=""{xaml:Type cov:ILeaf}"" SelectorName=""Leaf9""/>
+                </FocusVerticalListFrame.Selectors>
             </FocusVerticalListFrame >
+            <FocusOptionalFrame PropertyName=""UnassignedOptionalLeaf"">
+                <FocusOptionalFrame.Visibility>
+                    <FocusCountFrameVisibility PropertyName=""MainBlocksV""/>
+                </FocusOptionalFrame.Visibility>
+            </FocusOptionalFrame>
         </FocusHorizontalPanelFrame>
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IAssertion}"">
@@ -3173,6 +3372,7 @@ namespace TestDebug
     xmlns:const=""clr-namespace:EaslyController.Constants;assembly=Easly-Controller"">
     <FocusBlockTemplate NodeType=""{xaml:Type easly:IBlock,cov:ILeaf,cov:Leaf}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalPanelFrame>
                 <FocusHorizontalPanelFrame.BlockVisibility>
                     <FocusReplicationFrameVisibility/>
@@ -3187,7 +3387,11 @@ namespace TestDebug
                 </FocusPlaceholderFrame>
                 <FocusKeywordFrame>All</FocusKeywordFrame>
             </FocusHorizontalPanelFrame>
-            <FocusHorizontalCollectionPlaceholderFrame/>
+            <FocusHorizontalCollectionPlaceholderFrame>
+                <FocusHorizontalCollectionPlaceholderFrame.Selectors>
+                    <FocusFrameSelector SelectorType=""{xaml:Type cov:ILeaf}"" SelectorName=""Leaf10""/>
+                </FocusHorizontalCollectionPlaceholderFrame.Selectors>
+            </FocusHorizontalCollectionPlaceholderFrame>
             <FocusKeywordFrame Text=""end"">
                 <FocusKeywordFrame.BlockVisibility>
                     <FocusReplicationFrameVisibility/>
@@ -3197,6 +3401,7 @@ namespace TestDebug
     </FocusBlockTemplate>
     <FocusBlockTemplate NodeType=""{xaml:Type easly:IBlock,cov:ITree,cov:Tree}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalPanelFrame>
                 <FocusHorizontalPanelFrame.BlockVisibility>
                     <FocusReplicationFrameVisibility/>
@@ -3225,6 +3430,7 @@ namespace TestDebug
     </FocusBlockTemplate>
     <FocusBlockTemplate NodeType=""{xaml:Type easly:IBlock,cov:IMain,cov:Main}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusVerticalPanelFrame>
                 <FocusVerticalPanelFrame.BlockVisibility>
                     <FocusReplicationFrameVisibility/>

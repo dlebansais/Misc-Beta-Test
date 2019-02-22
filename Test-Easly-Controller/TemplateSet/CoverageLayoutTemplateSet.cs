@@ -55,7 +55,7 @@ namespace TestDebug
 
             System.Diagnostics.Debug.Assert(frame.ParentFrame != null || frame == rootFrame);
 
-            if (frame is ILayoutBlockFrame AsBlockFrame)
+            if (frame is ILayoutBlockFrameWithVisibility AsBlockFrame)
             {
                 ILayoutBlockFrameVisibility BlockVisibility = AsBlockFrame.BlockVisibility;
             }
@@ -126,6 +126,7 @@ namespace TestDebug
     xmlns:const=""clr-namespace:EaslyController.Constants;assembly=Easly-Controller"">
     <LayoutNodeTemplate NodeType=""{xaml:Type cov:ILeaf}"" IsComplex=""True"" IsSimple=""True"">
         <LayoutVerticalPanelFrame>
+            <LayoutCommentFrame/>
             <LayoutTextValueFrame PropertyName=""Text""/>
             <LayoutKeywordFrame Text=""first"">
                 <LayoutKeywordFrame.Visibility>
@@ -141,6 +142,7 @@ namespace TestDebug
     </LayoutNodeTemplate>
     <LayoutNodeTemplate NodeType=""{xaml:Type cov:ITree}"">
         <LayoutVerticalPanelFrame>
+            <LayoutCommentFrame/>
             <LayoutPlaceholderFrame PropertyName=""Placeholder""/>
             <LayoutSymbolFrame Symbol=""{x:Static const:Symbols.Dot}"">
                 <LayoutSymbolFrame.Visibility>
@@ -161,6 +163,7 @@ namespace TestDebug
     </LayoutNodeTemplate>
     <LayoutNodeTemplate NodeType=""{xaml:Type cov:IMain}"">
         <LayoutVerticalPanelFrame>
+            <LayoutCommentFrame/>
             <LayoutSymbolFrame Symbol=""{x:Static const:Symbols.HorizontalLine}""/>
             <LayoutVerticalPanelFrame>
                 <LayoutSymbolFrame Symbol=""{x:Static const:Symbols.HorizontalLine}""/>
@@ -231,6 +234,7 @@ namespace TestDebug
     </LayoutNodeTemplate>
     <LayoutNodeTemplate NodeType=""{xaml:Type cov:IRoot}"">
         <LayoutHorizontalPanelFrame>
+            <LayoutCommentFrame/>
             <LayoutHorizontalBlockListFrame PropertyName=""MainBlocksH"">
                 <LayoutHorizontalBlockListFrame.Visibility>
                     <LayoutCountFrameVisibility PropertyName=""LeafPathH""/>
@@ -271,6 +275,11 @@ namespace TestDebug
                     <LayoutFrameSelector SelectorType=""{xaml:Type easly:IDeferredBody}"" SelectorName=""Overload""/>
                 </LayoutVerticalListFrame.Selectors>
             </LayoutVerticalListFrame >
+            <LayoutOptionalFrame PropertyName=""UnassignedOptionalLeaf"">
+                <LayoutOptionalFrame.Visibility>
+                    <LayoutCountFrameVisibility PropertyName=""MainBlocksV""/>
+                </LayoutOptionalFrame.Visibility>
+            </LayoutOptionalFrame>
         </LayoutHorizontalPanelFrame>
     </LayoutNodeTemplate>
     <LayoutNodeTemplate NodeType=""{xaml:Type easly:IAssertion}"">
@@ -3221,6 +3230,7 @@ namespace TestDebug
     xmlns:const=""clr-namespace:EaslyController.Constants;assembly=Easly-Controller"">
     <LayoutBlockTemplate NodeType=""{xaml:Type easly:IBlock,cov:ILeaf,cov:Leaf}"">
         <LayoutVerticalPanelFrame>
+            <LayoutCommentFrame/>
             <LayoutHorizontalPanelFrame>
                 <LayoutHorizontalPanelFrame.BlockVisibility>
                     <LayoutReplicationFrameVisibility/>
@@ -3245,6 +3255,7 @@ namespace TestDebug
     </LayoutBlockTemplate>
     <LayoutBlockTemplate NodeType=""{xaml:Type easly:IBlock,cov:ITree,cov:Tree}"">
         <LayoutVerticalPanelFrame>
+            <LayoutCommentFrame/>
             <LayoutHorizontalPanelFrame>
                 <LayoutHorizontalPanelFrame.BlockVisibility>
                     <LayoutReplicationFrameVisibility/>
@@ -3273,6 +3284,7 @@ namespace TestDebug
     </LayoutBlockTemplate>
     <LayoutBlockTemplate NodeType=""{xaml:Type easly:IBlock,cov:IMain,cov:Main}"">
         <LayoutVerticalPanelFrame>
+            <LayoutCommentFrame/>
             <LayoutVerticalPanelFrame>
                 <LayoutVerticalPanelFrame.BlockVisibility>
                     <LayoutReplicationFrameVisibility/>

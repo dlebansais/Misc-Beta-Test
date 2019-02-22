@@ -4777,7 +4777,7 @@ namespace Test
                         Assert.That(NodeTreeHelper.IsStringProperty(ChildNode, PropertyName) && PropertyName == "Text");
                         break;
                     case ILayoutFocusableCellView AsFocusable: // Insert
-                        Assert.That((Frame is ILayoutInsertFrame) || (Frame is ILayoutKeywordFrame AsFocusableKeywordFrame && AsFocusableKeywordFrame.IsFocusable));
+                        Assert.That((Frame is ILayoutInsertFrame) || (Frame is ILayoutCommentFrame) || (Frame is ILayoutKeywordFrame AsFocusableKeywordFrame && AsFocusableKeywordFrame.IsFocusable));
                         break;
                     case ILayoutVisibleCellView AsVisible: // Others
                         Assert.That(((Frame is ILayoutKeywordFrame AsKeywordFrame && !AsKeywordFrame.IsFocusable) && !string.IsNullOrEmpty(AsKeywordFrame.Text)) || (Frame is ILayoutSymbolFrame AsSymbolFrame));
@@ -4796,7 +4796,7 @@ namespace Test
 
             int IndexFirstColumn = -1;
             for (int i = 0; i < controllerView.LastLineNumber; i++)
-                if (CellViewGrid[0, 1] != null)
+                if (CellViewGrid[0, i] != null)
                 {
                     IndexFirstColumn = i;
                     break;

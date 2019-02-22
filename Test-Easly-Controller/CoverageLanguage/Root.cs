@@ -10,6 +10,7 @@ namespace Coverage
         string ValueString { get; }
         IList<ILeaf> LeafPathH { get; }
         IList<ILeaf> LeafPathV { get; }
+        Easly.IOptionalReference<ILeaf> UnassignedOptionalLeaf { get; }
     }
 
     [System.Serializable]
@@ -21,5 +22,6 @@ namespace Coverage
         public virtual string ValueString { get; set; }
         public virtual IList<ILeaf> LeafPathH { get; set; }
         public virtual IList<ILeaf> LeafPathV { get; set; }
+        public virtual Easly.IOptionalReference<ILeaf> UnassignedOptionalLeaf { get; set; }
     }
 }

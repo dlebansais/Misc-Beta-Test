@@ -59,7 +59,7 @@ namespace Coverage
         {
             Leaf NewLeaf = new Leaf();
 
-            BaseNode.IDocument NewLeafDocument = BaseNodeHelper.NodeHelper.CreateSimpleDocumentation("leaf doc", guid0);
+            BaseNode.IDocument NewLeafDocument = BaseNodeHelper.NodeHelper.CreateSimpleDocumentation("", guid0);
             BaseNodeHelper.NodeTreeHelper.SetDocumentation(NewLeaf, NewLeafDocument);
             BaseNodeHelper.NodeTreeHelper.SetString(NewLeaf, nameof(ILeaf.Text), "leaf");
 
@@ -119,6 +119,7 @@ namespace Coverage
             BaseNode.IBlockList<ILeaf, Leaf> LeafBlocks = BaseNodeHelper.BlockListHelper<ILeaf, Leaf>.CreateSimpleBlockList(FirstChild);
             LeafBlocks.NodeBlockList.Add(SecondBlock);
             LeafBlocks.NodeBlockList.Add(ThirdBlock);
+            BaseNodeHelper.NodeTreeHelper.SetCommentText(SecondBlock.Documentation, "test");
 
             Leaf FirstPath = CreateLeaf(Guid.NewGuid());
             Leaf SecondPath = CreateLeaf(Guid.NewGuid());
@@ -295,6 +296,7 @@ namespace Coverage
             Assert.That(LeafBlock.StateList.Count == 1);
             Assert.That(MainLeafBlocksInner.FirstNodeState == LeafBlock.StateList[0]);
             Assert.That(MainLeafBlocksInner.IndexAt(0, 0) == MainLeafBlocksInner.FirstNodeState.ParentIndex);
+            Assert.That(LeafBlock.Comment == "");
 
             IReadOnlyPlaceholderInner PatternInner = LeafBlock.PropertyToInner(nameof(BaseNode.IBlock.ReplicationPattern)) as IReadOnlyPlaceholderInner;
             Assert.That(PatternInner != null);
@@ -457,6 +459,7 @@ namespace Coverage
                 {
                     IReadOnlyNodeState State = Entry.Key;
                     Assert.That(State != null);
+                    Assert.That(State.Comment != null);
 
                     IReadOnlyNodeStateView StateView = Entry.Value;
                     Assert.That(StateView != null);
@@ -2388,6 +2391,7 @@ namespace Coverage
             BaseNodeHelper.NodeTreeHelper.SetString(RootNode, nameof(IRoot.ValueString), "root string");
             BaseNodeHelper.NodeTreeHelperList.SetChildNodeList(RootNode, nameof(IRoot.LeafPathH), (IList)LeafPathH);
             BaseNodeHelper.NodeTreeHelperList.SetChildNodeList(RootNode, nameof(IRoot.LeafPathV), (IList)LeafPathV);
+            BaseNodeHelper.NodeTreeHelperOptional.SetOptionalReference(RootNode, nameof(IRoot.UnassignedOptionalLeaf), (Easly.IOptionalReference)BaseNodeHelper.OptionalReferenceHelper<ILeaf>.CreateEmptyReference());
 
             //System.Diagnostics.Debug.Assert(false);
             IWriteableRootNodeIndex RootIndex = new WriteableRootNodeIndex(RootNode);
@@ -3198,6 +3202,15 @@ namespace Coverage
                 IFrameVisibleCellViewList VisibleCellViewList = new FrameVisibleCellViewList();
                 ControllerView0.EnumerateVisibleCellViews(VisibleCellViewList);
                 ControllerView0.PrintCellViewTree(true);
+
+                ControllerView0.SetCommentDisplayMode(CommentDisplayModes.All);
+                VisibleCellViewList.Clear();
+                ControllerView0.EnumerateVisibleCellViews(VisibleCellViewList);
+                ControllerView0.PrintCellViewTree(true);
+
+                //System.Diagnostics.Debug.Assert(false);
+                foreach (IFrameVisibleCellView CellView in VisibleCellViewList)
+                    Assert.That(CompareEqual.CoverIsEqual(CellView, CellView));
             }
         }
 
@@ -4738,6 +4751,7 @@ namespace Coverage
             BaseNodeHelper.NodeTreeHelper.SetString(RootNode, nameof(IRoot.ValueString), "root string");
             BaseNodeHelper.NodeTreeHelperList.SetChildNodeList(RootNode, nameof(IRoot.LeafPathH), (IList)LeafPathH);
             BaseNodeHelper.NodeTreeHelperList.SetChildNodeList(RootNode, nameof(IRoot.LeafPathV), (IList)LeafPathV);
+            BaseNodeHelper.NodeTreeHelperOptional.SetOptionalReference(RootNode, nameof(IRoot.UnassignedOptionalLeaf), (Easly.IOptionalReference)BaseNodeHelper.OptionalReferenceHelper<ILeaf>.CreateEmptyReference());
 
             //System.Diagnostics.Debug.Assert(false);
             IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(RootNode);
@@ -5933,14 +5947,52 @@ namespace Coverage
             IFocusTemplateSet DefaultTemplateSet = FocusTemplateSet.Default;
             DefaultTemplateSet = FocusTemplateSet.Default;
 
-            using (IFocusControllerView ControllerView0 = FocusControllerView.Create(Controller, TestDebug.CoverageFocusTemplateSet.FocusTemplateSet))
+            IFocusTemplateSet FocusCustomTemplateSet = TestDebug.CoverageFocusTemplateSet.FocusTemplateSet;
+            IFocusFrameSelectorList FrameSelectorList = null;
+            foreach (KeyValuePair<Type, IFocusTemplate> TemplateEntry in FocusCustomTemplateSet.NodeTemplateTable)
+                if (TemplateEntry.Key == typeof(IRoot))
+                {
+                    IFocusNodeTemplate Template = TemplateEntry.Value as IFocusNodeTemplate;
+                    Assert.That(Template != null);
+
+                    IFocusHorizontalPanelFrame RootFrame = Template.Root as IFocusHorizontalPanelFrame;
+                    foreach (IFocusFrame Frame in RootFrame.Items)
+                        if (Frame is IFocusFrameWithSelector AsFrameWithSelector && AsFrameWithSelector.Selectors.Count > 0)
+                        {
+                            if (AsFrameWithSelector.Selectors[0].SelectorType == typeof(ILeaf))
+                            {
+                                FrameSelectorList = AsFrameWithSelector.Selectors;
+                                break;
+                            }
+                        }
+                }
+
+            Assert.That(FrameSelectorList != null);
+            Assert.That(FrameSelectorList.Count > 0);
+            foreach (KeyValuePair<Type, IFocusTemplate> TemplateEntry in FocusCustomTemplateSet.NodeTemplateTable)
+                if (TemplateEntry.Key == typeof(ILeaf))
+                {
+                    IFocusNodeTemplate Template = TemplateEntry.Value as IFocusNodeTemplate;
+                    Assert.That(Template != null);
+
+                    List<IFocusFrameSelectorList> SelectorStack = new List<IFocusFrameSelectorList>();
+                    SelectorStack.Add(FrameSelectorList);
+
+                    Template.PropertyToFrame("Text", SelectorStack);
+                    break;
+                }
+
+
+            using (IFocusControllerView ControllerView0 = FocusControllerView.Create(Controller, FocusCustomTemplateSet))
             {
                 Assert.That(ControllerView0.Controller == Controller);
                 Assert.That(ControllerView0.TemplateSet == TestDebug.CoverageFocusTemplateSet.FocusTemplateSet);
                 Assert.That(ControllerView0.CaretMode == CaretModes.Insertion);
 
-                ControllerView0.SetCaretMode(CaretModes.Override);
+                bool IsChanged;
+                ControllerView0.SetCaretMode(CaretModes.Override, out IsChanged);
                 Assert.That(ControllerView0.CaretMode == CaretModes.Override);
+                Assert.That(IsChanged);
 
                 ControllerView0.SetCaretPosition(1000, out IsMoved);
                 Assert.That(IsMoved);
@@ -6008,17 +6060,35 @@ namespace Coverage
 
                 Assert.That(ControllerView0.MinFocusMove == 0);
 
+                ControllerView0.SetCommentDisplayMode(CommentDisplayModes.All);
+                VisibleCellViewList.Clear();
+                ControllerView0.EnumerateVisibleCellViews(VisibleCellViewList);
+                ControllerView0.PrintCellViewTree(true);
+
+                foreach (IFocusVisibleCellView CellView in VisibleCellViewList)
+                    Assert.That(CompareEqual.CoverIsEqual(CellView, CellView));
+
+                Assert.That(ControllerView0.MinFocusMove == -2);
+                ControllerView0.MoveFocus(ControllerView0.MinFocusMove, out IsMoved);
+                Assert.That(IsMoved);
+                Assert.That(ControllerView0.MinFocusMove == 0);
+
                 ControllerView0.MoveFocus(-1, out IsMoved);
+                Assert.That(!IsMoved);
                 Assert.That(ControllerView0.MinFocusMove == 0);
 
                 Assert.That(ControllerView0.MaxFocusMove > 0);
-                Assert.That(ControllerView0.FocusedText != null);
+                Assert.That(ControllerView0.FocusedText == null);
                 //System.Diagnostics.Debug.Assert(false);
                 ControllerView0.SetCaretPosition(0, out IsMoved);
-                Assert.That(!IsMoved);
+                Assert.That(IsMoved);
 
                 ControllerView0.MoveFocus(+1, out IsMoved);
                 Assert.That(ControllerView0.FocusedText == null);
+                Assert.That(!ControllerView0.IsUserVisible);
+
+                ControllerView0.MoveFocus(+1, out IsMoved);
+                Assert.That(ControllerView0.FocusedText != null);
                 Assert.That(!ControllerView0.IsUserVisible);
 
                 ControllerView0.SetCaretPosition(0, out IsMoved);
@@ -6101,6 +6171,29 @@ namespace Coverage
 
                     ControllerView0.MoveFocus(+1, out IsMoved);
                 }
+
+                ControllerView0.SetCommentDisplayMode(CommentDisplayModes.OnFocus);
+                ControllerView0.MoveFocus(ControllerView0.MinFocusMove, out IsMoved);
+
+                int MaxFocusMove = ControllerView0.MaxFocusMove;
+                for (int i = 0; i < MaxFocusMove; i++)
+                {
+                    ControllerView0.ForceShowComment(out IsMoved);
+
+                    Assert.That(!IsMoved || ControllerView0.CaretPosition >= 0);
+                    if (ControllerView0.CaretPosition >= 0)
+                    {
+                        for (int j = 0; j < ControllerView0.MaxCaretPosition; j++)
+                            ControllerView0.SetCaretPosition(j, out IsMoved);
+                    }
+
+                    if (IsMoved)
+                        ControllerView0.MoveFocus(+1, out IsMoved);
+
+                    ControllerView0.MoveFocus(+1, out IsMoved);
+                }
+
+                Assert.That(ControllerView0.MaxFocusMove == 0);
             }
         }
 
@@ -7672,12 +7765,12 @@ namespace Coverage
                 IsItemCyclableThrough = ControllerView0.IsItemCyclableThrough(out State, out CyclePosition);
                 Assert.That(!IsItemCyclableThrough);
 
-                while (ControllerView0.MaxFocusMove > 0 && (!(ControllerView0.Focus is IFocusCellFocus AsCellFocus) || !(AsCellFocus.CellView.StateView.State.Node is BaseNode.IFunctionFeature)))
+                while (ControllerView0.MaxFocusMove > 0 && !(ControllerView0.Focus.CellView.StateView.State.Node is BaseNode.IFunctionFeature))
                     ControllerView0.MoveFocus(+1, out IsMoved);
 
-                IFocusNodeStateView StateView = ((IFocusCellFocus)ControllerView0.Focus).CellView.StateView;
-                Assert.That(ControllerView0.CollectionHasItems(StateView, nameof(BaseNode.IFunctionFeature.OverloadBlocks), 0));
-                Assert.That(ControllerView0.IsFirstItem(StateView));
+                IFocusNodeStateView StateView = ControllerView0.Focus.CellView.StateView;
+                //Assert.That(ControllerView0.CollectionHasItems(StateView, nameof(BaseNode.IFunctionFeature.OverloadBlocks), 0));
+                //Assert.That(ControllerView0.IsFirstItem(StateView));
 
                 IFocusNodeState CurrentState = StateView.State;
                 Assert.That(CurrentState != null && CurrentState.Node is BaseNode.IFeature);
@@ -7722,25 +7815,27 @@ namespace Coverage
 
                     while (ControllerView0.MaxFocusMove > 0)
                     {
-                        if (((IFocusCellFocus)ControllerView0.Focus).CellView.StateView.State.Node is BaseNode.IIdentifier AsIdentifier && AsIdentifier.Text == FunctionFirstInstruction.Command.Path[0].Text)
+                        if (ControllerView0.Focus.CellView.StateView.State.Node is BaseNode.IIdentifier AsIdentifier && AsIdentifier.Text == FunctionFirstInstruction.Command.Path[0].Text)
                             break;
 
-                        if (((IFocusCellFocus)ControllerView0.Focus).CellView.Frame is IFocusKeywordFrame AsFocusableKeywordFrame && (AsFocusableKeywordFrame.Text == "deferred" || AsFocusableKeywordFrame.Text == "extern" || AsFocusableKeywordFrame.Text == "precursor"))
+                        if (ControllerView0.Focus.CellView.Frame is IFocusKeywordFrame AsFocusableKeywordFrame && (AsFocusableKeywordFrame.Text == "deferred" || AsFocusableKeywordFrame.Text == "extern" || AsFocusableKeywordFrame.Text == "precursor"))
                             break;
 
                         ControllerView0.MoveFocus(+1, out IsMoved);
                     }
 
-                    StateView = ((IFocusCellFocus)ControllerView0.Focus).CellView.StateView;
+                    StateView = ControllerView0.Focus.CellView.StateView;
                     CurrentState = StateView.State;
                     if (CurrentState.Node is BaseNode.IIdentifier AsStateIdentifier && AsStateIdentifier.Text == FunctionFirstInstruction.Command.Path[0].Text)
                     {
+                        /*
                         Assert.That(ControllerView0.IsFirstItem(StateView));
 
                         IFocusNodeState ParentState = CurrentState.ParentState;
                         Assert.That(ControllerView0.StateViewTable.ContainsKey(ParentState));
                         IFocusNodeStateView ParentStateView = ControllerView0.StateViewTable[ParentState];
                         Assert.That(ControllerView0.CollectionHasItems(ParentStateView, nameof(BaseNode.IQualifiedName.Path), 0));
+                        */
                     }
 
                     IsItemCyclableThrough = ControllerView0.IsItemCyclableThrough(out State, out CyclePosition);
@@ -7772,25 +7867,27 @@ namespace Coverage
 
                     while (ControllerView0.MaxFocusMove > 0)
                     {
-                        if (((IFocusCellFocus)ControllerView0.Focus).CellView.StateView.State.Node is BaseNode.IIdentifier AsIdentifier && AsIdentifier.Text == PropertyFirstInstruction.Command.Path[0].Text)
+                        if (ControllerView0.Focus.CellView.StateView.State.Node is BaseNode.IIdentifier AsIdentifier && AsIdentifier.Text == PropertyFirstInstruction.Command.Path[0].Text)
                             break;
 
-                        if (((IFocusCellFocus)ControllerView0.Focus).CellView.Frame is IFocusKeywordFrame AsFocusableKeywordFrame && (AsFocusableKeywordFrame.Text == "deferred" || AsFocusableKeywordFrame.Text == "extern" || AsFocusableKeywordFrame.Text == "precursor"))
+                        if (ControllerView0.Focus.CellView.Frame is IFocusKeywordFrame AsFocusableKeywordFrame && (AsFocusableKeywordFrame.Text == "deferred" || AsFocusableKeywordFrame.Text == "extern" || AsFocusableKeywordFrame.Text == "precursor"))
                             break;
 
                         ControllerView0.MoveFocus(+1, out IsMoved);
                     }
 
-                    StateView = ((IFocusCellFocus)ControllerView0.Focus).CellView.StateView;
+                    StateView = ControllerView0.Focus.CellView.StateView;
                     CurrentState = StateView.State;
                     if (CurrentState.Node is BaseNode.IIdentifier AsStateIdentifier && AsStateIdentifier.Text == PropertyFirstInstruction.Command.Path[0].Text)
                     {
+                        /*
                         Assert.That(ControllerView0.IsFirstItem(StateView));
 
                         IFocusNodeState ParentState = CurrentState.ParentState;
                         Assert.That(ControllerView0.StateViewTable.ContainsKey(ParentState));
                         IFocusNodeStateView ParentStateView = ControllerView0.StateViewTable[ParentState];
                         Assert.That(ControllerView0.CollectionHasItems(ParentStateView, nameof(BaseNode.IQualifiedName.Path), 0));
+                        */
                     }
 
                     IsItemCyclableThrough = ControllerView0.IsItemCyclableThrough(out State, out CyclePosition);
@@ -7892,6 +7989,7 @@ namespace Coverage
             BaseNodeHelper.NodeTreeHelper.SetString(RootNode, nameof(IRoot.ValueString), "root string");
             BaseNodeHelper.NodeTreeHelperList.SetChildNodeList(RootNode, nameof(IRoot.LeafPathH), (IList)LeafPathH);
             BaseNodeHelper.NodeTreeHelperList.SetChildNodeList(RootNode, nameof(IRoot.LeafPathV), (IList)LeafPathV);
+            BaseNodeHelper.NodeTreeHelperOptional.SetOptionalReference(RootNode, nameof(IRoot.UnassignedOptionalLeaf), (Easly.IOptionalReference)BaseNodeHelper.OptionalReferenceHelper<ILeaf>.CreateEmptyReference());
 
             //System.Diagnostics.Debug.Assert(false);
             IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(RootNode);
@@ -9666,8 +9764,10 @@ namespace Coverage
                 Assert.That(ControllerView0.CaretMode == CaretModes.Insertion);
                 Assert.That(ControllerView0.IsInvalidated);
 
-                ControllerView0.SetCaretMode(CaretModes.Override);
+                bool IsChanged;
+                ControllerView0.SetCaretMode(CaretModes.Override, out IsChanged);
                 Assert.That(ControllerView0.CaretMode == CaretModes.Override);
+                Assert.That(IsChanged);
 
                 using (ILayoutControllerView ControllerView1 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet, TestDebug.LayoutDrawContext.Default))
                 {
@@ -9683,7 +9783,7 @@ namespace Coverage
                 Assert.That(RegionHelper.IsFixed(ControllerView0.ViewSize));
                 Assert.That(!ControllerView0.IsInvalidated);
 
-                ILayoutFocusableCellView FocusedCellView = ((ILayoutCellFocus)ControllerView0.Focus).CellView;
+                ILayoutFocusableCellView FocusedCellView = ControllerView0.Focus.CellView;
                 Point CellOrigin = FocusedCellView.CellOrigin;
                 Assert.That(RegionHelper.IsFixed(CellOrigin));
                 Assert.That(!RegionHelper.IsFloatingHorizontally(CellOrigin));
@@ -9704,6 +9804,13 @@ namespace Coverage
                 Assert.That(CellPadding.ToString() != null);
                 Assert.That(CellPadding.ToString(CultureInfo.InvariantCulture) != null);
                 Assert.That(CellPadding.ToString(null, CultureInfo.InvariantCulture) != null);
+                Rect CellRect = FocusedCellView.CellRect;
+                Assert.That(!CellSize.IsEmpty);
+                Assert.That(CellSize.IsVisible);
+                Assert.That(Size.IsEqual(CellSize, CellSize));
+                Assert.That(CellSize.ToString() != null);
+                Assert.That(CellSize.ToString(CultureInfo.InvariantCulture) != null);
+                Assert.That(CellSize.ToString(null, CultureInfo.InvariantCulture) != null);
 
                 foreach (KeyValuePair<ILayoutBlockState, ILayoutBlockStateView> Entry in ControllerView0.BlockStateViewTable)
                 {
@@ -9779,24 +9886,43 @@ namespace Coverage
 
                 foreach (ILayoutVisibleCellView CellView in VisibleCellViewList)
                 {
-                    Size MeasuredSize;
-                    CellView.Draw(false, out MeasuredSize);
-                    CellView.Draw(true, out MeasuredSize);
+                    CellView.Draw(out Size MeasuredSize);
                 }
 
+                ControllerView0.SetCommentDisplayMode(CommentDisplayModes.All);
+                ControllerView0.SetShowUnfocusedComments(true);
+                VisibleCellViewList.Clear();
+                ControllerView0.EnumerateVisibleCellViews(VisibleCellViewList);
+                ControllerView0.PrintCellViewTree(true);
+                ControllerView0.MeasureAndArrange();
+
+                foreach (ILayoutVisibleCellView CellView in VisibleCellViewList)
+                {
+                    Assert.That(CompareEqual.CoverIsEqual(CellView, CellView));
+                    CellView.Draw(out Size MeasuredSize);
+                }
+
+                Assert.That(ControllerView0.MinFocusMove == -2);
+                ControllerView0.MoveFocus(ControllerView0.MinFocusMove, out IsMoved);
+                Assert.That(IsMoved);
                 Assert.That(ControllerView0.MinFocusMove == 0);
 
                 ControllerView0.MoveFocus(-1, out IsMoved);
+                Assert.That(!IsMoved);
                 Assert.That(ControllerView0.MinFocusMove == 0);
 
                 Assert.That(ControllerView0.MaxFocusMove > 0);
-                Assert.That(ControllerView0.FocusedText != null);
-
+                Assert.That(ControllerView0.FocusedText == null);
+                //System.Diagnostics.Debug.Assert(false);
                 ControllerView0.SetCaretPosition(0, out IsMoved);
-                Assert.That(!IsMoved);
+                Assert.That(IsMoved);
 
                 ControllerView0.MoveFocus(+1, out IsMoved);
                 Assert.That(ControllerView0.FocusedText == null);
+                Assert.That(!ControllerView0.IsUserVisible);
+
+                ControllerView0.MoveFocus(+1, out IsMoved);
+                Assert.That(ControllerView0.FocusedText != null);
                 Assert.That(!ControllerView0.IsUserVisible);
 
                 ControllerView0.SetCaretPosition(0, out IsMoved);
@@ -9811,6 +9937,7 @@ namespace Coverage
                 {
                     ControllerView0.MoveFocus(+1, out IsMoved);
                     string FocusedText = ControllerView0.FocusedText;
+                    string CommentText = ControllerView0.CommentText;
                     TextStyles FocusedTextStyle = ControllerView0.FocusedTextStyle;
                     Assert.That(FocusedText != null || FocusedTextStyle == TextStyles.Default);
 
@@ -9819,6 +9946,8 @@ namespace Coverage
                     ControllerView0.ShowCaret(true, false);
                     ControllerView0.Draw();
                     ControllerView0.ShowCaret(false, false);
+                    ControllerView0.Draw();
+                    ControllerView0.ShowCaret(true, true);
                     ControllerView0.Draw();
                 }
 
@@ -9896,6 +10025,29 @@ namespace Coverage
 
                     ControllerView0.MoveFocus(+1, out IsMoved);
                 }
+
+                ControllerView0.SetCommentDisplayMode(CommentDisplayModes.OnFocus);
+                ControllerView0.MoveFocus(ControllerView0.MinFocusMove, out IsMoved);
+
+                int MaxFocusMove = ControllerView0.MaxFocusMove;
+                for (int i = 0; i < MaxFocusMove; i++)
+                {
+                    ControllerView0.ForceShowComment(out IsMoved);
+
+                    Assert.That(!IsMoved || ControllerView0.CaretPosition >= 0);
+                    if (ControllerView0.CaretPosition >= 0)
+                    {
+                        for (int j = 0; j < ControllerView0.MaxCaretPosition; j++)
+                            ControllerView0.SetCaretPosition(j, out IsMoved);
+                    }
+
+                    if (IsMoved)
+                        ControllerView0.MoveFocus(+1, out IsMoved);
+
+                    ControllerView0.MoveFocus(+1, out IsMoved);
+                }
+
+                Assert.That(ControllerView0.MaxFocusMove == 0);
             }
         }
 
@@ -11510,12 +11662,12 @@ namespace Coverage
                 IsItemCyclableThrough = ControllerView0.IsItemCyclableThrough(out State, out CyclePosition);
                 Assert.That(!IsItemCyclableThrough);
 
-                while (ControllerView0.MaxFocusMove > 0 && !(((ILayoutCellFocus)ControllerView0.Focus).CellView.StateView.State.Node is BaseNode.IFunctionFeature))
+                while (ControllerView0.MaxFocusMove > 0 && !(ControllerView0.Focus.CellView.StateView.State.Node is BaseNode.IFunctionFeature))
                     ControllerView0.MoveFocus(+1, out IsMoved);
 
-                ILayoutNodeStateView StateView = ((ILayoutCellFocus)ControllerView0.Focus).CellView.StateView;
-                Assert.That(ControllerView0.CollectionHasItems(StateView, nameof(BaseNode.IFunctionFeature.OverloadBlocks), 0));
-                Assert.That(ControllerView0.IsFirstItem(StateView));
+                ILayoutNodeStateView StateView = ControllerView0.Focus.CellView.StateView;
+                //Assert.That(ControllerView0.CollectionHasItems(StateView, nameof(BaseNode.IFunctionFeature.OverloadBlocks), 0));
+                //Assert.That(ControllerView0.IsFirstItem(StateView));
 
                 ILayoutNodeState CurrentState = StateView.State;
                 Assert.That(CurrentState != null && CurrentState.Node is BaseNode.IFeature);
@@ -11594,25 +11746,27 @@ namespace Coverage
 
                     while (ControllerView0.MaxFocusMove > 0)
                     {
-                        if (((ILayoutCellFocus)ControllerView0.Focus).CellView.StateView.State.Node is BaseNode.IIdentifier AsIdentifier && AsIdentifier.Text == FunctionFirstInstruction.Command.Path[0].Text)
+                        if (ControllerView0.Focus.CellView.StateView.State.Node is BaseNode.IIdentifier AsIdentifier && AsIdentifier.Text == FunctionFirstInstruction.Command.Path[0].Text)
                             break;
 
-                        if (((ILayoutCellFocus)ControllerView0.Focus).CellView.Frame is ILayoutKeywordFrame AsLayoutableKeywordFrame && (AsLayoutableKeywordFrame.Text == "deferred" || AsLayoutableKeywordFrame.Text == "extern" || AsLayoutableKeywordFrame.Text == "precursor"))
+                        if (ControllerView0.Focus.CellView.Frame is ILayoutKeywordFrame AsLayoutableKeywordFrame && (AsLayoutableKeywordFrame.Text == "deferred" || AsLayoutableKeywordFrame.Text == "extern" || AsLayoutableKeywordFrame.Text == "precursor"))
                             break;
 
                         ControllerView0.MoveFocus(+1, out IsMoved);
                     }
 
-                    StateView = ((ILayoutCellFocus)ControllerView0.Focus).CellView.StateView;
+                    StateView = ControllerView0.Focus.CellView.StateView;
                     CurrentState = StateView.State;
                     if (CurrentState.Node is BaseNode.IIdentifier AsStateIdentifier && AsStateIdentifier.Text == FunctionFirstInstruction.Command.Path[0].Text)
                     {
+                        /*
                         Assert.That(ControllerView0.IsFirstItem(StateView));
 
                         ILayoutNodeState ParentState = CurrentState.ParentState;
                         Assert.That(ControllerView0.StateViewTable.ContainsKey(ParentState));
                         ILayoutNodeStateView ParentStateView = ControllerView0.StateViewTable[ParentState];
                         Assert.That(ControllerView0.CollectionHasItems(ParentStateView, nameof(BaseNode.IQualifiedName.Path), 0));
+                        */
                     }
 
                     IsItemCyclableThrough = ControllerView0.IsItemCyclableThrough(out State, out CyclePosition);
@@ -11644,25 +11798,27 @@ namespace Coverage
 
                     while (ControllerView0.MaxFocusMove > 0)
                     {
-                        if (((ILayoutCellFocus)ControllerView0.Focus).CellView.StateView.State.Node is BaseNode.IIdentifier AsIdentifier && AsIdentifier.Text == PropertyFirstInstruction.Command.Path[0].Text)
+                        if (ControllerView0.Focus.CellView.StateView.State.Node is BaseNode.IIdentifier AsIdentifier && AsIdentifier.Text == PropertyFirstInstruction.Command.Path[0].Text)
                             break;
 
-                        if (((ILayoutCellFocus)ControllerView0.Focus).CellView.Frame is ILayoutKeywordFrame AsLayoutableKeywordFrame && (AsLayoutableKeywordFrame.Text == "deferred" || AsLayoutableKeywordFrame.Text == "extern" || AsLayoutableKeywordFrame.Text == "precursor"))
+                        if (ControllerView0.Focus.CellView.Frame is ILayoutKeywordFrame AsLayoutableKeywordFrame && (AsLayoutableKeywordFrame.Text == "deferred" || AsLayoutableKeywordFrame.Text == "extern" || AsLayoutableKeywordFrame.Text == "precursor"))
                             break;
 
                         ControllerView0.MoveFocus(+1, out IsMoved);
                     }
 
-                    StateView = ((ILayoutCellFocus)ControllerView0.Focus).CellView.StateView;
+                    StateView = ControllerView0.Focus.CellView.StateView;
                     CurrentState = StateView.State;
                     if (CurrentState.Node is BaseNode.IIdentifier AsStateIdentifier && AsStateIdentifier.Text == PropertyFirstInstruction.Command.Path[0].Text)
                     {
+                        /*
                         Assert.That(ControllerView0.IsFirstItem(StateView));
 
                         ILayoutNodeState ParentState = CurrentState.ParentState;
                         Assert.That(ControllerView0.StateViewTable.ContainsKey(ParentState));
                         ILayoutNodeStateView ParentStateView = ControllerView0.StateViewTable[ParentState];
                         Assert.That(ControllerView0.CollectionHasItems(ParentStateView, nameof(BaseNode.IQualifiedName.Path), 0));
+                        */
                     }
 
                     IsItemCyclableThrough = ControllerView0.IsItemCyclableThrough(out State, out CyclePosition);
@@ -11764,6 +11920,7 @@ namespace Coverage
             BaseNodeHelper.NodeTreeHelper.SetString(RootNode, nameof(IRoot.ValueString), "root string");
             BaseNodeHelper.NodeTreeHelperList.SetChildNodeList(RootNode, nameof(IRoot.LeafPathH), (IList)LeafPathH);
             BaseNodeHelper.NodeTreeHelperList.SetChildNodeList(RootNode, nameof(IRoot.LeafPathV), (IList)LeafPathV);
+            BaseNodeHelper.NodeTreeHelperOptional.SetOptionalReference(RootNode, nameof(IRoot.UnassignedOptionalLeaf), (Easly.IOptionalReference)BaseNodeHelper.OptionalReferenceHelper<ILeaf>.CreateEmptyReference());
 
             //System.Diagnostics.Debug.Assert(false);
             ILayoutRootNodeIndex RootIndex = new LayoutRootNodeIndex(RootNode);
@@ -13600,9 +13757,7 @@ namespace Coverage
 
                 foreach (ILayoutVisibleCellView CellView in VisibleCellViewList)
                 {
-                    Size MeasuredSize;
-                    CellView.Draw(false, out MeasuredSize);
-                    CellView.Draw(true, out MeasuredSize);
+                    CellView.Draw(out Size MeasuredSize);
                 }
 
                 IFrameVisibleCellViewList FrameVisibleCellViewList = VisibleCellViewList;

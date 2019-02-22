@@ -63,6 +63,7 @@ namespace TestDebug
     </FrameNodeTemplate>
     <FrameNodeTemplate NodeType=""{xaml:Type cov:ITree}"">
         <FrameVerticalPanelFrame>
+            <FrameCommentFrame/>
             <FramePlaceholderFrame PropertyName=""Placeholder""/>
             <FrameSymbolFrame Symbol=""{x:Static const:Symbols.LeftBracket}""/>
             <FrameDiscreteFrame PropertyName=""ValueBoolean"">
@@ -79,6 +80,7 @@ namespace TestDebug
     </FrameNodeTemplate>
     <FrameNodeTemplate NodeType=""{xaml:Type cov:IMain}"">
         <FrameHorizontalPanelFrame>
+            <FrameCommentFrame/>
             <FramePlaceholderFrame PropertyName=""PlaceholderTree""/>
             <FramePlaceholderFrame PropertyName=""PlaceholderLeaf""/>
             <FrameOptionalFrame PropertyName=""UnassignedOptionalLeaf"" />
@@ -101,12 +103,14 @@ namespace TestDebug
     </FrameNodeTemplate>
     <FrameNodeTemplate NodeType=""{xaml:Type cov:IRoot}"">
         <FrameHorizontalPanelFrame>
+            <FrameCommentFrame/>
             <FrameHorizontalBlockListFrame PropertyName=""MainBlocksH"" />
             <FrameVerticalBlockListFrame PropertyName=""MainBlocksV"" />
             <FrameOptionalFrame PropertyName=""UnassignedOptionalMain"" />
             <FrameTextValueFrame PropertyName=""ValueString""/>
             <FrameHorizontalListFrame PropertyName=""LeafPathH"" />
             <FrameVerticalListFrame PropertyName=""LeafPathV"" />
+            <FrameOptionalFrame PropertyName=""UnassignedOptionalLeaf"" />
         </FrameHorizontalPanelFrame>
     </FrameNodeTemplate>
     <FrameNodeTemplate NodeType=""{xaml:Type easly:IAssertion}"">
@@ -1840,6 +1844,7 @@ namespace TestDebug
     xmlns:const=""clr-namespace:EaslyController.Constants;assembly=Easly-Controller"">
     <FrameBlockTemplate NodeType=""{xaml:Type easly:IBlock,cov:ILeaf,cov:Leaf}"">
         <FrameHorizontalPanelFrame>
+            <FrameCommentFrame/>
             <FrameHorizontalPanelFrame>
                 <FrameKeywordFrame>Replicate</FrameKeywordFrame>
                 <FramePlaceholderFrame PropertyName=""ReplicationPattern""/>
@@ -1853,6 +1858,7 @@ namespace TestDebug
     </FrameBlockTemplate>
     <FrameBlockTemplate NodeType=""{xaml:Type easly:IBlock,cov:ITree,cov:Tree}"">
         <FrameHorizontalPanelFrame>
+            <FrameCommentFrame/>
             <FrameHorizontalPanelFrame>
                 <FrameKeywordFrame>Replicate</FrameKeywordFrame>
                 <FramePlaceholderFrame PropertyName=""ReplicationPattern""/>
@@ -1866,6 +1872,7 @@ namespace TestDebug
     </FrameBlockTemplate>
     <FrameBlockTemplate NodeType=""{xaml:Type easly:IBlock,cov:IMain,cov:Main}"">
         <FrameHorizontalPanelFrame>
+            <FrameCommentFrame/>
             <FrameHorizontalPanelFrame>
                 <FrameKeywordFrame>Replicate</FrameKeywordFrame>
                 <FramePlaceholderFrame PropertyName=""ReplicationPattern""/>
