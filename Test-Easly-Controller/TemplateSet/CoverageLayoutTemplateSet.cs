@@ -1201,7 +1201,7 @@ namespace TestDebug
                     </LayoutVerticalPanelFrame>
                     <LayoutVerticalPanelFrame>
                         <LayoutHorizontalPanelFrame>
-                            <LayoutKeywordFrame IsFocusable=""true"">deferred</LayoutKeywordFrame>
+                            <LayoutKeywordFrame IsFocusable=""true"" IsPreferred=""true"">deferred</LayoutKeywordFrame>
                         </LayoutHorizontalPanelFrame>
                     </LayoutVerticalPanelFrame>
                     <LayoutVerticalPanelFrame>
@@ -1245,7 +1245,7 @@ namespace TestDebug
                     <LayoutVerticalPanelFrame>
                         <LayoutHorizontalPanelFrame>
                             <LayoutKeywordFrame>getter</LayoutKeywordFrame>
-                            <LayoutKeywordFrame IsFocusable=""true"">deferred</LayoutKeywordFrame>
+                            <LayoutKeywordFrame IsFocusable=""true"" IsPreferred=""true"">deferred</LayoutKeywordFrame>
                         </LayoutHorizontalPanelFrame>
                     </LayoutVerticalPanelFrame>
                     <LayoutVerticalPanelFrame>
@@ -1289,7 +1289,7 @@ namespace TestDebug
                     <LayoutVerticalPanelFrame>
                         <LayoutHorizontalPanelFrame>
                             <LayoutKeywordFrame>setter</LayoutKeywordFrame>
-                            <LayoutKeywordFrame IsFocusable=""true"">deferred</LayoutKeywordFrame>
+                            <LayoutKeywordFrame IsFocusable=""true"" IsPreferred=""true"">deferred</LayoutKeywordFrame>
                         </LayoutHorizontalPanelFrame>
                     </LayoutVerticalPanelFrame>
                     <LayoutVerticalPanelFrame>
@@ -3270,7 +3270,7 @@ namespace TestDebug
                 </LayoutPlaceholderFrame>
                 <LayoutKeywordFrame>All</LayoutKeywordFrame>
             </LayoutHorizontalPanelFrame>
-            <LayoutVerticalCollectionPlaceholderFrame>
+            <LayoutVerticalCollectionPlaceholderFrame Separator=""Line"">
                 <LayoutVerticalCollectionPlaceholderFrame.Selectors>
                     <LayoutFrameSelector SelectorType=""{xaml:Type easly:IIdentifier}"" SelectorName=""Identifier""/>
                 </LayoutVerticalCollectionPlaceholderFrame.Selectors>

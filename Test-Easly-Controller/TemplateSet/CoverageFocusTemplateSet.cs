@@ -1343,7 +1343,7 @@ namespace TestDebug
                     </FocusVerticalPanelFrame>
                     <FocusVerticalPanelFrame>
                         <FocusHorizontalPanelFrame>
-                            <FocusKeywordFrame IsFocusable=""true"">deferred</FocusKeywordFrame>
+                            <FocusKeywordFrame IsFocusable=""true"" IsPreferred=""true"">deferred</FocusKeywordFrame>
                         </FocusHorizontalPanelFrame>
                     </FocusVerticalPanelFrame>
                     <FocusVerticalPanelFrame>
@@ -1387,7 +1387,7 @@ namespace TestDebug
                     <FocusVerticalPanelFrame>
                         <FocusHorizontalPanelFrame>
                             <FocusKeywordFrame>getter</FocusKeywordFrame>
-                            <FocusKeywordFrame IsFocusable=""true"">deferred</FocusKeywordFrame>
+                            <FocusKeywordFrame IsFocusable=""true"" IsPreferred=""true"">deferred</FocusKeywordFrame>
                         </FocusHorizontalPanelFrame>
                     </FocusVerticalPanelFrame>
                     <FocusVerticalPanelFrame>
@@ -1431,7 +1431,7 @@ namespace TestDebug
                     <FocusVerticalPanelFrame>
                         <FocusHorizontalPanelFrame>
                             <FocusKeywordFrame>setter</FocusKeywordFrame>
-                            <FocusKeywordFrame IsFocusable=""true"">deferred</FocusKeywordFrame>
+                            <FocusKeywordFrame IsFocusable=""true"" IsPreferred=""true"">deferred</FocusKeywordFrame>
                         </FocusHorizontalPanelFrame>
                     </FocusVerticalPanelFrame>
                     <FocusVerticalPanelFrame>
