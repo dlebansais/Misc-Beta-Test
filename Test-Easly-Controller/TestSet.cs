@@ -1724,7 +1724,7 @@ namespace Test
         public static void TestFrameCellViewList(IFrameControllerView controllerView, string name)
         {
             IFrameVisibleCellViewList CellViewList = new FrameVisibleCellViewList();
-            controllerView.EnumerateVisibleCellViews(CellViewList);
+            controllerView.EnumerateVisibleCellViews((IFrameVisibleCellView item) => ListCellViews(item, CellViewList), out IFrameVisibleCellView FoundCellView);
 
             Assert.That(controllerView.LastLineNumber >= 1);
             Assert.That(controllerView.LastColumnNumber >= 1);
@@ -1754,7 +1754,7 @@ namespace Test
                         PropertyName = AsDiscreteContentFocusable.PropertyName;
                         Assert.That(NodeTreeHelper.IsEnumProperty(ChildNode, PropertyName) || NodeTreeHelper.IsBooleanProperty(ChildNode, PropertyName));
                         break;
-                    case IFrameTextFocusableCellView AsTextFocusable: // String
+                    case IFrameStringContentFocusableCellView AsTextFocusable: // String
                         PropertyName = AsTextFocusable.PropertyName;
                         Assert.That(NodeTreeHelper.IsStringProperty(ChildNode, PropertyName) && PropertyName == "Text");
                         break;
@@ -2942,6 +2942,12 @@ namespace Test
 
             return true;
         }
+
+        private static bool ListCellViews(IFrameVisibleCellView cellview, IFrameVisibleCellViewList cellViewList)
+        {
+            cellViewList.Add(cellview);
+            return false;
+        }
         #endregion
 
         #region Focus
@@ -3052,7 +3058,7 @@ namespace Test
         public static void TestFocusCellViewList(IFocusControllerView controllerView, string name)
         {
             IFocusVisibleCellViewList CellViewList = new FocusVisibleCellViewList();
-            controllerView.EnumerateVisibleCellViews(CellViewList);
+            controllerView.EnumerateVisibleCellViews((IFrameVisibleCellView item) => ListCellViews(item, CellViewList), out IFrameVisibleCellView FoundCellView);
 
             Assert.That(controllerView.LastLineNumber >= 1);
             Assert.That(controllerView.LastColumnNumber >= 1);
@@ -3082,7 +3088,7 @@ namespace Test
                         PropertyName = AsDiscreteContentFocusable.PropertyName;
                         Assert.That(NodeTreeHelper.IsEnumProperty(ChildNode, PropertyName) || NodeTreeHelper.IsBooleanProperty(ChildNode, PropertyName));
                         break;
-                    case IFocusTextFocusableCellView AsTextFocusable: // String
+                    case IFocusStringContentFocusableCellView AsTextFocusable: // String
                         PropertyName = AsTextFocusable.PropertyName;
                         Assert.That(NodeTreeHelper.IsStringProperty(ChildNode, PropertyName) && PropertyName == "Text");
                         break;
@@ -4215,7 +4221,7 @@ namespace Test
 
             for (int i = 0; i < (Max - Min) + 10; i++)
             {
-                ControllerView.MoveFocus(+1, out IsMoved);
+                ControllerView.MoveFocus(+1, true, out IsMoved);
 
                 if (ControllerView.IsNewItemInsertable(out IFocusCollectionInner inner, out IFocusInsertionCollectionNodeIndex index))
                     Controller.Insert(inner, index, out IWriteableBrowsingCollectionNodeIndex nodeIndex);
@@ -4227,7 +4233,7 @@ namespace Test
                 Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction, out IsMoved);
+                ControllerView.MoveFocus(Direction, true, out IsMoved);
 
                 if (ControllerView.IsNewItemInsertable(out IFocusCollectionInner inner, out IFocusInsertionCollectionNodeIndex index))
                     Controller.Insert(inner, index, out IWriteableBrowsingCollectionNodeIndex nodeIndex);
@@ -4253,7 +4259,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction, out bool IsMoved);
+                ControllerView.MoveFocus(Direction, true, out bool IsMoved);
 
                 if (ControllerView.IsItemRemoveable(out IFocusCollectionInner inner, out IFocusBrowsingCollectionNodeIndex index))
                     Controller.Remove(inner, index);
@@ -4279,7 +4285,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction, out bool IsMoved);
+                ControllerView.MoveFocus(Direction, true, out bool IsMoved);
 
                 Direction = (RandNext(2) * 2) - 1;
 
@@ -4307,7 +4313,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction, out bool IsMoved);
+                ControllerView.MoveFocus(Direction, true, out bool IsMoved);
 
                 Direction = (RandNext(2) * 2) - 1;
 
@@ -4335,7 +4341,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction, out bool IsMoved);
+                ControllerView.MoveFocus(Direction, true, out bool IsMoved);
 
                 if (ControllerView.IsItemSplittable(out IFocusBlockListInner inner, out IFocusBrowsingExistingBlockNodeIndex index))
                     Controller.SplitBlock(inner, index);
@@ -4361,7 +4367,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction, out bool IsMoved);
+                ControllerView.MoveFocus(Direction, true, out bool IsMoved);
 
                 if (ControllerView.IsItemMergeable(out IFocusBlockListInner inner, out IFocusBrowsingExistingBlockNodeIndex index))
                     Controller.MergeBlocks(inner, index);
@@ -4387,7 +4393,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction, out bool IsMoved);
+                ControllerView.MoveFocus(Direction, true, out bool IsMoved);
 
                 if (ControllerView.IsItemCyclableThrough(out IFocusCyclableNodeState state, out int cyclePosition))
                     Controller.Replace(state.ParentInner, state.CycleIndexList, cyclePosition, out IFocusBrowsingChildIndex nodeIndex);
@@ -4417,7 +4423,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction, out bool IsMoved);
+                ControllerView.MoveFocus(Direction, true, out bool IsMoved);
 
                 if (ControllerView.IsItemSimplifiable(out IFocusInner Inner, out IFocusInsertionChildIndex Index))
                 {
@@ -4457,7 +4463,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction, out bool IsMoved);
+                ControllerView.MoveFocus(Direction, true, out bool IsMoved);
 
                 if (ControllerView.IsIdentifierSplittable(out IFocusListInner Inner, out IFocusInsertionListNodeIndex ReplaceIndex, out IFocusInsertionListNodeIndex InsertIndex))
                 {
@@ -4488,7 +4494,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction, out bool IsMoved);
+                ControllerView.MoveFocus(Direction, true, out bool IsMoved);
 
                 if (ControllerView.IsReplicationModifiable(out IFocusBlockListInner Inner, out int BlockIndex, out Replication))
                 {
@@ -4629,7 +4635,7 @@ namespace Test
             int MaxFocusMove = controllerView.MaxFocusMove;
 
             int Direction = MinFocusMove + RandNext(MaxFocusMove - MinFocusMove + 1);
-            controllerView.MoveFocus(Direction, out bool IsMoved);
+            controllerView.MoveFocus(Direction, true, out bool IsMoved);
         }
         #endregion
 
@@ -4741,7 +4747,7 @@ namespace Test
         public static void TestLayoutCellViewList(ILayoutControllerView controllerView, string name)
         {
             ILayoutVisibleCellViewList CellViewList = new LayoutVisibleCellViewList();
-            controllerView.EnumerateVisibleCellViews(CellViewList);
+            controllerView.EnumerateVisibleCellViews((IFrameVisibleCellView item) => ListCellViews(item, CellViewList), out IFrameVisibleCellView FoundCellView);
             controllerView.Draw();
 
             Assert.That(controllerView.LastLineNumber >= 1);
@@ -4772,7 +4778,7 @@ namespace Test
                         PropertyName = AsDiscreteContentFocusable.PropertyName;
                         Assert.That(NodeTreeHelper.IsEnumProperty(ChildNode, PropertyName) || NodeTreeHelper.IsBooleanProperty(ChildNode, PropertyName));
                         break;
-                    case ILayoutTextFocusableCellView AsTextFocusable: // String
+                    case ILayoutStringContentFocusableCellView AsTextFocusable: // String
                         PropertyName = AsTextFocusable.PropertyName;
                         Assert.That(NodeTreeHelper.IsStringProperty(ChildNode, PropertyName) && PropertyName == "Text");
                         break;
@@ -5905,7 +5911,7 @@ namespace Test
 
             for (int i = 0; i < (Max - Min) + 10; i++)
             {
-                ControllerView.MoveFocus(+1, out IsMoved);
+                ControllerView.MoveFocus(+1, true, out IsMoved);
 
                 if (ControllerView.IsNewItemInsertable(out IFocusCollectionInner inner, out IFocusInsertionCollectionNodeIndex index))
                     Controller.Insert(inner, index, out IWriteableBrowsingCollectionNodeIndex nodeIndex);
@@ -5917,7 +5923,7 @@ namespace Test
                 Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction, out IsMoved);
+                ControllerView.MoveFocus(Direction, true, out IsMoved);
 
                 if (ControllerView.IsNewItemInsertable(out IFocusCollectionInner inner, out IFocusInsertionCollectionNodeIndex index))
                     Controller.Insert(inner, index, out IWriteableBrowsingCollectionNodeIndex nodeIndex);
@@ -5943,7 +5949,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction, out bool IsMoved);
+                ControllerView.MoveFocus(Direction, true, out bool IsMoved);
 
                 if (ControllerView.IsItemRemoveable(out IFocusCollectionInner inner, out IFocusBrowsingCollectionNodeIndex index))
                     Controller.Remove(inner, index);
@@ -5969,7 +5975,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction, out bool IsMoved);
+                ControllerView.MoveFocus(Direction, true, out bool IsMoved);
 
                 Direction = (RandNext(2) * 2) - 1;
 
@@ -5997,7 +6003,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction, out bool IsMoved);
+                ControllerView.MoveFocus(Direction, true, out bool IsMoved);
 
                 Direction = (RandNext(2) * 2) - 1;
 
@@ -6025,7 +6031,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction, out bool IsMoved);
+                ControllerView.MoveFocus(Direction, true, out bool IsMoved);
 
                 if (ControllerView.IsItemSplittable(out IFocusBlockListInner inner, out IFocusBrowsingExistingBlockNodeIndex index))
                     Controller.SplitBlock(inner, index);
@@ -6051,7 +6057,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction, out bool IsMoved);
+                ControllerView.MoveFocus(Direction, true, out bool IsMoved);
 
                 if (ControllerView.IsItemMergeable(out IFocusBlockListInner inner, out IFocusBrowsingExistingBlockNodeIndex index))
                     Controller.MergeBlocks(inner, index);
@@ -6077,7 +6083,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction, out bool IsMoved);
+                ControllerView.MoveFocus(Direction, true, out bool IsMoved);
 
                 if (ControllerView.IsItemCyclableThrough(out IFocusCyclableNodeState state, out int cyclePosition))
                     Controller.Replace(state.ParentInner, state.CycleIndexList, cyclePosition, out IFocusBrowsingChildIndex nodeIndex);
@@ -6114,7 +6120,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction, out bool IsMoved);
+                ControllerView.MoveFocus(Direction, true, out bool IsMoved);
 
                 if (ControllerView.IsItemSimplifiable(out IFocusInner Inner, out IFocusInsertionChildIndex Index))
                 {
@@ -6155,13 +6161,10 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction, out bool IsMoved);
+                ControllerView.MoveFocus(Direction, true, out bool IsMoved);
 
                 if (ControllerView.IsIdentifierSplittable(out IFocusListInner Inner, out IFocusInsertionListNodeIndex ReplaceIndex, out IFocusInsertionListNodeIndex InsertIndex))
-                {
-                    Controller.Replace(Inner, ReplaceIndex, out IWriteableBrowsingChildIndex FirstNodeIndex);
-                    Controller.Insert(Inner, InsertIndex, out IWriteableBrowsingCollectionNodeIndex SecondNodeIndex);
-                }
+                    Controller.SplitIdentifier(Inner, ReplaceIndex, InsertIndex, out IWriteableBrowsingListNodeIndex FirstIndex, out IWriteableBrowsingListNodeIndex SecondIndex);
             }
 
             ILayoutControllerView NewView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawContext.Default);
@@ -6186,7 +6189,7 @@ namespace Test
                 int Max = ControllerView.MaxFocusMove;
                 int Direction = RandNext(Max - Min + 1) + Min;
 
-                ControllerView.MoveFocus(Direction, out bool IsMoved);
+                ControllerView.MoveFocus(Direction, true, out bool IsMoved);
 
                 if (ControllerView.IsReplicationModifiable(out IFocusBlockListInner Inner, out int BlockIndex, out Replication))
                 {
@@ -6327,7 +6330,7 @@ namespace Test
             int MaxFocusMove = controllerView.MaxFocusMove;
 
             int Direction = MinFocusMove + RandNext(MaxFocusMove - MinFocusMove + 1);
-            controllerView.MoveFocus(Direction, out bool IsMoved);
+            controllerView.MoveFocus(Direction, true, out bool IsMoved);
         }
         #endregion
     }

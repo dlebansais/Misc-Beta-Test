@@ -426,6 +426,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IAssertion}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalPanelFrame>
                 <FocusOptionalFrame PropertyName=""Tag"" />
                 <FocusKeywordFrame>:</FocusKeywordFrame>
@@ -435,6 +436,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IAttachment}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalPanelFrame>
                 <FocusKeywordFrame Text=""else"">
                     <FocusKeywordFrame.Visibility>
@@ -450,6 +452,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IClass}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalPanelFrame>
                 <FocusDiscreteFrame PropertyName=""CopySpecification"">
                     <FocusDiscreteFrame.Visibility>
@@ -618,6 +621,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IClassReplicate}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusPlaceholderFrame PropertyName=""ReplicateName"" />
             <FocusKeywordFrame>to</FocusKeywordFrame>
             <FocusHorizontalBlockListFrame PropertyName=""PatternBlocks""/>
@@ -625,6 +629,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:ICommandOverload}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusVerticalPanelFrame>
                 <FocusVerticalPanelFrame.Visibility>
                     <FocusCountFrameVisibility PropertyName=""ParameterBlocks""/>
@@ -654,6 +659,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:ICommandOverloadType}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusSymbolFrame Symbol=""{x:Static const:Symbols.LeftBracket}""/>
             <FocusVerticalPanelFrame>
                 <FocusVerticalPanelFrame>
@@ -711,6 +717,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IConditional}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalPanelFrame>
                 <FocusKeywordFrame Text=""else"">
                     <FocusKeywordFrame.Visibility>
@@ -727,6 +734,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IConstraint}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusPlaceholderFrame PropertyName=""ParentType"" />
             <FocusVerticalPanelFrame>
                 <FocusVerticalPanelFrame.Visibility>
@@ -742,6 +750,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IContinuation}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalPanelFrame>
                 <FocusKeywordFrame>execute</FocusKeywordFrame>
                 <FocusInsertFrame CollectionName=""Instructions.InstructionBlocks"" ItemType=""{xaml:Type easly:CommandInstruction}""/>
@@ -763,6 +772,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IDiscrete}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusPlaceholderFrame PropertyName=""EntityName"" />
             <FocusHorizontalPanelFrame>
                 <FocusHorizontalPanelFrame.Visibility>
@@ -775,6 +785,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IEntityDeclaration}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusPlaceholderFrame PropertyName=""EntityName"" />
             <FocusKeywordFrame>:</FocusKeywordFrame>
             <FocusPlaceholderFrame PropertyName=""EntityType"" />
@@ -789,6 +800,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IExceptionHandler}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalPanelFrame>
                 <FocusKeywordFrame>catch</FocusKeywordFrame>
                 <FocusPlaceholderFrame PropertyName=""ExceptionIdentifier"">
@@ -803,6 +815,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IExport}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusPlaceholderFrame PropertyName=""EntityName"" />
             <FocusKeywordFrame>to</FocusKeywordFrame>
             <FocusHorizontalBlockListFrame PropertyName=""ClassIdentifierBlocks"">
@@ -814,6 +827,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IExportChange}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusPlaceholderFrame PropertyName=""ExportIdentifier"">
                 <FocusPlaceholderFrame.Selectors>
                     <FocusFrameSelector SelectorType=""{xaml:Type easly:IIdentifier}"" SelectorName=""Export""/>
@@ -829,6 +843,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IGeneric}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalPanelFrame>
                 <FocusPlaceholderFrame PropertyName=""EntityName"" />
                 <FocusHorizontalPanelFrame>
@@ -860,6 +875,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IGlobalReplicate}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusPlaceholderFrame PropertyName=""ReplicateName""/>
             <FocusKeywordFrame>to</FocusKeywordFrame>
             <FocusHorizontalListFrame PropertyName=""Patterns""/>
@@ -867,6 +883,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IImport}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalPanelFrame>
                 <FocusDiscreteFrame PropertyName=""Type"">
                     <FocusKeywordFrame>latest</FocusKeywordFrame>
@@ -912,6 +929,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IInheritance}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalPanelFrame>
                 <FocusDiscreteFrame PropertyName=""Conformance"">
                     <FocusDiscreteFrame.Visibility>
@@ -1024,6 +1042,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:ILibrary}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalPanelFrame>
                 <FocusKeywordFrame>library</FocusKeywordFrame>
                 <FocusPlaceholderFrame PropertyName=""EntityName""/>
@@ -1071,20 +1090,30 @@ namespace TestDebug
         </FocusVerticalPanelFrame>
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IName}"" IsSimple=""True"">
-        <FocusTextValueFrame PropertyName=""Text""/>
+        <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
+            <FocusTextValueFrame PropertyName=""Text""/>
+        </FocusVerticalPanelFrame>
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IPattern}"" IsSimple=""True"">
-        <FocusTextValueFrame PropertyName=""Text""/>
+        <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
+            <FocusTextValueFrame PropertyName=""Text""/>
+        </FocusVerticalPanelFrame>
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IQualifiedName}"">
-        <FocusHorizontalListFrame PropertyName=""Path"">
-            <FocusHorizontalListFrame.Selectors>
-                <FocusFrameSelector SelectorType=""{xaml:Type easly:IIdentifier}"" SelectorName=""Feature""/>
-            </FocusHorizontalListFrame.Selectors>
-        </FocusHorizontalListFrame>
+        <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
+            <FocusHorizontalListFrame PropertyName=""Path"">
+                <FocusHorizontalListFrame.Selectors>
+                    <FocusFrameSelector SelectorType=""{xaml:Type easly:IIdentifier}"" SelectorName=""Feature""/>
+                </FocusHorizontalListFrame.Selectors>
+            </FocusHorizontalListFrame>
+        </FocusVerticalPanelFrame>
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IQueryOverload}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusVerticalPanelFrame>
                 <FocusVerticalPanelFrame.Visibility>
                     <FocusCountFrameVisibility PropertyName=""ParameterBlocks""/>
@@ -1139,6 +1168,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IQueryOverloadType}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusSymbolFrame Symbol=""{x:Static const:Symbols.LeftBracket}""/>
             <FocusVerticalPanelFrame>
                 <FocusVerticalPanelFrame>
@@ -1203,6 +1233,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IRange}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusSymbolFrame Symbol=""{x:Static const:Symbols.LeftBracket}"">
                 <FocusSymbolFrame.Visibility>
                     <FocusOptionalFrameVisibility PropertyName=""RightExpression""/>
@@ -1221,6 +1252,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IRename}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusPlaceholderFrame PropertyName=""SourceIdentifier"">
                 <FocusPlaceholderFrame.Selectors>
                     <FocusFrameSelector SelectorType=""{xaml:Type easly:IIdentifier}"" SelectorName=""Identifier""/>
@@ -1236,6 +1268,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IRoot}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusVerticalPanelFrame>
                 <FocusHorizontalPanelFrame>
                     <FocusKeywordFrame>libraries</FocusKeywordFrame>
@@ -1262,6 +1295,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IScope}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusVerticalPanelFrame>
                 <FocusVerticalPanelFrame.Visibility>
                     <FocusCountFrameVisibility PropertyName=""EntityDeclarationBlocks""/>
@@ -1283,6 +1317,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:ITypedef}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusPlaceholderFrame PropertyName=""EntityName"" />
             <FocusKeywordFrame>is</FocusKeywordFrame>
             <FocusPlaceholderFrame PropertyName=""DefinedType"" />
@@ -1290,6 +1325,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IWith}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalPanelFrame>
                 <FocusKeywordFrame>case</FocusKeywordFrame>
                 <FocusHorizontalBlockListFrame PropertyName=""RangeBlocks""/>
@@ -1300,6 +1336,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IAssignmentArgument}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalBlockListFrame PropertyName=""ParameterBlocks"">
                 <FocusHorizontalBlockListFrame.Selectors>
                     <FocusFrameSelector SelectorType=""{xaml:Type easly:IIdentifier}"" SelectorName=""Feature""/>
@@ -1310,6 +1347,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IPositionalArgument}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusPlaceholderFrame PropertyName=""Source""/>
         </FocusHorizontalPanelFrame>
     </FocusNodeTemplate>
@@ -1317,6 +1355,7 @@ namespace TestDebug
         <FocusSelectionFrame>
             <FocusSelectableFrame Name=""Overload"">
                 <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
                     <FocusVerticalPanelFrame>
                         <FocusVerticalPanelFrame.Visibility>
                             <FocusCountFrameVisibility PropertyName=""RequireBlocks""/>
@@ -1360,6 +1399,7 @@ namespace TestDebug
             </FocusSelectableFrame>
             <FocusSelectableFrame Name=""Getter"">
                 <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
                     <FocusVerticalPanelFrame>
                         <FocusVerticalPanelFrame.Visibility>
                             <FocusCountFrameVisibility PropertyName=""RequireBlocks""/>
@@ -1404,6 +1444,7 @@ namespace TestDebug
             </FocusSelectableFrame>
             <FocusSelectableFrame Name=""Setter"">
                 <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
                     <FocusVerticalPanelFrame>
                         <FocusVerticalPanelFrame.Visibility>
                             <FocusCountFrameVisibility PropertyName=""RequireBlocks""/>
@@ -1452,6 +1493,7 @@ namespace TestDebug
         <FocusSelectionFrame>
             <FocusSelectableFrame Name=""Overload"">
                 <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
                     <FocusVerticalPanelFrame>
                         <FocusVerticalPanelFrame.Visibility>
                             <FocusCountFrameVisibility PropertyName=""RequireBlocks""/>
@@ -1460,7 +1502,7 @@ namespace TestDebug
                             <FocusKeywordFrame>require</FocusKeywordFrame>
                             <FocusInsertFrame CollectionName=""RequireBlocks"" />
                         </FocusHorizontalPanelFrame>
-                        <FocusHorizontalBlockListFrame PropertyName=""RequireBlocks"" />
+                        <FocusVerticalBlockListFrame PropertyName=""RequireBlocks"" />
                     </FocusVerticalPanelFrame>
                     <FocusVerticalPanelFrame>
                         <FocusVerticalPanelFrame.Visibility>
@@ -1494,7 +1536,7 @@ namespace TestDebug
                             <FocusKeywordFrame IsFocusable=""true"">do</FocusKeywordFrame>
                             <FocusInsertFrame CollectionName=""BodyInstructionBlocks"" ItemType=""{xaml:Type easly:CommandInstruction}""/>
                         </FocusHorizontalPanelFrame>
-                        <FocusHorizontalBlockListFrame PropertyName=""BodyInstructionBlocks"" />
+                        <FocusVerticalBlockListFrame PropertyName=""BodyInstructionBlocks"" />
                     </FocusVerticalPanelFrame>
                     <FocusVerticalPanelFrame>
                         <FocusVerticalPanelFrame.Visibility>
@@ -1520,6 +1562,7 @@ namespace TestDebug
             </FocusSelectableFrame>
             <FocusSelectableFrame Name=""Getter"">
                 <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
                     <FocusVerticalPanelFrame>
                         <FocusVerticalPanelFrame.Visibility>
                             <FocusCountFrameVisibility PropertyName=""RequireBlocks""/>
@@ -1528,7 +1571,7 @@ namespace TestDebug
                             <FocusKeywordFrame>require</FocusKeywordFrame>
                             <FocusInsertFrame CollectionName=""RequireBlocks"" />
                         </FocusHorizontalPanelFrame>
-                        <FocusHorizontalBlockListFrame PropertyName=""RequireBlocks"" />
+                        <FocusVerticalBlockListFrame PropertyName=""RequireBlocks"" />
                     </FocusVerticalPanelFrame>
                     <FocusVerticalPanelFrame>
                         <FocusVerticalPanelFrame.Visibility>
@@ -1562,7 +1605,7 @@ namespace TestDebug
                             <FocusKeywordFrame IsFocusable=""true"">getter</FocusKeywordFrame>
                             <FocusInsertFrame CollectionName=""BodyInstructionBlocks"" ItemType=""{xaml:Type easly:CommandInstruction}""/>
                         </FocusHorizontalPanelFrame>
-                        <FocusHorizontalBlockListFrame PropertyName=""BodyInstructionBlocks"" />
+                        <FocusVerticalBlockListFrame PropertyName=""BodyInstructionBlocks"" />
                     </FocusVerticalPanelFrame>
                     <FocusVerticalPanelFrame>
                         <FocusVerticalPanelFrame.Visibility>
@@ -1588,6 +1631,7 @@ namespace TestDebug
             </FocusSelectableFrame>
             <FocusSelectableFrame Name=""Setter"">
                 <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
                     <FocusVerticalPanelFrame>
                         <FocusVerticalPanelFrame.Visibility>
                             <FocusCountFrameVisibility PropertyName=""RequireBlocks""/>
@@ -1596,7 +1640,7 @@ namespace TestDebug
                             <FocusKeywordFrame>require</FocusKeywordFrame>
                             <FocusInsertFrame CollectionName=""RequireBlocks"" />
                         </FocusHorizontalPanelFrame>
-                        <FocusHorizontalBlockListFrame PropertyName=""RequireBlocks"" />
+                        <FocusVerticalBlockListFrame PropertyName=""RequireBlocks"" />
                     </FocusVerticalPanelFrame>
                     <FocusVerticalPanelFrame>
                         <FocusVerticalPanelFrame.Visibility>
@@ -1630,7 +1674,7 @@ namespace TestDebug
                             <FocusKeywordFrame IsFocusable=""true"">setter</FocusKeywordFrame>
                             <FocusInsertFrame CollectionName=""BodyInstructionBlocks"" ItemType=""{xaml:Type easly:CommandInstruction}""/>
                         </FocusHorizontalPanelFrame>
-                        <FocusHorizontalBlockListFrame PropertyName=""BodyInstructionBlocks"" />
+                        <FocusVerticalBlockListFrame PropertyName=""BodyInstructionBlocks"" />
                     </FocusVerticalPanelFrame>
                     <FocusVerticalPanelFrame>
                         <FocusVerticalPanelFrame.Visibility>
@@ -1660,6 +1704,7 @@ namespace TestDebug
         <FocusSelectionFrame>
             <FocusSelectableFrame Name=""Overload"">
                 <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
                     <FocusVerticalPanelFrame>
                         <FocusVerticalPanelFrame.Visibility>
                             <FocusCountFrameVisibility PropertyName=""RequireBlocks""/>
@@ -1703,6 +1748,7 @@ namespace TestDebug
             </FocusSelectableFrame>
             <FocusSelectableFrame Name=""Getter"">
                 <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
                     <FocusVerticalPanelFrame>
                         <FocusVerticalPanelFrame.Visibility>
                             <FocusCountFrameVisibility PropertyName=""RequireBlocks""/>
@@ -1747,6 +1793,7 @@ namespace TestDebug
             </FocusSelectableFrame>
             <FocusSelectableFrame Name=""Setter"">
                 <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
                     <FocusVerticalPanelFrame>
                         <FocusVerticalPanelFrame.Visibility>
                             <FocusCountFrameVisibility PropertyName=""RequireBlocks""/>
@@ -1795,6 +1842,7 @@ namespace TestDebug
         <FocusSelectionFrame>
             <FocusSelectableFrame Name=""Overload"">
                 <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
                     <FocusVerticalPanelFrame>
                         <FocusVerticalPanelFrame.Visibility>
                             <FocusCountFrameVisibility PropertyName=""RequireBlocks""/>
@@ -1838,6 +1886,7 @@ namespace TestDebug
             </FocusSelectableFrame>
             <FocusSelectableFrame Name=""Getter"">
                 <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
                     <FocusVerticalPanelFrame>
                         <FocusVerticalPanelFrame.Visibility>
                             <FocusCountFrameVisibility PropertyName=""RequireBlocks""/>
@@ -1882,6 +1931,7 @@ namespace TestDebug
             </FocusSelectableFrame>
             <FocusSelectableFrame Name=""Setter"">
                 <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
                     <FocusVerticalPanelFrame>
                         <FocusVerticalPanelFrame.Visibility>
                             <FocusCountFrameVisibility PropertyName=""RequireBlocks""/>
@@ -1928,6 +1978,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IAgentExpression}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusKeywordFrame>agent</FocusKeywordFrame>
             <FocusHorizontalPanelFrame>
                 <FocusHorizontalPanelFrame.Visibility>
@@ -1946,6 +1997,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IAssertionTagExpression}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusKeywordFrame>tag</FocusKeywordFrame>
             <FocusPlaceholderFrame PropertyName=""TagIdentifier"">
                 <FocusPlaceholderFrame.Selectors>
@@ -1956,6 +2008,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IBinaryConditionalExpression}"" IsComplex=""True"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalPanelFrame>
                 <FocusSymbolFrame Symbol=""{x:Static const:Symbols.LeftParenthesis}"">
                     <FocusSymbolFrame.Visibility>
@@ -1990,6 +2043,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IBinaryOperatorExpression}"" IsComplex=""True"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalPanelFrame>
                 <FocusSymbolFrame Symbol=""{x:Static const:Symbols.LeftParenthesis}"">
                     <FocusSymbolFrame.Visibility>
@@ -2025,6 +2079,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IClassConstantExpression}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusSymbolFrame Symbol=""{x:Static const:Symbols.LeftCurlyBracket}""/>
             <FocusPlaceholderFrame PropertyName=""ClassIdentifier"">
                 <FocusPlaceholderFrame.Selectors>
@@ -2042,6 +2097,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:ICloneOfExpression}"" IsComplex=""True"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusDiscreteFrame PropertyName=""Type"">
                 <FocusDiscreteFrame.Visibility>
                     <FocusDefaultDiscreteFrameVisibility PropertyName=""Type""/>
@@ -2067,12 +2123,14 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IEntityExpression}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusKeywordFrame>entity</FocusKeywordFrame>
             <FocusPlaceholderFrame PropertyName=""Query""/>
         </FocusHorizontalPanelFrame>
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IEqualityExpression}"" IsComplex=""True"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalPanelFrame>
                 <FocusSymbolFrame Symbol=""{x:Static const:Symbols.LeftParenthesis}"">
                     <FocusSymbolFrame.Visibility>
@@ -2115,6 +2173,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IIndexQueryExpression}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalPanelFrame>
                 <FocusSymbolFrame Symbol=""{x:Static const:Symbols.LeftParenthesis}"">
                     <FocusSymbolFrame.Visibility>
@@ -2135,6 +2194,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IInitializedObjectExpression}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusPlaceholderFrame PropertyName=""ClassIdentifier"">
                 <FocusPlaceholderFrame.Selectors>
                     <FocusFrameSelector SelectorType=""{xaml:Type easly:IIdentifier}"" SelectorName=""Type""/>
@@ -2147,18 +2207,22 @@ namespace TestDebug
         </FocusHorizontalPanelFrame>
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IKeywordExpression}"">
-        <FocusDiscreteFrame PropertyName=""Value"">
-            <FocusKeywordFrame>True</FocusKeywordFrame>
-            <FocusKeywordFrame>False</FocusKeywordFrame>
-            <FocusKeywordFrame>Current</FocusKeywordFrame>
-            <FocusKeywordFrame>Value</FocusKeywordFrame>
-            <FocusKeywordFrame>Result</FocusKeywordFrame>
-            <FocusKeywordFrame>Retry</FocusKeywordFrame>
-            <FocusKeywordFrame>Exception</FocusKeywordFrame>
-        </FocusDiscreteFrame>
+        <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
+            <FocusDiscreteFrame PropertyName=""Value"">
+                <FocusKeywordFrame>True</FocusKeywordFrame>
+                <FocusKeywordFrame>False</FocusKeywordFrame>
+                <FocusKeywordFrame>Current</FocusKeywordFrame>
+                <FocusKeywordFrame>Value</FocusKeywordFrame>
+                <FocusKeywordFrame>Result</FocusKeywordFrame>
+                <FocusKeywordFrame>Retry</FocusKeywordFrame>
+                <FocusKeywordFrame>Exception</FocusKeywordFrame>
+            </FocusDiscreteFrame>
+        </FocusHorizontalPanelFrame>
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IManifestCharacterExpression}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusKeywordFrame>'</FocusKeywordFrame>
             <FocusCharacterFrame PropertyName=""Text""/>
             <FocusKeywordFrame>'</FocusKeywordFrame>
@@ -2166,11 +2230,13 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IManifestNumberExpression}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusNumberFrame PropertyName=""Text""/>
         </FocusHorizontalPanelFrame>
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IManifestStringExpression}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusKeywordFrame>""</FocusKeywordFrame>
             <FocusTextValueFrame PropertyName=""Text""/>
             <FocusKeywordFrame>""</FocusKeywordFrame>
@@ -2178,18 +2244,21 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:INewExpression}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusKeywordFrame>new</FocusKeywordFrame>
             <FocusPlaceholderFrame PropertyName=""Object"" />
         </FocusHorizontalPanelFrame>
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IOldExpression}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusKeywordFrame>old</FocusKeywordFrame>
             <FocusPlaceholderFrame PropertyName=""Query"" />
         </FocusHorizontalPanelFrame>
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IPrecursorExpression}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusKeywordFrame IsFocusable=""true"">precursor</FocusKeywordFrame>
             <FocusHorizontalPanelFrame>
                 <FocusHorizontalPanelFrame.Visibility>
@@ -2216,6 +2285,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IPrecursorIndexExpression}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusKeywordFrame IsFocusable=""true"">precursor</FocusKeywordFrame>
             <FocusHorizontalPanelFrame>
                 <FocusHorizontalPanelFrame.Visibility>
@@ -2233,20 +2303,24 @@ namespace TestDebug
         </FocusHorizontalPanelFrame>
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IPreprocessorExpression}"">
-        <FocusDiscreteFrame PropertyName=""Value"">
-            <FocusKeywordFrame>DateAndTime</FocusKeywordFrame>
-            <FocusKeywordFrame>CompilationDiscreteIdentifier</FocusKeywordFrame>
-            <FocusKeywordFrame>ClassPath</FocusKeywordFrame>
-            <FocusKeywordFrame>CompilerVersion</FocusKeywordFrame>
-            <FocusKeywordFrame>ConformanceToStandard</FocusKeywordFrame>
-            <FocusKeywordFrame>DiscreteClassIdentifier</FocusKeywordFrame>
-            <FocusKeywordFrame>Counter</FocusKeywordFrame>
-            <FocusKeywordFrame>Debugging</FocusKeywordFrame>
-            <FocusKeywordFrame>RandomInteger</FocusKeywordFrame>
-        </FocusDiscreteFrame>
+        <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
+            <FocusDiscreteFrame PropertyName=""Value"">
+                <FocusKeywordFrame>DateAndTime</FocusKeywordFrame>
+                <FocusKeywordFrame>CompilationDiscreteIdentifier</FocusKeywordFrame>
+                <FocusKeywordFrame>ClassPath</FocusKeywordFrame>
+                <FocusKeywordFrame>CompilerVersion</FocusKeywordFrame>
+                <FocusKeywordFrame>ConformanceToStandard</FocusKeywordFrame>
+                <FocusKeywordFrame>DiscreteClassIdentifier</FocusKeywordFrame>
+                <FocusKeywordFrame>Counter</FocusKeywordFrame>
+                <FocusKeywordFrame>Debugging</FocusKeywordFrame>
+                <FocusKeywordFrame>RandomInteger</FocusKeywordFrame>
+            </FocusDiscreteFrame>
+        </FocusHorizontalPanelFrame>
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IQueryExpression}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusPlaceholderFrame PropertyName=""Query"" />
             <FocusHorizontalPanelFrame>
                 <FocusSymbolFrame Symbol=""{x:Static const:Symbols.LeftParenthesis}"">
@@ -2265,6 +2339,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IResultOfExpression}"" IsComplex=""True"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusKeywordFrame>result of</FocusKeywordFrame>
             <FocusHorizontalPanelFrame>
                 <FocusSymbolFrame Symbol=""{x:Static const:Symbols.LeftParenthesis}"">
@@ -2283,6 +2358,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IUnaryNotExpression}"" IsComplex=""True"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusKeywordFrame>not</FocusKeywordFrame>
             <FocusHorizontalPanelFrame>
                 <FocusSymbolFrame Symbol=""{x:Static const:Symbols.LeftParenthesis}"">
@@ -2301,6 +2377,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IUnaryOperatorExpression}"" IsComplex=""True"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusPlaceholderFrame PropertyName=""Operator"">
                 <FocusPlaceholderFrame.Selectors>
                     <FocusFrameSelector SelectorType=""{xaml:Type easly:IIdentifier}"" SelectorName=""Feature""/>
@@ -2323,6 +2400,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IAttributeFeature}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalPanelFrame>
                 <FocusDiscreteFrame PropertyName=""Export"">
                     <FocusDiscreteFrame.Visibility>
@@ -2370,6 +2448,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IConstantFeature}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalPanelFrame>
                 <FocusDiscreteFrame PropertyName=""Export"">
                     <FocusDiscreteFrame.Visibility>
@@ -2408,6 +2487,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:ICreationFeature}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalPanelFrame>
                 <FocusDiscreteFrame PropertyName=""Export"">
                     <FocusDiscreteFrame.Visibility>
@@ -2439,6 +2519,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IFunctionFeature}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalPanelFrame>
                 <FocusDiscreteFrame PropertyName=""Export"">
                     <FocusDiscreteFrame.Visibility>
@@ -2482,6 +2563,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IIndexerFeature}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalPanelFrame>
                 <FocusDiscreteFrame PropertyName=""Export"">
                     <FocusDiscreteFrame.Visibility>
@@ -2564,6 +2646,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IProcedureFeature}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalPanelFrame>
                 <FocusDiscreteFrame PropertyName=""Export"">
                     <FocusDiscreteFrame.Visibility>
@@ -2595,6 +2678,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IPropertyFeature}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalPanelFrame>
                 <FocusDiscreteFrame PropertyName=""Export"">
                     <FocusDiscreteFrame.Visibility>
@@ -2667,36 +2751,64 @@ namespace TestDebug
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IIdentifier}"" IsSimple=""True"">
         <FocusSelectionFrame>
             <FocusSelectableFrame Name=""Identifier"">
-                <FocusTextValueFrame PropertyName=""Text""/>
+                <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
+                    <FocusTextValueFrame PropertyName=""Text""/>
+                </FocusVerticalPanelFrame>
             </FocusSelectableFrame>
             <FocusSelectableFrame Name=""Feature"">
-                <FocusTextValueFrame PropertyName=""Text""/>
+                <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
+                    <FocusTextValueFrame PropertyName=""Text""/>
+                </FocusVerticalPanelFrame>
             </FocusSelectableFrame>
             <FocusSelectableFrame Name=""Class"">
-                <FocusTextValueFrame PropertyName=""Text""/>
+                <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
+                    <FocusTextValueFrame PropertyName=""Text""/>
+                </FocusVerticalPanelFrame>
             </FocusSelectableFrame>
             <FocusSelectableFrame Name=""ClassOrExport"">
-                <FocusTextValueFrame PropertyName=""Text""/>
+                <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
+                    <FocusTextValueFrame PropertyName=""Text""/>
+                </FocusVerticalPanelFrame>
             </FocusSelectableFrame>
             <FocusSelectableFrame Name=""Export"">
-                <FocusTextValueFrame PropertyName=""Text""/>
+                <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
+                    <FocusTextValueFrame PropertyName=""Text""/>
+                </FocusVerticalPanelFrame>
             </FocusSelectableFrame>
             <FocusSelectableFrame Name=""Library"">
-                <FocusTextValueFrame PropertyName=""Text""/>
+                <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
+                    <FocusTextValueFrame PropertyName=""Text""/>
+                </FocusVerticalPanelFrame>
             </FocusSelectableFrame>
             <FocusSelectableFrame Name=""Source"">
-                <FocusTextValueFrame PropertyName=""Text""/>
+                <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
+                    <FocusTextValueFrame PropertyName=""Text""/>
+                </FocusVerticalPanelFrame>
             </FocusSelectableFrame>
             <FocusSelectableFrame Name=""Type"">
-                <FocusTextValueFrame PropertyName=""Text""/>
+                <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
+                    <FocusTextValueFrame PropertyName=""Text""/>
+                </FocusVerticalPanelFrame>
             </FocusSelectableFrame>
             <FocusSelectableFrame Name=""Pattern"">
-                <FocusTextValueFrame PropertyName=""Text""/>
+                <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
+                    <FocusTextValueFrame PropertyName=""Text""/>
+                </FocusVerticalPanelFrame>
             </FocusSelectableFrame>
         </FocusSelectionFrame>
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IAsLongAsInstruction}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalPanelFrame>
                 <FocusKeywordFrame>as long as</FocusKeywordFrame>
                 <FocusPlaceholderFrame PropertyName=""ContinueCondition""/>
@@ -2720,6 +2832,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IAssignmentInstruction}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalBlockListFrame PropertyName=""DestinationBlocks""/>
             <FocusSymbolFrame Symbol=""{x:Static const:Symbols.LeftArrow}""/>
             <FocusPlaceholderFrame PropertyName=""Source"" />
@@ -2727,6 +2840,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IAttachmentInstruction}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalPanelFrame>
                 <FocusKeywordFrame>attach</FocusKeywordFrame>
                 <FocusPlaceholderFrame PropertyName=""Source"" />
@@ -2752,12 +2866,14 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:ICheckInstruction}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusKeywordFrame>check</FocusKeywordFrame>
             <FocusPlaceholderFrame PropertyName=""BooleanExpression"" />
         </FocusHorizontalPanelFrame>
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:ICommandInstruction}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusInsertFrame CollectionName=""Command.Path""/>
             <FocusPlaceholderFrame PropertyName=""Command"" />
             <FocusHorizontalPanelFrame>
@@ -2777,6 +2893,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:ICreateInstruction}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusKeywordFrame>create</FocusKeywordFrame>
             <FocusPlaceholderFrame PropertyName=""EntityIdentifier"">
                 <FocusPlaceholderFrame.Selectors>
@@ -2807,6 +2924,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IDebugInstruction}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalPanelFrame>
                 <FocusKeywordFrame>debug</FocusKeywordFrame>
                 <FocusInsertFrame CollectionName=""Instructions.InstructionBlocks"" ItemType=""{xaml:Type easly:CommandInstruction}""/>
@@ -2819,6 +2937,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IForLoopInstruction}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusKeywordFrame>loop</FocusKeywordFrame>
             <FocusVerticalPanelFrame>
                 <FocusVerticalPanelFrame>
@@ -2880,6 +2999,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IIfThenElseInstruction}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusVerticalBlockListFrame PropertyName=""ConditionalBlocks""/>
             <FocusVerticalPanelFrame>
                 <FocusVerticalPanelFrame.Visibility>
@@ -2896,6 +3016,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IIndexAssignmentInstruction}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusPlaceholderFrame PropertyName=""Destination"" />
             <FocusHorizontalPanelFrame>
                 <FocusHorizontalPanelFrame.Visibility>
@@ -2911,6 +3032,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IInspectInstruction}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalPanelFrame>
                 <FocusKeywordFrame>inspect</FocusKeywordFrame>
                 <FocusPlaceholderFrame PropertyName=""Source"" />
@@ -2934,6 +3056,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IKeywordAssignmentInstruction}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusDiscreteFrame PropertyName=""Destination"">
                 <FocusKeywordFrame>True</FocusKeywordFrame>
                 <FocusKeywordFrame>False</FocusKeywordFrame>
@@ -2949,6 +3072,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IOverLoopInstruction}"">
         <FocusVerticalPanelFrame>
+            <FocusCommentFrame/>
             <FocusHorizontalPanelFrame>
                 <FocusKeywordFrame>over</FocusKeywordFrame>
                 <FocusPlaceholderFrame PropertyName=""OverList"" />
@@ -2992,6 +3116,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IPrecursorIndexAssignmentInstruction}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusKeywordFrame>precursor</FocusKeywordFrame>
             <FocusHorizontalPanelFrame>
                 <FocusHorizontalPanelFrame.Visibility>
@@ -3011,6 +3136,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IPrecursorInstruction}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusKeywordFrame IsFocusable=""true"">precursor</FocusKeywordFrame>
             <FocusHorizontalPanelFrame>
                 <FocusHorizontalPanelFrame.Visibility>
@@ -3033,6 +3159,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IRaiseEventInstruction}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusKeywordFrame>raise</FocusKeywordFrame>
             <FocusPlaceholderFrame PropertyName=""QueryIdentifier"">
                 <FocusPlaceholderFrame.Selectors>
@@ -3050,12 +3177,14 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IReleaseInstruction}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusKeywordFrame>release</FocusKeywordFrame>
             <FocusPlaceholderFrame PropertyName=""EntityName""/>
         </FocusHorizontalPanelFrame>
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IThrowInstruction}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusKeywordFrame>throw</FocusKeywordFrame>
             <FocusPlaceholderFrame PropertyName=""ExceptionType"" />
             <FocusKeywordFrame>with</FocusKeywordFrame>
@@ -3076,6 +3205,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IAnchoredType}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusKeywordFrame>like</FocusKeywordFrame>
             <FocusDiscreteFrame PropertyName=""AnchorKind"">
                 <FocusDiscreteFrame.Visibility>
@@ -3089,6 +3219,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IFunctionType}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusKeywordFrame>function</FocusKeywordFrame>
             <FocusPlaceholderFrame PropertyName=""BaseType"" />
             <FocusHorizontalBlockListFrame PropertyName=""OverloadBlocks""/>
@@ -3096,6 +3227,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IGenericType}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusPlaceholderFrame PropertyName=""ClassIdentifier"">
                 <FocusPlaceholderFrame.Selectors>
                     <FocusFrameSelector SelectorType=""{xaml:Type easly:IIdentifier}"" SelectorName=""Feature""/>
@@ -3117,6 +3249,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IIndexerType}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusPlaceholderFrame PropertyName=""BaseType"" />
             <FocusSymbolFrame Symbol=""{x:Static const:Symbols.LeftBracket}""/>
             <FocusVerticalPanelFrame>
@@ -3221,6 +3354,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IKeywordAnchoredType}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusKeywordFrame>like</FocusKeywordFrame>
             <FocusDiscreteFrame PropertyName=""Anchor"">
                 <FocusKeywordFrame>True</FocusKeywordFrame>
@@ -3235,6 +3369,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IProcedureType}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusKeywordFrame>procedure</FocusKeywordFrame>
             <FocusPlaceholderFrame PropertyName=""BaseType"" />
             <FocusHorizontalBlockListFrame PropertyName=""OverloadBlocks""/>
@@ -3242,6 +3377,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IPropertyType}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusPlaceholderFrame PropertyName=""BaseType"" />
             <FocusSymbolFrame Symbol=""{x:Static const:Symbols.LeftBracket}""/>
             <FocusVerticalPanelFrame>
@@ -3309,6 +3445,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:ISimpleType}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusPlaceholderFrame PropertyName=""ClassIdentifier"">
                 <FocusPlaceholderFrame.Selectors>
                     <FocusFrameSelector SelectorType=""{xaml:Type easly:IIdentifier}"" SelectorName=""Type""/>
@@ -3327,6 +3464,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:ITupleType}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusKeywordFrame>tuple</FocusKeywordFrame>
             <FocusSymbolFrame Symbol=""{x:Static const:Symbols.LeftBracket}""/>
             <FocusVerticalBlockListFrame PropertyName=""EntityDeclarationBlocks""/>
@@ -3344,6 +3482,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IAssignmentTypeArgument}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusPlaceholderFrame PropertyName=""ParameterIdentifier"">
                 <FocusPlaceholderFrame.Selectors>
                     <FocusFrameSelector SelectorType=""{xaml:Type easly:IIdentifier}"" SelectorName=""Feature""/>
@@ -3355,6 +3494,7 @@ namespace TestDebug
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IPositionalTypeArgument}"">
         <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
             <FocusPlaceholderFrame PropertyName=""Source""/>
         </FocusHorizontalPanelFrame>
     </FocusNodeTemplate>

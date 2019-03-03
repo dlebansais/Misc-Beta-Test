@@ -53,6 +53,10 @@ namespace TestDebug
             padding = Padding.Empty;
         }
 
+        public virtual void DrawSelectionText(string text, Point origin, TextStyles textStyle, int start, int end)
+        {
+        }
+
         public void DrawText(string text, Point origin, TextStyles textStyle, bool isFocused)
         {
         }
@@ -79,6 +83,20 @@ namespace TestDebug
         }
 
         public void DrawCommentIcon(Rect region)
+        {
+        }
+
+        public virtual int GetCaretPositionInText(Point origin, string text, TextStyles textStyle, CaretModes mode, double maxTextWidth)
+        {
+            return 0;
+        }
+
+        public virtual Point ToRelativeLocation(Point origin)
+        {
+            return origin;
+        }
+
+        public virtual void DrawSelectionRectangle(Rect rect)
         {
         }
     }

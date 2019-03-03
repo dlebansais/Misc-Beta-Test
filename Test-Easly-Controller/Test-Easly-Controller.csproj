@@ -8,7 +8,7 @@
     <ProjectGuid>{C3D406EF-0D02-4A09-93BE-8D73D11F619D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Test_Easly_Controller</RootNamespace>
+    <RootNamespace>Test</RootNamespace>
     <AssemblyName>Test-Easly-Controller</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -106,6 +106,8 @@ if exist "$(SolutionDir)..\Easly-Controller\Easly-Controller\bin\x64\$(Configura
 if exist "$(SolutionDir)..\Easly-Controller\Easly-Controller\bin\x64\$(Configuration)\MySql.Data.dll" copy /Y "$(SolutionDir)..\Easly-Controller\Easly-Controller\bin\x64\$(Configuration)\MySql.Data.dll" "$(SolutionDir)Easly-Controller\x64\$(Configuration)"
 if exist "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer.dll" copy /Y "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer.dll" "$(SolutionDir)Easly-Controller\x64\$(Configuration)"
 if exist "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer.pdb" copy /Y "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer.pdb" "$(SolutionDir)Easly-Controller\x64\$(Configuration)"
+if exist "$(SolutionDir)..\KeyboardManager\KeyboardManager\bin\x64\$(Configuration)\KeyboardManager.dll" copy /Y "$(SolutionDir)..\KeyboardManager\KeyboardManager\bin\x64\$(Configuration)\KeyboardManager.dll" "$(SolutionDir)Easly-Controller\x64\$(Configuration)"
+if exist "$(SolutionDir)..\KeyboardManager\KeyboardManager\bin\x64\$(Configuration)\KeyboardManager.pdb" copy /Y "$(SolutionDir)..\KeyboardManager\KeyboardManager\bin\x64\$(Configuration)\KeyboardManager.pdb" "$(SolutionDir)Easly-Controller\x64\$(Configuration)"
 </PreBuildEvent>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
