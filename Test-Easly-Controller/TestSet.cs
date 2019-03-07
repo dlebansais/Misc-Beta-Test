@@ -4686,7 +4686,7 @@ namespace Test
 
             if (CustomLayoutTemplateSet.LayoutTemplateSet != null)
             {
-                ControllerView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawContext.Default);
+                ControllerView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawPrintContext.Default);
 
                 if (LayoutExpectedLastLineTable.ContainsKey(name))
                 {
@@ -4706,7 +4706,7 @@ namespace Test
                 TestLayoutCellViewList(ControllerView, name);
             }
             else
-                ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+                ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
 
             LayoutTestCount = 0;
             LayoutBrowseNode(Controller, RootIndex, JustCount);
@@ -5050,7 +5050,7 @@ namespace Test
         {
             ILayoutRootNodeIndex RootIndex = new LayoutRootNodeIndex(rootNode);
             ILayoutController Controller = LayoutController.Create(RootIndex);
-            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
 
             LayoutTestCount = 0;
             LayoutBrowseNode(Controller, RootIndex, (ILayoutInner inner) => InsertAndCompare(ControllerView, RandNext(LayoutMaxTestCount), inner));
@@ -5134,7 +5134,7 @@ namespace Test
 
             if (IsModified)
             {
-                ILayoutControllerView NewView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+                ILayoutControllerView NewView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
                 Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
                 ILayoutRootNodeIndex NewRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
@@ -5144,7 +5144,7 @@ namespace Test
                 Controller.Undo();
 
                 Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
-                ILayoutControllerView OldView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+                ILayoutControllerView OldView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
                 Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
             }
 
@@ -5155,7 +5155,7 @@ namespace Test
         {
             ILayoutRootNodeIndex RootIndex = new LayoutRootNodeIndex(rootNode);
             ILayoutController Controller = LayoutController.Create(RootIndex);
-            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
 
             LayoutTestCount = 0;
             LayoutBrowseNode(Controller, RootIndex, (ILayoutInner inner) => ReplaceAndCompare(ControllerView, RandNext(LayoutMaxTestCount), inner));
@@ -5253,7 +5253,7 @@ namespace Test
 
             if (IsModified)
             {
-                ILayoutControllerView NewView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+                ILayoutControllerView NewView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
                 Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
                 ILayoutRootNodeIndex NewRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
@@ -5263,7 +5263,7 @@ namespace Test
                 Controller.Undo();
 
                 Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
-                ILayoutControllerView OldView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+                ILayoutControllerView OldView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
                 Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
             }
 
@@ -5274,7 +5274,7 @@ namespace Test
         {
             ILayoutRootNodeIndex RootIndex = new LayoutRootNodeIndex(rootNode);
             ILayoutController Controller = LayoutController.Create(RootIndex);
-            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
 
             LayoutTestCount = 0;
             LayoutBrowseNode(Controller, RootIndex, (ILayoutInner inner) => RemoveAndCompare(ControllerView, RandNext(LayoutMaxTestCount), inner));
@@ -5332,7 +5332,7 @@ namespace Test
 
             if (IsModified)
             {
-                ILayoutControllerView NewView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+                ILayoutControllerView NewView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
                 Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
                 ILayoutRootNodeIndex NewRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
@@ -5342,7 +5342,7 @@ namespace Test
                 Controller.Undo();
 
                 Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
-                ILayoutControllerView OldView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+                ILayoutControllerView OldView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
                 Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
             }
 
@@ -5353,7 +5353,7 @@ namespace Test
         {
             ILayoutRootNodeIndex RootIndex = new LayoutRootNodeIndex(rootNode);
             ILayoutController Controller = LayoutController.Create(RootIndex);
-            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
 
             LayoutTestCount = 0;
             LayoutBrowseNode(Controller, RootIndex, (ILayoutInner inner) => AssignAndCompare(ControllerView, RandNext(LayoutMaxTestCount), inner));
@@ -5389,7 +5389,7 @@ namespace Test
                     Assert.That(AsOptionalInner.IsAssigned);
                     Assert.That(Optional.Item == ChildState.Node);
 
-                    ILayoutControllerView NewView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+                    ILayoutControllerView NewView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
                     Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
                     ILayoutRootNodeIndex NewRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
@@ -5401,7 +5401,7 @@ namespace Test
                         Controller.Undo();
 
                         Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
-                        ILayoutControllerView OldView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+                        ILayoutControllerView OldView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
                         Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
                     }
                 }
@@ -5414,7 +5414,7 @@ namespace Test
         {
             ILayoutRootNodeIndex RootIndex = new LayoutRootNodeIndex(rootNode);
             ILayoutController Controller = LayoutController.Create(RootIndex);
-            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
 
             LayoutTestCount = 0;
             LayoutBrowseNode(Controller, RootIndex, (ILayoutInner inner) => UnassignAndCompare(ControllerView, RandNext(LayoutMaxTestCount), inner));
@@ -5447,7 +5447,7 @@ namespace Test
                 Assert.That(!Optional.IsAssigned);
                 Assert.That(!AsOptionalInner.IsAssigned);
 
-                ILayoutControllerView NewView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+                ILayoutControllerView NewView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
                 Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
                 ILayoutRootNodeIndex NewRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
@@ -5459,7 +5459,7 @@ namespace Test
                     Controller.Undo();
 
                     Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
-                    ILayoutControllerView OldView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+                    ILayoutControllerView OldView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
                     Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
                 }
             }
@@ -5471,7 +5471,7 @@ namespace Test
         {
             ILayoutRootNodeIndex RootIndex = new LayoutRootNodeIndex(rootNode);
             ILayoutController Controller = LayoutController.Create(RootIndex);
-            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
 
             LayoutTestCount = 0;
             LayoutBrowseNode(Controller, RootIndex, (ILayoutInner inner) => ChangeReplicationAndCompare(ControllerView, RandNext(LayoutMaxTestCount), inner));
@@ -5501,7 +5501,7 @@ namespace Test
                     ReplicationStatus Replication = (ReplicationStatus)RandNext(2);
                     Controller.ChangeReplication(AsBlockListInner, BlockIndex, Replication);
 
-                    ILayoutControllerView NewView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+                    ILayoutControllerView NewView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
                     Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
                     ILayoutRootNodeIndex NewRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
@@ -5511,7 +5511,7 @@ namespace Test
                     Controller.Undo();
 
                     Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
-                    ILayoutControllerView OldView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+                    ILayoutControllerView OldView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
                     Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
                 }
             }
@@ -5523,7 +5523,7 @@ namespace Test
         {
             ILayoutRootNodeIndex RootIndex = new LayoutRootNodeIndex(rootNode);
             ILayoutController Controller = LayoutController.Create(RootIndex);
-            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
 
             LayoutTestCount = 0;
             LayoutBrowseNode(Controller, RootIndex, (ILayoutInner inner) => SplitAndCompare(ControllerView, RandNext(LayoutMaxTestCount), inner));
@@ -5555,7 +5555,7 @@ namespace Test
                         ILayoutBrowsingExistingBlockNodeIndex NodeIndex = (ILayoutBrowsingExistingBlockNodeIndex)AsBlockListInner.IndexAt(SplitBlockIndex, SplitIndex);
                         Controller.SplitBlock(AsBlockListInner, NodeIndex);
 
-                        ILayoutControllerView NewView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+                        ILayoutControllerView NewView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
                         Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
                         ILayoutRootNodeIndex NewRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
@@ -5565,7 +5565,7 @@ namespace Test
                         Controller.Undo();
 
                         Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
-                        ILayoutControllerView OldView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+                        ILayoutControllerView OldView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
                         Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
 
                         Assert.That(AsBlockListInner.BlockStateList.Count > 0);
@@ -5577,7 +5577,7 @@ namespace Test
 
                         Controller.MoveBlock(AsBlockListInner, OldBlockIndex, Direction);
 
-                        ILayoutControllerView NewViewAfterMove = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+                        ILayoutControllerView NewViewAfterMove = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
                         Assert.That(NewViewAfterMove.IsEqual(CompareEqual.New(), controllerView));
 
                         ILayoutRootNodeIndex NewRootIndexAfterMove = new LayoutRootNodeIndex(Controller.RootIndex.Node);
@@ -5594,7 +5594,7 @@ namespace Test
         {
             ILayoutRootNodeIndex RootIndex = new LayoutRootNodeIndex(rootNode);
             ILayoutController Controller = LayoutController.Create(RootIndex);
-            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
 
             LayoutTestCount = 0;
             LayoutBrowseNode(Controller, RootIndex, (ILayoutInner inner) => MergeAndCompare(ControllerView, RandNext(LayoutMaxTestCount), inner));
@@ -5622,7 +5622,7 @@ namespace Test
                     ILayoutBrowsingExistingBlockNodeIndex NodeIndex = (ILayoutBrowsingExistingBlockNodeIndex)AsBlockListInner.IndexAt(MergeBlockIndex, 0);
                     Controller.MergeBlocks(AsBlockListInner, NodeIndex);
 
-                    ILayoutControllerView NewView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+                    ILayoutControllerView NewView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
                     Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
                     ILayoutRootNodeIndex NewRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
@@ -5632,7 +5632,7 @@ namespace Test
                     Controller.Undo();
 
                     Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
-                    ILayoutControllerView OldView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+                    ILayoutControllerView OldView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
                     Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
                 }
             }
@@ -5644,7 +5644,7 @@ namespace Test
         {
             ILayoutRootNodeIndex RootIndex = new LayoutRootNodeIndex(rootNode);
             ILayoutController Controller = LayoutController.Create(RootIndex);
-            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
 
             LayoutTestCount = 0;
             LayoutBrowseNode(Controller, RootIndex, (ILayoutInner inner) => MoveAndCompare(ControllerView, RandNext(LayoutMaxTestCount), inner));
@@ -5709,7 +5709,7 @@ namespace Test
 
             if (IsModified)
             {
-                ILayoutControllerView NewView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+                ILayoutControllerView NewView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
                 Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
                 ILayoutRootNodeIndex NewRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
@@ -5719,7 +5719,7 @@ namespace Test
                 Controller.Undo();
 
                 Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
-                ILayoutControllerView OldView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+                ILayoutControllerView OldView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
                 Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
             }
 
@@ -5730,7 +5730,7 @@ namespace Test
         {
             ILayoutRootNodeIndex RootIndex = new LayoutRootNodeIndex(rootNode);
             ILayoutController Controller = LayoutController.Create(RootIndex);
-            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
 
             LayoutTestCount = 0;
             LayoutBrowseNode(Controller, RootIndex, (ILayoutInner inner) => ExpandAndCompare(ControllerView, RandNext(LayoutMaxTestCount), inner));
@@ -5767,7 +5767,7 @@ namespace Test
 
             Controller.Expand(NodeIndex, out bool IsChanged);
 
-            ILayoutControllerView NewView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+            ILayoutControllerView NewView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
             Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
             ILayoutRootNodeIndex NewRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
@@ -5779,7 +5779,7 @@ namespace Test
                 Controller.Undo();
 
                 Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
-                ILayoutControllerView OldView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+                ILayoutControllerView OldView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
                 Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
 
                 Controller.Redo();
@@ -5802,7 +5802,7 @@ namespace Test
         {
             ILayoutRootNodeIndex RootIndex = new LayoutRootNodeIndex(rootNode);
             ILayoutController Controller = LayoutController.Create(RootIndex);
-            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
 
             LayoutTestCount = 0;
             LayoutBrowseNode(Controller, RootIndex, (ILayoutInner inner) => ReduceAndCompare(ControllerView, RandNext(LayoutMaxTestCount), inner));
@@ -5839,7 +5839,7 @@ namespace Test
 
             Controller.Reduce(NodeIndex, out bool IsChanged);
 
-            ILayoutControllerView NewView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+            ILayoutControllerView NewView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
             Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
 
             ILayoutRootNodeIndex NewRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
@@ -5851,7 +5851,7 @@ namespace Test
                 Controller.Undo();
 
                 Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
-                ILayoutControllerView OldView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+                ILayoutControllerView OldView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
                 Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
 
                 Controller.Redo();
@@ -5874,14 +5874,14 @@ namespace Test
         {
             ILayoutRootNodeIndex RootIndex = new LayoutRootNodeIndex(rootNode);
             ILayoutController Controller = LayoutController.Create(RootIndex);
-            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
 
             ILayoutRootNodeIndex OldRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
             ILayoutController OldController = LayoutController.Create(OldRootIndex);
 
             Controller.Canonicalize(out bool IsChanged);
 
-            ILayoutControllerView NewView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+            ILayoutControllerView NewView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
             Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
 
             ILayoutRootNodeIndex NewRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
@@ -5893,7 +5893,7 @@ namespace Test
                 Controller.Undo();
 
                 Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"RootNode: {rootNode}");
-                ILayoutControllerView OldView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawContext.Default);
+                ILayoutControllerView OldView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
                 Assert.That(OldView.IsEqual(CompareEqual.New(), ControllerView));
             }
         }
@@ -5903,7 +5903,7 @@ namespace Test
         {
             ILayoutRootNodeIndex RootIndex = new LayoutRootNodeIndex(rootNode);
             ILayoutController Controller = LayoutController.Create(RootIndex);
-            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawContext.Default);
+            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawPrintContext.Default);
 
             int Min = ControllerView.MinFocusMove;
             int Max = ControllerView.MaxFocusMove;
@@ -5929,7 +5929,7 @@ namespace Test
                     Controller.Insert(inner, index, out IWriteableBrowsingCollectionNodeIndex nodeIndex);
             }
 
-            ILayoutControllerView NewView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawContext.Default);
+            ILayoutControllerView NewView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawPrintContext.Default);
             Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
 
             ILayoutRootNodeIndex NewRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
@@ -5941,7 +5941,7 @@ namespace Test
         {
             ILayoutRootNodeIndex RootIndex = new LayoutRootNodeIndex(rootNode);
             ILayoutController Controller = LayoutController.Create(RootIndex);
-            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawContext.Default);
+            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawPrintContext.Default);
 
             for (int i = 0; i < 20; i++)
             {
@@ -5955,7 +5955,7 @@ namespace Test
                     Controller.Remove(inner, index);
             }
 
-            ILayoutControllerView NewView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawContext.Default);
+            ILayoutControllerView NewView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawPrintContext.Default);
             Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
 
             ILayoutRootNodeIndex NewRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
@@ -5967,7 +5967,7 @@ namespace Test
         {
             ILayoutRootNodeIndex RootIndex = new LayoutRootNodeIndex(rootNode);
             ILayoutController Controller = LayoutController.Create(RootIndex);
-            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawContext.Default);
+            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawPrintContext.Default);
 
             for (int i = 0; i < 20; i++)
             {
@@ -5983,7 +5983,7 @@ namespace Test
                     Controller.Move(inner, index, Direction);
             }
 
-            ILayoutControllerView NewView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawContext.Default);
+            ILayoutControllerView NewView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawPrintContext.Default);
             Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
 
             ILayoutRootNodeIndex NewRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
@@ -5995,7 +5995,7 @@ namespace Test
         {
             ILayoutRootNodeIndex RootIndex = new LayoutRootNodeIndex(rootNode);
             ILayoutController Controller = LayoutController.Create(RootIndex);
-            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawContext.Default);
+            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawPrintContext.Default);
 
             for (int i = 0; i < 20; i++)
             {
@@ -6011,7 +6011,7 @@ namespace Test
                     Controller.MoveBlock(Inner, BlockIndex, Direction);
             }
 
-            ILayoutControllerView NewView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawContext.Default);
+            ILayoutControllerView NewView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawPrintContext.Default);
             Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
 
             ILayoutRootNodeIndex NewRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
@@ -6023,7 +6023,7 @@ namespace Test
         {
             ILayoutRootNodeIndex RootIndex = new LayoutRootNodeIndex(rootNode);
             ILayoutController Controller = LayoutController.Create(RootIndex);
-            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawContext.Default);
+            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawPrintContext.Default);
 
             for (int i = 0; i < 20; i++)
             {
@@ -6037,7 +6037,7 @@ namespace Test
                     Controller.SplitBlock(inner, index);
             }
 
-            ILayoutControllerView NewView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawContext.Default);
+            ILayoutControllerView NewView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawPrintContext.Default);
             Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
 
             ILayoutRootNodeIndex NewRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
@@ -6049,7 +6049,7 @@ namespace Test
         {
             ILayoutRootNodeIndex RootIndex = new LayoutRootNodeIndex(rootNode);
             ILayoutController Controller = LayoutController.Create(RootIndex);
-            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawContext.Default);
+            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawPrintContext.Default);
 
             for (int i = 0; i < 20; i++)
             {
@@ -6063,7 +6063,7 @@ namespace Test
                     Controller.MergeBlocks(inner, index);
             }
 
-            ILayoutControllerView NewView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawContext.Default);
+            ILayoutControllerView NewView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawPrintContext.Default);
             Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
 
             ILayoutRootNodeIndex NewRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
@@ -6075,7 +6075,7 @@ namespace Test
         {
             ILayoutRootNodeIndex RootIndex = new LayoutRootNodeIndex(rootNode);
             ILayoutController Controller = LayoutController.Create(RootIndex);
-            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawContext.Default);
+            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawPrintContext.Default);
 
             for (int i = 0; i < 20; i++)
             {
@@ -6089,7 +6089,7 @@ namespace Test
                     Controller.Replace(state.ParentInner, state.CycleIndexList, cyclePosition, out IFocusBrowsingChildIndex nodeIndex);
             }
 
-            ILayoutControllerView NewView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawContext.Default);
+            ILayoutControllerView NewView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawPrintContext.Default);
             Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
 
             ILayoutRootNodeIndex NewRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
@@ -6101,7 +6101,7 @@ namespace Test
         {
             ILayoutRootNodeIndex RootIndex = new LayoutRootNodeIndex(rootNode);
             ILayoutController Controller = LayoutController.Create(RootIndex);
-            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawContext.Default);
+            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawPrintContext.Default);
 
             List<ILayoutInner> InnerList = new List<ILayoutInner>();
             List<ILayoutInsertionChildIndex> IndexList = new List<ILayoutInsertionChildIndex>();
@@ -6140,7 +6140,7 @@ namespace Test
                 System.Diagnostics.Debug.WriteLine(s);
             }
             /*
-            ILayoutControllerView NewView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawContext.Default);
+            ILayoutControllerView NewView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawPrintContext.Default);
             Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
 
             ILayoutRootNodeIndex NewRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
@@ -6153,7 +6153,7 @@ namespace Test
         {
             ILayoutRootNodeIndex RootIndex = new LayoutRootNodeIndex(rootNode);
             ILayoutController Controller = LayoutController.Create(RootIndex);
-            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawContext.Default);
+            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawPrintContext.Default);
 
             for (int i = 0; i < 200; i++)
             {
@@ -6167,7 +6167,7 @@ namespace Test
                     Controller.SplitIdentifier(Inner, ReplaceIndex, InsertIndex, out IWriteableBrowsingListNodeIndex FirstIndex, out IWriteableBrowsingListNodeIndex SecondIndex);
             }
 
-            ILayoutControllerView NewView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawContext.Default);
+            ILayoutControllerView NewView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawPrintContext.Default);
             Assert.That(NewView.IsEqual(CompareEqual.New(), ControllerView));
 
             ILayoutRootNodeIndex NewRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
@@ -6179,7 +6179,7 @@ namespace Test
         {
             ILayoutRootNodeIndex RootIndex = new LayoutRootNodeIndex(rootNode);
             ILayoutController Controller = LayoutController.Create(RootIndex);
-            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawContext.Default);
+            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawPrintContext.Default);
 
             ReplicationStatus Replication;
 
@@ -6207,7 +6207,7 @@ namespace Test
                 }
             }
 
-            ILayoutControllerView NewView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawContext.Default);
+            ILayoutControllerView NewView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawPrintContext.Default);
 
             CompareEqual comparer = CompareEqual.New();
             bool IsEq = NewView.IsEqual(comparer, ControllerView);
