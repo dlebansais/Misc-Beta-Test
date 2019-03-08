@@ -4748,7 +4748,7 @@ namespace Test
         {
             ILayoutVisibleCellViewList CellViewList = new LayoutVisibleCellViewList();
             controllerView.EnumerateVisibleCellViews((IFrameVisibleCellView item) => ListCellViews(item, CellViewList), out IFrameVisibleCellView FoundCellView);
-            controllerView.Draw();
+            controllerView.Draw(controllerView.RootStateView);
 
             Assert.That(controllerView.LastLineNumber >= 1);
             Assert.That(controllerView.LastColumnNumber >= 1);

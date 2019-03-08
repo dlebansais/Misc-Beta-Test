@@ -8748,10 +8748,10 @@ namespace Coverage
                         for (j = 0; j < 20; j++)
                         {
                             ControllerView0.MoveFocus(+1, false, out IsMoved);
-                            if (ControllerView0.Selection is IFocusListNodeSelection AsListNodeSelection)
+                            if (ControllerView0.Selection is IFocusNodeListSelection AsNodeListSelection)
                             {
-                                Assert.That(AsListNodeSelection.PropertyName != null);
-                                AsListNodeSelection.Update(AsListNodeSelection.StartIndex, AsListNodeSelection.EndIndex);
+                                Assert.That(AsNodeListSelection.PropertyName != null);
+                                AsNodeListSelection.Update(AsNodeListSelection.StartIndex, AsNodeListSelection.EndIndex);
                                 break;
                             }
                         }
@@ -8775,11 +8775,11 @@ namespace Coverage
                         for (j = 0; j < 20; j++)
                         {
                             ControllerView0.MoveFocus(+1, false, out IsMoved);
-                            if (ControllerView0.Selection is IFocusBlockListNodeSelection AsBlockListNodeSelection)
+                            if (ControllerView0.Selection is IFocusBlockNodeListSelection AsBlockNodeListSelection)
                             {
-                                Assert.That(AsBlockListNodeSelection.PropertyName != null);
-                                Assert.That(AsBlockListNodeSelection.BlockIndex >= 0);
-                                AsBlockListNodeSelection.Update(AsBlockListNodeSelection.StartIndex, AsBlockListNodeSelection.EndIndex);
+                                Assert.That(AsBlockNodeListSelection.PropertyName != null);
+                                Assert.That(AsBlockNodeListSelection.BlockIndex >= 0);
+                                AsBlockNodeListSelection.Update(AsBlockNodeListSelection.StartIndex, AsBlockNodeListSelection.EndIndex);
                                 break;
                             }
                         }
@@ -8807,10 +8807,10 @@ namespace Coverage
                 for (int i = 0; i < MaxFocusMove; i++)
                 {
                     ControllerView0.MoveFocus(+1, false, out IsMoved);
-                    if (ControllerView0.Selection is IFocusBlockSelection AsBlockSelection)
+                    if (ControllerView0.Selection is IFocusBlockListSelection AsBlockListSelection)
                     {
-                        Assert.That(AsBlockSelection.PropertyName != null);
-                        AsBlockSelection.Update(AsBlockSelection.StartIndex, AsBlockSelection.EndIndex);
+                        Assert.That(AsBlockListSelection.PropertyName != null);
+                        AsBlockListSelection.Update(AsBlockListSelection.StartIndex, AsBlockListSelection.EndIndex);
                         break;
                     }
                 }
@@ -10649,7 +10649,7 @@ namespace Coverage
                 foreach (ILayoutVisibleCellView CellView in VisibleCellViewList)
                 {
                     CellView.Draw();
-                    CellView.Print();
+                    CellView.Print(Point.Origin);
                     CellRect = CellView.CellRect;
                 }
 
@@ -10674,7 +10674,7 @@ namespace Coverage
                 {
                     Assert.That(CompareEqual.CoverIsEqual(CellView, CellView));
                     CellView.Draw();
-                    CellView.Print();
+                    CellView.Print(Point.Origin);
                 }
 
                 Assert.That(ControllerView0.MinFocusMove == -2);
@@ -10706,11 +10706,11 @@ namespace Coverage
                 ControllerView0.ShowCaret(false, true);
                 ControllerView0.ShowCaret(true, false);
                 ControllerView0.Invalidate();
-                ControllerView0.Draw();
-                ControllerView0.Print();
+                ControllerView0.Draw(ControllerView0.RootStateView);
+                ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
                 ControllerView0.Invalidate();
-                ControllerView0.Print();
-                ControllerView0.Draw();
+                ControllerView0.Draw(ControllerView0.RootStateView);
+                ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
                 //System.Diagnostics.Debug.Assert(false);
                 ControllerView0.ShowCaret(false, true);
                 ControllerView0.ShowCaret(true, true);
@@ -10723,23 +10723,23 @@ namespace Coverage
                     Assert.That(FocusedText != null || FocusedTextStyle == TextStyles.Default);
 
                     ControllerView0.ShowCaret(false, false);
-                    ControllerView0.Draw();
-                    ControllerView0.Print();
+                    ControllerView0.Draw(ControllerView0.RootStateView);
+                    ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
                     ControllerView0.ShowCaret(true, false);
-                    ControllerView0.Draw();
-                    ControllerView0.Print();
+                    ControllerView0.Draw(ControllerView0.RootStateView);
+                    ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
                     ControllerView0.ShowCaret(false, false);
-                    ControllerView0.Draw();
-                    ControllerView0.Print();
+                    ControllerView0.Draw(ControllerView0.RootStateView);
+                    ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
                     ControllerView0.ShowCaret(true, true);
-                    ControllerView0.Draw();
-                    ControllerView0.Print();
+                    ControllerView0.Draw(ControllerView0.RootStateView);
+                    ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
                     ControllerView0.ShowCaret(false, true);
-                    ControllerView0.Draw();
-                    ControllerView0.Print();
+                    ControllerView0.Draw(ControllerView0.RootStateView);
+                    ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
                     ControllerView0.ShowCaret(true, false);
-                    ControllerView0.Draw();
-                    ControllerView0.Print();
+                    ControllerView0.Draw(ControllerView0.RootStateView);
+                    ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
                 }
 
                 Assert.That(ControllerView0.MaxFocusMove == 0);
@@ -10866,29 +10866,29 @@ namespace Coverage
                     ControllerView0.SetCaretMode(CaretModes.Override, out IsChanged);
                     ControllerView0.SetCaretPosition(0, true, out IsCaretMoved);
                     ControllerView0.SetCaretPosition(ControllerView0.MaxCaretPosition, true, out IsCaretMoved);
-                    ControllerView0.Draw();
-                    ControllerView0.Print();
+                    ControllerView0.Draw(ControllerView0.RootStateView);
+                    ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
 
                     if (IsMoved)
                     {
                         ControllerView0.MoveFocus(+1, true, out IsMoved);
-                        ControllerView0.Draw();
-                        ControllerView0.Print();
+                        ControllerView0.Draw(ControllerView0.RootStateView);
+                        ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
                     }
 
                     ControllerView0.MoveFocus(+1, true, out IsMoved);
 
                     ControllerView0.SetCaretPosition(0, true, out IsCaretMoved);
                     ControllerView0.SetCaretPosition(ControllerView0.MaxCaretPosition, true, out IsCaretMoved);
-                    ControllerView0.Draw();
-                    ControllerView0.Print();
+                    ControllerView0.Draw(ControllerView0.RootStateView);
+                    ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
                 }
 
                 Assert.That(ControllerView0.MaxFocusMove == 0);
 
                 ControllerView0.MeasureAndArrange();
-                ControllerView0.Draw();
-                ControllerView0.Print();
+                ControllerView0.Draw(ControllerView0.RootStateView);
+                ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
 
                 for (int i = 0; i < MaxFocusMove; i++)
                     ControllerView0.MoveFocusVertically(-20, i % 2 == 0, out IsMoved);
@@ -10902,8 +10902,8 @@ namespace Coverage
                 for (int i = 0; i < MaxFocusMove; i++)
                 {
                     ControllerView0.ForceShowComment(out IsMoved);
-                    ControllerView0.Draw();
-                    ControllerView0.Print();
+                    ControllerView0.Draw(ControllerView0.RootStateView);
+                    ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
                     ControllerView0.MoveFocusVertically(+10, i %2 == 0, out IsMoved);
                 }
 
@@ -10912,8 +10912,8 @@ namespace Coverage
 
                 for (int i = 0; i < MaxFocusMove; i++)
                 {
-                    ControllerView0.Draw();
-                    ControllerView0.Print();
+                    ControllerView0.Draw(ControllerView0.RootStateView);
+                    ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
                     ControllerView0.SetCaretMode(CaretModes.Override, out IsChanged);
                     ControllerView0.MoveFocusVertically(+10, i % 2 == 0, out IsMoved);
                 }
@@ -10955,22 +10955,22 @@ namespace Coverage
                     ControllerView0.SetCaretMode(CaretModes.Override, out IsChanged);
                     ControllerView0.SetCaretPosition(0, true, out IsCaretMoved);
                     ControllerView0.SetCaretPosition(ControllerView0.MaxCaretPosition, true, out IsCaretMoved);
-                    ControllerView0.Draw();
-                    ControllerView0.Print();
+                    ControllerView0.Draw(ControllerView0.RootStateView);
+                    ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
 
                     if (IsMoved)
                     {
                         ControllerView0.MoveFocus(+1, true, out IsMoved);
-                        ControllerView0.Draw();
-                        ControllerView0.Print();
+                        ControllerView0.Draw(ControllerView0.RootStateView);
+                        ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
                     }
 
                     ControllerView0.MoveFocus(+1, true, out IsMoved);
 
                     ControllerView0.SetCaretPosition(0, true, out IsCaretMoved);
                     ControllerView0.SetCaretPosition(ControllerView0.MaxCaretPosition, true, out IsCaretMoved);
-                    ControllerView0.Draw();
-                    ControllerView0.Print();
+                    ControllerView0.Draw(ControllerView0.RootStateView);
+                    ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
                 }
 
                 ControllerView0.MoveFocus(ControllerView0.MinFocusMove, true, out IsMoved);
@@ -10980,16 +10980,16 @@ namespace Coverage
                 {
                     ControllerView0.ForceShowComment(out IsMoved);
                     ControllerView0.MeasureAndArrange();
-                    ControllerView0.Draw();
-                    ControllerView0.Print();
+                    ControllerView0.Draw(ControllerView0.RootStateView);
+                    ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
                     ControllerView0.MoveFocusHorizontally(-1, true, out IsMoved);
                     ControllerView0.MeasureAndArrange();
-                    ControllerView0.Draw();
-                    ControllerView0.Print();
+                    ControllerView0.Draw(ControllerView0.RootStateView);
+                    ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
                     ControllerView0.MoveFocusHorizontally(+1, true, out IsMoved);
                     ControllerView0.MeasureAndArrange();
-                    ControllerView0.Draw();
-                    ControllerView0.Print();
+                    ControllerView0.Draw(ControllerView0.RootStateView);
+                    ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
                     ControllerView0.MoveFocus(+1, true, out IsMoved);
                 }
 
@@ -13309,14 +13309,14 @@ namespace Coverage
                     for (j = 0; j < 20; j++)
                     {
                         ControllerView0.MoveFocus(+1, false, out IsMoved);
-                        if (ControllerView0.Selection is ILayoutListNodeSelection AsListNodeSelection)
+                        if (ControllerView0.Selection is ILayoutNodeListSelection AsNodeListSelection)
                         {
-                            Assert.That(AsListNodeSelection.PropertyName != null);
-                            Assert.That(AsListNodeSelection.StateView != null);
-                            AsListNodeSelection.Update(AsListNodeSelection.StartIndex, AsListNodeSelection.EndIndex);
+                            Assert.That(AsNodeListSelection.PropertyName != null);
+                            Assert.That(AsNodeListSelection.StateView != null);
+                            AsNodeListSelection.Update(AsNodeListSelection.StartIndex, AsNodeListSelection.EndIndex);
                             ControllerView0.MeasureAndArrange();
-                            ControllerView0.Draw();
-                            ControllerView0.Print();
+                            ControllerView0.Draw(ControllerView0.RootStateView);
+                            ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
                             break;
                         }
                     }
@@ -13395,7 +13395,7 @@ namespace Coverage
                     ControllerView0.MoveFocus(+i, true, out IsMoved);
 
                     int j;
-                    for (j = 0; j < 30; j++)
+                    for (j = 0; j < 4; j++)
                     {
                         ControllerView0.MoveFocus(+1, false, out IsMoved);
 
@@ -13411,34 +13411,37 @@ namespace Coverage
                             }
                         }
 
-                        if (ControllerView0.Selection is ILayoutListNodeSelection AsListNodeSelection)
+                        if (ControllerView0.Selection is ILayoutEmptySelection AsEmptySelection)
+                            Assert.That(AsEmptySelection.StateView == ControllerView0.RootStateView);
+
+                        else if (ControllerView0.Selection is ILayoutNodeListSelection AsNodeListSelection)
                         {
-                            Assert.That(AsListNodeSelection.PropertyName != null);
-                            Assert.That(AsListNodeSelection.StateView != null);
-                            AsListNodeSelection.Update(AsListNodeSelection.StartIndex, AsListNodeSelection.EndIndex);
+                            Assert.That(AsNodeListSelection.PropertyName != null);
+                            Assert.That(AsNodeListSelection.StateView != null);
+                            AsNodeListSelection.Update(AsNodeListSelection.StartIndex, AsNodeListSelection.EndIndex);
                             ControllerView0.MeasureAndArrange();
-                            ControllerView0.Draw();
-                            ControllerView0.Print();
+                            ControllerView0.Draw(ControllerView0.RootStateView);
+                            ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
                         }
 
-                        else if (ControllerView0.Selection is ILayoutBlockListNodeSelection AsBlockListNodeSelection)
+                        else if (ControllerView0.Selection is ILayoutBlockNodeListSelection AsBlockNodeListSelection)
                         {
-                            Assert.That(AsBlockListNodeSelection.PropertyName != null);
-                            Assert.That(AsBlockListNodeSelection.StateView != null);
-                            AsBlockListNodeSelection.Update(AsBlockListNodeSelection.StartIndex, AsBlockListNodeSelection.EndIndex);
+                            Assert.That(AsBlockNodeListSelection.PropertyName != null);
+                            Assert.That(AsBlockNodeListSelection.StateView != null);
+                            AsBlockNodeListSelection.Update(AsBlockNodeListSelection.StartIndex, AsBlockNodeListSelection.EndIndex);
                             ControllerView0.MeasureAndArrange();
-                            ControllerView0.Draw();
-                            ControllerView0.Print();
+                            ControllerView0.Draw(ControllerView0.RootStateView);
+                            ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
                         }
 
-                        else if (ControllerView0.Selection is ILayoutBlockSelection AsBlockSelection)
+                        else if (ControllerView0.Selection is ILayoutBlockListSelection AsBlockListSelection)
                         {
-                            Assert.That(AsBlockSelection.PropertyName != null);
-                            Assert.That(AsBlockSelection.StateView != null);
-                            AsBlockSelection.Update(AsBlockSelection.StartIndex, AsBlockSelection.EndIndex);
+                            Assert.That(AsBlockListSelection.PropertyName != null);
+                            Assert.That(AsBlockListSelection.StateView != null);
+                            AsBlockListSelection.Update(AsBlockListSelection.StartIndex, AsBlockListSelection.EndIndex);
                             ControllerView0.MeasureAndArrange();
-                            ControllerView0.Draw();
-                            ControllerView0.Print();
+                            ControllerView0.Draw(ControllerView0.RootStateView);
+                            ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
                         }
 
                         else if (ControllerView0.Selection is ILayoutTextSelection AsTextSelection)
@@ -13446,16 +13449,16 @@ namespace Coverage
                             Assert.That(AsTextSelection.StateView != null);
                             AsTextSelection.Update(AsTextSelection.Start, AsTextSelection.End);
                             ControllerView0.MeasureAndArrange();
-                            ControllerView0.Draw();
-                            ControllerView0.Print();
+                            ControllerView0.Draw(ControllerView0.RootStateView);
+                            ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
                         }
 
                         else if (ControllerView0.Selection is ILayoutDiscreteContentSelection AsDiscreteContentSelection)
                         {
                             Assert.That(AsDiscreteContentSelection.StateView != null);
                             ControllerView0.MeasureAndArrange();
-                            ControllerView0.Draw();
-                            ControllerView0.Print();
+                            ControllerView0.Draw(ControllerView0.RootStateView);
+                            ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
                         }
                     }
                 }
@@ -13549,10 +13552,10 @@ namespace Coverage
                         if (!IsChanged)
                             break;
 
-                        if (ControllerView0.Selection is ILayoutBlockListNodeSelection AsBlockListNodeSelection)
+                        if (ControllerView0.Selection is ILayoutBlockNodeListSelection AsBlockNodeListSelection)
                         {
-                            Assert.That(AsBlockListNodeSelection.PropertyName != null);
-                            Assert.That(AsBlockListNodeSelection.StateView != null);
+                            Assert.That(AsBlockNodeListSelection.PropertyName != null);
+                            Assert.That(AsBlockNodeListSelection.StateView != null);
                         }
 
                         Assert.That(ControllerView0.SelectionExtension == j + 1);
@@ -13560,7 +13563,7 @@ namespace Coverage
                         string SelectionString = ControllerView0.Selection.ToString();
 
                         ControllerView0.MeasureAndArrange();
-                        ControllerView0.Draw();
+                        ControllerView0.Draw(ControllerView0.RootStateView);
                     }
 
                     Assert.That(!IsChanged);
@@ -13576,7 +13579,7 @@ namespace Coverage
                         Assert.That(IsChanged);
 
                         ControllerView0.MeasureAndArrange();
-                        ControllerView0.Draw();
+                        ControllerView0.Draw(ControllerView0.RootStateView);
                     }
 
                     ControllerView0.ReduceSelection(out IsChanged);
@@ -15342,7 +15345,7 @@ namespace Coverage
                 foreach (ILayoutVisibleCellView CellView in VisibleCellViewList)
                 {
                     CellView.Draw();
-                    CellView.Print();
+                    CellView.Print(Point.Origin);
                 }
 
                 IFrameVisibleCellViewList FrameVisibleCellViewList = VisibleCellViewList;
