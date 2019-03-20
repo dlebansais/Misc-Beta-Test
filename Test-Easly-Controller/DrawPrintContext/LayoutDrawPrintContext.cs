@@ -11,6 +11,9 @@ namespace TestDebug
 
         public Measure LineHeight { get { return new Measure() { Draw = 12, Print = 1 }; } }
         public Measure TabulationWidth { get { return new Measure() { Draw = 24, Print = 2 }; } }
+        public Measure BlockGeometryWidth { get { return new Measure() { Draw = 12, Print = 1 }; } }
+        public Measure BlockGeometryHeight { get { return new Measure() { Draw = 12, Print = 1 }; } }
+        public Padding PagePadding { get; private set; }
 
         public Measure GetHorizontalSeparatorWidth(HorizontalSeparators separator)
         {
@@ -20,6 +23,14 @@ namespace TestDebug
         public Measure GetVerticalSeparatorHeight(VerticalSeparators separator)
         {
             return Measure.Zero;
+        }
+
+        public virtual void DrawHorizontalBlockGeometry(Point origin, Measure width)
+        {
+        }
+
+        public virtual void DrawVerticalBlockGeometry(Point origin, Measure height)
+        {
         }
 
         public Size MeasureSymbolSize(Symbols symbol)
@@ -102,6 +113,10 @@ namespace TestDebug
         public int GetCaretPositionInText(double x, string text, TextStyles textStyle, CaretModes mode, Measure maxTextWidth)
         {
             return 0;
+        }
+
+        public virtual void FromRelativeLocation(ref double x, ref double y)
+        {
         }
 
         public void ToRelativeLocation(ref double x, ref double y)
