@@ -1724,7 +1724,7 @@ namespace Test
         public static void TestFrameCellViewList(IFrameControllerView controllerView, string name)
         {
             IFrameVisibleCellViewList CellViewList = new FrameVisibleCellViewList();
-            controllerView.EnumerateVisibleCellViews((IFrameVisibleCellView item) => ListCellViews(item, CellViewList), out IFrameVisibleCellView FoundCellView);
+            controllerView.EnumerateVisibleCellViews((IFrameVisibleCellView item) => ListCellViews(item, CellViewList), out IFrameVisibleCellView FoundCellView, false);
 
             Assert.That(controllerView.LastLineNumber >= 1);
             Assert.That(controllerView.LastColumnNumber >= 1);
@@ -3058,7 +3058,7 @@ namespace Test
         public static void TestFocusCellViewList(IFocusControllerView controllerView, string name)
         {
             IFocusVisibleCellViewList CellViewList = new FocusVisibleCellViewList();
-            controllerView.EnumerateVisibleCellViews((IFrameVisibleCellView item) => ListCellViews(item, CellViewList), out IFrameVisibleCellView FoundCellView);
+            controllerView.EnumerateVisibleCellViews((IFrameVisibleCellView item) => ListCellViews(item, CellViewList), out IFrameVisibleCellView FoundCellView, false);
 
             Assert.That(controllerView.LastLineNumber >= 1);
             Assert.That(controllerView.LastColumnNumber >= 1);
@@ -4747,7 +4747,7 @@ namespace Test
         public static void TestLayoutCellViewList(ILayoutControllerView controllerView, string name)
         {
             ILayoutVisibleCellViewList CellViewList = new LayoutVisibleCellViewList();
-            controllerView.EnumerateVisibleCellViews((IFrameVisibleCellView item) => ListCellViews(item, CellViewList), out IFrameVisibleCellView FoundCellView);
+            controllerView.EnumerateVisibleCellViews((IFrameVisibleCellView item) => ListCellViews(item, CellViewList), out IFrameVisibleCellView FoundCellView, false);
             controllerView.Draw(controllerView.RootStateView);
 
             Assert.That(controllerView.LastLineNumber >= 1);

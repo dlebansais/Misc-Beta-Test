@@ -3297,12 +3297,12 @@ namespace Coverage
                 }
 
                 IFrameVisibleCellViewList VisibleCellViewList = new FrameVisibleCellViewList();
-                ControllerView0.EnumerateVisibleCellViews((IFrameVisibleCellView item) => ListCellViews(item, VisibleCellViewList), out IFrameVisibleCellView FoundCellView);
+                ControllerView0.EnumerateVisibleCellViews((IFrameVisibleCellView item) => ListCellViews(item, VisibleCellViewList), out IFrameVisibleCellView FoundCellView, false);
                 ControllerView0.PrintCellViewTree(true);
 
                 ControllerView0.SetCommentDisplayMode(CommentDisplayModes.All);
                 VisibleCellViewList.Clear();
-                ControllerView0.EnumerateVisibleCellViews((IFrameVisibleCellView item) => ListCellViews(item, VisibleCellViewList), out FoundCellView);
+                ControllerView0.EnumerateVisibleCellViews((IFrameVisibleCellView item) => ListCellViews(item, VisibleCellViewList), out FoundCellView, false);
                 ControllerView0.PrintCellViewTree(true);
 
                 //System.Diagnostics.Debug.Assert(false);
@@ -6261,14 +6261,14 @@ namespace Coverage
                 }
 
                 IFocusVisibleCellViewList VisibleCellViewList = new FocusVisibleCellViewList();
-                ControllerView0.EnumerateVisibleCellViews((IFrameVisibleCellView item) => ListCellViews(item, VisibleCellViewList), out IFrameVisibleCellView FoundCellView);
+                ControllerView0.EnumerateVisibleCellViews((IFrameVisibleCellView item) => ListCellViews(item, VisibleCellViewList), out IFrameVisibleCellView FoundCellView, false);
                 ControllerView0.PrintCellViewTree(true);
 
                 Assert.That(ControllerView0.MinFocusMove == 0);
 
                 ControllerView0.SetCommentDisplayMode(CommentDisplayModes.All);
                 VisibleCellViewList.Clear();
-                ControllerView0.EnumerateVisibleCellViews((IFrameVisibleCellView item) => ListCellViews(item, VisibleCellViewList), out FoundCellView);
+                ControllerView0.EnumerateVisibleCellViews((IFrameVisibleCellView item) => ListCellViews(item, VisibleCellViewList), out FoundCellView, false);
                 ControllerView0.PrintCellViewTree(true);
 
                 foreach (IFocusVisibleCellView CellView in VisibleCellViewList)
@@ -10115,7 +10115,7 @@ namespace Coverage
                 // IFocusVisibleCellViewList
 
                 IFocusVisibleCellViewList VisibleCellViewList = new FocusVisibleCellViewList();
-                ControllerView.EnumerateVisibleCellViews((IFrameVisibleCellView item) => ListCellViews(item, VisibleCellViewList), out IFrameVisibleCellView FoundCellView);
+                ControllerView.EnumerateVisibleCellViews((IFrameVisibleCellView item) => ListCellViews(item, VisibleCellViewList), out IFrameVisibleCellView FoundCellView, false);
                 Assert.That(VisibleCellViewList.Count> 0);
                 IFocusVisibleCellView FirstVisibleCellView = VisibleCellViewList[0];
 
@@ -10607,18 +10607,18 @@ namespace Coverage
                             Assert.That(AsPatternStateView.State == State);
                             Assert.That(AsPatternStateView is ILayoutNodeStateView AsPlaceholderPatternNodeStateView && AsPlaceholderPatternNodeStateView.State == State);
                             Assert.That(AsPatternStateView.Template != null);
-                            Assert.That(AsPatternStateView.RootCellView != null);
-                            Assert.That(AsPatternStateView.CellViewTable != null);
-                            Assert.That(AsPatternStateView.ParentContainer != null);
+                            //Assert.That(AsPatternStateView.RootCellView != null);
+                            //Assert.That(AsPatternStateView.CellViewTable != null);
+                            //Assert.That(AsPatternStateView.ParentContainer != null);
                             break;
 
                         case ILayoutSourceStateView AsSourceStateView:
                             Assert.That(AsSourceStateView.State == State);
                             Assert.That(AsSourceStateView is ILayoutNodeStateView AsPlaceholderSourceNodeStateView && AsPlaceholderSourceNodeStateView.State == State);
                             Assert.That(AsSourceStateView.Template != null);
-                            Assert.That(AsSourceStateView.RootCellView != null);
-                            Assert.That(AsSourceStateView.CellViewTable != null);
-                            Assert.That(AsSourceStateView.ParentContainer != null);
+                            //Assert.That(AsSourceStateView.RootCellView != null);
+                            //Assert.That(AsSourceStateView.CellViewTable != null);
+                            //Assert.That(AsSourceStateView.ParentContainer != null);
                             break;
 
                         case ILayoutPlaceholderNodeStateView AsPlaceholderNodeStateView:
@@ -10640,7 +10640,7 @@ namespace Coverage
                 }
 
                 ILayoutVisibleCellViewList VisibleCellViewList = new LayoutVisibleCellViewList();
-                ControllerView0.EnumerateVisibleCellViews((IFrameVisibleCellView item) => ListCellViews(item, VisibleCellViewList), out IFrameVisibleCellView FoundCellView);
+                ControllerView0.EnumerateVisibleCellViews((IFrameVisibleCellView item) => ListCellViews(item, VisibleCellViewList), out IFrameVisibleCellView FoundCellView, false);
                 ControllerView0.PrintCellViewTree(true);
 
                 ControllerView0.RootStateView.UpdateActualCellsSize();
@@ -10664,7 +10664,7 @@ namespace Coverage
                 ControllerView0.SetCommentDisplayMode(CommentDisplayModes.All);
                 ControllerView0.SetShowUnfocusedComments(true);
                 VisibleCellViewList.Clear();
-                ControllerView0.EnumerateVisibleCellViews((IFrameVisibleCellView item) => ListCellViews(item, VisibleCellViewList), out FoundCellView);
+                ControllerView0.EnumerateVisibleCellViews((IFrameVisibleCellView item) => ListCellViews(item, VisibleCellViewList), out FoundCellView, false);
                 ControllerView0.PrintCellViewTree(true);
                 ControllerView0.MeasureAndArrange();
 
@@ -15336,7 +15336,7 @@ namespace Coverage
                 ControllerView.MeasureAndArrange();
 
                 ILayoutVisibleCellViewList VisibleCellViewList = new LayoutVisibleCellViewList();
-                ControllerView.EnumerateVisibleCellViews((IFrameVisibleCellView item) => ListCellViews(item, VisibleCellViewList), out IFrameVisibleCellView FoundCellView);
+                ControllerView.EnumerateVisibleCellViews((IFrameVisibleCellView item) => ListCellViews(item, VisibleCellViewList), out IFrameVisibleCellView FoundCellView, false);
                 Assert.That(VisibleCellViewList.Count > 0);
                 ILayoutVisibleCellView FirstVisibleCellView = VisibleCellViewList[0];
 
