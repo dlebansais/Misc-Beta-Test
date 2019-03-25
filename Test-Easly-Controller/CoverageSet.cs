@@ -6201,7 +6201,9 @@ namespace Coverage
             FocusCustomTemplateSet.PropertyToFrame(Controller.RootState, "PlaceholderTree", SelectorStack);
             FocusCustomTemplateSet.GetCommentFrame(Controller.RootState, SelectorStack);
 
+#if !TRAVIS
             IDataObject DataObject = new DataObject();
+#endif
 
             using (IFocusControllerView ControllerView0 = FocusControllerView.Create(Controller, FocusCustomTemplateSet))
             {
@@ -6502,7 +6504,9 @@ namespace Coverage
                         Assert.That(AsCommentSelection.StateView != null);
                         AsCommentSelection.Update(AsCommentSelection.Start, AsCommentSelection.End);
                         AsCommentSelection.Update(AsCommentSelection.End, AsCommentSelection.Start);
+#if !TRAVIS
                         AsCommentSelection.Copy(DataObject);
+#endif
                         break;
                     }
 
@@ -6521,7 +6525,9 @@ namespace Coverage
                         Assert.That(AsStringContentSelection.PropertyName != null);
                         AsStringContentSelection.Update(AsStringContentSelection.Start, AsStringContentSelection.End);
                         AsStringContentSelection.Update(AsStringContentSelection.End, AsStringContentSelection.Start);
+#if !TRAVIS
                         AsStringContentSelection.Copy(DataObject);
+#endif
                         break;
                     }
 
@@ -8779,7 +8785,9 @@ namespace Coverage
             IFocusController ControllerBase = FocusController.Create(RootIndex);
             IFocusController Controller = FocusController.Create(RootIndex);
 
+#if !TRAVIS
             IDataObject DataObject = new DataObject();
+#endif
 
             using (IFocusControllerView ControllerView0 = FocusControllerView.Create(Controller, TestDebug.CoverageFocusTemplateSet.FocusTemplateSet))
             {
@@ -8801,7 +8809,9 @@ namespace Coverage
                                 Assert.That(AsNodeListSelection.PropertyName != null);
                                 AsNodeListSelection.Update(AsNodeListSelection.StartIndex, AsNodeListSelection.EndIndex);
                                 AsNodeListSelection.Update(AsNodeListSelection.EndIndex, AsNodeListSelection.StartIndex);
+#if !TRAVIS
                                 AsNodeListSelection.Copy(DataObject);
+#endif
                                 break;
                             }
                         }
@@ -8831,7 +8841,9 @@ namespace Coverage
                                 Assert.That(AsBlockNodeListSelection.BlockIndex >= 0);
                                 AsBlockNodeListSelection.Update(AsBlockNodeListSelection.StartIndex, AsBlockNodeListSelection.EndIndex);
                                 AsBlockNodeListSelection.Update(AsBlockNodeListSelection.EndIndex, AsBlockNodeListSelection.StartIndex);
+#if !TRAVIS
                                 AsBlockNodeListSelection.Copy(DataObject);
+#endif
                                 break;
                             }
                         }
@@ -8864,7 +8876,9 @@ namespace Coverage
                         Assert.That(AsBlockListSelection.PropertyName != null);
                         AsBlockListSelection.Update(AsBlockListSelection.StartIndex, AsBlockListSelection.EndIndex);
                         AsBlockListSelection.Update(AsBlockListSelection.EndIndex, AsBlockListSelection.StartIndex);
+#if !TRAVIS
                         AsBlockListSelection.Copy(DataObject);
+#endif
                         break;
                     }
                 }
@@ -10559,7 +10573,9 @@ namespace Coverage
             ILayoutTemplateSet DefaultTemplateSet = LayoutTemplateSet.Default;
             DefaultTemplateSet = LayoutTemplateSet.Default;
 
+#if !TRAVIS
             IDataObject DataObject = new DataObject();
+#endif
 
             using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet, TestDebug.LayoutDrawPrintContext.Default))
             {
@@ -11085,7 +11101,9 @@ namespace Coverage
                         Assert.That(AsCommentSelection.StateView != null);
                         AsCommentSelection.Update(AsCommentSelection.Start, AsCommentSelection.End);
                         AsCommentSelection.Update(AsCommentSelection.End, AsCommentSelection.Start);
+#if !TRAVIS
                         AsCommentSelection.Copy(DataObject);
+#endif
                         break;
                     }
 
@@ -11105,7 +11123,9 @@ namespace Coverage
                         Assert.That(AsStringContentSelection.PropertyName != null);
                         AsStringContentSelection.Update(AsStringContentSelection.Start, AsStringContentSelection.End);
                         AsStringContentSelection.Update(AsStringContentSelection.End, AsStringContentSelection.Start);
+#if !TRAVIS
                         AsStringContentSelection.Copy(DataObject);
+#endif
                         break;
                     }
 
@@ -13266,7 +13286,9 @@ namespace Coverage
             ILayoutController ControllerBase = LayoutController.Create(RootIndex);
             ILayoutController Controller = LayoutController.Create(RootIndex);
 
+#if !TRAVIS
             IDataObject DataObject = new DataObject();
+#endif
 
             using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet, TestDebug.LayoutDrawPrintContext.Default))
             {
@@ -13390,7 +13412,9 @@ namespace Coverage
                             Assert.That(AsNodeListSelection.StateView != null);
                             AsNodeListSelection.Update(AsNodeListSelection.StartIndex, AsNodeListSelection.EndIndex);
                             AsNodeListSelection.Update(AsNodeListSelection.EndIndex, AsNodeListSelection.StartIndex);
+#if !TRAVIS
                             AsNodeListSelection.Copy(DataObject);
+#endif
                             ControllerView0.MeasureAndArrange();
                             ControllerView0.Draw(ControllerView0.RootStateView);
                             ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
@@ -13448,7 +13472,9 @@ namespace Coverage
             ILayoutController ControllerBase = LayoutController.Create(RootIndex);
             ILayoutController Controller = LayoutController.Create(RootIndex);
 
+#if !TRAVIS
             IDataObject DataObject = new DataObject();
+#endif
 
             using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet, TestDebug.LayoutDrawPrintContext.Default))
             {
@@ -13499,7 +13525,9 @@ namespace Coverage
                             Assert.That(AsNodeListSelection.StateView != null);
                             AsNodeListSelection.Update(AsNodeListSelection.StartIndex, AsNodeListSelection.EndIndex);
                             AsNodeListSelection.Update(AsNodeListSelection.EndIndex, AsNodeListSelection.StartIndex);
+#if !TRAVIS
                             AsNodeListSelection.Copy(DataObject);
+#endif
                             ControllerView0.MeasureAndArrange();
                             ControllerView0.Draw(ControllerView0.RootStateView);
                             ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
@@ -13511,7 +13539,9 @@ namespace Coverage
                             Assert.That(AsBlockNodeListSelection.StateView != null);
                             AsBlockNodeListSelection.Update(AsBlockNodeListSelection.StartIndex, AsBlockNodeListSelection.EndIndex);
                             AsBlockNodeListSelection.Update(AsBlockNodeListSelection.EndIndex, AsBlockNodeListSelection.StartIndex);
+#if !TRAVIS
                             AsBlockNodeListSelection.Copy(DataObject);
+#endif
                             ControllerView0.MeasureAndArrange();
                             ControllerView0.Draw(ControllerView0.RootStateView);
                             ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
@@ -13523,7 +13553,9 @@ namespace Coverage
                             Assert.That(AsBlockListSelection.StateView != null);
                             AsBlockListSelection.Update(AsBlockListSelection.StartIndex, AsBlockListSelection.EndIndex);
                             AsBlockListSelection.Update(AsBlockListSelection.EndIndex, AsBlockListSelection.StartIndex);
+#if !TRAVIS
                             AsBlockListSelection.Copy(DataObject);
+#endif
                             ControllerView0.MeasureAndArrange();
                             ControllerView0.Draw(ControllerView0.RootStateView);
                             ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
@@ -13534,7 +13566,9 @@ namespace Coverage
                             Assert.That(AsTextSelection.StateView != null);
                             AsTextSelection.Update(AsTextSelection.Start, AsTextSelection.End);
                             AsTextSelection.Update(AsTextSelection.End, AsTextSelection.Start);
+#if !TRAVIS
                             AsTextSelection.Copy(DataObject);
+#endif
                             ControllerView0.MeasureAndArrange();
                             ControllerView0.Draw(ControllerView0.RootStateView);
                             ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
