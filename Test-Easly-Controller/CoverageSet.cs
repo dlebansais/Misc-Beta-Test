@@ -8598,7 +8598,13 @@ namespace Coverage
                 }
 
                 Assert.That(IsFocused);
-                Assert.That(ControllerView0.IsItemSimplifiable(out IFocusInner Inner, out IFocusInsertionChildIndex Index));
+                bool IsItemSimplifiable = ControllerView0.IsItemSimplifiable(out IFocusInner Inner, out IFocusInsertionChildIndex Index);
+                Assert.That(IsItemSimplifiable);
+
+                Controller.Replace(Inner, Index, out IWriteableBrowsingChildIndex NodeIndex);
+
+                bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out Inner, out List<IFocusInsertionChildIndex> IndexList);
+                Assert.That(IsItemComplexifiable);
             }
         }
 

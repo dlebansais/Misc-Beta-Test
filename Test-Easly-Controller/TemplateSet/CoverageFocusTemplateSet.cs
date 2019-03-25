@@ -303,7 +303,11 @@ namespace TestDebug
     <FocusNodeTemplate NodeType=""{xaml:Type cov:IMain}"">
         <FocusHorizontalPanelFrame>
             <FocusCommentFrame/>
-            <FocusPlaceholderFrame PropertyName=""PlaceholderTree""/>
+            <FocusPlaceholderFrame PropertyName=""PlaceholderTree"">
+                <FocusPlaceholderFrame.Visibility>
+                    <FocusCountFrameVisibility PropertyName=""LeafBlocks""/>
+                </FocusPlaceholderFrame.Visibility>
+            </FocusPlaceholderFrame>
             <FocusPlaceholderFrame PropertyName=""PlaceholderLeaf"">
                 <FocusPlaceholderFrame.Selectors>
                     <FocusFrameSelector SelectorType=""{xaml:Type cov:ILeaf}"" SelectorName=""Leaf1""/>
@@ -320,7 +324,11 @@ namespace TestDebug
                     <FocusFrameSelector SelectorType=""{xaml:Type cov:ILeaf}"" SelectorName=""Leaf3""/>
                 </FocusOptionalFrame.Selectors>
             </FocusOptionalFrame>
-            <FocusInsertFrame CollectionName=""LeafBlocks""/>
+            <FocusInsertFrame CollectionName=""LeafBlocks"">
+                <FocusInsertFrame.Visibility>
+                    <FocusCountFrameVisibility PropertyName=""LeafBlocks""/>
+                </FocusInsertFrame.Visibility>
+            </FocusInsertFrame>
             <FocusHorizontalBlockListFrame PropertyName=""LeafBlocks"">
                 <FocusHorizontalBlockListFrame.Visibility>
                     <FocusCountFrameVisibility PropertyName=""LeafPath""/>
@@ -352,7 +360,11 @@ namespace TestDebug
                 <FocusKeywordFrame>Reference</FocusKeywordFrame>
                 <FocusKeywordFrame>Value</FocusKeywordFrame>
             </FocusDiscreteFrame>
-            <FocusTextValueFrame PropertyName=""ValueString""/>
+            <FocusTextValueFrame PropertyName=""ValueString"">
+                <FocusTextValueFrame.Visibility>
+                    <FocusComplexFrameVisibility PropertyName=""PlaceholderTree""/>
+                </FocusTextValueFrame.Visibility>
+            </FocusTextValueFrame>
             <FocusCharacterFrame PropertyName=""ValueString"">
                 <FocusCharacterFrame.Visibility>
                     <FocusComplexFrameVisibility PropertyName=""PlaceholderTree""/>
