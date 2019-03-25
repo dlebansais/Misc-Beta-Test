@@ -3050,6 +3050,7 @@ namespace Test
             FocusTestItemMergeable(rootNode);
             FocusTestItemCyclable(rootNode);
             FocusTestItemSimplifiable(rootNode);
+            FocusTestItemComplexifiable(rootNode);
             FocusTestIdentifierSplittable(rootNode);
             FocusTestReplicationModifiable(rootNode);
 #endif
@@ -4451,6 +4452,28 @@ namespace Test
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));*/
         }
 
+        public static void FocusTestItemComplexifiable(INode rootNode)
+        {
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusControllerView ControllerView = FocusControllerView.Create(Controller, CustomFocusTemplateSet.FocusTemplateSet);
+
+            for (int i = 0; i < 200; i++)
+            {
+                int Min = ControllerView.MinFocusMove;
+                int Max = ControllerView.MaxFocusMove;
+                int Direction = RandNext(Max - Min + 1) + Min;
+
+                ControllerView.MoveFocus(Direction, true, out bool IsMoved);
+
+                if (ControllerView.IsItemComplexifiable(out IFocusInner Inner, out List<IFocusInsertionChildIndex> IndexList))
+                {
+                    int Choice = RandNext(IndexList.Count);
+                    Controller.Replace(Inner, IndexList[Choice], out IWriteableBrowsingChildIndex NodeIndex);
+                }
+            }
+        }
+
         public static void FocusTestIdentifierSplittable(INode rootNode)
         {
             IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
@@ -4739,6 +4762,7 @@ namespace Test
             LayoutTestItemMergeable(rootNode);
             LayoutTestItemCyclable(rootNode);
             LayoutTestItemSimplifiable(rootNode);
+            LayoutTestItemComplexifiable(rootNode);
             LayoutTestIdentifierSplittable(rootNode);
             LayoutTestReplicationModifiable(rootNode);
 #endif
@@ -6148,6 +6172,28 @@ namespace Test
             Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));*/
         }
         static int total = 0;
+
+        public static void LayoutTestItemComplexifiable(INode rootNode)
+        {
+            ILayoutRootNodeIndex RootIndex = new LayoutRootNodeIndex(rootNode);
+            ILayoutController Controller = LayoutController.Create(RootIndex);
+            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, CustomLayoutTemplateSet.LayoutTemplateSet, LayoutDrawPrintContext.Default);
+
+            for (int i = 0; i < 200; i++)
+            {
+                int Min = ControllerView.MinFocusMove;
+                int Max = ControllerView.MaxFocusMove;
+                int Direction = RandNext(Max - Min + 1) + Min;
+
+                ControllerView.MoveFocus(Direction, true, out bool IsMoved);
+
+                if (ControllerView.IsItemComplexifiable(out IFocusInner Inner, out List<IFocusInsertionChildIndex> IndexList))
+                {
+                    int Choice = RandNext(IndexList.Count);
+                    Controller.Replace(Inner, IndexList[Choice], out IWriteableBrowsingChildIndex NodeIndex);
+                }
+            }
+        }
 
         public static void LayoutTestIdentifierSplittable(INode rootNode)
         {

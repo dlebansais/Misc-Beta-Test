@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using System.Threading;
+using System.Windows;
 using EaslyController;
 using EaslyController.Constants;
 using EaslyController.Controller;
@@ -3236,6 +3237,23 @@ namespace Coverage
             IFrameTemplateSet DefaultTemplateSet = FrameTemplateSet.Default;
             DefaultTemplateSet = FrameTemplateSet.Default;
 
+            IFrameTemplateSet FrameCustomTemplateSet = TestDebug.CoverageFrameTemplateSet.FrameTemplateSet;
+
+            //System.Diagnostics.Debug.Assert(false);
+            foreach (KeyValuePair<Type, IFrameTemplate> TemplateEntry in FrameCustomTemplateSet.NodeTemplateTable)
+                if (TemplateEntry.Key == typeof(ILeaf))
+                {
+                    IFrameNodeTemplate Template = TemplateEntry.Value as IFrameNodeTemplate;
+                    Assert.That(Template != null);
+
+                    Template.PropertyToFrame("Text");
+                    Template.GetCommentFrame();
+                    break;
+                }
+
+            FrameCustomTemplateSet.PropertyToFrame(Controller.RootState, "PlaceholderTree");
+            FrameCustomTemplateSet.GetCommentFrame(Controller.RootState);
+
             using (IFrameControllerView ControllerView0 = FrameControllerView.Create(Controller, TestDebug.CoverageFrameTemplateSet.FrameTemplateSet))
             {
                 Assert.That(ControllerView0.Controller == Controller);
@@ -6161,6 +6179,8 @@ namespace Coverage
                         }
                 }
 
+            List<IFocusFrameSelectorList> SelectorStack;
+
             Assert.That(FrameSelectorList != null);
             Assert.That(FrameSelectorList.Count > 0);
             foreach (KeyValuePair<Type, IFocusTemplate> TemplateEntry in FocusCustomTemplateSet.NodeTemplateTable)
@@ -6169,13 +6189,19 @@ namespace Coverage
                     IFocusNodeTemplate Template = TemplateEntry.Value as IFocusNodeTemplate;
                     Assert.That(Template != null);
 
-                    List<IFocusFrameSelectorList> SelectorStack = new List<IFocusFrameSelectorList>();
+                    SelectorStack = new List<IFocusFrameSelectorList>();
                     SelectorStack.Add(FrameSelectorList);
 
                     Template.PropertyToFrame("Text", SelectorStack);
+                    Template.GetCommentFrame(SelectorStack);
                     break;
                 }
 
+            SelectorStack = new List<IFocusFrameSelectorList>();
+            FocusCustomTemplateSet.PropertyToFrame(Controller.RootState, "PlaceholderTree", SelectorStack);
+            FocusCustomTemplateSet.GetCommentFrame(Controller.RootState, SelectorStack);
+
+            IDataObject DataObject = new DataObject();
 
             using (IFocusControllerView ControllerView0 = FocusControllerView.Create(Controller, FocusCustomTemplateSet))
             {
@@ -6289,6 +6315,9 @@ namespace Coverage
                 ControllerView0.SetCaretPosition(0, true, out IsMoved);
                 Assert.That(IsMoved);
 
+                ControllerView0.SelectStringContent(ControllerView0.Focus.CellView.StateView.State, "ValueString", 0, 1);
+                ControllerView0.SelectComment(ControllerView0.Focus.CellView.StateView.State, 0, 1);
+
                 ControllerView0.MoveFocus(+1, true, out IsMoved);
                 Assert.That(ControllerView0.FocusedText != null);
                 Assert.That(!ControllerView0.IsUserVisible);
@@ -6310,6 +6339,45 @@ namespace Coverage
                 ControllerView0.MoveFocus(ControllerView0.MinFocusMove, true, out IsMoved);
                 Assert.That(ControllerView0.MinFocusMove == 0);
 
+                while (ControllerView0.MaxFocusMove > 0)
+                {
+                    IFocusInner Inner;
+                    IFocusInsertionChildIndex InsertionIndex;
+                    IFocusCollectionInner CollectionInner;
+                    IFocusBlockListInner BlockListInner;
+                    IFocusListInner ListInner;
+                    IFocusInsertionCollectionNodeIndex InsertionCollectionIndex;
+                    IFocusBrowsingCollectionNodeIndex BrowsingCollectionIndex;
+                    IFocusBrowsingExistingBlockNodeIndex ExistingBlockNodeIndex;
+                    IFocusInsertionListNodeIndex ReplacementListNodeIndex, InsertionListNodeIndex;
+                    int BlockIndex;
+                    BaseNode.ReplicationStatus Replication;
+
+                    bool IsUserVisible = ControllerView0.IsUserVisible;
+                    bool IsNewItemInsertable = ControllerView0.IsNewItemInsertable(out CollectionInner, out InsertionCollectionIndex);
+                    bool IsItemRemoveable = ControllerView0.IsItemRemoveable(out CollectionInner, out BrowsingCollectionIndex);
+                    bool IsItemMoveable = ControllerView0.IsItemMoveable(-1, out CollectionInner, out BrowsingCollectionIndex);
+                    bool IsItemSplittable = ControllerView0.IsItemSplittable(out BlockListInner, out ExistingBlockNodeIndex);
+                    bool IsReplicationModifiable = ControllerView0.IsReplicationModifiable(out BlockListInner, out BlockIndex, out Replication);
+                    bool IsItemMergeable = ControllerView0.IsItemMergeable(out BlockListInner, out ExistingBlockNodeIndex);
+                    bool IsBlockMoveable = ControllerView0.IsBlockMoveable(-1, out BlockListInner, out BlockIndex);
+                    bool IsItemSimplifiable = ControllerView0.IsItemSimplifiable(out Inner, out InsertionIndex);
+                    bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out Inner, out List<IFocusInsertionChildIndex> indexList);
+                    bool IsIdentifierSplittable = ControllerView0.IsIdentifierSplittable(out ListInner, out ReplacementListNodeIndex, out InsertionListNodeIndex);
+
+                    ControllerView0.MoveFocus(+1, true, out IsMoved);
+                }
+
+                IFocusBlockListInner MainLeafBlocksInner = Controller.RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IFocusBlockListInner;
+                while (!MainLeafBlocksInner.IsEmpty)
+                {
+                    IWriteableBrowsingExistingBlockNodeIndex NodeIndex = MainLeafBlocksInner.IndexAt(0, 0) as IWriteableBrowsingExistingBlockNodeIndex;
+                    Controller.Remove(MainLeafBlocksInner, NodeIndex);
+                }
+
+                ControllerView0.MoveFocus(ControllerView0.MinFocusMove, true, out IsMoved);
+                Assert.That(ControllerView0.MinFocusMove == 0);
+
                 //System.Diagnostics.Debug.Assert(false);
 
                 while (ControllerView0.MaxFocusMove > 0)
@@ -6327,6 +6395,10 @@ namespace Coverage
                     BaseNode.ReplicationStatus Replication;
 
                     bool IsUserVisible = ControllerView0.IsUserVisible;
+
+                    if (ControllerView0.MaxCaretPosition > 0)
+                        ControllerView0.SetCaretPosition(ControllerView0.MaxCaretPosition, true, out IsMoved);
+
                     bool IsNewItemInsertable = ControllerView0.IsNewItemInsertable(out CollectionInner, out InsertionCollectionIndex);
                     bool IsItemRemoveable = ControllerView0.IsItemRemoveable(out CollectionInner, out BrowsingCollectionIndex);
                     bool IsItemMoveable = ControllerView0.IsItemMoveable(-1, out CollectionInner, out BrowsingCollectionIndex);
@@ -6335,44 +6407,7 @@ namespace Coverage
                     bool IsItemMergeable = ControllerView0.IsItemMergeable(out BlockListInner, out ExistingBlockNodeIndex);
                     bool IsBlockMoveable = ControllerView0.IsBlockMoveable(-1, out BlockListInner, out BlockIndex);
                     bool IsItemSimplifiable = ControllerView0.IsItemSimplifiable(out Inner, out InsertionIndex);
-                    bool IsIdentifierSplittable = ControllerView0.IsIdentifierSplittable(out ListInner, out ReplacementListNodeIndex, out InsertionListNodeIndex);
-
-                    ControllerView0.MoveFocus(+1, true, out IsMoved);
-                }
-
-                IFocusBlockListInner MainLeafBlocksInner = Controller.RootState.PropertyToInner(nameof(IMain.LeafBlocks)) as IFocusBlockListInner;
-                while (!MainLeafBlocksInner.IsEmpty)
-                {
-                    IWriteableBrowsingExistingBlockNodeIndex NodeIndex = MainLeafBlocksInner.IndexAt(0, 0) as IWriteableBrowsingExistingBlockNodeIndex;
-                    Controller.Remove(MainLeafBlocksInner, NodeIndex);
-                }
-
-                ControllerView0.MoveFocus(ControllerView0.MinFocusMove, true, out IsMoved);
-                Assert.That(ControllerView0.MinFocusMove == 0);
-
-                while (ControllerView0.MaxFocusMove > 0)
-                {
-                    IFocusInner Inner;
-                    IFocusInsertionChildIndex InsertionIndex;
-                    IFocusCollectionInner CollectionInner;
-                    IFocusBlockListInner BlockListInner;
-                    IFocusListInner ListInner;
-                    IFocusInsertionCollectionNodeIndex InsertionCollectionIndex;
-                    IFocusBrowsingCollectionNodeIndex BrowsingCollectionIndex;
-                    IFocusBrowsingExistingBlockNodeIndex ExistingBlockNodeIndex;
-                    IFocusInsertionListNodeIndex ReplacementListNodeIndex, InsertionListNodeIndex;
-                    int BlockIndex;
-                    BaseNode.ReplicationStatus Replication;
-
-                    bool IsUserVisible = ControllerView0.IsUserVisible;
-                    bool IsNewItemInsertable = ControllerView0.IsNewItemInsertable(out CollectionInner, out InsertionCollectionIndex);
-                    bool IsItemRemoveable = ControllerView0.IsItemRemoveable(out CollectionInner, out BrowsingCollectionIndex);
-                    bool IsItemMoveable = ControllerView0.IsItemMoveable(-1, out CollectionInner, out BrowsingCollectionIndex);
-                    bool IsItemSplittable = ControllerView0.IsItemSplittable(out BlockListInner, out ExistingBlockNodeIndex);
-                    bool IsReplicationModifiable = ControllerView0.IsReplicationModifiable(out BlockListInner, out BlockIndex, out Replication);
-                    bool IsItemMergeable = ControllerView0.IsItemMergeable(out BlockListInner, out ExistingBlockNodeIndex);
-                    bool IsBlockMoveable = ControllerView0.IsBlockMoveable(-1, out BlockListInner, out BlockIndex);
-                    bool IsItemSimplifiable = ControllerView0.IsItemSimplifiable(out Inner, out InsertionIndex);
+                    bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out Inner, out List<IFocusInsertionChildIndex> indexList);
                     bool IsIdentifierSplittable = ControllerView0.IsIdentifierSplittable(out ListInner, out ReplacementListNodeIndex, out InsertionListNodeIndex);
 
                     ControllerView0.MoveFocus(+1, true, out IsMoved);
@@ -6466,6 +6501,8 @@ namespace Coverage
                     {
                         Assert.That(AsCommentSelection.StateView != null);
                         AsCommentSelection.Update(AsCommentSelection.Start, AsCommentSelection.End);
+                        AsCommentSelection.Update(AsCommentSelection.End, AsCommentSelection.Start);
+                        AsCommentSelection.Copy(DataObject);
                         break;
                     }
 
@@ -6483,6 +6520,8 @@ namespace Coverage
                     {
                         Assert.That(AsStringContentSelection.PropertyName != null);
                         AsStringContentSelection.Update(AsStringContentSelection.Start, AsStringContentSelection.End);
+                        AsStringContentSelection.Update(AsStringContentSelection.End, AsStringContentSelection.Start);
+                        AsStringContentSelection.Copy(DataObject);
                         break;
                     }
 
@@ -8479,6 +8518,7 @@ namespace Coverage
                         ControllerView0.Controller.Replace(Inner, InsertionIndex, out IWriteableBrowsingChildIndex nodeIndex);
                     }
 
+                    bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out Inner, out List<IFocusInsertionChildIndex> indexList);
                     bool IsIdentifierSplittable = ControllerView0.IsIdentifierSplittable(out ListInner, out ReplacementListNodeIndex, out InsertionListNodeIndex);
                     if (IsIdentifierSplittable && IdentifierSplitCount++ < MaxIdentifierSplit)
                         Controller.SplitIdentifier(ListInner, ReplacementListNodeIndex, InsertionListNodeIndex, out IWriteableBrowsingListNodeIndex FirstIndex, out IWriteableBrowsingListNodeIndex SecondIndex);
@@ -8667,6 +8707,12 @@ namespace Coverage
 
                     bool IsNewItemInsertable = ControllerView0.IsNewItemInsertable(out CollectionInner, out InsertionCollectionIndex);
 
+                    if (ControllerView0.MaxCaretPosition > 0)
+                    {
+                        ControllerView0.SetCaretPosition(ControllerView0.MaxCaretPosition, true, out IsMoved);
+                        IsNewItemInsertable = ControllerView0.IsNewItemInsertable(out CollectionInner, out InsertionCollectionIndex);
+                    }
+
                     ControllerView0.MoveFocus(+1, true, out IsMoved);
                 }
 
@@ -8733,6 +8779,8 @@ namespace Coverage
             IFocusController ControllerBase = FocusController.Create(RootIndex);
             IFocusController Controller = FocusController.Create(RootIndex);
 
+            IDataObject DataObject = new DataObject();
+
             using (IFocusControllerView ControllerView0 = FocusControllerView.Create(Controller, TestDebug.CoverageFocusTemplateSet.FocusTemplateSet))
             {
                 int MaxFocusMove;
@@ -8752,6 +8800,8 @@ namespace Coverage
                             {
                                 Assert.That(AsNodeListSelection.PropertyName != null);
                                 AsNodeListSelection.Update(AsNodeListSelection.StartIndex, AsNodeListSelection.EndIndex);
+                                AsNodeListSelection.Update(AsNodeListSelection.EndIndex, AsNodeListSelection.StartIndex);
+                                AsNodeListSelection.Copy(DataObject);
                                 break;
                             }
                         }
@@ -8780,6 +8830,8 @@ namespace Coverage
                                 Assert.That(AsBlockNodeListSelection.PropertyName != null);
                                 Assert.That(AsBlockNodeListSelection.BlockIndex >= 0);
                                 AsBlockNodeListSelection.Update(AsBlockNodeListSelection.StartIndex, AsBlockNodeListSelection.EndIndex);
+                                AsBlockNodeListSelection.Update(AsBlockNodeListSelection.EndIndex, AsBlockNodeListSelection.StartIndex);
+                                AsBlockNodeListSelection.Copy(DataObject);
                                 break;
                             }
                         }
@@ -8811,6 +8863,8 @@ namespace Coverage
                     {
                         Assert.That(AsBlockListSelection.PropertyName != null);
                         AsBlockListSelection.Update(AsBlockListSelection.StartIndex, AsBlockListSelection.EndIndex);
+                        AsBlockListSelection.Update(AsBlockListSelection.EndIndex, AsBlockListSelection.StartIndex);
+                        AsBlockListSelection.Copy(DataObject);
                         break;
                     }
                 }
@@ -10505,6 +10559,8 @@ namespace Coverage
             ILayoutTemplateSet DefaultTemplateSet = LayoutTemplateSet.Default;
             DefaultTemplateSet = LayoutTemplateSet.Default;
 
+            IDataObject DataObject = new DataObject();
+
             using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet, TestDebug.LayoutDrawPrintContext.Default))
             {
                 Assert.That(ControllerView0.Controller == Controller);
@@ -10774,6 +10830,7 @@ namespace Coverage
                     bool IsItemMergeable = ControllerView0.IsItemMergeable(out BlockListInner, out ExistingBlockNodeIndex);
                     bool IsBlockMoveable = ControllerView0.IsBlockMoveable(-1, out BlockListInner, out BlockIndex);
                     bool IsItemSimplifiable = ControllerView0.IsItemSimplifiable(out Inner, out InsertionIndex);
+                    bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out Inner, out List<IFocusInsertionChildIndex> indexList);
                     bool IsIdentifierSplittable = ControllerView0.IsIdentifierSplittable(out ListInner, out ReplacementListNodeIndex, out InsertionListNodeIndex);
 
                     ControllerView0.MoveFocus(+1, true, out IsMoved);
@@ -10804,6 +10861,10 @@ namespace Coverage
                     BaseNode.ReplicationStatus Replication;
 
                     bool IsUserVisible = ControllerView0.IsUserVisible;
+
+                    if (ControllerView0.MaxCaretPosition > 0)
+                        ControllerView0.SetCaretPosition(ControllerView0.MaxCaretPosition, true, out IsMoved);
+
                     bool IsNewItemInsertable = ControllerView0.IsNewItemInsertable(out CollectionInner, out InsertionCollectionIndex);
                     bool IsItemRemoveable = ControllerView0.IsItemRemoveable(out CollectionInner, out BrowsingCollectionIndex);
                     bool IsItemMoveable = ControllerView0.IsItemMoveable(-1, out CollectionInner, out BrowsingCollectionIndex);
@@ -10812,6 +10873,7 @@ namespace Coverage
                     bool IsItemMergeable = ControllerView0.IsItemMergeable(out BlockListInner, out ExistingBlockNodeIndex);
                     bool IsBlockMoveable = ControllerView0.IsBlockMoveable(-1, out BlockListInner, out BlockIndex);
                     bool IsItemSimplifiable = ControllerView0.IsItemSimplifiable(out Inner, out InsertionIndex);
+                    bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out Inner, out List<IFocusInsertionChildIndex> indexList);
                     bool IsIdentifierSplittable = ControllerView0.IsIdentifierSplittable(out ListInner, out ReplacementListNodeIndex, out InsertionListNodeIndex);
 
                     ControllerView0.MoveFocus(+1, true, out IsMoved);
@@ -11022,6 +11084,8 @@ namespace Coverage
                     {
                         Assert.That(AsCommentSelection.StateView != null);
                         AsCommentSelection.Update(AsCommentSelection.Start, AsCommentSelection.End);
+                        AsCommentSelection.Update(AsCommentSelection.End, AsCommentSelection.Start);
+                        AsCommentSelection.Copy(DataObject);
                         break;
                     }
 
@@ -11040,6 +11104,8 @@ namespace Coverage
                         Assert.That(AsStringContentSelection.StateView != null);
                         Assert.That(AsStringContentSelection.PropertyName != null);
                         AsStringContentSelection.Update(AsStringContentSelection.Start, AsStringContentSelection.End);
+                        AsStringContentSelection.Update(AsStringContentSelection.End, AsStringContentSelection.Start);
+                        AsStringContentSelection.Copy(DataObject);
                         break;
                     }
 
@@ -13083,6 +13149,7 @@ namespace Coverage
                         ControllerView0.Controller.Replace(Inner, InsertionIndex, out IWriteableBrowsingChildIndex nodeIndex);
                     }
 
+                    bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out Inner, out List<IFocusInsertionChildIndex> indexList);
                     bool IsIdentifierSplittable = ControllerView0.IsIdentifierSplittable(out ListInner, out ReplacementListNodeIndex, out InsertionListNodeIndex);
                     if (IsIdentifierSplittable && IdentifierSplitCount++ < MaxIdentifierSplit)
                     {
@@ -13199,6 +13266,8 @@ namespace Coverage
             ILayoutController ControllerBase = LayoutController.Create(RootIndex);
             ILayoutController Controller = LayoutController.Create(RootIndex);
 
+            IDataObject DataObject = new DataObject();
+
             using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet, TestDebug.LayoutDrawPrintContext.Default))
             {
                 Assert.That(ControllerView0.Controller == Controller);
@@ -13271,6 +13340,12 @@ namespace Coverage
 
                     bool IsNewItemInsertable = ControllerView0.IsNewItemInsertable(out CollectionInner, out InsertionCollectionIndex);
 
+                    if (ControllerView0.MaxCaretPosition > 0)
+                    {
+                        ControllerView0.SetCaretPosition(ControllerView0.MaxCaretPosition, true, out IsMoved);
+                        IsNewItemInsertable = ControllerView0.IsNewItemInsertable(out CollectionInner, out InsertionCollectionIndex);
+                    }
+
                     ControllerView0.MoveFocus(+1, true, out IsMoved);
                 }
 
@@ -13314,6 +13389,8 @@ namespace Coverage
                             Assert.That(AsNodeListSelection.PropertyName != null);
                             Assert.That(AsNodeListSelection.StateView != null);
                             AsNodeListSelection.Update(AsNodeListSelection.StartIndex, AsNodeListSelection.EndIndex);
+                            AsNodeListSelection.Update(AsNodeListSelection.EndIndex, AsNodeListSelection.StartIndex);
+                            AsNodeListSelection.Copy(DataObject);
                             ControllerView0.MeasureAndArrange();
                             ControllerView0.Draw(ControllerView0.RootStateView);
                             ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
@@ -13371,6 +13448,8 @@ namespace Coverage
             ILayoutController ControllerBase = LayoutController.Create(RootIndex);
             ILayoutController Controller = LayoutController.Create(RootIndex);
 
+            IDataObject DataObject = new DataObject();
+
             using (ILayoutControllerView ControllerView0 = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet, TestDebug.LayoutDrawPrintContext.Default))
             {
                 Assert.That(ControllerView0.Controller == Controller);
@@ -13419,6 +13498,8 @@ namespace Coverage
                             Assert.That(AsNodeListSelection.PropertyName != null);
                             Assert.That(AsNodeListSelection.StateView != null);
                             AsNodeListSelection.Update(AsNodeListSelection.StartIndex, AsNodeListSelection.EndIndex);
+                            AsNodeListSelection.Update(AsNodeListSelection.EndIndex, AsNodeListSelection.StartIndex);
+                            AsNodeListSelection.Copy(DataObject);
                             ControllerView0.MeasureAndArrange();
                             ControllerView0.Draw(ControllerView0.RootStateView);
                             ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
@@ -13429,6 +13510,8 @@ namespace Coverage
                             Assert.That(AsBlockNodeListSelection.PropertyName != null);
                             Assert.That(AsBlockNodeListSelection.StateView != null);
                             AsBlockNodeListSelection.Update(AsBlockNodeListSelection.StartIndex, AsBlockNodeListSelection.EndIndex);
+                            AsBlockNodeListSelection.Update(AsBlockNodeListSelection.EndIndex, AsBlockNodeListSelection.StartIndex);
+                            AsBlockNodeListSelection.Copy(DataObject);
                             ControllerView0.MeasureAndArrange();
                             ControllerView0.Draw(ControllerView0.RootStateView);
                             ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
@@ -13439,6 +13522,8 @@ namespace Coverage
                             Assert.That(AsBlockListSelection.PropertyName != null);
                             Assert.That(AsBlockListSelection.StateView != null);
                             AsBlockListSelection.Update(AsBlockListSelection.StartIndex, AsBlockListSelection.EndIndex);
+                            AsBlockListSelection.Update(AsBlockListSelection.EndIndex, AsBlockListSelection.StartIndex);
+                            AsBlockListSelection.Copy(DataObject);
                             ControllerView0.MeasureAndArrange();
                             ControllerView0.Draw(ControllerView0.RootStateView);
                             ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
@@ -13448,6 +13533,8 @@ namespace Coverage
                         {
                             Assert.That(AsTextSelection.StateView != null);
                             AsTextSelection.Update(AsTextSelection.Start, AsTextSelection.End);
+                            AsTextSelection.Update(AsTextSelection.End, AsTextSelection.Start);
+                            AsTextSelection.Copy(DataObject);
                             ControllerView0.MeasureAndArrange();
                             ControllerView0.Draw(ControllerView0.RootStateView);
                             ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
