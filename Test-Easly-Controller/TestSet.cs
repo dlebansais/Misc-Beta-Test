@@ -446,6 +446,12 @@ namespace Test
             {
                 TestWriteableInsert(index, rootNode);
                 TestWriteableRemove(index, rootNode);
+                TestWriteableRemoveBlockRange(index, rootNode);
+                TestWriteableReplaceBlockRange(index, rootNode);
+                TestWriteableInsertBlockRange(index, rootNode);
+                TestWriteableRemoveNodeRange(index, rootNode);
+                TestWriteableReplaceNodeRange(index, rootNode);
+                TestWriteableInsertNodeRange(index, rootNode);
                 TestWriteableReplace(index, rootNode);
                 TestWriteableAssign(index, rootNode);
                 TestWriteableUnassign(index, rootNode);
@@ -674,6 +680,440 @@ namespace Test
                 IWriteableController NewController = WriteableController.Create(NewRootIndex);
                 Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
                 
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IWriteableControllerView OldView = WriteableControllerView.Create(Controller);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+            }
+
+            return false;
+        }
+
+        public static void TestWriteableRemoveBlockRange(int index, INode rootNode)
+        {
+            IWriteableRootNodeIndex RootIndex = new WriteableRootNodeIndex(rootNode);
+            IWriteableController Controller = WriteableController.Create(RootIndex);
+            IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
+
+            WriteableTestCount = 0;
+            WriteableBrowseNode(Controller, RootIndex, (IWriteableInner inner) => RemoveBlockRangeAndCompare(ControllerView, RandNext(WriteableMaxTestCount), inner));
+        }
+
+        static bool RemoveBlockRangeAndCompare(IWriteableControllerView controllerView, int TestIndex, IWriteableInner inner)
+        {
+            if (WriteableTestCount++ < TestIndex)
+                return true;
+
+            IWriteableController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            IWriteableRootNodeIndex OldRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+            IWriteableController OldController = WriteableController.Create(OldRootIndex);
+
+            if (inner is IWriteableBlockListInner AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int FirstBlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
+                    int LastBlockIndex = RandNext(AsBlockListInner.BlockStateList.Count + 1);
+
+                    if (FirstBlockIndex > LastBlockIndex)
+                        FirstBlockIndex = LastBlockIndex;
+
+                    if (Controller.IsBlockRangeRemoveable(AsBlockListInner, FirstBlockIndex, LastBlockIndex))
+                    {
+                        Controller.RemoveBlockRange(AsBlockListInner, FirstBlockIndex, LastBlockIndex);
+                        IsModified = FirstBlockIndex < LastBlockIndex;
+                    }
+                }
+            }
+
+            if (IsModified)
+            {
+                IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+                IWriteableController NewController = WriteableController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IWriteableControllerView OldView = WriteableControllerView.Create(Controller);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+            }
+
+            return false;
+        }
+
+        public static void TestWriteableReplaceBlockRange(int index, INode rootNode)
+        {
+            IWriteableRootNodeIndex RootIndex = new WriteableRootNodeIndex(rootNode);
+            IWriteableController Controller = WriteableController.Create(RootIndex);
+            IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
+
+            WriteableTestCount = 0;
+            WriteableBrowseNode(Controller, RootIndex, (IWriteableInner inner) => ReplaceBlockRangeAndCompare(ControllerView, RandNext(WriteableMaxTestCount), inner));
+        }
+
+        static bool ReplaceBlockRangeAndCompare(IWriteableControllerView controllerView, int TestIndex, IWriteableInner inner)
+        {
+            if (WriteableTestCount++ < TestIndex)
+                return true;
+
+            IWriteableController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            IWriteableRootNodeIndex OldRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+            IWriteableController OldController = WriteableController.Create(OldRootIndex);
+
+            if (inner is IWriteableBlockListInner AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int FirstBlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
+                    int LastBlockIndex = RandNext(AsBlockListInner.BlockStateList.Count + 1);
+
+                    if (FirstBlockIndex > LastBlockIndex)
+                        FirstBlockIndex = LastBlockIndex;
+
+                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
+
+                    IPattern ReplicationPattern = NodeHelper.CreateSimplePattern("x");
+                    IIdentifier SourceIdentifier = NodeHelper.CreateSimpleIdentifier("y");
+                    IWriteableInsertionNewBlockNodeIndex NewNodeIndex = new WriteableInsertionNewBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, FirstBlockIndex, ReplicationPattern, SourceIdentifier);
+
+                    NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
+
+                    IWriteableInsertionExistingBlockNodeIndex ExistingNodeIndex = new WriteableInsertionExistingBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, FirstBlockIndex, 1);
+
+                    List<IWriteableInsertionBlockNodeIndex> IndexList = new List<IWriteableInsertionBlockNodeIndex>() { NewNodeIndex, ExistingNodeIndex };
+                    Controller.ReplaceBlockRange(AsBlockListInner, FirstBlockIndex, LastBlockIndex, IndexList);
+                    IsModified = true;
+                }
+            }
+
+            if (IsModified)
+            {
+                IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+                IWriteableController NewController = WriteableController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IWriteableControllerView OldView = WriteableControllerView.Create(Controller);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+            }
+
+            return false;
+        }
+
+        public static void TestWriteableInsertBlockRange(int index, INode rootNode)
+        {
+            IWriteableRootNodeIndex RootIndex = new WriteableRootNodeIndex(rootNode);
+            IWriteableController Controller = WriteableController.Create(RootIndex);
+            IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
+
+            WriteableTestCount = 0;
+            WriteableBrowseNode(Controller, RootIndex, (IWriteableInner inner) => InsertBlockRangeAndCompare(ControllerView, RandNext(WriteableMaxTestCount), inner));
+        }
+
+        static bool InsertBlockRangeAndCompare(IWriteableControllerView controllerView, int TestIndex, IWriteableInner inner)
+        {
+            if (WriteableTestCount++ < TestIndex)
+                return true;
+
+            IWriteableController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            IWriteableRootNodeIndex OldRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+            IWriteableController OldController = WriteableController.Create(OldRootIndex);
+
+            if (inner is IWriteableBlockListInner AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int InsertedIndex = RandNext(AsBlockListInner.BlockStateList.Count);
+
+                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
+
+                    IPattern ReplicationPattern = NodeHelper.CreateSimplePattern("x");
+                    IIdentifier SourceIdentifier = NodeHelper.CreateSimpleIdentifier("y");
+                    IWriteableInsertionNewBlockNodeIndex NewNodeIndex = new WriteableInsertionNewBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, InsertedIndex, ReplicationPattern, SourceIdentifier);
+
+                    NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
+
+                    IWriteableInsertionExistingBlockNodeIndex ExistingNodeIndex = new WriteableInsertionExistingBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, InsertedIndex, 1);
+
+                    List<IWriteableInsertionBlockNodeIndex> IndexList = new List<IWriteableInsertionBlockNodeIndex>() { NewNodeIndex, ExistingNodeIndex };
+                    Controller.InsertBlockRange(AsBlockListInner, InsertedIndex, IndexList);
+                    IsModified = true;
+                }
+            }
+
+            if (IsModified)
+            {
+                IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+                IWriteableController NewController = WriteableController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IWriteableControllerView OldView = WriteableControllerView.Create(Controller);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+            }
+
+            return false;
+        }
+
+        public static void TestWriteableRemoveNodeRange(int index, INode rootNode)
+        {
+            IWriteableRootNodeIndex RootIndex = new WriteableRootNodeIndex(rootNode);
+            IWriteableController Controller = WriteableController.Create(RootIndex);
+            IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
+
+            WriteableTestCount = 0;
+            WriteableBrowseNode(Controller, RootIndex, (IWriteableInner inner) => RemoveNodeRangeAndCompare(ControllerView, RandNext(WriteableMaxTestCount), inner));
+        }
+
+        static bool RemoveNodeRangeAndCompare(IWriteableControllerView controllerView, int TestIndex, IWriteableInner inner)
+        {
+            if (WriteableTestCount++ < TestIndex)
+                return true;
+
+            IWriteableController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            IWriteableRootNodeIndex OldRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+            IWriteableController OldController = WriteableController.Create(OldRootIndex);
+
+            if (inner is IWriteableBlockListInner AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int BlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
+                    int FirstNodeIndex = RandNext(AsBlockListInner.BlockStateList[BlockIndex].StateList.Count);
+                    int LastNodeIndex = RandNext(AsBlockListInner.BlockStateList[BlockIndex].StateList.Count + 1);
+
+                    if (FirstNodeIndex > LastNodeIndex)
+                        FirstNodeIndex = LastNodeIndex;
+
+                    if (Controller.IsNodeRangeRemoveable(AsBlockListInner, BlockIndex, FirstNodeIndex, LastNodeIndex))
+                    {
+                        Controller.RemoveNodeRange(AsBlockListInner,BlockIndex, FirstNodeIndex, LastNodeIndex);
+                        IsModified = FirstNodeIndex < LastNodeIndex;
+                    }
+                }
+            }
+
+            else if (inner is IWriteableListInner AsListInner)
+            {
+                if (AsListInner.StateList.Count > 0)
+                {
+                    int BlockIndex = -1;
+                    int FirstNodeIndex = RandNext(AsListInner.StateList.Count);
+                    int LastNodeIndex = RandNext(AsListInner.StateList.Count + 1);
+
+                    if (FirstNodeIndex > LastNodeIndex)
+                        FirstNodeIndex = LastNodeIndex;
+
+                    if (Controller.IsNodeRangeRemoveable(AsListInner, BlockIndex, FirstNodeIndex, LastNodeIndex))
+                    {
+                        Controller.RemoveNodeRange(AsListInner, BlockIndex, FirstNodeIndex, LastNodeIndex);
+                        IsModified = FirstNodeIndex < LastNodeIndex;
+                    }
+                }
+            }
+
+            if (IsModified)
+            {
+                IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+                IWriteableController NewController = WriteableController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IWriteableControllerView OldView = WriteableControllerView.Create(Controller);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+            }
+
+            return false;
+        }
+
+        public static void TestWriteableReplaceNodeRange(int index, INode rootNode)
+        {
+            IWriteableRootNodeIndex RootIndex = new WriteableRootNodeIndex(rootNode);
+            IWriteableController Controller = WriteableController.Create(RootIndex);
+            IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
+
+            WriteableTestCount = 0;
+            WriteableBrowseNode(Controller, RootIndex, (IWriteableInner inner) => ReplaceNodeRangeAndCompare(ControllerView, RandNext(WriteableMaxTestCount), inner));
+        }
+
+        static bool ReplaceNodeRangeAndCompare(IWriteableControllerView controllerView, int TestIndex, IWriteableInner inner)
+        {
+            if (WriteableTestCount++ < TestIndex)
+                return true;
+
+            IWriteableController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            IWriteableRootNodeIndex OldRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+            IWriteableController OldController = WriteableController.Create(OldRootIndex);
+
+            if (inner is IWriteableBlockListInner AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int BlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
+                    int FirstNodeIndex = RandNext(AsBlockListInner.BlockStateList[BlockIndex].StateList.Count);
+                    int LastNodeIndex = RandNext(AsBlockListInner.BlockStateList[BlockIndex].StateList.Count + 1);
+
+                    if (FirstNodeIndex > LastNodeIndex)
+                        FirstNodeIndex = LastNodeIndex;
+
+                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
+
+                    IWriteableInsertionExistingBlockNodeIndex ExistingNodeIndex = new WriteableInsertionExistingBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, BlockIndex, FirstNodeIndex);
+                    List<IWriteableInsertionCollectionNodeIndex> IndexList = new List<IWriteableInsertionCollectionNodeIndex>() { ExistingNodeIndex };
+
+                    if (Controller.IsNodeRangeRemoveable(AsBlockListInner, BlockIndex, FirstNodeIndex, LastNodeIndex))
+                    {
+                        Controller.ReplaceNodeRange(AsBlockListInner, BlockIndex, FirstNodeIndex, LastNodeIndex, IndexList);
+                        IsModified = IndexList.Count > 0 || FirstNodeIndex < LastNodeIndex;
+                    }
+                }
+            }
+
+            else if (inner is IWriteableListInner AsListInner)
+            {
+                if (AsListInner.StateList.Count > 0)
+                {
+                    int BlockIndex = -1;
+                    int FirstNodeIndex = RandNext(AsListInner.StateList.Count);
+                    int LastNodeIndex = RandNext(AsListInner.StateList.Count + 1);
+
+                    if (FirstNodeIndex > LastNodeIndex)
+                        FirstNodeIndex = LastNodeIndex;
+
+                    INode NewNode = NodeHelper.DeepCloneNode(AsListInner.StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsListInner.InterfaceType}");
+
+                    IWriteableInsertionListNodeIndex ExistingNodeIndex = new WriteableInsertionListNodeIndex(AsListInner.Owner.Node, AsListInner.PropertyName, NewNode, FirstNodeIndex);
+                    List<IWriteableInsertionCollectionNodeIndex> IndexList = new List<IWriteableInsertionCollectionNodeIndex>() { ExistingNodeIndex };
+
+                    if (Controller.IsNodeRangeRemoveable(AsListInner, BlockIndex, FirstNodeIndex, LastNodeIndex))
+                    {
+                        Controller.ReplaceNodeRange(AsListInner, BlockIndex, FirstNodeIndex, LastNodeIndex, IndexList);
+                        IsModified = IndexList.Count > 0 || FirstNodeIndex < LastNodeIndex;
+                    }
+                }
+            }
+
+            if (IsModified)
+            {
+                IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+                IWriteableController NewController = WriteableController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IWriteableControllerView OldView = WriteableControllerView.Create(Controller);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+            }
+
+            return false;
+        }
+
+        public static void TestWriteableInsertNodeRange(int index, INode rootNode)
+        {
+            IWriteableRootNodeIndex RootIndex = new WriteableRootNodeIndex(rootNode);
+            IWriteableController Controller = WriteableController.Create(RootIndex);
+            IWriteableControllerView ControllerView = WriteableControllerView.Create(Controller);
+
+            WriteableTestCount = 0;
+            WriteableBrowseNode(Controller, RootIndex, (IWriteableInner inner) => InsertNodeRangeAndCompare(ControllerView, RandNext(WriteableMaxTestCount), inner));
+        }
+
+        static bool InsertNodeRangeAndCompare(IWriteableControllerView controllerView, int TestIndex, IWriteableInner inner)
+        {
+            if (WriteableTestCount++ < TestIndex)
+                return true;
+
+            IWriteableController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            IWriteableRootNodeIndex OldRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+            IWriteableController OldController = WriteableController.Create(OldRootIndex);
+
+            if (inner is IWriteableBlockListInner AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int BlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
+                    int InsertedNodeIndex = RandNext(AsBlockListInner.BlockStateList[BlockIndex].StateList.Count);
+
+                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
+
+                    IWriteableInsertionExistingBlockNodeIndex ExistingNodeIndex = new WriteableInsertionExistingBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, BlockIndex, InsertedNodeIndex);
+                    List<IWriteableInsertionCollectionNodeIndex> IndexList = new List<IWriteableInsertionCollectionNodeIndex>() { ExistingNodeIndex };
+
+                    Controller.InsertNodeRange(AsBlockListInner, BlockIndex, InsertedNodeIndex, IndexList);
+                    IsModified = true;
+                }
+            }
+
+            else if (inner is IWriteableListInner AsListInner)
+            {
+                if (AsListInner.StateList.Count > 0)
+                {
+                    int BlockIndex = -1;
+                    int InsertedNodeIndex = RandNext(AsListInner.StateList.Count);
+
+                    INode NewNode = NodeHelper.DeepCloneNode(AsListInner.StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsListInner.InterfaceType}");
+
+                    IWriteableInsertionListNodeIndex ExistingNodeIndex = new WriteableInsertionListNodeIndex(AsListInner.Owner.Node, AsListInner.PropertyName, NewNode, InsertedNodeIndex);
+                    List<IWriteableInsertionCollectionNodeIndex> IndexList = new List<IWriteableInsertionCollectionNodeIndex>() { ExistingNodeIndex };
+
+                    Controller.InsertNodeRange(AsListInner, BlockIndex, InsertedNodeIndex, IndexList);
+                    IsModified = true;
+                }
+            }
+
+            if (IsModified)
+            {
+                IWriteableControllerView NewView = WriteableControllerView.Create(Controller);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IWriteableRootNodeIndex NewRootIndex = new WriteableRootNodeIndex(Controller.RootIndex.Node);
+                IWriteableController NewController = WriteableController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
                 Controller.Undo();
 
                 Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
@@ -1707,6 +2147,12 @@ namespace Test
             {
                 TestFrameInsert(index, rootNode);
                 TestFrameRemove(index, rootNode);
+                TestFrameRemoveBlockRange(index, rootNode);
+                TestFrameReplaceBlockRange(index, rootNode);
+                TestFrameInsertBlockRange(index, rootNode);
+                TestFrameRemoveNodeRange(index, rootNode);
+                TestFrameReplaceNodeRange(index, rootNode);
+                TestFrameInsertNodeRange(index, rootNode);
                 TestFrameReplace(index, rootNode);
                 TestFrameAssign(index, rootNode);
                 TestFrameUnassign(index, rootNode);
@@ -2313,6 +2759,441 @@ namespace Test
                         Controller.Remove(AsBlockListInner, NodeIndex);
                         IsModified = true;
                     }
+                }
+            }
+
+            if (IsModified)
+            {
+                IFrameControllerView NewView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+                IFrameController NewController = FrameController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IFrameControllerView OldView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+            }
+
+            return false;
+        }
+
+        public static void TestFrameRemoveBlockRange(int index, INode rootNode)
+        {
+            IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+
+            FrameTestCount = 0;
+            FrameBrowseNode(Controller, RootIndex, (IFrameInner inner) => RemoveBlockRangeAndCompare(ControllerView, RandNext(FrameMaxTestCount), inner));
+        }
+
+        static bool RemoveBlockRangeAndCompare(IFrameControllerView controllerView, int TestIndex, IFrameInner inner)
+        {
+            if (FrameTestCount++ < TestIndex)
+                return true;
+
+            IFrameController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            IFrameRootNodeIndex OldRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+            IFrameController OldController = FrameController.Create(OldRootIndex);
+
+            if (inner is IFrameBlockListInner AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    //System.Diagnostics.Debug.Assert(false);
+                    int FirstBlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
+                    int LastBlockIndex = RandNext(AsBlockListInner.BlockStateList.Count + 1);
+
+                    if (FirstBlockIndex > LastBlockIndex)
+                        FirstBlockIndex = LastBlockIndex;
+
+                    if (Controller.IsBlockRangeRemoveable(AsBlockListInner, FirstBlockIndex, LastBlockIndex))
+                    {
+                        Controller.RemoveBlockRange(AsBlockListInner, FirstBlockIndex, LastBlockIndex);
+                        IsModified = FirstBlockIndex < LastBlockIndex;
+                    }
+                }
+            }
+
+            if (IsModified)
+            {
+                IFrameControllerView NewView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+                IFrameController NewController = FrameController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IFrameControllerView OldView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+            }
+
+            return false;
+        }
+
+        public static void TestFrameReplaceBlockRange(int index, INode rootNode)
+        {
+            IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+
+            FrameTestCount = 0;
+            FrameBrowseNode(Controller, RootIndex, (IFrameInner inner) => ReplaceBlockRangeAndCompare(ControllerView, RandNext(FrameMaxTestCount), inner));
+        }
+
+        static bool ReplaceBlockRangeAndCompare(IFrameControllerView controllerView, int TestIndex, IFrameInner inner)
+        {
+            if (FrameTestCount++ < TestIndex)
+                return true;
+
+            IFrameController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            IFrameRootNodeIndex OldRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+            IFrameController OldController = FrameController.Create(OldRootIndex);
+
+            if (inner is IFrameBlockListInner AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int FirstBlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
+                    int LastBlockIndex = RandNext(AsBlockListInner.BlockStateList.Count + 1);
+
+                    if (FirstBlockIndex > LastBlockIndex)
+                        FirstBlockIndex = LastBlockIndex;
+
+                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
+
+                    IPattern ReplicationPattern = NodeHelper.CreateSimplePattern("x");
+                    IIdentifier SourceIdentifier = NodeHelper.CreateSimpleIdentifier("y");
+                    IFrameInsertionNewBlockNodeIndex NewNodeIndex = new FrameInsertionNewBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, FirstBlockIndex, ReplicationPattern, SourceIdentifier);
+
+                    NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
+
+                    IFrameInsertionExistingBlockNodeIndex ExistingNodeIndex = new FrameInsertionExistingBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, FirstBlockIndex, 1);
+
+                    List<IWriteableInsertionBlockNodeIndex> IndexList = new List<IWriteableInsertionBlockNodeIndex>() { NewNodeIndex, ExistingNodeIndex };
+                    Controller.ReplaceBlockRange(AsBlockListInner, FirstBlockIndex, LastBlockIndex, IndexList);
+                    IsModified = true;
+                }
+            }
+
+            if (IsModified)
+            {
+                IFrameControllerView NewView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+                IFrameController NewController = FrameController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IFrameControllerView OldView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+            }
+
+            return false;
+        }
+
+        public static void TestFrameInsertBlockRange(int index, INode rootNode)
+        {
+            IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+
+            FrameTestCount = 0;
+            FrameBrowseNode(Controller, RootIndex, (IFrameInner inner) => InsertBlockRangeAndCompare(ControllerView, RandNext(FrameMaxTestCount), inner));
+        }
+
+        static bool InsertBlockRangeAndCompare(IFrameControllerView controllerView, int TestIndex, IFrameInner inner)
+        {
+            if (FrameTestCount++ < TestIndex)
+                return true;
+
+            IFrameController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            IFrameRootNodeIndex OldRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+            IFrameController OldController = FrameController.Create(OldRootIndex);
+
+            if (inner is IFrameBlockListInner AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int InsertedIndex = RandNext(AsBlockListInner.BlockStateList.Count);
+
+                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
+
+                    IPattern ReplicationPattern = NodeHelper.CreateSimplePattern("x");
+                    IIdentifier SourceIdentifier = NodeHelper.CreateSimpleIdentifier("y");
+                    IFrameInsertionNewBlockNodeIndex NewNodeIndex = new FrameInsertionNewBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, InsertedIndex, ReplicationPattern, SourceIdentifier);
+
+                    NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
+
+                    IFrameInsertionExistingBlockNodeIndex ExistingNodeIndex = new FrameInsertionExistingBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, InsertedIndex, 1);
+
+                    List<IWriteableInsertionBlockNodeIndex> IndexList = new List<IWriteableInsertionBlockNodeIndex>() { NewNodeIndex, ExistingNodeIndex };
+                    Controller.InsertBlockRange(AsBlockListInner, InsertedIndex, IndexList);
+                    IsModified = true;
+                }
+            }
+
+            if (IsModified)
+            {
+                IFrameControllerView NewView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+                IFrameController NewController = FrameController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IFrameControllerView OldView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+            }
+
+            return false;
+        }
+
+        public static void TestFrameRemoveNodeRange(int index, INode rootNode)
+        {
+            IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+
+            FrameTestCount = 0;
+            FrameBrowseNode(Controller, RootIndex, (IFrameInner inner) => RemoveNodeRangeAndCompare(ControllerView, RandNext(FrameMaxTestCount), inner));
+        }
+
+        static bool RemoveNodeRangeAndCompare(IFrameControllerView controllerView, int TestIndex, IFrameInner inner)
+        {
+            if (FrameTestCount++ < TestIndex)
+                return true;
+
+            IFrameController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            IFrameRootNodeIndex OldRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+            IFrameController OldController = FrameController.Create(OldRootIndex);
+
+            if (inner is IFrameBlockListInner AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int BlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
+                    int FirstNodeIndex = RandNext(AsBlockListInner.BlockStateList[BlockIndex].StateList.Count);
+                    int LastNodeIndex = RandNext(AsBlockListInner.BlockStateList[BlockIndex].StateList.Count + 1);
+
+                    if (FirstNodeIndex > LastNodeIndex)
+                        FirstNodeIndex = LastNodeIndex;
+
+                    if (Controller.IsNodeRangeRemoveable(AsBlockListInner, BlockIndex, FirstNodeIndex, LastNodeIndex))
+                    {
+                        Controller.RemoveNodeRange(AsBlockListInner, BlockIndex, FirstNodeIndex, LastNodeIndex);
+                        IsModified = FirstNodeIndex < LastNodeIndex;
+                    }
+                }
+            }
+
+            else if (inner is IFrameListInner AsListInner)
+            {
+                if (AsListInner.StateList.Count > 0)
+                {
+                    int BlockIndex = -1;
+                    int FirstNodeIndex = RandNext(AsListInner.StateList.Count);
+                    int LastNodeIndex = RandNext(AsListInner.StateList.Count + 1);
+
+                    if (FirstNodeIndex > LastNodeIndex)
+                        FirstNodeIndex = LastNodeIndex;
+
+                    if (Controller.IsNodeRangeRemoveable(AsListInner, BlockIndex, FirstNodeIndex, LastNodeIndex))
+                    {
+                        Controller.RemoveNodeRange(AsListInner, BlockIndex, FirstNodeIndex, LastNodeIndex);
+                        IsModified = FirstNodeIndex < LastNodeIndex;
+                    }
+                }
+            }
+
+            if (IsModified)
+            {
+                IFrameControllerView NewView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+                IFrameController NewController = FrameController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IFrameControllerView OldView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+            }
+
+            return false;
+        }
+
+        public static void TestFrameReplaceNodeRange(int index, INode rootNode)
+        {
+            IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+
+            FrameTestCount = 0;
+            FrameBrowseNode(Controller, RootIndex, (IFrameInner inner) => ReplaceNodeRangeAndCompare(ControllerView, RandNext(FrameMaxTestCount), inner));
+        }
+
+        static bool ReplaceNodeRangeAndCompare(IFrameControllerView controllerView, int TestIndex, IFrameInner inner)
+        {
+            if (FrameTestCount++ < TestIndex)
+                return true;
+
+            IFrameController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            IFrameRootNodeIndex OldRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+            IFrameController OldController = FrameController.Create(OldRootIndex);
+
+            if (inner is IFrameBlockListInner AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int BlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
+                    int FirstNodeIndex = RandNext(AsBlockListInner.BlockStateList[BlockIndex].StateList.Count);
+                    int LastNodeIndex = RandNext(AsBlockListInner.BlockStateList[BlockIndex].StateList.Count + 1);
+
+                    if (FirstNodeIndex > LastNodeIndex)
+                        FirstNodeIndex = LastNodeIndex;
+
+                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
+
+                    IFrameInsertionExistingBlockNodeIndex ExistingNodeIndex = new FrameInsertionExistingBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, BlockIndex, FirstNodeIndex);
+                    List<IWriteableInsertionCollectionNodeIndex> IndexList = new List<IWriteableInsertionCollectionNodeIndex>() { ExistingNodeIndex };
+
+                    if (Controller.IsNodeRangeRemoveable(AsBlockListInner, BlockIndex, FirstNodeIndex, LastNodeIndex))
+                    {
+                        Controller.ReplaceNodeRange(AsBlockListInner, BlockIndex, FirstNodeIndex, LastNodeIndex, IndexList);
+                        IsModified = IndexList.Count > 0 || FirstNodeIndex < LastNodeIndex;
+                    }
+                }
+            }
+
+            else if (inner is IFrameListInner AsListInner)
+            {
+                if (AsListInner.StateList.Count > 0)
+                {
+                    int BlockIndex = -1;
+                    int FirstNodeIndex = RandNext(AsListInner.StateList.Count);
+                    int LastNodeIndex = RandNext(AsListInner.StateList.Count + 1);
+
+                    if (FirstNodeIndex > LastNodeIndex)
+                        FirstNodeIndex = LastNodeIndex;
+
+                    INode NewNode = NodeHelper.DeepCloneNode(AsListInner.StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsListInner.InterfaceType}");
+
+                    IFrameInsertionListNodeIndex ExistingNodeIndex = new FrameInsertionListNodeIndex(AsListInner.Owner.Node, AsListInner.PropertyName, NewNode, FirstNodeIndex);
+                    List<IWriteableInsertionCollectionNodeIndex> IndexList = new List<IWriteableInsertionCollectionNodeIndex>() { ExistingNodeIndex };
+
+                    if (Controller.IsNodeRangeRemoveable(AsListInner, BlockIndex, FirstNodeIndex, LastNodeIndex))
+                    {
+                        Controller.ReplaceNodeRange(AsListInner, BlockIndex, FirstNodeIndex, LastNodeIndex, IndexList);
+                        IsModified = IndexList.Count > 0 || FirstNodeIndex < LastNodeIndex;
+                    }
+                }
+            }
+
+            if (IsModified)
+            {
+                IFrameControllerView NewView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IFrameRootNodeIndex NewRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+                IFrameController NewController = FrameController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IFrameControllerView OldView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+            }
+
+            return false;
+        }
+
+        public static void TestFrameInsertNodeRange(int index, INode rootNode)
+        {
+            IFrameRootNodeIndex RootIndex = new FrameRootNodeIndex(rootNode);
+            IFrameController Controller = FrameController.Create(RootIndex);
+            IFrameControllerView ControllerView = FrameControllerView.Create(Controller, FrameTemplateSet.Default);
+
+            FrameTestCount = 0;
+            FrameBrowseNode(Controller, RootIndex, (IFrameInner inner) => InsertNodeRangeAndCompare(ControllerView, RandNext(FrameMaxTestCount), inner));
+        }
+
+        static bool InsertNodeRangeAndCompare(IFrameControllerView controllerView, int TestIndex, IFrameInner inner)
+        {
+            if (FrameTestCount++ < TestIndex)
+                return true;
+
+            IFrameController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            IFrameRootNodeIndex OldRootIndex = new FrameRootNodeIndex(Controller.RootIndex.Node);
+            IFrameController OldController = FrameController.Create(OldRootIndex);
+
+            if (inner is IFrameBlockListInner AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int BlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
+                    int InsertedNodeIndex = RandNext(AsBlockListInner.BlockStateList[BlockIndex].StateList.Count);
+
+                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
+
+                    IFrameInsertionExistingBlockNodeIndex ExistingNodeIndex = new FrameInsertionExistingBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, BlockIndex, InsertedNodeIndex);
+                    List<IWriteableInsertionCollectionNodeIndex> IndexList = new List<IWriteableInsertionCollectionNodeIndex>() { ExistingNodeIndex };
+
+                    Controller.InsertNodeRange(AsBlockListInner, BlockIndex, InsertedNodeIndex, IndexList);
+                    IsModified = true;
+                }
+            }
+
+            else if (inner is IFrameListInner AsListInner)
+            {
+                if (AsListInner.StateList.Count > 0)
+                {
+                    int BlockIndex = -1;
+                    int InsertedNodeIndex = RandNext(AsListInner.StateList.Count);
+
+                    INode NewNode = NodeHelper.DeepCloneNode(AsListInner.StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsListInner.InterfaceType}");
+
+                    IFrameInsertionListNodeIndex ExistingNodeIndex = new FrameInsertionListNodeIndex(AsListInner.Owner.Node, AsListInner.PropertyName, NewNode, InsertedNodeIndex);
+                    List<IWriteableInsertionCollectionNodeIndex> IndexList = new List<IWriteableInsertionCollectionNodeIndex>() { ExistingNodeIndex };
+
+                    Controller.InsertNodeRange(AsListInner, BlockIndex, InsertedNodeIndex, IndexList);
+                    IsModified = true;
                 }
             }
 
@@ -3028,6 +3909,12 @@ namespace Test
                 SeedRand(0x12 + index * 256 + i * 65536);
                 TestFocusInsert(index, rootNode);
                 TestFocusRemove(index, rootNode);
+                TestFocusRemoveBlockRange(index, rootNode);
+                TestFocusReplaceBlockRange(index, rootNode);
+                TestFocusInsertBlockRange(index, rootNode);
+                TestFocusRemoveNodeRange(index, rootNode);
+                TestFocusReplaceNodeRange(index, rootNode);
+                TestFocusInsertNodeRange(index, rootNode);
                 TestFocusReplace(index, rootNode);
                 TestFocusAssign(index, rootNode);
                 TestFocusUnassign(index, rootNode);
@@ -3638,6 +4525,440 @@ namespace Test
                         Controller.Remove(AsBlockListInner, NodeIndex);
                         IsModified = true;
                     }
+                }
+            }
+
+            if (IsModified)
+            {
+                IFocusControllerView NewView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+                IFocusController NewController = FocusController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IFocusControllerView OldView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+            }
+
+            return false;
+        }
+
+        public static void TestFocusRemoveBlockRange(int index, INode rootNode)
+        {
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+
+            FocusTestCount = 0;
+            FocusBrowseNode(Controller, RootIndex, (IFocusInner inner) => RemoveBlockRangeAndCompare(ControllerView, RandNext(FocusMaxTestCount), inner));
+        }
+
+        static bool RemoveBlockRangeAndCompare(IFocusControllerView controllerView, int TestIndex, IFocusInner inner)
+        {
+            if (FocusTestCount++ < TestIndex)
+                return true;
+
+            IFocusController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            IFocusRootNodeIndex OldRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController OldController = FocusController.Create(OldRootIndex);
+
+            if (inner is IFocusBlockListInner AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int FirstBlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
+                    int LastBlockIndex = RandNext(AsBlockListInner.BlockStateList.Count + 1);
+
+                    if (FirstBlockIndex > LastBlockIndex)
+                        FirstBlockIndex = LastBlockIndex;
+
+                    if (Controller.IsBlockRangeRemoveable(AsBlockListInner, FirstBlockIndex, LastBlockIndex))
+                    {
+                        Controller.RemoveBlockRange(AsBlockListInner, FirstBlockIndex, LastBlockIndex);
+                        IsModified = FirstBlockIndex < LastBlockIndex;
+                    }
+                }
+            }
+
+            if (IsModified)
+            {
+                IFocusControllerView NewView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+                IFocusController NewController = FocusController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IFocusControllerView OldView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+            }
+
+            return false;
+        }
+
+        public static void TestFocusReplaceBlockRange(int index, INode rootNode)
+        {
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+
+            FocusTestCount = 0;
+            FocusBrowseNode(Controller, RootIndex, (IFocusInner inner) => ReplaceBlockRangeAndCompare(ControllerView, RandNext(FocusMaxTestCount), inner));
+        }
+
+        static bool ReplaceBlockRangeAndCompare(IFocusControllerView controllerView, int TestIndex, IFocusInner inner)
+        {
+            if (FocusTestCount++ < TestIndex)
+                return true;
+
+            IFocusController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            IFocusRootNodeIndex OldRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController OldController = FocusController.Create(OldRootIndex);
+
+            if (inner is IFocusBlockListInner AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int FirstBlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
+                    int LastBlockIndex = RandNext(AsBlockListInner.BlockStateList.Count + 1);
+
+                    if (FirstBlockIndex > LastBlockIndex)
+                        FirstBlockIndex = LastBlockIndex;
+
+                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
+
+                    IPattern ReplicationPattern = NodeHelper.CreateSimplePattern("x");
+                    IIdentifier SourceIdentifier = NodeHelper.CreateSimpleIdentifier("y");
+                    IFocusInsertionNewBlockNodeIndex NewNodeIndex = new FocusInsertionNewBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, FirstBlockIndex, ReplicationPattern, SourceIdentifier);
+
+                    NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
+
+                    IFocusInsertionExistingBlockNodeIndex ExistingNodeIndex = new FocusInsertionExistingBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, FirstBlockIndex, 1);
+
+                    List<IWriteableInsertionBlockNodeIndex> IndexList = new List<IWriteableInsertionBlockNodeIndex>() { NewNodeIndex, ExistingNodeIndex };
+                    Controller.ReplaceBlockRange(AsBlockListInner, FirstBlockIndex, LastBlockIndex, IndexList);
+                    IsModified = true;
+                }
+            }
+
+            if (IsModified)
+            {
+                IFocusControllerView NewView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+                IFocusController NewController = FocusController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IFocusControllerView OldView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+            }
+
+            return false;
+        }
+
+        public static void TestFocusInsertBlockRange(int index, INode rootNode)
+        {
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+
+            FocusTestCount = 0;
+            FocusBrowseNode(Controller, RootIndex, (IFocusInner inner) => InsertBlockRangeAndCompare(ControllerView, RandNext(FocusMaxTestCount), inner));
+        }
+
+        static bool InsertBlockRangeAndCompare(IFocusControllerView controllerView, int TestIndex, IFocusInner inner)
+        {
+            if (FocusTestCount++ < TestIndex)
+                return true;
+
+            IFocusController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            IFocusRootNodeIndex OldRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController OldController = FocusController.Create(OldRootIndex);
+
+            if (inner is IFocusBlockListInner AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int InsertedIndex = RandNext(AsBlockListInner.BlockStateList.Count);
+
+                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
+
+                    IPattern ReplicationPattern = NodeHelper.CreateSimplePattern("x");
+                    IIdentifier SourceIdentifier = NodeHelper.CreateSimpleIdentifier("y");
+                    IFocusInsertionNewBlockNodeIndex NewNodeIndex = new FocusInsertionNewBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, InsertedIndex, ReplicationPattern, SourceIdentifier);
+
+                    NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
+
+                    IFocusInsertionExistingBlockNodeIndex ExistingNodeIndex = new FocusInsertionExistingBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, InsertedIndex, 1);
+
+                    List<IWriteableInsertionBlockNodeIndex> IndexList = new List<IWriteableInsertionBlockNodeIndex>() { NewNodeIndex, ExistingNodeIndex };
+                    Controller.InsertBlockRange(AsBlockListInner, InsertedIndex, IndexList);
+                    IsModified = true;
+                }
+            }
+
+            if (IsModified)
+            {
+                IFocusControllerView NewView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+                IFocusController NewController = FocusController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IFocusControllerView OldView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+            }
+
+            return false;
+        }
+
+        public static void TestFocusRemoveNodeRange(int index, INode rootNode)
+        {
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+
+            FocusTestCount = 0;
+            FocusBrowseNode(Controller, RootIndex, (IFocusInner inner) => RemoveNodeRangeAndCompare(ControllerView, RandNext(FocusMaxTestCount), inner));
+        }
+
+        static bool RemoveNodeRangeAndCompare(IFocusControllerView controllerView, int TestIndex, IFocusInner inner)
+        {
+            if (FocusTestCount++ < TestIndex)
+                return true;
+
+            IFocusController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            IFocusRootNodeIndex OldRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController OldController = FocusController.Create(OldRootIndex);
+
+            if (inner is IFocusBlockListInner AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int BlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
+                    int FirstNodeIndex = RandNext(AsBlockListInner.BlockStateList[BlockIndex].StateList.Count);
+                    int LastNodeIndex = RandNext(AsBlockListInner.BlockStateList[BlockIndex].StateList.Count + 1);
+
+                    if (FirstNodeIndex > LastNodeIndex)
+                        FirstNodeIndex = LastNodeIndex;
+
+                    if (Controller.IsNodeRangeRemoveable(AsBlockListInner, BlockIndex, FirstNodeIndex, LastNodeIndex))
+                    {
+                        Controller.RemoveNodeRange(AsBlockListInner, BlockIndex, FirstNodeIndex, LastNodeIndex);
+                        IsModified = FirstNodeIndex < LastNodeIndex;
+                    }
+                }
+            }
+
+            else if (inner is IFocusListInner AsListInner)
+            {
+                if (AsListInner.StateList.Count > 0)
+                {
+                    int BlockIndex = -1;
+                    int FirstNodeIndex = RandNext(AsListInner.StateList.Count);
+                    int LastNodeIndex = RandNext(AsListInner.StateList.Count + 1);
+
+                    if (FirstNodeIndex > LastNodeIndex)
+                        FirstNodeIndex = LastNodeIndex;
+
+                    if (Controller.IsNodeRangeRemoveable(AsListInner, BlockIndex, FirstNodeIndex, LastNodeIndex))
+                    {
+                        Controller.RemoveNodeRange(AsListInner, BlockIndex, FirstNodeIndex, LastNodeIndex);
+                        IsModified = FirstNodeIndex < LastNodeIndex;
+                    }
+                }
+            }
+
+            if (IsModified)
+            {
+                IFocusControllerView NewView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+                IFocusController NewController = FocusController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IFocusControllerView OldView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+            }
+
+            return false;
+        }
+
+        public static void TestFocusReplaceNodeRange(int index, INode rootNode)
+        {
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+
+            FocusTestCount = 0;
+            FocusBrowseNode(Controller, RootIndex, (IFocusInner inner) => ReplaceNodeRangeAndCompare(ControllerView, RandNext(FocusMaxTestCount), inner));
+        }
+
+        static bool ReplaceNodeRangeAndCompare(IFocusControllerView controllerView, int TestIndex, IFocusInner inner)
+        {
+            if (FocusTestCount++ < TestIndex)
+                return true;
+
+            IFocusController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            IFocusRootNodeIndex OldRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController OldController = FocusController.Create(OldRootIndex);
+
+            if (inner is IFocusBlockListInner AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int BlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
+                    int FirstNodeIndex = RandNext(AsBlockListInner.BlockStateList[BlockIndex].StateList.Count);
+                    int LastNodeIndex = RandNext(AsBlockListInner.BlockStateList[BlockIndex].StateList.Count + 1);
+
+                    if (FirstNodeIndex > LastNodeIndex)
+                        FirstNodeIndex = LastNodeIndex;
+
+                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
+
+                    IFocusInsertionExistingBlockNodeIndex ExistingNodeIndex = new FocusInsertionExistingBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, BlockIndex, FirstNodeIndex);
+                    List<IWriteableInsertionCollectionNodeIndex> IndexList = new List<IWriteableInsertionCollectionNodeIndex>() { ExistingNodeIndex };
+
+                    if (Controller.IsNodeRangeRemoveable(AsBlockListInner, BlockIndex, FirstNodeIndex, LastNodeIndex))
+                    {
+                        Controller.ReplaceNodeRange(AsBlockListInner, BlockIndex, FirstNodeIndex, LastNodeIndex, IndexList);
+                        IsModified = IndexList.Count > 0 || FirstNodeIndex < LastNodeIndex;
+                    }
+                }
+            }
+
+            else if (inner is IFocusListInner AsListInner)
+            {
+                if (AsListInner.StateList.Count > 0)
+                {
+                    int BlockIndex = -1;
+                    int FirstNodeIndex = RandNext(AsListInner.StateList.Count);
+                    int LastNodeIndex = RandNext(AsListInner.StateList.Count + 1);
+
+                    if (FirstNodeIndex > LastNodeIndex)
+                        FirstNodeIndex = LastNodeIndex;
+
+                    INode NewNode = NodeHelper.DeepCloneNode(AsListInner.StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsListInner.InterfaceType}");
+
+                    IFocusInsertionListNodeIndex ExistingNodeIndex = new FocusInsertionListNodeIndex(AsListInner.Owner.Node, AsListInner.PropertyName, NewNode, FirstNodeIndex);
+                    List<IWriteableInsertionCollectionNodeIndex> IndexList = new List<IWriteableInsertionCollectionNodeIndex>() { ExistingNodeIndex };
+
+                    if (Controller.IsNodeRangeRemoveable(AsListInner, BlockIndex, FirstNodeIndex, LastNodeIndex))
+                    {
+                        Controller.ReplaceNodeRange(AsListInner, BlockIndex, FirstNodeIndex, LastNodeIndex, IndexList);
+                        IsModified = IndexList.Count > 0 || FirstNodeIndex < LastNodeIndex;
+                    }
+                }
+            }
+
+            if (IsModified)
+            {
+                IFocusControllerView NewView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                IFocusRootNodeIndex NewRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+                IFocusController NewController = FocusController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                IFocusControllerView OldView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+            }
+
+            return false;
+        }
+
+        public static void TestFocusInsertNodeRange(int index, INode rootNode)
+        {
+            IFocusRootNodeIndex RootIndex = new FocusRootNodeIndex(rootNode);
+            IFocusController Controller = FocusController.Create(RootIndex);
+            IFocusControllerView ControllerView = FocusControllerView.Create(Controller, FocusTemplateSet.Default);
+
+            FocusTestCount = 0;
+            FocusBrowseNode(Controller, RootIndex, (IFocusInner inner) => InsertNodeRangeAndCompare(ControllerView, RandNext(FocusMaxTestCount), inner));
+        }
+
+        static bool InsertNodeRangeAndCompare(IFocusControllerView controllerView, int TestIndex, IFocusInner inner)
+        {
+            if (FocusTestCount++ < TestIndex)
+                return true;
+
+            IFocusController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            IFocusRootNodeIndex OldRootIndex = new FocusRootNodeIndex(Controller.RootIndex.Node);
+            IFocusController OldController = FocusController.Create(OldRootIndex);
+
+            if (inner is IFocusBlockListInner AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int BlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
+                    int InsertedNodeIndex = RandNext(AsBlockListInner.BlockStateList[BlockIndex].StateList.Count);
+
+                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
+
+                    IFocusInsertionExistingBlockNodeIndex ExistingNodeIndex = new FocusInsertionExistingBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, BlockIndex, InsertedNodeIndex);
+                    List<IWriteableInsertionCollectionNodeIndex> IndexList = new List<IWriteableInsertionCollectionNodeIndex>() { ExistingNodeIndex };
+
+                    Controller.InsertNodeRange(AsBlockListInner, BlockIndex, InsertedNodeIndex, IndexList);
+                    IsModified = true;
+                }
+            }
+
+            else if (inner is IFocusListInner AsListInner)
+            {
+                if (AsListInner.StateList.Count > 0)
+                {
+                    int BlockIndex = -1;
+                    int InsertedNodeIndex = RandNext(AsListInner.StateList.Count);
+
+                    INode NewNode = NodeHelper.DeepCloneNode(AsListInner.StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsListInner.InterfaceType}");
+
+                    IFocusInsertionListNodeIndex ExistingNodeIndex = new FocusInsertionListNodeIndex(AsListInner.Owner.Node, AsListInner.PropertyName, NewNode, InsertedNodeIndex);
+                    List<IWriteableInsertionCollectionNodeIndex> IndexList = new List<IWriteableInsertionCollectionNodeIndex>() { ExistingNodeIndex };
+
+                    Controller.InsertNodeRange(AsListInner, BlockIndex, InsertedNodeIndex, IndexList);
+                    IsModified = true;
                 }
             }
 
@@ -4740,6 +6061,12 @@ namespace Test
                 SeedRand(0x12 + index * 256 + i * 65536);
                 TestLayoutInsert(index, rootNode);
                 TestLayoutRemove(index, rootNode);
+                TestLayoutRemoveBlockRange(index, rootNode);
+                TestLayoutReplaceBlockRange(index, rootNode);
+                TestLayoutInsertBlockRange(index, rootNode);
+                TestLayoutRemoveNodeRange(index, rootNode);
+                TestLayoutReplaceNodeRange(index, rootNode);
+                TestLayoutInsertNodeRange(index, rootNode);
                 TestLayoutReplace(index, rootNode);
                 TestLayoutAssign(index, rootNode);
                 TestLayoutUnassign(index, rootNode);
@@ -5351,6 +6678,440 @@ namespace Test
                         Controller.Remove(AsBlockListInner, NodeIndex);
                         IsModified = true;
                     }
+                }
+            }
+
+            if (IsModified)
+            {
+                ILayoutControllerView NewView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                ILayoutRootNodeIndex NewRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
+                ILayoutController NewController = LayoutController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                ILayoutControllerView OldView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+            }
+
+            return false;
+        }
+
+        public static void TestLayoutRemoveBlockRange(int index, INode rootNode)
+        {
+            ILayoutRootNodeIndex RootIndex = new LayoutRootNodeIndex(rootNode);
+            ILayoutController Controller = LayoutController.Create(RootIndex);
+            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
+
+            LayoutTestCount = 0;
+            LayoutBrowseNode(Controller, RootIndex, (ILayoutInner inner) => RemoveBlockRangeAndCompare(ControllerView, RandNext(LayoutMaxTestCount), inner));
+        }
+
+        static bool RemoveBlockRangeAndCompare(ILayoutControllerView controllerView, int TestIndex, ILayoutInner inner)
+        {
+            if (LayoutTestCount++ < TestIndex)
+                return true;
+
+            ILayoutController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            ILayoutRootNodeIndex OldRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
+            ILayoutController OldController = LayoutController.Create(OldRootIndex);
+
+            if (inner is ILayoutBlockListInner AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int FirstBlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
+                    int LastBlockIndex = RandNext(AsBlockListInner.BlockStateList.Count + 1);
+
+                    if (FirstBlockIndex > LastBlockIndex)
+                        FirstBlockIndex = LastBlockIndex;
+
+                    if (Controller.IsBlockRangeRemoveable(AsBlockListInner, FirstBlockIndex, LastBlockIndex))
+                    {
+                        Controller.RemoveBlockRange(AsBlockListInner, FirstBlockIndex, LastBlockIndex);
+                        IsModified = FirstBlockIndex < LastBlockIndex;
+                    }
+                }
+            }
+
+            if (IsModified)
+            {
+                ILayoutControllerView NewView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                ILayoutRootNodeIndex NewRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
+                ILayoutController NewController = LayoutController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                ILayoutControllerView OldView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+            }
+
+            return false;
+        }
+
+        public static void TestLayoutReplaceBlockRange(int index, INode rootNode)
+        {
+            ILayoutRootNodeIndex RootIndex = new LayoutRootNodeIndex(rootNode);
+            ILayoutController Controller = LayoutController.Create(RootIndex);
+            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
+
+            LayoutTestCount = 0;
+            LayoutBrowseNode(Controller, RootIndex, (ILayoutInner inner) => ReplaceBlockRangeAndCompare(ControllerView, RandNext(LayoutMaxTestCount), inner));
+        }
+
+        static bool ReplaceBlockRangeAndCompare(ILayoutControllerView controllerView, int TestIndex, ILayoutInner inner)
+        {
+            if (LayoutTestCount++ < TestIndex)
+                return true;
+
+            ILayoutController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            ILayoutRootNodeIndex OldRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
+            ILayoutController OldController = LayoutController.Create(OldRootIndex);
+
+            if (inner is ILayoutBlockListInner AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int FirstBlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
+                    int LastBlockIndex = RandNext(AsBlockListInner.BlockStateList.Count + 1);
+
+                    if (FirstBlockIndex > LastBlockIndex)
+                        FirstBlockIndex = LastBlockIndex;
+
+                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
+
+                    IPattern ReplicationPattern = NodeHelper.CreateSimplePattern("x");
+                    IIdentifier SourceIdentifier = NodeHelper.CreateSimpleIdentifier("y");
+                    ILayoutInsertionNewBlockNodeIndex NewNodeIndex = new LayoutInsertionNewBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, FirstBlockIndex, ReplicationPattern, SourceIdentifier);
+
+                    NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
+
+                    ILayoutInsertionExistingBlockNodeIndex ExistingNodeIndex = new LayoutInsertionExistingBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, FirstBlockIndex, 1);
+
+                    List<IWriteableInsertionBlockNodeIndex> IndexList = new List<IWriteableInsertionBlockNodeIndex>() { NewNodeIndex, ExistingNodeIndex };
+                    Controller.ReplaceBlockRange(AsBlockListInner, FirstBlockIndex, LastBlockIndex, IndexList);
+                    IsModified = true;
+                }
+            }
+
+            if (IsModified)
+            {
+                ILayoutControllerView NewView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                ILayoutRootNodeIndex NewRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
+                ILayoutController NewController = LayoutController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                ILayoutControllerView OldView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+            }
+
+            return false;
+        }
+
+        public static void TestLayoutInsertBlockRange(int index, INode rootNode)
+        {
+            ILayoutRootNodeIndex RootIndex = new LayoutRootNodeIndex(rootNode);
+            ILayoutController Controller = LayoutController.Create(RootIndex);
+            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
+
+            LayoutTestCount = 0;
+            LayoutBrowseNode(Controller, RootIndex, (ILayoutInner inner) => InsertBlockRangeAndCompare(ControllerView, RandNext(LayoutMaxTestCount), inner));
+        }
+
+        static bool InsertBlockRangeAndCompare(ILayoutControllerView controllerView, int TestIndex, ILayoutInner inner)
+        {
+            if (LayoutTestCount++ < TestIndex)
+                return true;
+
+            ILayoutController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            ILayoutRootNodeIndex OldRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
+            ILayoutController OldController = LayoutController.Create(OldRootIndex);
+
+            if (inner is ILayoutBlockListInner AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int InsertedIndex = RandNext(AsBlockListInner.BlockStateList.Count);
+
+                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
+
+                    IPattern ReplicationPattern = NodeHelper.CreateSimplePattern("x");
+                    IIdentifier SourceIdentifier = NodeHelper.CreateSimpleIdentifier("y");
+                    ILayoutInsertionNewBlockNodeIndex NewNodeIndex = new LayoutInsertionNewBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, InsertedIndex, ReplicationPattern, SourceIdentifier);
+
+                    NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
+
+                    ILayoutInsertionExistingBlockNodeIndex ExistingNodeIndex = new LayoutInsertionExistingBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, InsertedIndex, 1);
+
+                    List<IWriteableInsertionBlockNodeIndex> IndexList = new List<IWriteableInsertionBlockNodeIndex>() { NewNodeIndex, ExistingNodeIndex };
+                    Controller.InsertBlockRange(AsBlockListInner, InsertedIndex, IndexList);
+                    IsModified = true;
+                }
+            }
+
+            if (IsModified)
+            {
+                ILayoutControllerView NewView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                ILayoutRootNodeIndex NewRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
+                ILayoutController NewController = LayoutController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                ILayoutControllerView OldView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+            }
+
+            return false;
+        }
+
+        public static void TestLayoutRemoveNodeRange(int index, INode rootNode)
+        {
+            ILayoutRootNodeIndex RootIndex = new LayoutRootNodeIndex(rootNode);
+            ILayoutController Controller = LayoutController.Create(RootIndex);
+            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
+
+            LayoutTestCount = 0;
+            LayoutBrowseNode(Controller, RootIndex, (ILayoutInner inner) => RemoveNodeRangeAndCompare(ControllerView, RandNext(LayoutMaxTestCount), inner));
+        }
+
+        static bool RemoveNodeRangeAndCompare(ILayoutControllerView controllerView, int TestIndex, ILayoutInner inner)
+        {
+            if (LayoutTestCount++ < TestIndex)
+                return true;
+
+            ILayoutController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            ILayoutRootNodeIndex OldRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
+            ILayoutController OldController = LayoutController.Create(OldRootIndex);
+
+            if (inner is ILayoutBlockListInner AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int BlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
+                    int FirstNodeIndex = RandNext(AsBlockListInner.BlockStateList[BlockIndex].StateList.Count);
+                    int LastNodeIndex = RandNext(AsBlockListInner.BlockStateList[BlockIndex].StateList.Count + 1);
+
+                    if (FirstNodeIndex > LastNodeIndex)
+                        FirstNodeIndex = LastNodeIndex;
+
+                    if (Controller.IsNodeRangeRemoveable(AsBlockListInner, BlockIndex, FirstNodeIndex, LastNodeIndex))
+                    {
+                        Controller.RemoveNodeRange(AsBlockListInner, BlockIndex, FirstNodeIndex, LastNodeIndex);
+                        IsModified = FirstNodeIndex < LastNodeIndex;
+                    }
+                }
+            }
+
+            else if (inner is ILayoutListInner AsListInner)
+            {
+                if (AsListInner.StateList.Count > 0)
+                {
+                    int BlockIndex = -1;
+                    int FirstNodeIndex = RandNext(AsListInner.StateList.Count);
+                    int LastNodeIndex = RandNext(AsListInner.StateList.Count + 1);
+
+                    if (FirstNodeIndex > LastNodeIndex)
+                        FirstNodeIndex = LastNodeIndex;
+
+                    if (Controller.IsNodeRangeRemoveable(AsListInner, BlockIndex, FirstNodeIndex, LastNodeIndex))
+                    {
+                        Controller.RemoveNodeRange(AsListInner, BlockIndex, FirstNodeIndex, LastNodeIndex);
+                        IsModified = FirstNodeIndex < LastNodeIndex;
+                    }
+                }
+            }
+
+            if (IsModified)
+            {
+                ILayoutControllerView NewView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                ILayoutRootNodeIndex NewRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
+                ILayoutController NewController = LayoutController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                ILayoutControllerView OldView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+            }
+
+            return false;
+        }
+
+        public static void TestLayoutReplaceNodeRange(int index, INode rootNode)
+        {
+            ILayoutRootNodeIndex RootIndex = new LayoutRootNodeIndex(rootNode);
+            ILayoutController Controller = LayoutController.Create(RootIndex);
+            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
+
+            LayoutTestCount = 0;
+            LayoutBrowseNode(Controller, RootIndex, (ILayoutInner inner) => ReplaceNodeRangeAndCompare(ControllerView, RandNext(LayoutMaxTestCount), inner));
+        }
+
+        static bool ReplaceNodeRangeAndCompare(ILayoutControllerView controllerView, int TestIndex, ILayoutInner inner)
+        {
+            if (LayoutTestCount++ < TestIndex)
+                return true;
+
+            ILayoutController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            ILayoutRootNodeIndex OldRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
+            ILayoutController OldController = LayoutController.Create(OldRootIndex);
+
+            if (inner is ILayoutBlockListInner AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int BlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
+                    int FirstNodeIndex = RandNext(AsBlockListInner.BlockStateList[BlockIndex].StateList.Count);
+                    int LastNodeIndex = RandNext(AsBlockListInner.BlockStateList[BlockIndex].StateList.Count + 1);
+
+                    if (FirstNodeIndex > LastNodeIndex)
+                        FirstNodeIndex = LastNodeIndex;
+
+                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
+
+                    ILayoutInsertionExistingBlockNodeIndex ExistingNodeIndex = new LayoutInsertionExistingBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, BlockIndex, FirstNodeIndex);
+                    List<IWriteableInsertionCollectionNodeIndex> IndexList = new List<IWriteableInsertionCollectionNodeIndex>() { ExistingNodeIndex };
+
+                    if (Controller.IsNodeRangeRemoveable(AsBlockListInner, BlockIndex, FirstNodeIndex, LastNodeIndex))
+                    {
+                        Controller.ReplaceNodeRange(AsBlockListInner, BlockIndex, FirstNodeIndex, LastNodeIndex, IndexList);
+                        IsModified = IndexList.Count > 0 || FirstNodeIndex < LastNodeIndex;
+                    }
+                }
+            }
+
+            else if (inner is ILayoutListInner AsListInner)
+            {
+                if (AsListInner.StateList.Count > 0)
+                {
+                    int BlockIndex = -1;
+                    int FirstNodeIndex = RandNext(AsListInner.StateList.Count);
+                    int LastNodeIndex = RandNext(AsListInner.StateList.Count + 1);
+
+                    if (FirstNodeIndex > LastNodeIndex)
+                        FirstNodeIndex = LastNodeIndex;
+
+                    INode NewNode = NodeHelper.DeepCloneNode(AsListInner.StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsListInner.InterfaceType}");
+
+                    ILayoutInsertionListNodeIndex ExistingNodeIndex = new LayoutInsertionListNodeIndex(AsListInner.Owner.Node, AsListInner.PropertyName, NewNode, FirstNodeIndex);
+                    List<IWriteableInsertionCollectionNodeIndex> IndexList = new List<IWriteableInsertionCollectionNodeIndex>() { ExistingNodeIndex };
+
+                    if (Controller.IsNodeRangeRemoveable(AsListInner, BlockIndex, FirstNodeIndex, LastNodeIndex))
+                    {
+                        Controller.ReplaceNodeRange(AsListInner, BlockIndex, FirstNodeIndex, LastNodeIndex, IndexList);
+                        IsModified = IndexList.Count > 0 || FirstNodeIndex < LastNodeIndex;
+                    }
+                }
+            }
+
+            if (IsModified)
+            {
+                ILayoutControllerView NewView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
+                Assert.That(NewView.IsEqual(CompareEqual.New(), controllerView));
+
+                ILayoutRootNodeIndex NewRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
+                ILayoutController NewController = LayoutController.Create(NewRootIndex);
+                Assert.That(NewController.IsEqual(CompareEqual.New(), Controller));
+
+                Controller.Undo();
+
+                Assert.That(OldController.IsEqual(CompareEqual.New(), Controller), $"Inner: {inner.PropertyName}, Owner: {inner.Owner.Node}");
+                ILayoutControllerView OldView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
+                Assert.That(OldView.IsEqual(CompareEqual.New(), controllerView));
+            }
+
+            return false;
+        }
+
+        public static void TestLayoutInsertNodeRange(int index, INode rootNode)
+        {
+            ILayoutRootNodeIndex RootIndex = new LayoutRootNodeIndex(rootNode);
+            ILayoutController Controller = LayoutController.Create(RootIndex);
+            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, LayoutTemplateSet.Default, LayoutDrawPrintContext.Default);
+
+            LayoutTestCount = 0;
+            LayoutBrowseNode(Controller, RootIndex, (ILayoutInner inner) => InsertNodeRangeAndCompare(ControllerView, RandNext(LayoutMaxTestCount), inner));
+        }
+
+        static bool InsertNodeRangeAndCompare(ILayoutControllerView controllerView, int TestIndex, ILayoutInner inner)
+        {
+            if (LayoutTestCount++ < TestIndex)
+                return true;
+
+            ILayoutController Controller = controllerView.Controller;
+            bool IsModified = false;
+
+            ILayoutRootNodeIndex OldRootIndex = new LayoutRootNodeIndex(Controller.RootIndex.Node);
+            ILayoutController OldController = LayoutController.Create(OldRootIndex);
+
+            if (inner is ILayoutBlockListInner AsBlockListInner)
+            {
+                if (AsBlockListInner.BlockStateList.Count > 0)
+                {
+                    int BlockIndex = RandNext(AsBlockListInner.BlockStateList.Count);
+                    int InsertedNodeIndex = RandNext(AsBlockListInner.BlockStateList[BlockIndex].StateList.Count);
+
+                    INode NewNode = NodeHelper.DeepCloneNode(AsBlockListInner.BlockStateList[0].StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsBlockListInner.InterfaceType}");
+
+                    ILayoutInsertionExistingBlockNodeIndex ExistingNodeIndex = new LayoutInsertionExistingBlockNodeIndex(AsBlockListInner.Owner.Node, AsBlockListInner.PropertyName, NewNode, BlockIndex, InsertedNodeIndex);
+                    List<IWriteableInsertionCollectionNodeIndex> IndexList = new List<IWriteableInsertionCollectionNodeIndex>() { ExistingNodeIndex };
+
+                    Controller.InsertNodeRange(AsBlockListInner, BlockIndex, InsertedNodeIndex, IndexList);
+                    IsModified = true;
+                }
+            }
+
+            else if (inner is ILayoutListInner AsListInner)
+            {
+                if (AsListInner.StateList.Count > 0)
+                {
+                    int BlockIndex = -1;
+                    int InsertedNodeIndex = RandNext(AsListInner.StateList.Count);
+
+                    INode NewNode = NodeHelper.DeepCloneNode(AsListInner.StateList[0].Node, cloneCommentGuid: false);
+                    Assert.That(NewNode != null, $"Type: {AsListInner.InterfaceType}");
+
+                    ILayoutInsertionListNodeIndex ExistingNodeIndex = new LayoutInsertionListNodeIndex(AsListInner.Owner.Node, AsListInner.PropertyName, NewNode, InsertedNodeIndex);
+                    List<IWriteableInsertionCollectionNodeIndex> IndexList = new List<IWriteableInsertionCollectionNodeIndex>() { ExistingNodeIndex };
+
+                    Controller.InsertNodeRange(AsListInner, BlockIndex, InsertedNodeIndex, IndexList);
+                    IsModified = true;
                 }
             }
 

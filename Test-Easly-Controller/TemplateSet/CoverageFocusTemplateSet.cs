@@ -3588,7 +3588,11 @@ namespace TestDebug
                     <FocusReplicationFrameVisibility/>
                 </FocusVerticalPanelFrame.BlockVisibility>
                 <FocusKeywordFrame>Replicate</FocusKeywordFrame>
-                <FocusPlaceholderFrame PropertyName=""ReplicationPattern""/>
+                <FocusPlaceholderFrame PropertyName=""ReplicationPattern"">
+                    <FocusPlaceholderFrame.Selectors>
+                        <FocusFrameSelector SelectorType=""{xaml:Type easly:IIdentifier}"" SelectorName=""Identifier""/>
+                    </FocusPlaceholderFrame.Selectors>
+                </FocusPlaceholderFrame>
                 <FocusKeywordFrame>From</FocusKeywordFrame>
                 <FocusPlaceholderFrame PropertyName=""SourceIdentifier"">
                     <FocusPlaceholderFrame.Selectors>

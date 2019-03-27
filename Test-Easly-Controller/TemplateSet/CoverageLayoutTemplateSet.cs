@@ -178,7 +178,11 @@ namespace TestDebug
                 <LayoutOptionalFrame PropertyName=""UnassignedOptionalLeaf"" />
                 <LayoutOptionalFrame PropertyName=""AssignedOptionalTree"" />
                 <LayoutOptionalFrame PropertyName=""AssignedOptionalLeaf"" />
-                <LayoutInsertFrame CollectionName=""LeafBlocks""/>
+                <LayoutInsertFrame CollectionName=""LeafBlocks"">
+                    <LayoutInsertFrame.Visibility>
+                        <LayoutCountFrameVisibility PropertyName=""LeafBlocks""/>
+                    </LayoutInsertFrame.Visibility>
+                </LayoutInsertFrame>
                 <LayoutHorizontalBlockListFrame PropertyName=""LeafBlocks"" Separator=""Comma"">
                     <LayoutHorizontalBlockListFrame.Visibility>
                         <LayoutCountFrameVisibility PropertyName=""LeafPath""/>
@@ -206,7 +210,11 @@ namespace TestDebug
                     <LayoutKeywordFrame>Reference</LayoutKeywordFrame>
                     <LayoutKeywordFrame>Value</LayoutKeywordFrame>
                 </LayoutDiscreteFrame>
-                <LayoutTextValueFrame PropertyName=""ValueString""/>
+                <LayoutTextValueFrame PropertyName=""ValueString"">
+                    <LayoutTextValueFrame.Visibility>
+                        <LayoutComplexFrameVisibility PropertyName=""PlaceholderTree""/>
+                    </LayoutTextValueFrame.Visibility>
+                </LayoutTextValueFrame>
                 <LayoutCharacterFrame PropertyName=""ValueString"">
                     <LayoutCharacterFrame.Visibility>
                         <LayoutComplexFrameVisibility PropertyName=""PlaceholderTree""/>
@@ -3380,7 +3388,7 @@ namespace TestDebug
     xmlns:cov=""clr-namespace:Coverage;assembly=Test-Easly-Controller""
     xmlns:const=""clr-namespace:EaslyController.Constants;assembly=Easly-Controller"">
     <LayoutBlockTemplate NodeType=""{xaml:Type easly:IBlock,cov:ILeaf,cov:Leaf}"">
-        <LayoutVerticalPanelFrame>
+        <LayoutHorizontalPanelFrame HasBlockGeometry=""True"">
             <LayoutCommentFrame/>
             <LayoutHorizontalPanelFrame>
                 <LayoutHorizontalPanelFrame.BlockVisibility>
@@ -3402,10 +3410,10 @@ namespace TestDebug
                     <LayoutReplicationFrameVisibility/>
                 </LayoutKeywordFrame.BlockVisibility>
             </LayoutKeywordFrame>
-        </LayoutVerticalPanelFrame>
+        </LayoutHorizontalPanelFrame>
     </LayoutBlockTemplate>
     <LayoutBlockTemplate NodeType=""{xaml:Type easly:IBlock,cov:ITree,cov:Tree}"">
-        <LayoutVerticalPanelFrame>
+        <LayoutVerticalPanelFrame HasBlockGeometry=""True"">
             <LayoutCommentFrame/>
             <LayoutHorizontalPanelFrame>
                 <LayoutHorizontalPanelFrame.BlockVisibility>
@@ -3434,7 +3442,7 @@ namespace TestDebug
         </LayoutVerticalPanelFrame>
     </LayoutBlockTemplate>
     <LayoutBlockTemplate NodeType=""{xaml:Type easly:IBlock,cov:IMain,cov:Main}"">
-        <LayoutVerticalPanelFrame>
+        <LayoutVerticalPanelFrame HasBlockGeometry=""True"">
             <LayoutCommentFrame/>
             <LayoutVerticalPanelFrame>
                 <LayoutVerticalPanelFrame.BlockVisibility>
@@ -3555,7 +3563,7 @@ namespace TestDebug
         </LayoutVerticalPanelFrame>
     </LayoutBlockTemplate>
     <LayoutBlockTemplate NodeType=""{xaml:Type easly:IBlock,easly:IClass,easly:Class}"">
-        <LayoutVerticalPanelFrame>
+        <LayoutVerticalPanelFrame HasBlockGeometry=""True"">
             <LayoutHorizontalPanelFrame>
                 <LayoutHorizontalPanelFrame.BlockVisibility>
                     <LayoutReplicationFrameVisibility/>
