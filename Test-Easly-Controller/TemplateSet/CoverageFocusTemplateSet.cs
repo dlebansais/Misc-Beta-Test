@@ -100,7 +100,7 @@ namespace TestDebug
             <FocusSelectableFrame Name=""Leaf0"">
                 <FocusVerticalPanelFrame>
                     <FocusCommentFrame/>
-                    <FocusTextValueFrame PropertyName=""Text""/>
+                    <FocusTextValueFrame PropertyName=""Text"" AutoFormat=""True""/>
                     <FocusKeywordFrame Text=""first"">
                         <FocusKeywordFrame.Visibility>
                             <FocusNotFirstItemFrameVisibility/>
@@ -116,7 +116,7 @@ namespace TestDebug
             <FocusSelectableFrame Name=""Leaf1"">
                 <FocusVerticalPanelFrame>
                     <FocusCommentFrame/>
-                    <FocusTextValueFrame PropertyName=""Text""/>
+                    <FocusTextValueFrame PropertyName=""Text"" AutoFormat=""True""/>
                     <FocusKeywordFrame Text=""first"">
                         <FocusKeywordFrame.Visibility>
                             <FocusNotFirstItemFrameVisibility/>
@@ -132,7 +132,7 @@ namespace TestDebug
             <FocusSelectableFrame Name=""Leaf2"">
                 <FocusVerticalPanelFrame>
                     <FocusCommentFrame/>
-                    <FocusTextValueFrame PropertyName=""Text""/>
+                    <FocusTextValueFrame PropertyName=""Text"" AutoFormat=""True""/>
                     <FocusKeywordFrame Text=""first"">
                         <FocusKeywordFrame.Visibility>
                             <FocusNotFirstItemFrameVisibility/>
@@ -148,7 +148,7 @@ namespace TestDebug
             <FocusSelectableFrame Name=""Leaf3"">
                 <FocusVerticalPanelFrame>
                     <FocusCommentFrame/>
-                    <FocusTextValueFrame PropertyName=""Text""/>
+                    <FocusTextValueFrame PropertyName=""Text"" AutoFormat=""True""/>
                     <FocusKeywordFrame Text=""first"">
                         <FocusKeywordFrame.Visibility>
                             <FocusNotFirstItemFrameVisibility/>
@@ -164,7 +164,7 @@ namespace TestDebug
             <FocusSelectableFrame Name=""Leaf4"">
                 <FocusVerticalPanelFrame>
                     <FocusCommentFrame/>
-                    <FocusTextValueFrame PropertyName=""Text""/>
+                    <FocusTextValueFrame PropertyName=""Text"" AutoFormat=""True""/>
                     <FocusKeywordFrame Text=""first"">
                         <FocusKeywordFrame.Visibility>
                             <FocusNotFirstItemFrameVisibility/>
@@ -180,7 +180,7 @@ namespace TestDebug
             <FocusSelectableFrame Name=""Leaf5"">
                 <FocusVerticalPanelFrame>
                     <FocusCommentFrame/>
-                    <FocusTextValueFrame PropertyName=""Text""/>
+                    <FocusTextValueFrame PropertyName=""Text"" AutoFormat=""True""/>
                     <FocusKeywordFrame Text=""first"">
                         <FocusKeywordFrame.Visibility>
                             <FocusNotFirstItemFrameVisibility/>
@@ -196,7 +196,7 @@ namespace TestDebug
             <FocusSelectableFrame Name=""Leaf6"">
                 <FocusVerticalPanelFrame>
                     <FocusCommentFrame/>
-                    <FocusTextValueFrame PropertyName=""Text""/>
+                    <FocusTextValueFrame PropertyName=""Text"" AutoFormat=""True""/>
                     <FocusKeywordFrame Text=""first"">
                         <FocusKeywordFrame.Visibility>
                             <FocusNotFirstItemFrameVisibility/>
@@ -212,7 +212,7 @@ namespace TestDebug
             <FocusSelectableFrame Name=""Leaf7"">
                 <FocusVerticalPanelFrame>
                     <FocusCommentFrame/>
-                    <FocusTextValueFrame PropertyName=""Text""/>
+                    <FocusTextValueFrame PropertyName=""Text"" AutoFormat=""True""/>
                     <FocusKeywordFrame Text=""first"">
                         <FocusKeywordFrame.Visibility>
                             <FocusNotFirstItemFrameVisibility/>
@@ -228,7 +228,7 @@ namespace TestDebug
             <FocusSelectableFrame Name=""Leaf8"">
                 <FocusVerticalPanelFrame>
                     <FocusCommentFrame/>
-                    <FocusTextValueFrame PropertyName=""Text""/>
+                    <FocusTextValueFrame PropertyName=""Text"" AutoFormat=""True""/>
                     <FocusKeywordFrame Text=""first"">
                         <FocusKeywordFrame.Visibility>
                             <FocusNotFirstItemFrameVisibility/>
@@ -244,7 +244,7 @@ namespace TestDebug
             <FocusSelectableFrame Name=""Leaf9"">
                 <FocusVerticalPanelFrame>
                     <FocusCommentFrame/>
-                    <FocusTextValueFrame PropertyName=""Text""/>
+                    <FocusTextValueFrame PropertyName=""Text"" AutoFormat=""True""/>
                     <FocusKeywordFrame Text=""first"">
                         <FocusKeywordFrame.Visibility>
                             <FocusNotFirstItemFrameVisibility/>
@@ -260,7 +260,7 @@ namespace TestDebug
             <FocusSelectableFrame Name=""Leaf10"">
                 <FocusVerticalPanelFrame>
                     <FocusCommentFrame/>
-                    <FocusTextValueFrame PropertyName=""Text""/>
+                    <FocusTextValueFrame PropertyName=""Text"" AutoFormat=""True""/>
                     <FocusKeywordFrame Text=""first"">
                         <FocusKeywordFrame.Visibility>
                             <FocusNotFirstItemFrameVisibility/>

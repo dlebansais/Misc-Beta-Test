@@ -5787,7 +5787,7 @@ namespace Test
 
                 ControllerView.MoveFocus(Direction, true, out bool IsMoved);
 
-                if (ControllerView.IsItemComplexifiable(out IFocusInner Inner, out List<IFocusInsertionChildIndex> IndexList))
+                if (ControllerView.IsItemComplexifiable(out IFocusInner Inner, out List<IFocusInsertionChildNodeIndex> IndexList))
                 {
                     int Choice = RandNext(IndexList.Count);
                     Controller.Replace(Inner, IndexList[Choice], out IWriteableBrowsingChildIndex NodeIndex);
@@ -7948,7 +7948,7 @@ namespace Test
 
                 ControllerView.MoveFocus(Direction, true, out bool IsMoved);
 
-                if (ControllerView.IsItemComplexifiable(out IFocusInner Inner, out List<IFocusInsertionChildIndex> IndexList))
+                if (ControllerView.IsItemComplexifiable(out IFocusInner Inner, out List<IFocusInsertionChildNodeIndex> IndexList))
                 {
                     int Choice = RandNext(IndexList.Count);
                     Controller.Replace(Inner, IndexList[Choice], out IWriteableBrowsingChildIndex NodeIndex);

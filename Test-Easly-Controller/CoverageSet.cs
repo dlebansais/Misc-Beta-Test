@@ -6787,6 +6787,7 @@ namespace Coverage
                     Assert.That(ControllerView0.RootStateView == ControllerView0.StateViewTable[Controller.RootState]);
                     Assert.That(ControllerView0.TemplateSet == TestDebug.CoverageFocusTemplateSet.FocusTemplateSet);
                     Assert.That(ControllerView0.CaretMode == CaretModes.Insertion);
+                    Assert.That(ControllerView0.AutoFormatMode == AutoFormatModes.None);
 
                     Assert.That(ControllerView0.IsSelectionEmpty);
 
@@ -6808,6 +6809,9 @@ namespace Coverage
                     ControllerView0.SetCaretPosition(0, true, out IsMoved);
                     Assert.That(IsMoved);
                     Assert.That(ControllerView0.CaretPosition == ControllerView0.CaretAnchorPosition);
+
+                    ControllerView0.SetAutoFormatMode(AutoFormatModes.FirstOnly);
+                    Assert.That(ControllerView0.AutoFormatMode == AutoFormatModes.FirstOnly);
 
                     using (IFocusControllerView ControllerView1 = FocusControllerView.Create(Controller, TestDebug.CoverageFocusTemplateSet.FocusTemplateSet))
                     {
@@ -7001,7 +7005,7 @@ namespace Coverage
                         bool IsItemMergeable = ControllerView0.IsItemMergeable(out BlockListInner, out ExistingBlockNodeIndex);
                         bool IsBlockMoveable = ControllerView0.IsBlockMoveable(-1, out BlockListInner, out BlockIndex);
                         bool IsItemSimplifiable = ControllerView0.IsItemSimplifiable(out Inner, out InsertionIndex);
-                        bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out Inner, out List<IFocusInsertionChildIndex> indexList);
+                        bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out Inner, out List<IFocusInsertionChildNodeIndex> indexList);
                         bool IsIdentifierSplittable = ControllerView0.IsIdentifierSplittable(out ListInner, out ReplacementListNodeIndex, out InsertionListNodeIndex);
 
                         ControllerView0.MoveFocus(+1, true, out IsMoved);
@@ -7046,7 +7050,7 @@ namespace Coverage
                         bool IsItemMergeable = ControllerView0.IsItemMergeable(out BlockListInner, out ExistingBlockNodeIndex);
                         bool IsBlockMoveable = ControllerView0.IsBlockMoveable(-1, out BlockListInner, out BlockIndex);
                         bool IsItemSimplifiable = ControllerView0.IsItemSimplifiable(out Inner, out InsertionIndex);
-                        bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out Inner, out List<IFocusInsertionChildIndex> indexList);
+                        bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out Inner, out List<IFocusInsertionChildNodeIndex> indexList);
                         bool IsIdentifierSplittable = ControllerView0.IsIdentifierSplittable(out ListInner, out ReplacementListNodeIndex, out InsertionListNodeIndex);
 
                         ControllerView0.MoveFocus(+1, true, out IsMoved);
@@ -7936,7 +7940,15 @@ namespace Coverage
                 while (!(ControllerView0.Focus is IFocusStringContentFocus))
                     ControllerView0.MoveFocus(+1, true, out bool IsMoved);
 
-                ControllerView0.ChangedFocusedText("test", 3, false);
+                //System.Diagnostics.Debug.Assert(false);
+                ControllerView0.SetAutoFormatMode(AutoFormatModes.FirstOnly);
+                ControllerView0.ChangeFocusedText("test", 3, false);
+                ControllerView0.SetAutoFormatMode(AutoFormatModes.FirstOrAll);
+                ControllerView0.ChangeFocusedText("test", 3, false);
+                ControllerView0.SetAutoFormatMode(AutoFormatModes.AllLowercase);
+                ControllerView0.ChangeFocusedText("test", 3, false);
+                ControllerView0.SetAutoFormatMode(AutoFormatModes.None);
+                ControllerView0.ChangeFocusedText("test", 3, false);
 
                 Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
                 Assert.That(BaseNodeHelper.NodeTreeHelper.GetString(RootNode, nameof(IMain.ValueString)) == "test");
@@ -7944,6 +7956,12 @@ namespace Coverage
                 IFocusPlaceholderInner PlaceholderTreeInner = RootState.PropertyToInner(nameof(IMain.PlaceholderTree)) as IFocusPlaceholderInner;
                 IFocusPlaceholderNodeState PlaceholderTreeState = PlaceholderTreeInner.ChildState as IFocusPlaceholderNodeState;
 
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
                 Assert.That(Controller.CanUndo);
                 Controller.Undo();
                 Assert.That(Controller.CanUndo);
@@ -8051,7 +8069,7 @@ namespace Coverage
                 while (!(ControllerView0.Focus is IFocusCommentFocus))
                     ControllerView0.MoveFocus(+1, true, out bool IsMoved);
 
-                ControllerView0.ChangedFocusedText("test", 3, false);
+                ControllerView0.ChangeFocusedText("test", 3, false);
 
                 IFocusPlaceholderInner PlaceholderTreeInner = RootState.PropertyToInner(nameof(IMain.PlaceholderTree)) as IFocusPlaceholderInner;
                 IFocusPlaceholderNodeState PlaceholderTreeState = PlaceholderTreeInner.ChildState as IFocusPlaceholderNodeState;
@@ -9359,7 +9377,7 @@ namespace Coverage
                         ControllerView0.Controller.Replace(Inner, InsertionIndex, out IWriteableBrowsingChildIndex nodeIndex);
                     }
 
-                    bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out Inner, out List<IFocusInsertionChildIndex> indexList);
+                    bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out Inner, out List<IFocusInsertionChildNodeIndex> indexList);
                     bool IsIdentifierSplittable = ControllerView0.IsIdentifierSplittable(out ListInner, out ReplacementListNodeIndex, out InsertionListNodeIndex);
                     if (IsIdentifierSplittable && IdentifierSplitCount++ < MaxIdentifierSplit)
                         Controller.SplitIdentifier(ListInner, ReplacementListNodeIndex, InsertionListNodeIndex, out IWriteableBrowsingListNodeIndex FirstIndex, out IWriteableBrowsingListNodeIndex SecondIndex);
@@ -9438,7 +9456,7 @@ namespace Coverage
 
                 Controller.Replace(Inner, Index, out IWriteableBrowsingChildIndex NodeIndex);
 
-                bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out Inner, out List<IFocusInsertionChildIndex> IndexList);
+                bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out Inner, out List<IFocusInsertionChildNodeIndex> IndexList);
                 Assert.That(IsItemComplexifiable);
             }
         }
@@ -11741,6 +11759,7 @@ namespace Coverage
                     Assert.That(CellSize.ToString(null, CultureInfo.InvariantCulture) != null);
 
                     ControllerView0.SetCommentDisplayMode(CommentDisplayModes.All);
+                    ControllerView0.SetShowUnfocusedComments(false);
                     ControllerView0.SetShowUnfocusedComments(true);
                     VisibleCellViewList.Clear();
                     ControllerView0.EnumerateVisibleCellViews((IFrameVisibleCellView item) => ListCellViews(item, VisibleCellViewList), out FoundCellView, false);
@@ -11886,7 +11905,18 @@ namespace Coverage
                     ControllerView0.Invalidate();
                     ControllerView0.Draw(ControllerView0.RootStateView);
                     ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
+
+                    Assert.That(!ControllerView0.ShowLineNumber);
+                    ControllerView0.SetShowLineNumber(!ControllerView0.ShowLineNumber);
+                    Assert.That(ControllerView0.ShowLineNumber);
+
                     //System.Diagnostics.Debug.Assert(false);
+                    ControllerView0.Draw(ControllerView0.RootStateView);
+                    ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
+
+                    ControllerView0.SetShowLineNumber(!ControllerView0.ShowLineNumber);
+                    Assert.That(!ControllerView0.ShowLineNumber);
+
                     ControllerView0.ShowCaret(false, true);
                     ControllerView0.ShowCaret(true, true);
 
@@ -11949,7 +11979,7 @@ namespace Coverage
                         bool IsItemMergeable = ControllerView0.IsItemMergeable(out BlockListInner, out ExistingBlockNodeIndex);
                         bool IsBlockMoveable = ControllerView0.IsBlockMoveable(-1, out BlockListInner, out BlockIndex);
                         bool IsItemSimplifiable = ControllerView0.IsItemSimplifiable(out Inner, out InsertionIndex);
-                        bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out Inner, out List<IFocusInsertionChildIndex> indexList);
+                        bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out Inner, out List<IFocusInsertionChildNodeIndex> indexList);
                         bool IsIdentifierSplittable = ControllerView0.IsIdentifierSplittable(out ListInner, out ReplacementListNodeIndex, out InsertionListNodeIndex);
 
                         ControllerView0.MoveFocus(+1, true, out IsMoved);
@@ -11992,7 +12022,7 @@ namespace Coverage
                         bool IsItemMergeable = ControllerView0.IsItemMergeable(out BlockListInner, out ExistingBlockNodeIndex);
                         bool IsBlockMoveable = ControllerView0.IsBlockMoveable(-1, out BlockListInner, out BlockIndex);
                         bool IsItemSimplifiable = ControllerView0.IsItemSimplifiable(out Inner, out InsertionIndex);
-                        bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out Inner, out List<IFocusInsertionChildIndex> indexList);
+                        bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out Inner, out List<IFocusInsertionChildNodeIndex> indexList);
                         bool IsIdentifierSplittable = ControllerView0.IsIdentifierSplittable(out ListInner, out ReplacementListNodeIndex, out InsertionListNodeIndex);
 
                         ControllerView0.MoveFocus(+1, true, out IsMoved);
@@ -12817,11 +12847,24 @@ namespace Coverage
                 while (!(ControllerView0.Focus is ILayoutStringContentFocus))
                     ControllerView0.MoveFocus(+1, true, out bool IsMoved);
 
-                ControllerView0.ChangedFocusedText("test", 3, false);
+                ControllerView0.SetAutoFormatMode(AutoFormatModes.FirstOnly);
+                ControllerView0.ChangeFocusedText("test", 3, false);
+                ControllerView0.SetAutoFormatMode(AutoFormatModes.FirstOrAll);
+                ControllerView0.ChangeFocusedText("test", 3, false);
+                ControllerView0.SetAutoFormatMode(AutoFormatModes.AllLowercase);
+                ControllerView0.ChangeFocusedText("test", 3, false);
+                ControllerView0.SetAutoFormatMode(AutoFormatModes.None);
+                ControllerView0.ChangeFocusedText("test", 3, false);
 
                 ILayoutPlaceholderInner PlaceholderTreeInner = RootState.PropertyToInner(nameof(IMain.PlaceholderTree)) as ILayoutPlaceholderInner;
                 ILayoutPlaceholderNodeState PlaceholderTreeState = PlaceholderTreeInner.ChildState as ILayoutPlaceholderNodeState;
 
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
                 Assert.That(Controller.CanUndo);
                 Controller.Undo();
                 Assert.That(Controller.CanUndo);
@@ -12926,7 +12969,7 @@ namespace Coverage
                 while (!(ControllerView0.Focus is ILayoutCommentFocus))
                     ControllerView0.MoveFocus(+1, true, out bool IsMoved);
 
-                ControllerView0.ChangedFocusedText("test", 3, false);
+                ControllerView0.ChangeFocusedText("test", 3, false);
 
                 Assert.That(Controller.CanUndo);
                 Controller.Undo();
@@ -14286,7 +14329,7 @@ namespace Coverage
                         ControllerView0.Controller.Replace(Inner, InsertionIndex, out IWriteableBrowsingChildIndex nodeIndex);
                     }
 
-                    bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out Inner, out List<IFocusInsertionChildIndex> indexList);
+                    bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out Inner, out List<IFocusInsertionChildNodeIndex> indexList);
                     bool IsIdentifierSplittable = ControllerView0.IsIdentifierSplittable(out ListInner, out ReplacementListNodeIndex, out InsertionListNodeIndex);
                     if (IsIdentifierSplittable && IdentifierSplitCount++ < MaxIdentifierSplit)
                     {
@@ -14413,6 +14456,17 @@ namespace Coverage
                 Assert.That(ControllerView0.Controller == Controller);
 
                 ControllerView0.MeasureAndArrange();
+
+                Assert.That(!ControllerView0.ShowLineNumber);
+                ControllerView0.SetShowLineNumber(!ControllerView0.ShowLineNumber);
+                Assert.That(ControllerView0.ShowLineNumber);
+
+                //System.Diagnostics.Debug.Assert(false);
+                ControllerView0.Draw(ControllerView0.RootStateView);
+                ControllerView0.Print(ControllerView0.RootStateView, Point.Origin);
+
+                ControllerView0.SetShowLineNumber(!ControllerView0.ShowLineNumber);
+                Assert.That(!ControllerView0.ShowLineNumber);
 
                 ILayoutNodeState RootState = Controller.RootState;
                 Assert.That(RootState != null);
@@ -16525,6 +16579,18 @@ namespace Coverage
                     IReadOnlyList<IFocusFrame> FocusFrameListAsReadOnlyList = FocusFrameList;
                     Assert.That(FocusFrameListAsReadOnlyList[0] == FirstFrame);
 
+                    //System.Diagnostics.Debug.Assert(false);
+                    List<ILayoutFrame> FullFrameList = new List<ILayoutFrame>();
+                    EnumerateFrames(FullFrameList, CellViewCollection.StateView.Template.Root);
+
+                    foreach (ILayoutFrame Frame in FullFrameList)
+                    {
+                        if (Frame is IFocusTextValueFrame AsTextFrame)
+                        {
+                            bool AutoFormat = AsTextFrame.AutoFormat;
+                        }
+                    }
+
                     // ILayoutKeywordFrameList
 
                     ILayoutDiscreteFrame FirstDiscreteFrame = null;
@@ -16952,6 +17018,17 @@ namespace Coverage
                 }
 
             return HorizontalPanelFrame;
+        }
+
+        public static void EnumerateFrames(List<ILayoutFrame> frameList, ILayoutFrame rootFrame)
+        {
+            if (rootFrame is ILayoutPanelFrame AsPanelFrame)
+            {
+                foreach (ILayoutFrame Item in AsPanelFrame.Items)
+                    EnumerateFrames(frameList, Item);
+            }
+            else
+                frameList.Add(rootFrame);
         }
         #endregion
     }
