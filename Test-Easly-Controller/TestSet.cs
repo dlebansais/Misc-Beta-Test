@@ -104,6 +104,7 @@ namespace Test
         #endregion
 
         static bool TestOff = false;
+        const int TestRepeatCount = 5;
 
         #region Sanity Check
         [Test]
@@ -442,7 +443,7 @@ namespace Test
             WriteableBrowseNode(Controller, RootIndex, JustCount);
             WriteableMaxTestCount = WriteableTestCount;
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < TestRepeatCount; i++)
             {
                 TestWriteableInsert(index, rootNode);
                 TestWriteableRemove(index, rootNode);
@@ -2143,7 +2144,7 @@ namespace Test
             FrameBrowseNode(Controller, RootIndex, JustCount);
             FrameMaxTestCount = FrameTestCount;
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < TestRepeatCount; i++)
             {
                 TestFrameInsert(index, rootNode);
                 TestFrameRemove(index, rootNode);
@@ -3904,7 +3905,7 @@ namespace Test
             FocusBrowseNode(Controller, RootIndex, JustCount);
             FocusMaxTestCount = FocusTestCount;
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < TestRepeatCount; i++)
             {
                 SeedRand(0x12 + index * 256 + i * 65536);
                 TestFocusInsert(index, rootNode);
@@ -6056,7 +6057,7 @@ namespace Test
             LayoutBrowseNode(Controller, RootIndex, JustCount);
             LayoutMaxTestCount = LayoutTestCount;
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < TestRepeatCount; i++)
             {
                 SeedRand(0x12 + index * 256 + i * 65536);
                 TestLayoutInsert(index, rootNode);
