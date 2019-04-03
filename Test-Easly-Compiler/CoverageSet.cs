@@ -132,7 +132,7 @@ namespace Coverage
             using (FileStream fs = new FileStream(TestFileName, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
             {
                 Compiler.Compile(TestFileName);
-                Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is ErrorInputFileInvalid AsInputFileInvalid && AsInputFileInvalid.Message.StartsWith("The process cannot access the file"), ErrorListToString(Compiler));
+                Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is ErrorInputFileInvalid, ErrorListToString(Compiler));
             }
 
             Stream NullStream = null;
