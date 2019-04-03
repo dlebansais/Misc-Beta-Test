@@ -97,6 +97,7 @@ namespace Test
         static List<string> FileNameTable;
         static INode FirstRootNode;
         static string RootPath;
+        static string NL = Environment.NewLine;
         #endregion
 
         #region Tools
@@ -106,7 +107,7 @@ namespace Test
 
             Result += $"{compiler.ErrorList.Count} error(s).";
             foreach (Error Error in compiler.ErrorList)
-                Result += $"\r\n{Error}: {Error.Message}";
+                Result += $"" + NL + "{Error}: {Error.Message}";
 
             return Result;
         }
@@ -126,18 +127,9 @@ namespace Test
             string TestFileName = $"{RootPath}test.easly";
 
             Exception ex;
-
-            try
-            {
-                ex = null;
-                string NullString = null;
-                Compiler.Compile(NullString);
-            }
-            catch (Exception e)
-            {
-                ex = e;
-            }
-            Assert.That(ex is ArgumentNullException && ex.Message == "Value cannot be null.\r\nParameter name: fileName", ex.Message);
+            string NullString = null;
+            ex = Assert.Throws<ArgumentNullException>(() => Compiler.Compile(NullString));
+            Assert.That(ex.Message == "Value cannot be null." + NL + "Parameter name: fileName", ex.Message);
 
             Compiler.Compile("notfound.easly");
             Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is ErrorInputFileNotFound AsInputFileNotFound && AsInputFileNotFound.Message == "File not found: 'notfound.easly'.", ErrorListToString(Compiler));
@@ -148,17 +140,9 @@ namespace Test
                 Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is ErrorInputFileInvalid AsInputFileInvalid && AsInputFileInvalid.Message.StartsWith("The process cannot access the file"), ErrorListToString(Compiler));
             }
 
-            try
-            {
-                ex = null;
-                Stream NullStream = null;
-                Compiler.Compile(NullStream);
-            }
-            catch (Exception e)
-            {
-                ex = e;
-            }
-            Assert.That(ex is ArgumentNullException && ex.Message == "Value cannot be null.\r\nParameter name: stream", ex.Message);
+            Stream NullStream = null;
+            ex = Assert.Throws<ArgumentNullException>(() => Compiler.Compile(NullStream));
+            Assert.That(ex.Message == "Value cannot be null." + NL + "Parameter name: stream", ex.Message);
 
             Compiler.Compile(TestFileName);
             Assert.That(Compiler.ErrorList.Count == 0, ErrorListToString(Compiler));
@@ -170,17 +154,9 @@ namespace Test
                 Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is ErrorInputFileInvalid, ErrorListToString(Compiler));
             }
 
-            try
-            {
-                ex = null;
-                IRoot NullRoot = null;
-                Compiler.Compile(NullRoot);
-            }
-            catch (Exception e)
-            {
-                ex = e;
-            }
-            Assert.That(ex is ArgumentNullException && ex.Message == "Value cannot be null.\r\nParameter name: root", ex.Message);
+            IRoot NullRoot = null;
+            ex = Assert.Throws<ArgumentNullException>(() => Compiler.Compile(NullRoot));
+            Assert.That(ex.Message == "Value cannot be null." + NL + "Parameter name: root", ex.Message);
 
             using (FileStream fs = new FileStream(TestFileName, FileMode.Open, FileAccess.Read))
             {
