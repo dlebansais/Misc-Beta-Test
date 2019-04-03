@@ -11,6 +11,7 @@ script:
 - cp ./Test-PolySerializer/bin/x64/Travis/Test-PolySerializer.dll ./Misc-Beta-Test/bin/x64/Travis
 - cp ./Test-SimpleDatabase/bin/x64/Travis/Test-SimpleDatabase.dll ./Misc-Beta-Test/bin/x64/Travis
 - cp ./Test-Easly-Controller/bin/x64/Travis/Test-Easly-Controller.dll ./Misc-Beta-Test/bin/x64/Travis
+- cp ./Test-Easly-Compiler/bin/x64/Travis/Test-Easly-Compiler.dll ./Misc-Beta-Test/bin/x64/Travis
 - cp ./Test-Easly-Controller/test.easly ./Misc-Beta-Test/bin/x64/Travis
 
 deploy:
