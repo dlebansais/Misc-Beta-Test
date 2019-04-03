@@ -107,7 +107,7 @@ namespace Test
 
             Result += $"{compiler.ErrorList.Count} error(s).";
             foreach (Error Error in compiler.ErrorList)
-                Result += $"" + NL + "{Error}: {Error.Message}";
+                Result += $"{NL}{Error}: {Error.Message}";
 
             return Result;
         }
@@ -129,7 +129,7 @@ namespace Test
             Exception ex;
             string NullString = null;
             ex = Assert.Throws<ArgumentNullException>(() => Compiler.Compile(NullString));
-            Assert.That(ex.Message == "Value cannot be null." + NL + "Parameter name: fileName", ex.Message);
+            Assert.That(ex.Message == $"Value cannot be null.{NL}Parameter name: fileName", ex.Message);
 
             Compiler.Compile("notfound.easly");
             Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is ErrorInputFileNotFound AsInputFileNotFound && AsInputFileNotFound.Message == "File not found: 'notfound.easly'.", ErrorListToString(Compiler));
@@ -142,7 +142,7 @@ namespace Test
 
             Stream NullStream = null;
             ex = Assert.Throws<ArgumentNullException>(() => Compiler.Compile(NullStream));
-            Assert.That(ex.Message == "Value cannot be null." + NL + "Parameter name: stream", ex.Message);
+            Assert.That(ex.Message == $"Value cannot be null.{NL}Parameter name: stream", ex.Message);
 
             Compiler.Compile(TestFileName);
             Assert.That(Compiler.ErrorList.Count == 0, ErrorListToString(Compiler));
@@ -156,7 +156,7 @@ namespace Test
 
             IRoot NullRoot = null;
             ex = Assert.Throws<ArgumentNullException>(() => Compiler.Compile(NullRoot));
-            Assert.That(ex.Message == "Value cannot be null." + NL + "Parameter name: root", ex.Message);
+            Assert.That(ex.Message == $"Value cannot be null.{NL}Parameter name: root", ex.Message);
 
             using (FileStream fs = new FileStream(TestFileName, FileMode.Open, FileAccess.Read))
             {

@@ -15,7 +15,6 @@ namespace Coverage
     [TestFixture]
     public class CoverageSet
     {
-
         #region Setup
         [OneTimeSetUp]
         public static void InitTestSession()
@@ -95,6 +94,7 @@ namespace Coverage
         static List<string> FileNameTable;
         static INode FirstRootNode;
         static string RootPath;
+        static string NL = Environment.NewLine;
         #endregion
 
         #region Tools
@@ -104,7 +104,7 @@ namespace Coverage
 
             Result += $"{compiler.ErrorList.Count} error(s).";
             foreach (Error Error in compiler.ErrorList)
-                Result += $"\r\n{Error}: {Error.Message}";
+                Result += $"{NL}{Error}: {Error.Message}";
 
             return Result;
         }
@@ -124,7 +124,7 @@ namespace Coverage
             Exception ex;
             string NullString = null;
             ex = Assert.Throws<ArgumentNullException>(() => Compiler.Compile(NullString));
-            Assert.That(ex.Message == "Value cannot be null.\r\nParameter name: fileName", ex.Message);
+            Assert.That(ex.Message == $"Value cannot be null.{NL}Parameter name: fileName", ex.Message);
 
             Compiler.Compile("notfound.easly");
             Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is ErrorInputFileNotFound AsInputFileNotFound && AsInputFileNotFound.Message == "File not found: 'notfound.easly'.", ErrorListToString(Compiler));
@@ -137,7 +137,7 @@ namespace Coverage
 
             Stream NullStream = null;
             ex = Assert.Throws<ArgumentNullException>(() => Compiler.Compile(NullStream));
-            Assert.That(ex.Message == "Value cannot be null.\r\nParameter name: stream", ex.Message);
+            Assert.That(ex.Message == $"Value cannot be null.{NL}Parameter name: stream", ex.Message);
 
             Compiler.Compile(TestFileName);
             Assert.That(Compiler.ErrorList.Count == 0, ErrorListToString(Compiler));
@@ -151,7 +151,7 @@ namespace Coverage
 
             IRoot NullRoot = null;
             ex = Assert.Throws<ArgumentNullException>(() => Compiler.Compile(NullRoot));
-            Assert.That(ex.Message == "Value cannot be null.\r\nParameter name: root", ex.Message);
+            Assert.That(ex.Message == $"Value cannot be null.{NL}Parameter name: root", ex.Message);
 
             using (FileStream fs = new FileStream(TestFileName, FileMode.Open, FileAccess.Read))
             {
