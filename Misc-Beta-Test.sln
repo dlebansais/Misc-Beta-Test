@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test-SimpleDatabase", "Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test-Easly-Controller", "Test-Easly-Controller\Test-Easly-Controller.csproj", "{C3D406EF-0D02-4A09-93BE-8D73D11F619D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test-Easly-Compiler", "Test-Easly-Compiler\Test-Easly-Compiler.csproj", "{16B27541-2CE6-4A41-AE77-D6DF7D73A260}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -50,6 +52,12 @@ Global
 		{C3D406EF-0D02-4A09-93BE-8D73D11F619D}.Release|x64.Build.0 = Release|x64
 		{C3D406EF-0D02-4A09-93BE-8D73D11F619D}.Travis|x64.ActiveCfg = Travis|x64
 		{C3D406EF-0D02-4A09-93BE-8D73D11F619D}.Travis|x64.Build.0 = Travis|x64
+		{16B27541-2CE6-4A41-AE77-D6DF7D73A260}.Debug|x64.ActiveCfg = Debug|x64
+		{16B27541-2CE6-4A41-AE77-D6DF7D73A260}.Debug|x64.Build.0 = Debug|x64
+		{16B27541-2CE6-4A41-AE77-D6DF7D73A260}.Release|x64.ActiveCfg = Release|x64
+		{16B27541-2CE6-4A41-AE77-D6DF7D73A260}.Release|x64.Build.0 = Release|x64
+		{16B27541-2CE6-4A41-AE77-D6DF7D73A260}.Travis|x64.ActiveCfg = Travis|x64
+		{16B27541-2CE6-4A41-AE77-D6DF7D73A260}.Travis|x64.Build.0 = Travis|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
