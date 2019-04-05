@@ -390,9 +390,9 @@ namespace Test
             database.DeleteTables(credential);
             database.DeleteCredential(RootId, RootPassword, credential);
 
-            Thread.Sleep(1000);
+            Thread.Sleep(5000);
 
-            //Assert.That(!database.IsCredentialValid(credential), $"{testName} - Verify Credential Invalid (after close)");
+            Assert.That(!database.IsCredentialValid(credential), $"{testName} - Verify Credential Invalid (after close). {database}");
 
             credential = null;
             database = null;
