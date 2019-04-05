@@ -46,7 +46,7 @@ namespace Test
                 RootPath = "./";
 
             FileNameTable = new List<string>();
-            FirstRootNode = null;
+            CoverageNode = null;
             AddEaslyFiles(RootPath);
         }
 
@@ -56,14 +56,14 @@ namespace Test
             {
                 FileNameTable.Add(FileName.Replace("\\", "/"));
 
-                if (FirstRootNode == null)
+                if (FileName.EndsWith("coverage.easly"))
                 {
                     using (FileStream fs = new FileStream(FileName, FileMode.Open, FileAccess.Read))
                     {
                         Serializer Serializer = new Serializer();
                         INode RootNode = Serializer.Deserialize(fs) as INode;
 
-                        FirstRootNode = RootNode;
+                        CoverageNode = RootNode;
                     }
                 }
             }
@@ -95,7 +95,7 @@ namespace Test
         }
 
         static List<string> FileNameTable;
-        static INode FirstRootNode;
+        static INode CoverageNode;
         static string RootPath;
         static string NL = Environment.NewLine;
         #endregion
@@ -164,7 +164,7 @@ namespace Test
                 Assert.That(Compiler.ErrorList.Count == 0, ErrorListToString(Compiler));
             }
 
-            IRoot ClonedRoot = NodeHelper.DeepCloneNode(FirstRootNode, cloneCommentGuid: true) as IRoot;
+            IRoot ClonedRoot = NodeHelper.DeepCloneNode(CoverageNode, cloneCommentGuid: true) as IRoot;
             NodeTreeHelper.SetGuidProperty(ClonedRoot.ClassBlocks.NodeBlockList[0].NodeList[0], nameof(IClass.ClassGuid), Guid.Empty);
             Assert.That(!NodeTreeDiagnostic.IsValid(ClonedRoot, assertValid: false));
 
@@ -210,7 +210,7 @@ namespace Test
         {
             Compiler Compiler = new Compiler();
 
-            Compiler.Compile(rootNode as IRoot);
+            Compiler.Compile(CoverageNode as IRoot);
             Assert.That(Compiler.ErrorList.Count == 0, ErrorListToString(Compiler));
         }
         #endregion
