@@ -16,6 +16,7 @@ using Easly;
 using EaslyController.Focus;
 using TestDebug;
 using EaslyController.Layout;
+using EaslyEdit;
 
 namespace Test
 {

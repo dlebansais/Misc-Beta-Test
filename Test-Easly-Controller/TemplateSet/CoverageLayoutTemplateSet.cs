@@ -176,6 +176,7 @@ namespace TestDebug
                 <LayoutPlaceholderFrame PropertyName=""PlaceholderTree""/>
                 <LayoutPlaceholderFrame PropertyName=""PlaceholderLeaf""/>
                 <LayoutOptionalFrame PropertyName=""UnassignedOptionalLeaf"" />
+                <LayoutOptionalFrame PropertyName=""EmptyOptionalLeaf"" />
                 <LayoutOptionalFrame PropertyName=""AssignedOptionalTree"" />
                 <LayoutOptionalFrame PropertyName=""AssignedOptionalLeaf"" />
                 <LayoutInsertFrame CollectionName=""LeafBlocks"">

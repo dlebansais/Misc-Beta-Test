@@ -318,6 +318,11 @@ namespace TestDebug
                     <FocusFrameSelector SelectorType=""{xaml:Type cov:ILeaf}"" SelectorName=""Leaf0""/>
                 </FocusOptionalFrame.Selectors>
             </FocusOptionalFrame>
+            <FocusOptionalFrame PropertyName=""EmptyOptionalLeaf"">
+                <FocusOptionalFrame.Selectors>
+                    <FocusFrameSelector SelectorType=""{xaml:Type cov:ILeaf}"" SelectorName=""Leaf0""/>
+                </FocusOptionalFrame.Selectors>
+            </FocusOptionalFrame>
             <FocusOptionalFrame PropertyName=""AssignedOptionalTree"" />
             <FocusOptionalFrame PropertyName=""AssignedOptionalLeaf"">
                 <FocusOptionalFrame.Selectors>

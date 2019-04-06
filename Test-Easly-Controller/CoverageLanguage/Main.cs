@@ -7,6 +7,7 @@ namespace Coverage
         ITree PlaceholderTree { get; }
         ILeaf PlaceholderLeaf { get; }
         Easly.IOptionalReference<ILeaf> UnassignedOptionalLeaf { get; }
+        Easly.IOptionalReference<ILeaf> EmptyOptionalLeaf { get; }
         Easly.IOptionalReference<ITree> AssignedOptionalTree { get; }
         Easly.IOptionalReference<ILeaf> AssignedOptionalLeaf { get; }
         BaseNode.IBlockList<ILeaf, Leaf> LeafBlocks { get; }
@@ -23,6 +24,7 @@ namespace Coverage
         public virtual ITree PlaceholderTree { get; set; }
         public virtual ILeaf PlaceholderLeaf { get; set; }
         public virtual Easly.IOptionalReference<ILeaf> UnassignedOptionalLeaf { get; set; }
+        public virtual Easly.IOptionalReference<ILeaf> EmptyOptionalLeaf { get; set; }
         public virtual Easly.IOptionalReference<ITree> AssignedOptionalTree { get; set; }
         public virtual Easly.IOptionalReference<ILeaf> AssignedOptionalLeaf { get; set; }
         public virtual BaseNode.IBlockList<ILeaf, Leaf> LeafBlocks { get; set; }

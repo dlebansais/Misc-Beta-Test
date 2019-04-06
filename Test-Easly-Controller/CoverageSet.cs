@@ -103,6 +103,7 @@ namespace Coverage
             BaseNodeHelper.NodeTreeHelper.SetString(UnassignedOptionalLeaf, nameof(ILeaf.Text), "optional unassigned");
 
             Easly.IOptionalReference<ILeaf> UnassignedOptional = BaseNodeHelper.OptionalReferenceHelper<ILeaf>.CreateReference(UnassignedOptionalLeaf);
+            Easly.IOptionalReference<ILeaf> EmptyOptional = BaseNodeHelper.OptionalReferenceHelper<ILeaf>.CreateEmptyReference();
 
             Leaf AssignedOptionalLeaf = CreateLeaf(Guid.NewGuid());
 
@@ -140,6 +141,7 @@ namespace Coverage
             BaseNodeHelper.NodeTreeHelperChild.SetChildNode(Root, nameof(IMain.PlaceholderTree), PlaceholderTree);
             BaseNodeHelper.NodeTreeHelperChild.SetChildNode(Root, nameof(IMain.PlaceholderLeaf), PlaceholderLeaf);
             BaseNodeHelper.NodeTreeHelperOptional.SetOptionalReference(Root, nameof(IMain.UnassignedOptionalLeaf), (Easly.IOptionalReference)UnassignedOptional);
+            BaseNodeHelper.NodeTreeHelperOptional.SetOptionalReference(Root, nameof(IMain.EmptyOptionalLeaf), (Easly.IOptionalReference)EmptyOptional);
             BaseNodeHelper.NodeTreeHelperOptional.SetOptionalReference(Root, nameof(IMain.AssignedOptionalTree), (Easly.IOptionalReference)AssignedOptionalForTree);
             BaseNodeHelper.NodeTreeHelperOptional.SetOptionalReference(Root, nameof(IMain.AssignedOptionalLeaf), (Easly.IOptionalReference)AssignedOptionalForLeaf);
             BaseNodeHelper.NodeTreeHelperBlockList.SetBlockList(Root, nameof(IMain.LeafBlocks), (BaseNode.IBlockList)LeafBlocks);
@@ -178,7 +180,7 @@ namespace Coverage
             }
 
             RootNode = CreateRoot(ValueGuid0, Imperfections.BadGuid);
-            Assert.That(!BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+            Assert.That(!BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode, assertValid: false));
 
             try
             {
@@ -234,10 +236,11 @@ namespace Coverage
             Assert.That(Controller0.Contains(RootIndex0));
             Assert.That(Controller0.IndexToState(RootIndex0) == RootState);
 
-            Assert.That(RootState.InnerTable.Count == 7);
+            Assert.That(RootState.InnerTable.Count == 8);
             Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.PlaceholderTree)));
             Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.PlaceholderLeaf)));
             Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.UnassignedOptionalLeaf)));
+            Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.EmptyOptionalLeaf)));
             Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.AssignedOptionalTree)));
             Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.AssignedOptionalLeaf)));
             Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.LeafBlocks)));
@@ -525,7 +528,7 @@ namespace Coverage
             }
 
             RootNode = CreateRoot(ValueGuid0, Imperfections.BadGuid);
-            Assert.That(!BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+            Assert.That(!BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode, assertValid: false));
 
             try
             {
@@ -581,10 +584,11 @@ namespace Coverage
             Assert.That(Controller0.Contains(RootIndex0));
             Assert.That(Controller0.IndexToState(RootIndex0) == RootState);
 
-            Assert.That(RootState.InnerTable.Count == 7);
+            Assert.That(RootState.InnerTable.Count == 8);
             Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.PlaceholderTree)));
             Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.PlaceholderLeaf)));
             Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.UnassignedOptionalLeaf)));
+            Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.EmptyOptionalLeaf)));
             Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.AssignedOptionalTree)));
             Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.AssignedOptionalLeaf)));
             Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.LeafBlocks)));
@@ -2167,7 +2171,7 @@ namespace Coverage
                 Assert.That(IsChanged);
 
                 IWriteableNodeStateReadOnlyList AllChildren1 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren1.Count == AllChildren0.Count + 1, $"New count: {AllChildren1.Count}");
+                Assert.That(AllChildren1.Count == AllChildren0.Count + 2, $"New count: {AllChildren1.Count - AllChildren0.Count}");
 
                 Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
 
@@ -2188,7 +2192,7 @@ namespace Coverage
                 Assert.That(Controller.Contains(NewItemIndex5));
 
                 IWriteableNodeStateReadOnlyList AllChildren3 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren3.Count == AllChildren2.Count - 1, $"New count: {AllChildren3.Count}");
+                Assert.That(AllChildren3.Count == AllChildren2.Count - 1, $"New count: {AllChildren3.Count - AllChildren2.Count}");
 
                 Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
 
@@ -2241,7 +2245,7 @@ namespace Coverage
                 Assert.That(!IsChanged);
 
                 IWriteableNodeStateReadOnlyList AllChildren6 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren6.Count == AllChildren5.Count, $"New count: {AllChildren6.Count}");
+                Assert.That(AllChildren6.Count == AllChildren5.Count, $"New count: {AllChildren6.Count - AllChildren5.Count}");
 
                 IDictionary<Type, string[]> WithExpandCollectionTable = BaseNodeHelper.NodeHelper.WithExpandCollectionTable as IDictionary<Type, string[]>;
                 WithExpandCollectionTable.Add(typeof(IMain), new string[] { nameof(IMain.LeafBlocks) });
@@ -2250,7 +2254,7 @@ namespace Coverage
                 Assert.That(IsChanged);
 
                 IWriteableNodeStateReadOnlyList AllChildren7 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren7.Count == AllChildren6.Count + 3, $"New count: {AllChildren7.Count}");
+                Assert.That(AllChildren7.Count == AllChildren6.Count + 3, $"New count: {AllChildren7.Count - AllChildren6.Count}");
 
                 Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
                 Assert.That(!LeafBlocksInner.IsEmpty);
@@ -2353,7 +2357,7 @@ namespace Coverage
                 Assert.That(IsChanged);
 
                 IWriteableNodeStateReadOnlyList AllChildren1 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren1.Count == AllChildren0.Count + 4, $"New count: {AllChildren1.Count}");
+                Assert.That(AllChildren1.Count == AllChildren0.Count + 5, $"New count: {AllChildren1.Count - AllChildren0.Count}");
 
                 Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
 
@@ -2362,19 +2366,19 @@ namespace Coverage
                 Assert.That(IsChanged);
 
                 IWriteableNodeStateReadOnlyList AllChildren2 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren2.Count == AllChildren1.Count - 7, $"New count: {AllChildren2.Count}");
+                Assert.That(AllChildren2.Count == AllChildren1.Count - 4, $"New count: {AllChildren2.Count - AllChildren1.Count}");
 
                 Controller.Reduce(RootIndex, out IsChanged);
                 Assert.That(!IsChanged);
 
                 IWriteableNodeStateReadOnlyList AllChildren3 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren3.Count == AllChildren2.Count, $"New count: {AllChildren3.Count}");
+                Assert.That(AllChildren3.Count == AllChildren2.Count, $"New count: {AllChildren3.Count - AllChildren2.Count}");
 
                 Controller.Expand(RootIndex, out IsChanged);
                 Assert.That(IsChanged);
 
                 IWriteableNodeStateReadOnlyList AllChildren4 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren4.Count == AllChildren3.Count + 7, $"New count: {AllChildren4.Count}");
+                Assert.That(AllChildren4.Count == AllChildren3.Count + 4, $"New count: {AllChildren4.Count - AllChildren3.Count}");
 
                 BaseNode.IBlock ChildBlock = LeafBlocksInner.BlockStateList[0].ChildBlock;
                 ILeaf FirstNode = ChildBlock.NodeList[0] as ILeaf;
@@ -2382,11 +2386,18 @@ namespace Coverage
                 BaseNodeHelper.NodeTreeHelper.SetString(FirstNode, nameof(ILeaf.Text), "!");
 
                 //System.Diagnostics.Debug.Assert(false);
+                IWriteableOptionalInner LeafOptionalInner = RootState.PropertyToInner(nameof(IMain.AssignedOptionalLeaf)) as IWriteableOptionalInner;
+                Assert.That(LeafOptionalInner != null);
+
+                ILeaf Leaf = LeafOptionalInner.ChildState.Node as ILeaf;
+                BaseNodeHelper.NodeTreeHelper.SetStringProperty(Leaf, "Text", "");
+
+                //System.Diagnostics.Debug.Assert(false);
                 Controller.Reduce(RootIndex, out IsChanged);
                 Assert.That(IsChanged);
 
                 IWriteableNodeStateReadOnlyList AllChildren5 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren5.Count == AllChildren4.Count - 4, $"New count: {AllChildren5.Count}");
+                Assert.That(AllChildren5.Count == AllChildren4.Count - 2, $"New count: {AllChildren5.Count - AllChildren4.Count}");
 
                 BaseNodeHelper.NodeTreeHelper.SetString(FirstNode, nameof(ILeaf.Text), "");
 
@@ -2395,7 +2406,7 @@ namespace Coverage
                 Assert.That(IsChanged);
 
                 IWriteableNodeStateReadOnlyList AllChildren6 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren6.Count == AllChildren5.Count - 3, $"New count: {AllChildren6.Count}");
+                Assert.That(AllChildren6.Count == AllChildren5.Count - 3, $"New count: {AllChildren6.Count - AllChildren5.Count}");
 
                 Controller.Expand(RootIndex, out IsChanged);
                 Assert.That(IsChanged);
@@ -2407,7 +2418,7 @@ namespace Coverage
                 Assert.That(IsChanged);
 
                 IWriteableNodeStateReadOnlyList AllChildren7 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren7.Count == AllChildren6.Count + 3, $"New count: {AllChildren7.Count}");
+                Assert.That(AllChildren7.Count == AllChildren6.Count + 3, $"New count: {AllChildren7.Count - AllChildren6.Count}");
 
                 Assert.That(Controller.CanUndo);
                 Controller.Undo();
@@ -2552,16 +2563,24 @@ namespace Coverage
                 Assert.That(IsChanged);
 
                 IWriteableNodeStateReadOnlyList AllChildren1 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren1.Count == AllChildren0.Count + 1, $"New count: {AllChildren1.Count}");
+                Assert.That(AllChildren1.Count == AllChildren0.Count + 2, $"New count: {AllChildren1.Count - AllChildren0.Count}");
 
                 Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                //System.Diagnostics.Debug.Assert(false);
+                IWriteableOptionalInner LeafOptionalInner = RootState.PropertyToInner(nameof(IMain.AssignedOptionalLeaf)) as IWriteableOptionalInner;
+                Assert.That(LeafOptionalInner != null);
+
+                ILeaf Leaf = LeafOptionalInner.ChildState.Node as ILeaf;
+                BaseNodeHelper.NodeTreeHelper.SetStringProperty(Leaf, "Text", "");
+
 
                 //System.Diagnostics.Debug.Assert(false);
                 Controller.Canonicalize(out IsChanged);
                 Assert.That(IsChanged);
 
                 IWriteableNodeStateReadOnlyList AllChildren2 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren2.Count == AllChildren1.Count - 4, $"New count: {AllChildren2.Count}");
+                Assert.That(AllChildren2.Count == AllChildren1.Count - 2, $"New count: {AllChildren2.Count - AllChildren1.Count}");
 
                 Controller.Undo();
                 Controller.Redo();
@@ -2570,7 +2589,7 @@ namespace Coverage
                 Assert.That(!IsChanged);
 
                 IWriteableNodeStateReadOnlyList AllChildren3 = (IWriteableNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren3.Count == AllChildren2.Count, $"New count: {AllChildren3.Count}");
+                Assert.That(AllChildren3.Count == AllChildren2.Count, $"New count: {AllChildren3.Count - AllChildren2.Count}");
 
                 Assert.That(Controller.CanUndo);
                 Controller.Undo();
@@ -3106,7 +3125,7 @@ namespace Coverage
             }
 
             RootNode = CreateRoot(ValueGuid0, Imperfections.BadGuid);
-            Assert.That(!BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+            Assert.That(!BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode, assertValid: false));
 
             try
             {
@@ -3162,10 +3181,11 @@ namespace Coverage
             Assert.That(Controller0.Contains(RootIndex0));
             Assert.That(Controller0.IndexToState(RootIndex0) == RootState);
 
-            Assert.That(RootState.InnerTable.Count == 7);
+            Assert.That(RootState.InnerTable.Count == 8);
             Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.PlaceholderTree)));
             Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.PlaceholderLeaf)));
             Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.UnassignedOptionalLeaf)));
+            Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.EmptyOptionalLeaf)));
             Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.AssignedOptionalTree)));
             Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.AssignedOptionalLeaf)));
             Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.LeafBlocks)));
@@ -4782,7 +4802,7 @@ namespace Coverage
                 Assert.That(IsChanged);
 
                 IFrameNodeStateReadOnlyList AllChildren1 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren1.Count == AllChildren0.Count + 1, $"New count: {AllChildren1.Count}");
+                Assert.That(AllChildren1.Count == AllChildren0.Count + 2, $"New count: {AllChildren1.Count - AllChildren0.Count}");
 
                 Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
 
@@ -4803,7 +4823,7 @@ namespace Coverage
                 Assert.That(Controller.Contains(NewItemIndex5));
 
                 IFrameNodeStateReadOnlyList AllChildren3 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren3.Count == AllChildren2.Count - 1, $"New count: {AllChildren3.Count}");
+                Assert.That(AllChildren3.Count == AllChildren2.Count - 1, $"New count: {AllChildren3.Count - AllChildren2.Count}");
 
                 Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
 
@@ -4856,7 +4876,7 @@ namespace Coverage
                 Assert.That(!IsChanged);
 
                 IFrameNodeStateReadOnlyList AllChildren6 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren6.Count == AllChildren5.Count, $"New count: {AllChildren6.Count}");
+                Assert.That(AllChildren6.Count == AllChildren5.Count, $"New count: {AllChildren6.Count - AllChildren5.Count}");
 
                 IDictionary<Type, string[]> WithExpandCollectionTable = BaseNodeHelper.NodeHelper.WithExpandCollectionTable as IDictionary<Type, string[]>;
                 WithExpandCollectionTable.Add(typeof(IMain), new string[] { nameof(IMain.LeafBlocks) });
@@ -4968,16 +4988,15 @@ namespace Coverage
                 Assert.That(IsChanged);
 
                 IFrameNodeStateReadOnlyList AllChildren1 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren1.Count == AllChildren0.Count + 4, $"New count: {AllChildren1.Count}");
+                Assert.That(AllChildren1.Count == AllChildren0.Count + 5, $"New count: {AllChildren1.Count - AllChildren0.Count}");
 
                 Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
 
-                //System.Diagnostics.Debug.Assert(false);
                 Controller.Reduce(RootIndex, out IsChanged);
                 Assert.That(IsChanged);
 
                 IFrameNodeStateReadOnlyList AllChildren2 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren2.Count == AllChildren1.Count - 7, $"New count: {AllChildren2.Count}");
+                Assert.That(AllChildren2.Count == AllChildren1.Count - 4, $"New count: {AllChildren2.Count - AllChildren1.Count}");
 
                 Controller.Reduce(RootIndex, out IsChanged);
                 Assert.That(!IsChanged);
@@ -4989,19 +5008,28 @@ namespace Coverage
                 Assert.That(IsChanged);
 
                 IFrameNodeStateReadOnlyList AllChildren4 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren4.Count == AllChildren3.Count + 7, $"New count: {AllChildren4.Count}");
+                Assert.That(AllChildren4.Count == AllChildren3.Count + 4, $"New count: {AllChildren4.Count - AllChildren3.Count}");
 
                 BaseNode.IBlock ChildBlock = LeafBlocksInner.BlockStateList[0].ChildBlock;
                 ILeaf FirstNode = ChildBlock.NodeList[0] as ILeaf;
                 Assert.That(FirstNode != null);
                 BaseNodeHelper.NodeTreeHelper.SetString(FirstNode, nameof(ILeaf.Text), "!");
 
+
+                //System.Diagnostics.Debug.Assert(false);
+                IFrameOptionalInner LeafOptionalInner = RootState.PropertyToInner(nameof(IMain.AssignedOptionalLeaf)) as IFrameOptionalInner;
+                Assert.That(LeafOptionalInner != null);
+
+                ILeaf Leaf = LeafOptionalInner.ChildState.Node as ILeaf;
+                BaseNodeHelper.NodeTreeHelper.SetStringProperty(Leaf, "Text", "");
+
+
                 //System.Diagnostics.Debug.Assert(false);
                 Controller.Reduce(RootIndex, out IsChanged);
                 Assert.That(IsChanged);
 
                 IFrameNodeStateReadOnlyList AllChildren5 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren5.Count == AllChildren4.Count - 4, $"New count: {AllChildren5.Count}");
+                Assert.That(AllChildren5.Count == AllChildren4.Count - 2, $"New count: {AllChildren5.Count - AllChildren4.Count}");
 
                 BaseNodeHelper.NodeTreeHelper.SetString(FirstNode, nameof(ILeaf.Text), "");
 
@@ -5010,7 +5038,7 @@ namespace Coverage
                 Assert.That(IsChanged);
 
                 IFrameNodeStateReadOnlyList AllChildren6 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren6.Count == AllChildren5.Count - 3, $"New count: {AllChildren6.Count}");
+                Assert.That(AllChildren6.Count == AllChildren5.Count - 3, $"New count: {AllChildren6.Count - AllChildren5.Count}");
 
                 Controller.Expand(RootIndex, out IsChanged);
                 Assert.That(IsChanged);
@@ -5022,7 +5050,7 @@ namespace Coverage
                 Assert.That(IsChanged);
 
                 IFrameNodeStateReadOnlyList AllChildren7 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren7.Count == AllChildren6.Count + 3, $"New count: {AllChildren7.Count}");
+                Assert.That(AllChildren7.Count == AllChildren6.Count + 3, $"New count: {AllChildren7.Count - AllChildren6.Count}");
 
                 Assert.That(Controller.CanUndo);
                 Controller.Undo();
@@ -5163,20 +5191,28 @@ namespace Coverage
                 IDictionary<Type, string[]> WithExpandCollectionTable = BaseNodeHelper.NodeHelper.WithExpandCollectionTable as IDictionary<Type, string[]>;
                 WithExpandCollectionTable.Add(typeof(IMain), new string[] { nameof(IMain.LeafBlocks) });
 
-                //System.Diagnostics.Debug.Assert(false);
                 Controller.Expand(RootIndex, out IsChanged);
                 Assert.That(IsChanged);
 
                 IFrameNodeStateReadOnlyList AllChildren1 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren1.Count == AllChildren0.Count + 1, $"New count: {AllChildren1.Count}");
+                Assert.That(AllChildren1.Count == AllChildren0.Count + 2, $"New count: {AllChildren1.Count - AllChildren0.Count}");
 
                 Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+
+                //System.Diagnostics.Debug.Assert(false);
+                IFrameOptionalInner LeafOptionalInner = RootState.PropertyToInner(nameof(IMain.AssignedOptionalLeaf)) as IFrameOptionalInner;
+                Assert.That(LeafOptionalInner != null);
+
+                ILeaf Leaf = LeafOptionalInner.ChildState.Node as ILeaf;
+                BaseNodeHelper.NodeTreeHelper.SetStringProperty(Leaf, "Text", "");
+
 
                 Controller.Canonicalize(out IsChanged);
                 Assert.That(IsChanged);
 
                 IFrameNodeStateReadOnlyList AllChildren2 = (IFrameNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren2.Count == AllChildren1.Count - 4, $"New count: {AllChildren2.Count}");
+                Assert.That(AllChildren2.Count == AllChildren1.Count - 2, $"New count: {AllChildren2.Count - AllChildren1.Count}");
 
                 Controller.Undo();
                 Controller.Redo();
@@ -5313,7 +5349,7 @@ namespace Coverage
 
             using (IFrameControllerView ControllerView = FrameControllerView.Create(Controller, TestDebug.CoverageFrameTemplateSet.FrameTemplateSet))
             {
-                Controller.Canonicalize(out bool IsChanged);
+                Controller.Expand(Controller.RootIndex, out bool IsChanged);
 
                 // IxxxBlockStateViewDictionary 
 
@@ -6173,7 +6209,7 @@ namespace Coverage
             }
 
             RootNode = CreateRoot(ValueGuid0, Imperfections.BadGuid);
-            Assert.That(!BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+            Assert.That(!BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode, assertValid: false));
 
             try
             {
@@ -6229,10 +6265,11 @@ namespace Coverage
             Assert.That(Controller0.Contains(RootIndex0));
             Assert.That(Controller0.IndexToState(RootIndex0) == RootState);
 
-            Assert.That(RootState.InnerTable.Count == 7);
+            Assert.That(RootState.InnerTable.Count == 8, $"New count: {RootState.InnerTable.Count}");
             Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.PlaceholderTree)));
             Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.PlaceholderLeaf)));
             Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.UnassignedOptionalLeaf)));
+            Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.EmptyOptionalLeaf)));
             Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.AssignedOptionalTree)));
             Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.AssignedOptionalLeaf)));
             Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.LeafBlocks)));
@@ -6772,6 +6809,7 @@ namespace Coverage
                         Template.GetCommentFrame(SelectorStack);
                         break;
                     }
+                Assert.That(CompareEqual.CoverIsEqual(FrameSelectorList, FrameSelectorList));
 
                 SelectorStack = new List<IFocusFrameSelectorList>();
                 FocusCustomTemplateSet.PropertyToFrame(Controller.RootState, "PlaceholderTree", SelectorStack);
@@ -8319,10 +8357,10 @@ namespace Coverage
             RootNode = CreateRoot(ValueGuid0, Imperfections.None);
             RootIndex = new FocusRootNodeIndex(RootNode);
 
+            //System.Diagnostics.Debug.Assert(false);
             IFocusController ControllerBase = FocusController.Create(RootIndex);
             IFocusController Controller = FocusController.Create(RootIndex);
 
-            //System.Diagnostics.Debug.Assert(false);
             using (IFocusControllerView ControllerView0 = FocusControllerView.Create(Controller, TestDebug.CoverageFocusTemplateSet.FocusTemplateSet))
             {
                 Assert.That(ControllerView0.Controller == Controller);
@@ -8496,8 +8534,11 @@ namespace Coverage
                 ControllerView0.MoveFocus(ControllerView0.MinFocusMove, true, out IsMoved);
                 int MaxFocusMove = ControllerView0.MaxFocusMove;
 
+                bool IsReplicationModifiable = false;
                 for (int i = 0; i < MaxFocusMove; i++)
                 {
+                    IsReplicationModifiable |= ControllerView0.IsReplicationModifiable(out IFocusBlockListInner Inner, out int BlockIndex, out BaseNode.ReplicationStatus Replication);
+
                     if (ControllerView0.Focus.CellView.StateView.State is IFocusPatternState AsPatternState)
                     {
                         Controller.ChangeTextAndCaretPosition(AsPatternState.ParentIndex, nameof(BaseNode.IPattern.Text), "test", 0, 1, false);
@@ -8514,6 +8555,8 @@ namespace Coverage
 
                     ControllerView0.MoveFocus(+1, true, out IsMoved);
                 }
+
+                Assert.That(IsReplicationModifiable);
 
                 Assert.That(Controller.CanUndo);
                 Controller.Undo();
@@ -8700,7 +8743,7 @@ namespace Coverage
                 Assert.That(IsChanged);
 
                 IFocusNodeStateReadOnlyList AllChildren1 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren1.Count == AllChildren0.Count + 1, $"New count: {AllChildren1.Count}");
+                Assert.That(AllChildren1.Count == AllChildren0.Count + 2, $"New count: {AllChildren1.Count - AllChildren0.Count}");
 
                 Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
 
@@ -8721,7 +8764,7 @@ namespace Coverage
                 Assert.That(Controller.Contains(NewItemIndex5));
 
                 IFocusNodeStateReadOnlyList AllChildren3 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren3.Count == AllChildren2.Count - 1, $"New count: {AllChildren3.Count}");
+                Assert.That(AllChildren3.Count == AllChildren2.Count - 1, $"New count: {AllChildren3.Count - AllChildren2.Count}");
 
                 Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
 
@@ -8886,7 +8929,7 @@ namespace Coverage
                 Assert.That(IsChanged);
 
                 IFocusNodeStateReadOnlyList AllChildren1 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren1.Count == AllChildren0.Count + 4, $"New count: {AllChildren1.Count}");
+                Assert.That(AllChildren1.Count == AllChildren0.Count + 5, $"New count: {AllChildren1.Count - AllChildren0.Count}");
 
                 Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
 
@@ -8895,7 +8938,7 @@ namespace Coverage
                 Assert.That(IsChanged);
 
                 IFocusNodeStateReadOnlyList AllChildren2 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren2.Count == AllChildren1.Count - 7, $"New count: {AllChildren2.Count}");
+                Assert.That(AllChildren2.Count == AllChildren1.Count - 4, $"New count: {AllChildren2.Count - AllChildren1.Count}");
 
                 Controller.Reduce(RootIndex, out IsChanged);
                 Assert.That(!IsChanged);
@@ -8907,19 +8950,24 @@ namespace Coverage
                 Assert.That(IsChanged);
 
                 IFocusNodeStateReadOnlyList AllChildren4 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren4.Count == AllChildren3.Count + 7, $"New count: {AllChildren4.Count}");
+                Assert.That(AllChildren4.Count == AllChildren3.Count + 4, $"New count: {AllChildren4.Count - AllChildren3.Count}");
 
+                //System.Diagnostics.Debug.Assert(false);
                 BaseNode.IBlock ChildBlock = LeafBlocksInner.BlockStateList[0].ChildBlock;
                 ILeaf FirstNode = ChildBlock.NodeList[0] as ILeaf;
                 Assert.That(FirstNode != null);
                 BaseNodeHelper.NodeTreeHelper.SetString(FirstNode, nameof(ILeaf.Text), "!");
 
-                //System.Diagnostics.Debug.Assert(false);
+                IFocusOptionalInner LeafOptionalInner = RootState.PropertyToInner(nameof(IMain.EmptyOptionalLeaf)) as IFocusOptionalInner;
+                Assert.That(LeafOptionalInner != null);
+                Assert.That(LeafOptionalInner.IsAssigned);
+                BaseNodeHelper.NodeTreeHelper.SetString(LeafOptionalInner.ChildState.Node, nameof(ILeaf.Text), "!");
+
                 Controller.Reduce(RootIndex, out IsChanged);
-                Assert.That(IsChanged);
+                Assert.That(!IsChanged);
 
                 IFocusNodeStateReadOnlyList AllChildren5 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren5.Count == AllChildren4.Count - 4, $"New count: {AllChildren5.Count}");
+                Assert.That(AllChildren5.Count == AllChildren4.Count, $"New count: {AllChildren5.Count}");
 
                 BaseNodeHelper.NodeTreeHelper.SetString(FirstNode, nameof(ILeaf.Text), "");
 
@@ -8937,7 +8985,7 @@ namespace Coverage
 
                 //System.Diagnostics.Debug.Assert(false);
                 Controller.Reduce(RootIndex, out IsChanged);
-                Assert.That(IsChanged);
+                Assert.That(!IsChanged);
 
                 IFocusNodeStateReadOnlyList AllChildren7 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
                 Assert.That(AllChildren7.Count == AllChildren6.Count + 3, $"New count: {AllChildren7.Count}");
@@ -8960,10 +9008,6 @@ namespace Coverage
 
                 WithExpandCollectionTable.Remove(typeof(IMain));
 
-                Assert.That(Controller.CanUndo);
-                Controller.Undo();
-                Assert.That(Controller.CanUndo);
-                Controller.Undo();
                 Assert.That(Controller.CanUndo);
                 Controller.Undo();
                 Assert.That(Controller.CanUndo);
@@ -9081,20 +9125,28 @@ namespace Coverage
                 IDictionary<Type, string[]> WithExpandCollectionTable = BaseNodeHelper.NodeHelper.WithExpandCollectionTable as IDictionary<Type, string[]>;
                 WithExpandCollectionTable.Add(typeof(IMain), new string[] { nameof(IMain.LeafBlocks) });
 
-                //System.Diagnostics.Debug.Assert(false);
+                IFocusOptionalInner LeafOptionalInner = RootState.PropertyToInner(nameof(IMain.AssignedOptionalLeaf)) as IFocusOptionalInner;
+                Assert.That(LeafOptionalInner != null);
+
+
                 Controller.Expand(RootIndex, out IsChanged);
                 Assert.That(IsChanged);
 
                 IFocusNodeStateReadOnlyList AllChildren1 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren1.Count == AllChildren0.Count + 1, $"New count: {AllChildren1.Count}");
+                Assert.That(AllChildren1.Count == AllChildren0.Count + 2, $"New count: {AllChildren1.Count - AllChildren0.Count}");
 
                 Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                ILeaf Leaf = LeafOptionalInner.ChildState.Node as ILeaf;
+                BaseNodeHelper.NodeTreeHelper.SetStringProperty(Leaf, "Text", "");
 
                 Controller.Canonicalize(out IsChanged);
                 Assert.That(IsChanged);
 
+                //System.Diagnostics.Debug.Assert(false);
+
                 IFocusNodeStateReadOnlyList AllChildren2 = (IFocusNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren2.Count == AllChildren1.Count - 4, $"New count: {AllChildren2.Count}");
+                Assert.That(AllChildren2.Count == AllChildren1.Count - 2, $"New count: {AllChildren2.Count - AllChildren1.Count}");
 
                 Controller.Undo();
                 Controller.Redo();
@@ -9649,7 +9701,7 @@ namespace Coverage
 
             using (IFocusControllerView ControllerView = FocusControllerView.Create(Controller, TestDebug.CoverageFocusTemplateSet.FocusTemplateSet))
             {
-                Controller.Canonicalize(out bool IsChanged);
+                Controller.Expand(Controller.RootIndex, out bool IsChanged);
 
                 // IxxxBlockStateViewDictionary 
 
@@ -10440,6 +10492,7 @@ namespace Coverage
 
                 IFocusOperationGroupReadOnlyList FocusOperationStack = Controller.OperationStack;
 
+                //System.Diagnostics.Debug.Assert(false);
                 Assert.That(FocusOperationStack.Count > 0);
                 IFocusOperationGroup FirstOperationGroup = FocusOperationStack[0];
                 IFocusOperationGroupList FocusOperationGroupList = DebugObjects.GetReferenceByInterface(typeof(IFocusOperationGroupList)) as IFocusOperationGroupList;
@@ -11033,7 +11086,7 @@ namespace Coverage
             }
 
             RootNode = CreateRoot(ValueGuid0, Imperfections.BadGuid);
-            Assert.That(!BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+            Assert.That(!BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode, assertValid: false));
 
             try
             {
@@ -11089,10 +11142,11 @@ namespace Coverage
             Assert.That(Controller0.Contains(RootIndex0));
             Assert.That(Controller0.IndexToState(RootIndex0) == RootState);
 
-            Assert.That(RootState.InnerTable.Count == 7);
+            Assert.That(RootState.InnerTable.Count == 8);
             Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.PlaceholderTree)));
             Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.PlaceholderLeaf)));
             Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.UnassignedOptionalLeaf)));
+            Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.EmptyOptionalLeaf)));
             Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.AssignedOptionalTree)));
             Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.AssignedOptionalLeaf)));
             Assert.That(RootState.InnerTable.ContainsKey(nameof(IMain.LeafBlocks)));
@@ -13615,7 +13669,7 @@ namespace Coverage
                 Assert.That(IsChanged);
 
                 ILayoutNodeStateReadOnlyList AllChildren1 = (ILayoutNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren1.Count == AllChildren0.Count + 1, $"New count: {AllChildren1.Count}");
+                Assert.That(AllChildren1.Count == AllChildren0.Count + 2, $"New count: {AllChildren1.Count - AllChildren0.Count}");
 
                 Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
 
@@ -13636,7 +13690,7 @@ namespace Coverage
                 Assert.That(Controller.Contains(NewItemIndex5));
 
                 ILayoutNodeStateReadOnlyList AllChildren3 = (ILayoutNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren3.Count == AllChildren2.Count - 1, $"New count: {AllChildren3.Count}");
+                Assert.That(AllChildren3.Count == AllChildren2.Count - 1, $"New count: {AllChildren3.Count - AllChildren2.Count}");
 
                 Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
 
@@ -13689,7 +13743,7 @@ namespace Coverage
                 Assert.That(!IsChanged);
 
                 ILayoutNodeStateReadOnlyList AllChildren6 = (ILayoutNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren6.Count == AllChildren5.Count, $"New count: {AllChildren6.Count}");
+                Assert.That(AllChildren6.Count == AllChildren5.Count, $"New count: {AllChildren6.Count - AllChildren5.Count}");
 
                 IDictionary<Type, string[]> WithExpandCollectionTable = BaseNodeHelper.NodeHelper.WithExpandCollectionTable as IDictionary<Type, string[]>;
                 WithExpandCollectionTable.Add(typeof(IMain), new string[] { nameof(IMain.LeafBlocks) });
@@ -13698,7 +13752,7 @@ namespace Coverage
                 Assert.That(IsChanged);
 
                 ILayoutNodeStateReadOnlyList AllChildren7 = (ILayoutNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren7.Count == AllChildren6.Count + 3, $"New count: {AllChildren7.Count}");
+                Assert.That(AllChildren7.Count == AllChildren6.Count + 3, $"New count: {AllChildren7.Count - AllChildren6.Count}");
 
                 Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
                 Assert.That(!LeafBlocksInner.IsEmpty);
@@ -13803,28 +13857,36 @@ namespace Coverage
                 Assert.That(IsChanged);
 
                 ILayoutNodeStateReadOnlyList AllChildren1 = (ILayoutNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren1.Count == AllChildren0.Count + 4, $"New count: {AllChildren1.Count}");
+                Assert.That(AllChildren1.Count == AllChildren0.Count + 5, $"New count: {AllChildren1.Count - AllChildren0.Count}");
 
                 Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                //System.Diagnostics.Debug.Assert(false);
+                IFrameOptionalInner LeafOptionalInner = RootState.PropertyToInner(nameof(IMain.AssignedOptionalLeaf)) as IFrameOptionalInner;
+                Assert.That(LeafOptionalInner != null);
+
+                ILeaf Leaf = LeafOptionalInner.ChildState.Node as ILeaf;
+                BaseNodeHelper.NodeTreeHelper.SetStringProperty(Leaf, "Text", "");
+
 
                 //System.Diagnostics.Debug.Assert(false);
                 Controller.Reduce(RootIndex, out IsChanged);
                 Assert.That(IsChanged);
 
                 ILayoutNodeStateReadOnlyList AllChildren2 = (ILayoutNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren2.Count == AllChildren1.Count - 7, $"New count: {AllChildren2.Count}");
+                Assert.That(AllChildren2.Count == AllChildren1.Count - 5, $"New count: {AllChildren2.Count - AllChildren1.Count}");
 
                 Controller.Reduce(RootIndex, out IsChanged);
                 Assert.That(!IsChanged);
 
                 ILayoutNodeStateReadOnlyList AllChildren3 = (ILayoutNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren3.Count == AllChildren2.Count, $"New count: {AllChildren3.Count}");
+                Assert.That(AllChildren3.Count == AllChildren2.Count, $"New count: {AllChildren3.Count - AllChildren2.Count}");
 
                 Controller.Expand(RootIndex, out IsChanged);
                 Assert.That(IsChanged);
 
                 ILayoutNodeStateReadOnlyList AllChildren4 = (ILayoutNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren4.Count == AllChildren3.Count + 7, $"New count: {AllChildren4.Count}");
+                Assert.That(AllChildren4.Count == AllChildren3.Count + 5, $"New count: {AllChildren4.Count - AllChildren3.Count}");
 
                 BaseNode.IBlock ChildBlock = LeafBlocksInner.BlockStateList[0].ChildBlock;
                 ILeaf FirstNode = ChildBlock.NodeList[0] as ILeaf;
@@ -13836,7 +13898,7 @@ namespace Coverage
                 Assert.That(IsChanged);
 
                 ILayoutNodeStateReadOnlyList AllChildren5 = (ILayoutNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren5.Count == AllChildren4.Count - 4, $"New count: {AllChildren5.Count}");
+                Assert.That(AllChildren5.Count == AllChildren4.Count - 2, $"New count: {AllChildren5.Count - AllChildren4.Count}");
 
                 BaseNodeHelper.NodeTreeHelper.SetString(FirstNode, nameof(ILeaf.Text), "");
 
@@ -13845,7 +13907,7 @@ namespace Coverage
                 Assert.That(IsChanged);
 
                 ILayoutNodeStateReadOnlyList AllChildren6 = (ILayoutNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren6.Count == AllChildren5.Count - 3, $"New count: {AllChildren6.Count}");
+                Assert.That(AllChildren6.Count == AllChildren5.Count - 3, $"New count: {AllChildren6.Count - AllChildren5.Count}");
 
                 Controller.Expand(RootIndex, out IsChanged);
                 Assert.That(IsChanged);
@@ -13857,7 +13919,7 @@ namespace Coverage
                 Assert.That(IsChanged);
 
                 ILayoutNodeStateReadOnlyList AllChildren7 = (ILayoutNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren7.Count == AllChildren6.Count + 3, $"New count: {AllChildren7.Count}");
+                Assert.That(AllChildren7.Count == AllChildren6.Count + 3, $"New count: {AllChildren7.Count - AllChildren6.Count}");
 
                 Assert.That(Controller.CanUndo);
                 Controller.Undo();
@@ -14003,15 +14065,22 @@ namespace Coverage
                 Assert.That(IsChanged);
 
                 ILayoutNodeStateReadOnlyList AllChildren1 = (ILayoutNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren1.Count == AllChildren0.Count + 1, $"New count: {AllChildren1.Count}");
+                Assert.That(AllChildren1.Count == AllChildren0.Count + 2, $"New count: {AllChildren1.Count - AllChildren0.Count}");
 
                 Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+
+                //System.Diagnostics.Debug.Assert(false);
+                IFrameOptionalInner LeafOptionalInner = RootState.PropertyToInner(nameof(IMain.AssignedOptionalLeaf)) as IFrameOptionalInner;
+                Assert.That(LeafOptionalInner != null);
+
+                ILeaf Leaf = LeafOptionalInner.ChildState.Node as ILeaf;
+                BaseNodeHelper.NodeTreeHelper.SetStringProperty(Leaf, "Text", "");
 
                 Controller.Canonicalize(out IsChanged);
                 Assert.That(IsChanged);
 
                 ILayoutNodeStateReadOnlyList AllChildren2 = (ILayoutNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren2.Count == AllChildren1.Count - 4, $"New count: {AllChildren2.Count}");
+                Assert.That(AllChildren2.Count == AllChildren1.Count - 2, $"New count: {AllChildren2.Count - AllChildren1.Count}");
 
                 Controller.Undo();
                 Controller.Redo();
@@ -14020,7 +14089,7 @@ namespace Coverage
                 Assert.That(!IsChanged);
 
                 ILayoutNodeStateReadOnlyList AllChildren3 = (ILayoutNodeStateReadOnlyList)RootState.GetAllChildren();
-                Assert.That(AllChildren3.Count == AllChildren2.Count, $"New count: {AllChildren3.Count}");
+                Assert.That(AllChildren3.Count == AllChildren2.Count, $"New count: {AllChildren3.Count - AllChildren2.Count}");
 
                 Assert.That(Controller.CanUndo);
                 Controller.Undo();
@@ -14911,7 +14980,7 @@ namespace Coverage
 
             using (ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, TestDebug.CoverageLayoutTemplateSet.LayoutTemplateSet, TestDebug.LayoutDrawPrintContext.Default))
             {
-                Controller.Canonicalize(out bool IsChanged);
+                Controller.Expand(Controller.RootIndex, out bool IsChanged);
 
                 // IxxxBlockStateViewDictionary 
 

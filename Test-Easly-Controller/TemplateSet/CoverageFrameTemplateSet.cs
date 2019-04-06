@@ -87,6 +87,7 @@ namespace TestDebug
             <FramePlaceholderFrame PropertyName=""PlaceholderTree""/>
             <FramePlaceholderFrame PropertyName=""PlaceholderLeaf""/>
             <FrameOptionalFrame PropertyName=""UnassignedOptionalLeaf"" />
+            <FrameOptionalFrame PropertyName=""EmptyOptionalLeaf"" />
             <FrameOptionalFrame PropertyName=""AssignedOptionalTree"" />
             <FrameOptionalFrame PropertyName=""AssignedOptionalLeaf"" />
             <FrameInsertFrame CollectionName=""LeafBlocks"" />
