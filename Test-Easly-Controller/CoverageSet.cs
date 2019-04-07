@@ -11649,6 +11649,24 @@ namespace Coverage
                 ILayoutTemplateSet DefaultTemplateSet = LayoutTemplateSet.Default;
                 DefaultTemplateSet = LayoutTemplateSet.Default;
 
+                //System.Diagnostics.Debug.Assert(false);
+                ILayoutFrameSelectorList FrameSelectorList = null;
+                foreach (KeyValuePair<Type, ILayoutTemplate> TemplateEntry in TestDebug.CoverageLayoutTemplateSet.NodeTemplateDictionary)
+                    if (TemplateEntry.Key == typeof(IRoot))
+                    {
+                        ILayoutNodeTemplate Template = TemplateEntry.Value as ILayoutNodeTemplate;
+                        Assert.That(Template != null);
+
+                        ILayoutHorizontalPanelFrame RootFrame = Template.Root as ILayoutHorizontalPanelFrame;
+                        foreach (ILayoutFrame Frame in RootFrame.Items)
+                            if (Frame is ILayoutFrameWithSelector AsFrameWithSelector && AsFrameWithSelector.Selectors.Count > 0)
+                            {
+                                FrameSelectorList = AsFrameWithSelector.Selectors;
+                                break;
+                            }
+                    }
+                Assert.That(CompareEqual.CoverIsEqual(FrameSelectorList, FrameSelectorList));
+
 #if !TRAVIS
                 IDataObject DataObject = new DataObject();
 #endif

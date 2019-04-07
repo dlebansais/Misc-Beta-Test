@@ -276,29 +276,58 @@ namespace TestDebug
         </FocusSelectionFrame>
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type cov:ITree}"">
-        <FocusVerticalPanelFrame>
-            <FocusCommentFrame/>
-            <FocusPlaceholderFrame PropertyName=""Placeholder"">
-                <FocusPlaceholderFrame.Selectors>
-                    <FocusFrameSelector SelectorType=""{xaml:Type cov:ILeaf}"" SelectorName=""Leaf2""/>
-                </FocusPlaceholderFrame.Selectors>
-            </FocusPlaceholderFrame>
-            <FocusSymbolFrame Symbol=""{x:Static const:Symbols.LeftBracket}"">
-                <FocusSymbolFrame.Visibility>
-                    <FocusComplexFrameVisibility PropertyName=""Placeholder""/>
-                </FocusSymbolFrame.Visibility>
-            </FocusSymbolFrame>
-            <FocusDiscreteFrame PropertyName=""ValueBoolean"">
-                <FocusKeywordFrame>True</FocusKeywordFrame>
-                <FocusKeywordFrame>False</FocusKeywordFrame>
-            </FocusDiscreteFrame>
-            <FocusSymbolFrame Symbol=""{x:Static const:Symbols.RightBracket}""/>
-            <FocusDiscreteFrame PropertyName=""ValueEnum"">
-                <FocusKeywordFrame>Any</FocusKeywordFrame>
-                <FocusKeywordFrame>Reference</FocusKeywordFrame>
-                <FocusKeywordFrame>Value</FocusKeywordFrame>
-            </FocusDiscreteFrame>
-        </FocusVerticalPanelFrame>
+        <FocusSelectionFrame>
+            <FocusSelectableFrame Name=""Tree0"">
+                <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
+                    <FocusPlaceholderFrame PropertyName=""Placeholder"">
+                        <FocusPlaceholderFrame.Selectors>
+                            <FocusFrameSelector SelectorType=""{xaml:Type cov:ILeaf}"" SelectorName=""Leaf2""/>
+                        </FocusPlaceholderFrame.Selectors>
+                    </FocusPlaceholderFrame>
+                    <FocusSymbolFrame Symbol=""{x:Static const:Symbols.LeftBracket}"">
+                        <FocusSymbolFrame.Visibility>
+                            <FocusComplexFrameVisibility PropertyName=""Placeholder""/>
+                        </FocusSymbolFrame.Visibility>
+                    </FocusSymbolFrame>
+                    <FocusDiscreteFrame PropertyName=""ValueBoolean"">
+                        <FocusKeywordFrame>True</FocusKeywordFrame>
+                        <FocusKeywordFrame>False</FocusKeywordFrame>
+                    </FocusDiscreteFrame>
+                    <FocusSymbolFrame Symbol=""{x:Static const:Symbols.RightBracket}""/>
+                    <FocusDiscreteFrame PropertyName=""ValueEnum"">
+                        <FocusKeywordFrame>Any</FocusKeywordFrame>
+                        <FocusKeywordFrame>Reference</FocusKeywordFrame>
+                        <FocusKeywordFrame>Value</FocusKeywordFrame>
+                    </FocusDiscreteFrame>
+                </FocusVerticalPanelFrame>
+            </FocusSelectableFrame>
+            <FocusSelectableFrame Name=""Tree1"">
+                <FocusVerticalPanelFrame>
+                    <FocusCommentFrame/>
+                    <FocusPlaceholderFrame PropertyName=""Placeholder"">
+                        <FocusPlaceholderFrame.Selectors>
+                            <FocusFrameSelector SelectorType=""{xaml:Type cov:ILeaf}"" SelectorName=""Leaf2""/>
+                        </FocusPlaceholderFrame.Selectors>
+                    </FocusPlaceholderFrame>
+                    <FocusSymbolFrame Symbol=""{x:Static const:Symbols.LeftBracket}"">
+                        <FocusSymbolFrame.Visibility>
+                            <FocusComplexFrameVisibility PropertyName=""Placeholder""/>
+                        </FocusSymbolFrame.Visibility>
+                    </FocusSymbolFrame>
+                    <FocusDiscreteFrame PropertyName=""ValueBoolean"">
+                        <FocusKeywordFrame>True</FocusKeywordFrame>
+                        <FocusKeywordFrame>False</FocusKeywordFrame>
+                    </FocusDiscreteFrame>
+                    <FocusSymbolFrame Symbol=""{x:Static const:Symbols.RightBracket}""/>
+                    <FocusDiscreteFrame PropertyName=""ValueEnum"">
+                        <FocusKeywordFrame>Any</FocusKeywordFrame>
+                        <FocusKeywordFrame>Reference</FocusKeywordFrame>
+                        <FocusKeywordFrame>Value</FocusKeywordFrame>
+                    </FocusDiscreteFrame>
+                </FocusVerticalPanelFrame>
+            </FocusSelectableFrame>
+        </FocusSelectionFrame>
     </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type cov:IMain}"">
         <FocusHorizontalPanelFrame>
@@ -307,6 +336,9 @@ namespace TestDebug
                 <FocusPlaceholderFrame.Visibility>
                     <FocusCountFrameVisibility PropertyName=""LeafBlocks""/>
                 </FocusPlaceholderFrame.Visibility>
+                <FocusPlaceholderFrame.Selectors>
+                    <FocusFrameSelector SelectorType=""{xaml:Type cov:ITree}"" SelectorName=""Tree0""/>
+                </FocusPlaceholderFrame.Selectors>
             </FocusPlaceholderFrame>
             <FocusPlaceholderFrame PropertyName=""PlaceholderLeaf"">
                 <FocusPlaceholderFrame.Selectors>
@@ -323,7 +355,11 @@ namespace TestDebug
                     <FocusFrameSelector SelectorType=""{xaml:Type cov:ILeaf}"" SelectorName=""Leaf0""/>
                 </FocusOptionalFrame.Selectors>
             </FocusOptionalFrame>
-            <FocusOptionalFrame PropertyName=""AssignedOptionalTree"" />
+            <FocusOptionalFrame PropertyName=""AssignedOptionalTree"">
+                <FocusOptionalFrame.Selectors>
+                    <FocusFrameSelector SelectorType=""{xaml:Type cov:ITree}"" SelectorName=""Tree0""/>
+                </FocusOptionalFrame.Selectors>
+            </FocusOptionalFrame>
             <FocusOptionalFrame PropertyName=""AssignedOptionalLeaf"">
                 <FocusOptionalFrame.Selectors>
                     <FocusFrameSelector SelectorType=""{xaml:Type cov:ILeaf}"" SelectorName=""Leaf3""/>
