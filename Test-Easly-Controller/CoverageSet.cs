@@ -17117,6 +17117,16 @@ namespace Coverage
             else
                 frameList.Add(rootFrame);
         }
+
+        [Test]
+        [Category("Coverage")]
+        public static void LayoutSelectorTable()
+        {
+            BaseNode.IClass Root = BaseNodeHelper.NodeHelper.CreateEmptyNode(typeof(BaseNode.Class)) as BaseNode.IClass;
+            ILayoutRootNodeIndex RootIndex = new LayoutRootNodeIndex(Root);
+            ILayoutController Controller = LayoutController.Create(RootIndex);
+            ILayoutControllerView ControllerView = LayoutControllerView.Create(Controller, EaslyEdit.CustomLayoutTemplateSet.LayoutTemplateSet, TestDebug.LayoutDrawPrintContext.Default);
+        }
         #endregion
     }
 }

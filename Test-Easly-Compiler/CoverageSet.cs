@@ -188,7 +188,7 @@ namespace Coverage
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage_replication.easly";
+            string TestFileName = $"{RootPath}coverage replication.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
