@@ -106,7 +106,7 @@ namespace Test
             string Result = "";
 
             Result += $"{compiler.ErrorList.Count} error(s).";
-            foreach (Error Error in compiler.ErrorList)
+            foreach (IError Error in compiler.ErrorList)
                 Result += $"{NL}{Error}: {Error.Message}";
 
             return Result;
@@ -124,7 +124,7 @@ namespace Test
 
             Assert.That(Compiler != null, "Sanity Check #0");
 
-            string TestFileName = $"{RootPath}test.easly";
+            string TestFileName = $"{RootPath}coverage/coverage.easly";
 
             Exception ex;
             string NullString = null;
@@ -132,12 +132,12 @@ namespace Test
             Assert.That(ex.Message == $"Value cannot be null.{NL}Parameter name: fileName", ex.Message);
 
             Compiler.Compile("notfound.easly");
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is ErrorInputFileNotFound AsInputFileNotFound && AsInputFileNotFound.Message == "File not found: 'notfound.easly'.", ErrorListToString(Compiler));
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInputFileNotFound AsInputFileNotFound && AsInputFileNotFound.Message == "File not found: 'notfound.easly'.", ErrorListToString(Compiler));
 
             using (FileStream fs = new FileStream(TestFileName, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
             {
                 Compiler.Compile(TestFileName);
-                Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is ErrorInputFileInvalid, ErrorListToString(Compiler));
+                Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInputFileInvalid, ErrorListToString(Compiler));
             }
 
             Stream NullStream = null;
@@ -151,7 +151,7 @@ namespace Test
             using (FileStream fs = new FileStream(InvalidFile, FileMode.Open, FileAccess.Read))
             {
                 Compiler.Compile(fs);
-                Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is ErrorInputFileInvalid, ErrorListToString(Compiler));
+                Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInputFileInvalid, ErrorListToString(Compiler));
             }
 
             IRoot NullRoot = null;
@@ -169,7 +169,7 @@ namespace Test
             Assert.That(!NodeTreeDiagnostic.IsValid(ClonedRoot, assertValid: false));
 
             Compiler.Compile(ClonedRoot);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is ErrorInputRootInvalid, ErrorListToString(Compiler));
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInputRootInvalid, ErrorListToString(Compiler));
         }
         #endregion
 

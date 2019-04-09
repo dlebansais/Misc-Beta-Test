@@ -749,11 +749,15 @@ namespace Coverage
             IWriteableController Controller1 = WriteableController.Create(RootIndex0);
             Assert.That(Controller0.IsEqual(CompareEqual.New(), Controller0));
 
-            //System.Diagnostics.Debug.Assert(false);
             Assert.That(CompareEqual.CoverIsEqual(Controller0, Controller1));
 
             Assert.That(!Controller0.CanUndo);
             Assert.That(!Controller0.CanRedo);
+
+            //System.Diagnostics.Debug.Assert(false);
+            Controller0.Unassign(AssignedOptionalNodeIndex, out bool IsChanged);
+            Assert.That(IsChanged);
+            Assert.That(!CompareEqual.CoverIsEqual(Controller0, Controller1, canReturnFalse: true));
         }
 
         [Test]
@@ -7448,6 +7452,7 @@ namespace Coverage
                     Assert.That(Controller.CanUndo);
                     Controller.Undo();
 
+                    //System.Diagnostics.Debug.Assert(false);
                     ControllerView0.PasteSelection(out IsChanged);
                     Assert.That(IsChanged);
 
@@ -7490,6 +7495,17 @@ namespace Coverage
 
                     Assert.That(Controller.CanUndo);
                     Controller.Undo();
+
+                    //System.Diagnostics.Debug.Assert(false);
+                    DataObject = new DataObject();
+                    DataObject.SetData(ClipboardHelper.ClipboardFormatNode, new byte[0]);
+                    Clipboard.SetDataObject(DataObject);
+
+                    ControllerView0.SelectBlockNodeList(RootState, nameof(IMain.LeafBlocks), 1, 0, 1);
+                    ControllerView0.PasteSelection(out IsChanged);
+                    Assert.That(!IsChanged);
+
+                    Assert.That(!Controller.CanUndo);
 #endif
 
                     Assert.That(ControllerBase.IsEqual(CompareEqual.New(), Controller));
@@ -7980,16 +7996,19 @@ namespace Coverage
 
                 //System.Diagnostics.Debug.Assert(false);
                 ControllerView0.SetAutoFormatMode(AutoFormatModes.FirstOnly);
-                ControllerView0.ChangeFocusedText("test", 3, false);
+                ControllerView0.ChangeFocusedText("test test", 3, false);
+                Assert.That(ControllerView0.FocusedText == "Test Test");
                 ControllerView0.SetAutoFormatMode(AutoFormatModes.FirstOrAll);
-                ControllerView0.ChangeFocusedText("test", 3, false);
+                ControllerView0.ChangeFocusedText("test TEST", 3, false);
+                Assert.That(ControllerView0.FocusedText == "Test TEST");
                 ControllerView0.SetAutoFormatMode(AutoFormatModes.AllLowercase);
-                ControllerView0.ChangeFocusedText("test", 3, false);
+                ControllerView0.ChangeFocusedText("test TEST", 3, false);
+                Assert.That(ControllerView0.FocusedText == "test test");
                 ControllerView0.SetAutoFormatMode(AutoFormatModes.None);
-                ControllerView0.ChangeFocusedText("test", 3, false);
+                ControllerView0.ChangeFocusedText("test TEST", 3, false);
 
                 Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
-                Assert.That(BaseNodeHelper.NodeTreeHelper.GetString(RootNode, nameof(IMain.ValueString)) == "test");
+                Assert.That(ControllerView0.FocusedText == "test TEST");
 
                 IFocusPlaceholderInner PlaceholderTreeInner = RootState.PropertyToInner(nameof(IMain.PlaceholderTree)) as IFocusPlaceholderInner;
                 IFocusPlaceholderNodeState PlaceholderTreeState = PlaceholderTreeInner.ChildState as IFocusPlaceholderNodeState;
@@ -8050,6 +8069,15 @@ namespace Coverage
                 Assert.That(RootState != null);
 
                 Assert.That(BaseNodeHelper.NodeTreeHelper.GetCommentText(RootState.Node) == "main doc");
+
+                //System.Diagnostics.Debug.Assert(false);
+                Controller.ChangeComment(RootIndex, "");
+
+                Assert.That(BaseNodeHelper.NodeTreeDiagnostic.IsValid(RootNode));
+                Assert.That(BaseNodeHelper.NodeTreeHelper.GetCommentText(RootNode) == "");
+
+                Assert.That(Controller.CanUndo);
+                Controller.Undo();
 
                 Controller.ChangeComment(RootIndex, "test");
 
@@ -11724,6 +11752,9 @@ namespace Coverage
                     Assert.That(CellOrigin.ToString() != null);
                     Assert.That(CellOrigin.ToString(CultureInfo.InvariantCulture) != null);
                     Assert.That(CellOrigin.ToString(null, CultureInfo.InvariantCulture) != null);
+                    bool IsOrigin = CellOrigin.IsOrigin;
+                    double Distance = Point.Distance(CellOrigin, CellOrigin);
+                    Assert.That(Distance == 0);
                     Size CellSize = FocusedCellView.CellSize;
                     Assert.That(!CellSize.IsEmpty);
                     Assert.That(CellSize.IsVisible);
@@ -11823,12 +11854,24 @@ namespace Coverage
                     }
 
                     CellRect = FocusedCellView.CellRect;
-                    Assert.That(!CellSize.IsEmpty);
-                    Assert.That(CellSize.IsVisible);
-                    Assert.That(Size.IsEqual(CellSize, CellSize));
-                    Assert.That(CellSize.ToString() != null);
-                    Assert.That(CellSize.ToString(CultureInfo.InvariantCulture) != null);
-                    Assert.That(CellSize.ToString(null, CultureInfo.InvariantCulture) != null);
+                    Assert.That(!CellRect.IsEmpty);
+                    Assert.That(CellRect.IsVisible);
+                    Assert.That(RegionHelper.IsFixed(CellRect));
+                    Assert.That(Rect.IsEqual(CellRect, CellRect));
+                    Assert.That(CellRect.ToString() != null);
+                    Assert.That(CellRect.ToString(CultureInfo.InvariantCulture) != null);
+                    Assert.That(CellRect.ToString(null, CultureInfo.InvariantCulture) != null);
+                    Point RectOrigin = CellRect.Origin;
+                    //System.Diagnostics.Debug.Assert(false);
+                    CellRect = Rect.VisibleUnion(CellRect, CellRect);
+                    Rect EmptyLine = new Rect(CellRect.Origin, new Size(CellRect.Size.Width, Measure.Zero));
+                    Rect EmptyColumn = new Rect(CellRect.Origin, new Size(Measure.Zero, CellRect.Size.Height));
+                    Rect UnionLine0 = Rect.VisibleUnion(CellRect, EmptyLine);
+                    Rect UnionColumn0 = Rect.VisibleUnion(CellRect, EmptyColumn);
+                    Rect UnionLine1 = Rect.VisibleUnion(EmptyLine, CellRect);
+                    Rect UnionColumn1 = Rect.VisibleUnion(EmptyColumn, CellRect);
+                    Rect UnionLine2 = Rect.VisibleUnion(EmptyLine, EmptyLine);
+                    Rect UnionColumn2 = Rect.VisibleUnion(EmptyColumn, EmptyColumn);
 
                     ControllerView0.SetCommentDisplayMode(CommentDisplayModes.All);
                     ControllerView0.SetShowUnfocusedComments(false);
@@ -11870,6 +11913,8 @@ namespace Coverage
                     ControllerView0.CutSelection(DataObject, out bool IsDeleted);
                     Assert.That(IsDeleted);
 
+                    string SurrogateString = " \u2028 \ud800\udc00 \ud800 ";
+                    DataObject.SetData(typeof(string), SurrogateString);
                     Clipboard.SetDataObject(DataObject);
 
                     Assert.That(Controller.CanUndo);
@@ -12566,6 +12611,7 @@ namespace Coverage
                     Assert.That(Controller.CanUndo);
                     Controller.Undo();
 
+                    //System.Diagnostics.Debug.Assert(false);
                     ControllerView0.PasteSelection(out IsChanged);
                     Assert.That(IsChanged);
 

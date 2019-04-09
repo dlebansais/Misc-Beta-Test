@@ -106,8 +106,8 @@ namespace Coverage
             string Result = "";
 
             Result += $"{compiler.ErrorList.Count} error(s).";
-            foreach (Error Error in compiler.ErrorList)
-                Result += $"{NL}{Error}: {Error.Message}";
+            foreach (IError Error in compiler.ErrorList)
+                Result += $"{NL}{Error}: {Error.Message} from {Error.Location}";
 
             return Result;
         }
@@ -122,7 +122,7 @@ namespace Coverage
 
             Assert.That(Compiler != null, "Sanity Check #0");
 
-            string TestFileName = $"{RootPath}coverage.easly";
+            string TestFileName = $"{RootPath}/coverage/coverage.easly";
 
             Exception ex;
             string NullString = null;
@@ -130,12 +130,12 @@ namespace Coverage
             Assert.That(ex.Message == $"Value cannot be null.{NL}Parameter name: fileName", ex.Message);
 
             Compiler.Compile("notfound.easly");
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is ErrorInputFileNotFound AsInputFileNotFound && AsInputFileNotFound.Message == "File not found: 'notfound.easly'.", ErrorListToString(Compiler));
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInputFileNotFound AsInputFileNotFound && AsInputFileNotFound.Message == "File not found: 'notfound.easly'.", ErrorListToString(Compiler));
 
             using (FileStream fs = new FileStream(TestFileName, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
             {
                 Compiler.Compile(TestFileName);
-                Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is ErrorInputFileInvalid, ErrorListToString(Compiler));
+                Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInputFileInvalid, ErrorListToString(Compiler));
             }
 
             Stream NullStream = null;
@@ -149,7 +149,7 @@ namespace Coverage
             using (FileStream fs = new FileStream(InvalidFile, FileMode.Open, FileAccess.Read))
             {
                 Compiler.Compile(fs);
-                Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is ErrorInputFileInvalid, ErrorListToString(Compiler));
+                Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInputFileInvalid, ErrorListToString(Compiler));
             }
 
             IRoot NullRoot = null;
@@ -167,7 +167,7 @@ namespace Coverage
             Assert.That(!NodeTreeDiagnostic.IsValid(ClonedRoot, assertValid: false));
 
             Compiler.Compile(ClonedRoot);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is ErrorInputRootInvalid, ErrorListToString(Compiler));
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInputRootInvalid, ErrorListToString(Compiler));
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -188,7 +188,7 @@ namespace Coverage
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage replication.easly";
+            string TestFileName = $"{RootPath}/coverage/coverage replication.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -207,7 +207,7 @@ namespace Coverage
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage invalid 0.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 0.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -215,7 +215,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is ErrorEmptyClassPath && Compiler.ErrorList[0].Location.Node is IClass, ErrorListToString(Compiler));
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorEmptyClassPath && Compiler.ErrorList[0].Location.Node is IClass, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -224,7 +224,7 @@ namespace Coverage
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage invalid 1.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 1.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -232,7 +232,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is ErrorWhiteSpaceNotAllowed, ErrorListToString(Compiler));
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorWhiteSpaceNotAllowed, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -241,7 +241,7 @@ namespace Coverage
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage invalid 2.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 2.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -249,7 +249,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is ErrorEmptyString, ErrorListToString(Compiler));
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorEmptyString, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -258,7 +258,7 @@ namespace Coverage
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage invalid 3.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 3.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -266,7 +266,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is ErrorIllFormedString, ErrorListToString(Compiler));
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorIllFormedString, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -275,7 +275,7 @@ namespace Coverage
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage invalid 4.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 4.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -283,7 +283,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is ErrorUnknownIdentifier, ErrorListToString(Compiler));
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorUnknownIdentifier, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -292,7 +292,7 @@ namespace Coverage
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage invalid 5.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 5.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -300,7 +300,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is ErrorPatternAlreadyUsed, ErrorListToString(Compiler));
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorPatternAlreadyUsed, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -309,7 +309,7 @@ namespace Coverage
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage invalid 6.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 6.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -317,7 +317,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is ErrorDuplicateName, ErrorListToString(Compiler));
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorDuplicateName, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -326,7 +326,7 @@ namespace Coverage
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage invalid 7.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 7.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -334,7 +334,534 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is ErrorInvalidCharacter, ErrorListToString(Compiler));
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInvalidCharacter, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid8()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 8.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count > 0 && Compiler.ErrorList[0] is IErrorSourceRequired, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid9()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 9.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorCyclicDependency, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid10()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 10.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid11()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 11.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid12()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 12.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorDuplicateName, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid13()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 13.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid14()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 14.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid15()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 15.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorDuplicateName, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid16()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 16.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorDuplicateImport, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid17()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 17.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorNameChanged, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid18()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 18.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorImportTypeConflict, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid19()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 19.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorNameAlreadyUsed, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid20()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 20.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorImportTypeConflict, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid21()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 21.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorImportTypeConflict, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid22()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 22.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorClassAlreadyImported, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid23()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 23.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid24()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 24.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorUnknownIdentifier, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid25()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 25.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorUnknownIdentifier, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid26()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 26.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorIdentifierAlreadyListed, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid27()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 27.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorDuplicateImport, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid28()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 28.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid29()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 29.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorUnknownIdentifier, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid30()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 30.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid31()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 31.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorUnknownIdentifier, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid32()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 32.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid33()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 33.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid34()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 34.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorNameUnchanged, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid35()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 35.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorIdentifierAlreadyListed, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid36()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 36.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorDoubleRename, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid37()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 37.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorUnknownIdentifier, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid38()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 38.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorIdentifierAlreadyListed, ErrorListToString(Compiler));
         }
         #endregion
     }
