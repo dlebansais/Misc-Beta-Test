@@ -863,6 +863,23 @@ namespace Coverage
             Compiler.Compile(TestFileName);
             Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorIdentifierAlreadyListed, ErrorListToString(Compiler));
         }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestReplicationInvalid39()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 39.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+        }
         #endregion
     }
 }
