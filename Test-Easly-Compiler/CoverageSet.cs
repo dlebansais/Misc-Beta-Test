@@ -173,6 +173,12 @@ namespace Coverage
             Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
+            Compiler.InferenceRetries = -1;
+            Compiler.Compile(CoverageNode as IRoot);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInternal, ErrorListToString(Compiler));
+
+            Compiler.InferenceRetries = 10;
+
             //Debug.Assert(false);
             Compiler.Compile(CoverageNode as IRoot);
             Assert.That(Compiler.ErrorList.Count == 0, ErrorListToString(Compiler));
@@ -203,11 +209,11 @@ namespace Coverage
         #region Replication Invalid
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid0()
+        public static void TestInvalid0000_Replication()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 0.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 00-00.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -220,11 +226,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid1()
+        public static void TestInvalid0001_Replication()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 1.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 00-01.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -237,11 +243,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid2()
+        public static void TestInvalid0002_Replication()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 2.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 00-02.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -254,11 +260,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid3()
+        public static void TestInvalid0003_Replication()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 3.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 00-03.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -271,11 +277,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid4()
+        public static void TestInvalid0004_Replication()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 4.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 00-04.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -288,11 +294,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid5()
+        public static void TestInvalid0005_Replication()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 5.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 00-05.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -305,11 +311,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid6()
+        public static void TestInvalid0006_Replication()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 6.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 00-06.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -322,11 +328,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid7()
+        public static void TestInvalid0007_Replication()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 7.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 00-07.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -339,11 +345,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid8()
+        public static void TestInvalid0100_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 8.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-00.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -356,11 +362,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid9()
+        public static void TestInvalid0101_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 9.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-01.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -373,11 +379,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid10()
+        public static void TestInvalid0102_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 10.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-02.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -390,11 +396,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid11()
+        public static void TestInvalid0103_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 11.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-03.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -407,11 +413,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid12()
+        public static void TestInvalid0104_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 12.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-04.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -424,11 +430,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid13()
+        public static void TestInvalid0105_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 13.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-05.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -441,11 +447,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid14()
+        public static void TestInvalid0106_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 14.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-06.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -458,11 +464,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid15()
+        public static void TestInvalid0107_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 15.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-07.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -475,11 +481,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid16()
+        public static void TestInvalid0108_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 16.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-08.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -492,11 +498,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid17()
+        public static void TestInvalid0109_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 17.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-09.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -509,11 +515,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid18()
+        public static void TestInvalid0110_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 18.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-10.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -526,11 +532,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid19()
+        public static void TestInvalid0111_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 19.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-11.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -543,11 +549,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid20()
+        public static void TestInvalid0112_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 20.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-12.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -560,11 +566,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid21()
+        public static void TestInvalid0113_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 21.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-13.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -577,11 +583,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid22()
+        public static void TestInvalid0114_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 22.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-14.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -594,11 +600,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid23()
+        public static void TestInvalid0115_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 23.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-15.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -611,11 +617,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid24()
+        public static void TestInvalid0116_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 24.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-16.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -628,11 +634,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid25()
+        public static void TestInvalid0117_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 25.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-17.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -645,11 +651,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid26()
+        public static void TestInvalid0118_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 26.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-18.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -662,11 +668,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid27()
+        public static void TestInvalid0119_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 27.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-19.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -679,11 +685,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid28()
+        public static void TestInvalid0120_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 28.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-20.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -696,11 +702,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid29()
+        public static void TestInvalid0121_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 29.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-21.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -713,11 +719,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid30()
+        public static void TestInvalid0122_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 30.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-22.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -730,11 +736,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid31()
+        public static void TestInvalid0123_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 31.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-23.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -747,11 +753,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid32()
+        public static void TestInvalid0124_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 32.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-24.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -764,11 +770,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid33()
+        public static void TestInvalid0125_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 33.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-25.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -781,11 +787,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid34()
+        public static void TestInvalid0126_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 34.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-26.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -798,11 +804,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid35()
+        public static void TestInvalid0127_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 35.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-27.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -815,11 +821,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid36()
+        public static void TestInvalid0128_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 36.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-28.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -832,11 +838,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid37()
+        public static void TestInvalid0129_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 37.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-29.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -849,11 +855,11 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid38()
+        public static void TestInvalid0130_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 38.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-30.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -866,11 +872,181 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestReplicationInvalid39()
+        public static void TestInvalid0131_ClassAndLibrary()
         {
             Compiler Compiler = new Compiler();
 
-            string TestFileName = $"{RootPath}coverage/coverage invalid 39.easly";
+            string TestFileName = $"{RootPath}coverage/coverage invalid 01-31.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestInvalid0200_Identifiers()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 02-00.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestInvalid0201_Identifiers()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 02-01.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestInvalid0202_Identifiers()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 02-02.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestInvalid0203_Identifiers()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 02-03.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestInvalid0204_Identifiers()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 02-04.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInvalidManifestChraracter, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestInvalid0205_Identifiers()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 02-05.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            //Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInvalidManifestNumber, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestInvalid0206_Identifiers()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 02-06.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInvalidManifestNumber, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestInvalid0207_Identifiers()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 02-07.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestInvalid208_Identifiers()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 02-08.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInvalidManifestNumber, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestInvalid0209_Identifiers()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 02-09.easly";
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";

@@ -680,6 +680,9 @@ namespace EaslyEdit
                 <LayoutKeywordFrame RightMargin=""Whitespace"">library</LayoutKeywordFrame>
                 <LayoutPlaceholderFrame PropertyName=""EntityName""/>
                 <LayoutHorizontalPanelFrame>
+                    <LayoutHorizontalPanelFrame.Visibility>
+                        <LayoutOptionalFrameVisibility PropertyName=""FromIdentifier""/>
+                    </LayoutHorizontalPanelFrame.Visibility>
                     <LayoutKeywordFrame LeftMargin=""Whitespace"" RightMargin=""Whitespace"">from</LayoutKeywordFrame>
                     <LayoutOptionalFrame PropertyName=""FromIdentifier"">
                         <LayoutOptionalFrame.Selectors>
@@ -797,6 +800,9 @@ namespace EaslyEdit
                 </LayoutPlaceholderFrame.Selectors>
             </LayoutPlaceholderFrame>
             <LayoutHorizontalPanelFrame>
+                <LayoutHorizontalPanelFrame.Visibility>
+                    <LayoutOptionalFrameVisibility PropertyName=""Variant""/>
+                </LayoutHorizontalPanelFrame.Visibility>
                 <LayoutKeywordFrame RightMargin=""Whitespace"">variant</LayoutKeywordFrame>
                 <LayoutOptionalFrame PropertyName=""Variant"" />
             </LayoutHorizontalPanelFrame>
@@ -2174,11 +2180,11 @@ namespace EaslyEdit
                 </LayoutDiscreteFrame>
                 <LayoutPlaceholderFrame PropertyName=""EntityName"" />
                 <LayoutHorizontalPanelFrame>
+                    <LayoutHorizontalPanelFrame.Visibility>
+                        <LayoutDefaultDiscreteFrameVisibility PropertyName=""Once""/>
+                    </LayoutHorizontalPanelFrame.Visibility>
                     <LayoutKeywordFrame LeftMargin=""Whitespace"">once per</LayoutKeywordFrame>
                     <LayoutDiscreteFrame PropertyName=""Once"" LeftMargin=""Whitespace"">
-                        <LayoutDiscreteFrame.Visibility>
-                            <LayoutDefaultDiscreteFrameVisibility PropertyName=""Once""/>
-                        </LayoutDiscreteFrame.Visibility>
                         <LayoutKeywordFrame>normal</LayoutKeywordFrame>
                         <LayoutKeywordFrame>object</LayoutKeywordFrame>
                         <LayoutKeywordFrame>processor</LayoutKeywordFrame>
