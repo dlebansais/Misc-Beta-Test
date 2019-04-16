@@ -342,7 +342,9 @@ namespace Coverage
             Compiler.Compile(TestFileName);
             Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInvalidCharacter, ErrorListToString(Compiler));
         }
+        #endregion
 
+        #region Class and library
         [Test]
         [Category("Coverage")]
         public static void TestInvalid0100_ClassAndLibrary()
@@ -886,7 +888,9 @@ namespace Coverage
             Compiler.Compile(TestFileName);
             Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
         }
+        #endregion
 
+        #region Inference: Identifiers
         [Test]
         [Category("Coverage")]
         public static void TestInvalid0200_Identifiers()
@@ -986,7 +990,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            //Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInvalidManifestNumber, ErrorListToString(Compiler));
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInvalidManifestNumber, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -1003,7 +1007,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInvalidManifestNumber, ErrorListToString(Compiler));
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -1020,12 +1024,12 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInvalidManifestNumber, ErrorListToString(Compiler));
         }
 
         [Test]
         [Category("Coverage")]
-        public static void TestInvalid208_Identifiers()
+        public static void TestInvalid0208_Identifiers()
         {
             Compiler Compiler = new Compiler();
 
@@ -1037,25 +1041,11 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInvalidManifestNumber, ErrorListToString(Compiler));
-        }
-
-        [Test]
-        [Category("Coverage")]
-        public static void TestInvalid0209_Identifiers()
-        {
-            Compiler Compiler = new Compiler();
-
-            string TestFileName = $"{RootPath}coverage/coverage invalid 02-09.easly";
-
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
-            Compiler.ActivateVerification = false;
-
-            //Debug.Assert(false);
-            Compiler.Compile(TestFileName);
             Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
         }
+        #endregion
+
+        #region Inference: types
         #endregion
     }
 }
