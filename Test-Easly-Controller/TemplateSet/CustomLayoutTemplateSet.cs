@@ -60,6 +60,9 @@ namespace EaslyEdit
         <LayoutHorizontalPanelFrame>
             <LayoutCommentFrame/>
             <LayoutHorizontalPanelFrame>
+                <LayoutHorizontalPanelFrame.Visibility>
+                    <LayoutOptionalFrameVisibility PropertyName=""Tag""/>
+                </LayoutHorizontalPanelFrame.Visibility>
                 <LayoutOptionalFrame PropertyName=""Tag"" />
                 <LayoutKeywordFrame RightMargin=""Whitespace"">:</LayoutKeywordFrame>
             </LayoutHorizontalPanelFrame>
@@ -1248,9 +1251,6 @@ namespace EaslyEdit
                         <LayoutVerticalBlockListFrame PropertyName=""EntityDeclarationBlocks"" HasTabulationMargin=""True""/>
                     </LayoutVerticalPanelFrame>
                     <LayoutVerticalPanelFrame>
-                        <LayoutVerticalPanelFrame.Visibility>
-                            <LayoutCountFrameVisibility PropertyName=""BodyInstructionBlocks""/>
-                        </LayoutVerticalPanelFrame.Visibility>
                         <LayoutHorizontalPanelFrame>
                             <LayoutKeywordFrame IsFocusable=""true"">getter</LayoutKeywordFrame>
                             <LayoutInsertFrame CollectionName=""BodyInstructionBlocks"" ItemType=""{xaml:Type easly:CommandInstruction}""/>
@@ -1317,9 +1317,6 @@ namespace EaslyEdit
                         <LayoutVerticalBlockListFrame PropertyName=""EntityDeclarationBlocks"" HasTabulationMargin=""True""/>
                     </LayoutVerticalPanelFrame>
                     <LayoutVerticalPanelFrame>
-                        <LayoutVerticalPanelFrame.Visibility>
-                            <LayoutCountFrameVisibility PropertyName=""BodyInstructionBlocks""/>
-                        </LayoutVerticalPanelFrame.Visibility>
                         <LayoutHorizontalPanelFrame>
                             <LayoutKeywordFrame IsFocusable=""true"">setter</LayoutKeywordFrame>
                             <LayoutInsertFrame CollectionName=""BodyInstructionBlocks"" ItemType=""{xaml:Type easly:CommandInstruction}""/>
