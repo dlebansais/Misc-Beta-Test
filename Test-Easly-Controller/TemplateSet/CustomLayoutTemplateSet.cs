@@ -2336,7 +2336,15 @@ namespace EaslyEdit
                 </LayoutDiscreteFrame>
                 <LayoutPlaceholderFrame PropertyName=""EntityName"" RightMargin=""Whitespace""/>
                 <LayoutKeywordFrame>is</LayoutKeywordFrame>
-                <LayoutPlaceholderFrame PropertyName=""EntityType"" LeftMargin=""Whitespace""/>
+                <LayoutPlaceholderFrame PropertyName=""EntityType"" LeftMargin=""Whitespace"" RightMargin=""Whitespace""/>
+                <LayoutDiscreteFrame PropertyName=""PropertyKind"">
+                    <LayoutDiscreteFrame.Visibility>
+                        <LayoutDefaultDiscreteFrameVisibility PropertyName=""PropertyKind"" DefaultValue=""2""/>
+                    </LayoutDiscreteFrame.Visibility>
+                    <LayoutKeywordFrame>read-only</LayoutKeywordFrame>
+                    <LayoutKeywordFrame>write-only</LayoutKeywordFrame>
+                    <LayoutKeywordFrame>readwrite</LayoutKeywordFrame>
+                </LayoutDiscreteFrame>
             </LayoutHorizontalPanelFrame>
             <LayoutVerticalPanelFrame HasTabulationMargin=""True"">
                 <LayoutVerticalPanelFrame>
@@ -2921,6 +2929,9 @@ namespace EaslyEdit
                     <LayoutVerticalBlockListFrame PropertyName=""IndexParameterBlocks"" HasTabulationMargin=""True""/>
                 </LayoutVerticalPanelFrame>
                 <LayoutDiscreteFrame PropertyName=""IndexerKind"">
+                    <LayoutDiscreteFrame.Visibility>
+                        <LayoutDefaultDiscreteFrameVisibility PropertyName=""IndexerKind"" DefaultValue=""2""/>
+                    </LayoutDiscreteFrame.Visibility>
                     <LayoutKeywordFrame>read-only</LayoutKeywordFrame>
                     <LayoutKeywordFrame>write-only</LayoutKeywordFrame>
                     <LayoutKeywordFrame>readwrite</LayoutKeywordFrame>
@@ -3032,6 +3043,9 @@ namespace EaslyEdit
                     <LayoutPlaceholderFrame PropertyName=""EntityType"" LeftMargin=""Whitespace""/>
                 </LayoutHorizontalPanelFrame>
                 <LayoutDiscreteFrame PropertyName=""PropertyKind"">
+                    <LayoutDiscreteFrame.Visibility>
+                        <LayoutDefaultDiscreteFrameVisibility PropertyName=""PropertyKind"" DefaultValue=""2""/>
+                    </LayoutDiscreteFrame.Visibility>
                     <LayoutKeywordFrame>read-only</LayoutKeywordFrame>
                     <LayoutKeywordFrame>write-only</LayoutKeywordFrame>
                     <LayoutKeywordFrame>readwrite</LayoutKeywordFrame>
