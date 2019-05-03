@@ -103,13 +103,7 @@ namespace Coverage
         #region Tools
         private static string ErrorListToString(Compiler compiler)
         {
-            string Result = "";
-
-            Result += $"{compiler.ErrorList.Count} error(s).";
-            foreach (IError Error in compiler.ErrorList)
-                Result += $"{NL}{Error}: {Error.Message} from {Error.Location}";
-
-            return Result;
+            return compiler.ErrorList.ToString();
         }
         #endregion
 
@@ -130,12 +124,12 @@ namespace Coverage
             Assert.That(ex.Message == $"Value cannot be null.{NL}Parameter name: fileName", ex.Message);
 
             Compiler.Compile("notfound.easly");
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInputFileNotFound AsInputFileNotFound && AsInputFileNotFound.Message == "File not found: 'notfound.easly'.", ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorInputFileNotFound AsInputFileNotFound && AsInputFileNotFound.Message == "File not found: 'notfound.easly'.", ErrorListToString(Compiler));
 
             using (FileStream fs = new FileStream(TestFileName, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
             {
                 Compiler.Compile(TestFileName);
-                Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInputFileInvalid, ErrorListToString(Compiler));
+                Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorInputFileInvalid, ErrorListToString(Compiler));
             }
 
             Stream NullStream = null;
@@ -143,13 +137,13 @@ namespace Coverage
             Assert.That(ex.Message == $"Value cannot be null.{NL}Parameter name: stream", ex.Message);
 
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 0, ErrorListToString(Compiler));
+            Assert.That(Compiler.ErrorList.IsEmpty, ErrorListToString(Compiler));
 
             string InvalidFile = File.Exists($"{RootPath}Test-Easly-Compiler.dll") ? $"{RootPath}Test-Easly-Compiler.dll" : $"{RootPath}Test-Easly-Compiler.csproj";
             using (FileStream fs = new FileStream(InvalidFile, FileMode.Open, FileAccess.Read))
             {
                 Compiler.Compile(fs);
-                Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInputFileInvalid, ErrorListToString(Compiler));
+                Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorInputFileInvalid, ErrorListToString(Compiler));
             }
 
             IRoot NullRoot = null;
@@ -159,7 +153,7 @@ namespace Coverage
             using (FileStream fs = new FileStream(TestFileName, FileMode.Open, FileAccess.Read))
             {
                 Compiler.Compile(fs);
-                Assert.That(Compiler.ErrorList.Count == 0, ErrorListToString(Compiler));
+                Assert.That(Compiler.ErrorList.IsEmpty, ErrorListToString(Compiler));
             }
 
             IRoot ClonedRoot = NodeHelper.DeepCloneNode(CoverageNode, cloneCommentGuid: true) as IRoot;
@@ -167,7 +161,7 @@ namespace Coverage
             Assert.That(!NodeTreeDiagnostic.IsValid(ClonedRoot, assertValid: false));
 
             Compiler.Compile(ClonedRoot);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInputRootInvalid, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorInputRootInvalid, ErrorListToString(Compiler));
 
             Compiler.OutputRootFolder = "./";
             Compiler.Namespace = "Coverage";
@@ -175,13 +169,13 @@ namespace Coverage
 
             Compiler.InferenceRetries = -1;
             Compiler.Compile(CoverageNode as IRoot);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInternal, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorInternal, ErrorListToString(Compiler));
 
             Compiler.InferenceRetries = 10;
 
             //Debug.Assert(false);
             Compiler.Compile(CoverageNode as IRoot);
-            Assert.That(Compiler.ErrorList.Count == 0, ErrorListToString(Compiler));
+            Assert.That(Compiler.ErrorList.IsEmpty, ErrorListToString(Compiler));
 
             Assert.That(Compiler.OutputRootFolder == "./");
             Assert.That(Compiler.Namespace == "Coverage");
@@ -202,7 +196,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 0);
+            Assert.That(Compiler.ErrorList.IsEmpty);
         }
         #endregion
 
@@ -221,7 +215,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorEmptyClassPath && Compiler.ErrorList[0].Location.Node is IClass, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorEmptyClassPath && Compiler.ErrorList.At(0).Location.Node is IClass, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -238,7 +232,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorWhiteSpaceNotAllowed, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorWhiteSpaceNotAllowed, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -255,7 +249,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorEmptyString, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorEmptyString, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -272,7 +266,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorIllFormedString, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorIllFormedString, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -289,7 +283,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorUnknownIdentifier, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorUnknownIdentifier, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -306,7 +300,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorPatternAlreadyUsed, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorPatternAlreadyUsed, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -323,7 +317,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorDuplicateName, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorDuplicateName, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -340,7 +334,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInvalidCharacter, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorInvalidCharacter, ErrorListToString(Compiler));
         }
         #endregion
 
@@ -359,7 +353,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count > 0 && Compiler.ErrorList[0] is IErrorSourceRequired, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorSourceRequired, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -376,7 +370,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorCyclicDependency, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorCyclicDependency, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -393,7 +387,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorStringValidity, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -410,7 +404,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorStringValidity, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -427,7 +421,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorDuplicateName, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorDuplicateName, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -444,7 +438,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorStringValidity, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -461,7 +455,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorStringValidity, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -478,7 +472,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorDuplicateName, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorDuplicateName, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -495,7 +489,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorDuplicateImport, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorDuplicateImport, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -512,7 +506,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorNameChanged, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorNameChanged, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -529,7 +523,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorImportTypeConflict, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorImportTypeConflict, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -546,7 +540,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorNameAlreadyUsed, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorNameAlreadyUsed, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -563,7 +557,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorImportTypeConflict, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorImportTypeConflict, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -580,7 +574,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorImportTypeConflict, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorImportTypeConflict, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -597,7 +591,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorClassAlreadyImported, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorClassAlreadyImported, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -614,7 +608,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorStringValidity, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -631,7 +625,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorUnknownIdentifier, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorUnknownIdentifier, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -648,7 +642,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorUnknownIdentifier, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorUnknownIdentifier, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -665,7 +659,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorIdentifierAlreadyListed, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorIdentifierAlreadyListed, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -682,7 +676,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorDuplicateImport, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorDuplicateImport, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -699,7 +693,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorStringValidity, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -716,7 +710,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorUnknownIdentifier, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorUnknownIdentifier, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -733,7 +727,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorStringValidity, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -750,7 +744,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorUnknownIdentifier, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorUnknownIdentifier, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -767,7 +761,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorStringValidity, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -784,7 +778,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorStringValidity, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -801,7 +795,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorNameUnchanged, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorNameUnchanged, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -818,7 +812,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorIdentifierAlreadyListed, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorIdentifierAlreadyListed, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -835,7 +829,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorDoubleRename, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorDoubleRename, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -852,7 +846,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorUnknownIdentifier, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorUnknownIdentifier, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -869,7 +863,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorIdentifierAlreadyListed, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorIdentifierAlreadyListed, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -886,7 +880,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorStringValidity, ErrorListToString(Compiler));
         }
         #endregion
 
@@ -905,7 +899,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorStringValidity, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -922,7 +916,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorStringValidity, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -939,7 +933,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorStringValidity, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -956,7 +950,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorStringValidity, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -973,7 +967,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInvalidManifestChraracter, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorInvalidManifestChraracter, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -990,7 +984,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInvalidManifestNumber, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorInvalidManifestNumber, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -1007,7 +1001,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorStringValidity, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -1024,7 +1018,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInvalidManifestNumber, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorInvalidManifestNumber, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -1041,7 +1035,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorStringValidity, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorStringValidity, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -1058,7 +1052,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorDuplicateName, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorDuplicateName, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -1075,7 +1069,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorNameUnchanged, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorNameUnchanged, ErrorListToString(Compiler));
         }
         #endregion
 
@@ -1094,7 +1088,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorBooleanTypeMissing, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorBooleanTypeMissing, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -1111,7 +1105,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorUnavailableValue, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorUnavailableValue, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -1128,7 +1122,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorResultUsedOutsideGetter, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorResultUsedOutsideGetter, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -1145,7 +1139,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorUnavailableResult, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorUnavailableResult, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -1162,7 +1156,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorResultNotReturned, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorResultNotReturned, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -1179,7 +1173,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorResultUsedOutsideGetter, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorResultUsedOutsideGetter, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -1196,7 +1190,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count >= 1 && Compiler.ErrorList[0] is IErrorMoreBasicParameter, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorMoreBasicParameter, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -1213,7 +1207,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count >= 1 && Compiler.ErrorList[0] is IErrorMoreBasicParameter, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorMoreBasicParameter, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -1230,7 +1224,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorNonConformingType, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorNonConformingType, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -1247,7 +1241,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorSingleTypeNotAllowed, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorSingleTypeNotAllowed, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -1264,7 +1258,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorSingleInstanceConflict, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorSingleInstanceConflict, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -1281,7 +1275,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInheritanceConflict, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorInheritanceConflict, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -1298,7 +1292,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInheritanceConflict, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorInheritanceConflict, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -1315,7 +1309,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInheritanceConflict, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorInheritanceConflict, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -1332,7 +1326,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorIndexerInheritanceConflict, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorIndexerInheritanceConflict, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -1349,7 +1343,194 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInheritanceConflict, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorInheritanceConflict, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestInvalid0316_Types()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 03-16.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorAncestorConformance, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestInvalid0317_Types()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 03-17.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorAncestorConformance, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestInvalid0318_Types()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 03-18.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorInsufficientConstraintConformance, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestInvalid0319_Types()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 03-19.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorTypeKindConformance, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestInvalid0320_Types()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 03-20.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorTypeKindConformance, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestInvalid0321_Types()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 03-21.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorTypeKindConformance, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestInvalid0322_Types()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 03-22.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorTypeKindConformance, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestInvalid0323_Types()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 03-23.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorTypeKindConformance, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestInvalid0324_Types()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 03-24.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorTypeKindConformance, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestInvalid0325_Types()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 03-25.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorAncestorConformance, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestInvalid0326_Types()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 03-26.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorTypeKindConformance, ErrorListToString(Compiler));
         }
         #endregion
     }

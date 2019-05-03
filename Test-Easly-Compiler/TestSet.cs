@@ -103,13 +103,7 @@ namespace Test
         #region Tools
         private static string ErrorListToString(Compiler compiler)
         {
-            string Result = "";
-
-            Result += $"{compiler.ErrorList.Count} error(s).";
-            foreach (IError Error in compiler.ErrorList)
-                Result += $"{NL}{Error}: {Error.Message}";
-
-            return Result;
+            return compiler.ErrorList.ToString();
         }
         #endregion
 
@@ -132,12 +126,12 @@ namespace Test
             Assert.That(ex.Message == $"Value cannot be null.{NL}Parameter name: fileName", ex.Message);
 
             Compiler.Compile("notfound.easly");
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInputFileNotFound AsInputFileNotFound && AsInputFileNotFound.Message == "File not found: 'notfound.easly'.", ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorInputFileNotFound AsInputFileNotFound && AsInputFileNotFound.Message == "File not found: 'notfound.easly'.", ErrorListToString(Compiler));
 
             using (FileStream fs = new FileStream(TestFileName, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
             {
                 Compiler.Compile(TestFileName);
-                Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInputFileInvalid, ErrorListToString(Compiler));
+                Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorInputFileInvalid, ErrorListToString(Compiler));
             }
 
             Stream NullStream = null;
@@ -145,13 +139,13 @@ namespace Test
             Assert.That(ex.Message == $"Value cannot be null.{NL}Parameter name: stream", ex.Message);
 
             Compiler.Compile(TestFileName);
-            Assert.That(Compiler.ErrorList.Count == 0, ErrorListToString(Compiler));
+            Assert.That(Compiler.ErrorList.IsEmpty, ErrorListToString(Compiler));
 
             string InvalidFile = File.Exists($"{RootPath}Test-Easly-Compiler.dll") ? $"{RootPath}Test-Easly-Compiler.dll" : $"{RootPath}Test-Easly-Compiler.csproj";
             using (FileStream fs = new FileStream(InvalidFile, FileMode.Open, FileAccess.Read))
             {
                 Compiler.Compile(fs);
-                Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInputFileInvalid, ErrorListToString(Compiler));
+                Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorInputFileInvalid, ErrorListToString(Compiler));
             }
 
             IRoot NullRoot = null;
@@ -161,7 +155,7 @@ namespace Test
             using (FileStream fs = new FileStream(TestFileName, FileMode.Open, FileAccess.Read))
             {
                 Compiler.Compile(fs);
-                Assert.That(Compiler.ErrorList.Count == 0, ErrorListToString(Compiler));
+                Assert.That(Compiler.ErrorList.IsEmpty, ErrorListToString(Compiler));
             }
 
             IRoot ClonedRoot = NodeHelper.DeepCloneNode(CoverageNode, cloneCommentGuid: true) as IRoot;
@@ -169,7 +163,7 @@ namespace Test
             Assert.That(!NodeTreeDiagnostic.IsValid(ClonedRoot, assertValid: false));
 
             Compiler.Compile(ClonedRoot);
-            Assert.That(Compiler.ErrorList.Count == 1 && Compiler.ErrorList[0] is IErrorInputRootInvalid, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorInputRootInvalid, ErrorListToString(Compiler));
         }
         #endregion
 
@@ -211,7 +205,7 @@ namespace Test
             Compiler Compiler = new Compiler();
 
             Compiler.Compile(CoverageNode as IRoot);
-            Assert.That(Compiler.ErrorList.Count == 0, ErrorListToString(Compiler));
+            Assert.That(Compiler.ErrorList.IsEmpty, ErrorListToString(Compiler));
         }
         #endregion
     }
