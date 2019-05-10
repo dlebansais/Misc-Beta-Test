@@ -3481,6 +3481,40 @@ namespace Coverage
             Compiler.Compile(TestFileName);
             Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorUnknownIdentifier, ErrorListToString(Compiler));
         }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestInvalid0441_Types()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 04-41.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorUnknownIdentifier, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestInvalid0442_Types()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 04-42.easly";
+
+            Compiler.OutputRootFolder = "./";
+            Compiler.Namespace = "Coverage";
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorMissingSelectedPrecursor, ErrorListToString(Compiler));
+        }
         #endregion
     }
 }
