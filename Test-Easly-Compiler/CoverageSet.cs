@@ -163,8 +163,6 @@ namespace Coverage
             Compiler.Compile(ClonedRoot);
             Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorInputRootInvalid, ErrorListToString(Compiler));
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             Compiler.InferenceRetries = -1;
@@ -177,9 +175,13 @@ namespace Coverage
             Compiler.Compile(CoverageNode as IRoot);
             Assert.That(Compiler.ErrorList.IsEmpty, ErrorListToString(Compiler));
 
-            Assert.That(Compiler.OutputRootFolder == "./");
-            Assert.That(Compiler.Namespace == "Coverage");
             Assert.That(Compiler.ActivateVerification == false);
+
+            TargetCSharp t = new TargetCSharp(Compiler, "Test");
+            t.OutputRootFolder = "./bin/Output";
+            t.Translate();
+
+            Assert.That(t.ErrorList.IsEmpty, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -190,8 +192,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}/coverage/coverage replication.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -209,8 +209,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 00-00.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -226,8 +224,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 00-01.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -243,8 +239,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 00-02.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -260,8 +254,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 00-03.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -277,8 +269,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 00-04.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -294,8 +284,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 00-05.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -311,8 +299,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 00-06.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -328,8 +314,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 00-07.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -347,8 +331,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-00.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -364,8 +346,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-01.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -381,8 +361,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-02.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -398,8 +376,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-03.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -415,8 +391,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-04.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -432,8 +406,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-05.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -449,8 +421,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-06.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -466,8 +436,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-07.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -483,8 +451,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-08.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -500,8 +466,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-09.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -517,8 +481,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-10.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -534,8 +496,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-11.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -551,8 +511,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-12.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -568,8 +526,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-13.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -585,8 +541,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-14.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -602,8 +556,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-15.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -619,8 +571,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-16.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -636,8 +586,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-17.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -653,8 +601,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-18.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -670,8 +616,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-19.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -687,8 +631,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-20.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -704,8 +646,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-21.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -721,8 +661,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-22.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -738,8 +676,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-23.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -755,8 +691,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-24.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -772,8 +706,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-25.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -789,8 +721,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-26.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -806,8 +736,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-27.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -823,8 +751,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-28.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -840,8 +766,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-29.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -857,8 +781,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-30.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -874,8 +796,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 01-31.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -893,8 +813,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 02-00.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -910,8 +828,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 02-01.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -927,8 +843,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 02-02.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -944,8 +858,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 02-03.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -961,8 +873,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 02-04.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -978,8 +888,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 02-05.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -995,8 +903,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 02-06.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1012,8 +918,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 02-07.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1029,8 +933,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 02-08.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1046,8 +948,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 02-09.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1063,8 +963,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 02-10.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1082,8 +980,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-00.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1099,8 +995,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-01.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1116,8 +1010,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-02.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1133,8 +1025,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-03.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1150,8 +1040,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-04.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1167,8 +1055,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-05.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1184,8 +1070,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-06.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1201,8 +1085,8 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-07.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
+
+
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1218,8 +1102,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-08.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1235,8 +1117,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-09.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1252,8 +1132,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-10.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1269,8 +1147,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-11.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1286,8 +1162,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-12.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1303,8 +1177,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-13.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1320,8 +1192,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-14.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1337,8 +1207,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-15.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1354,8 +1222,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-16.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1371,8 +1237,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-17.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1388,8 +1252,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-18.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1405,8 +1267,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-19.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1422,8 +1282,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-20.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1439,8 +1297,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-21.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1456,8 +1312,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-22.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1473,8 +1327,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-23.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1490,8 +1342,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-24.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1507,8 +1357,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-25.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1524,8 +1372,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-26.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1541,8 +1387,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-27.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1558,8 +1402,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-28.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1575,8 +1417,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-29.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1592,8 +1432,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-30.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1609,8 +1447,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-31.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1626,8 +1462,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-32.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1643,8 +1477,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-33.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1660,8 +1492,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-34.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1677,8 +1507,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-35.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1694,8 +1522,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-36.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1711,8 +1537,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-37.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1728,8 +1552,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-38.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
             Compiler.InferenceRetries = 20;
 
@@ -1746,8 +1568,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-39.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1763,8 +1583,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-40.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1780,8 +1598,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-41.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1797,8 +1613,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-42.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1814,8 +1628,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-43.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1831,8 +1643,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-44.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1848,8 +1658,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-45.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1865,8 +1673,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-46.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1882,8 +1688,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-47.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1899,8 +1703,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-48.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1916,8 +1718,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-49.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1933,8 +1733,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-50.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1950,8 +1748,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-51.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1967,8 +1763,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-52.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -1984,8 +1778,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-53.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2001,8 +1793,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-54.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2018,8 +1808,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-55.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2035,8 +1823,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-56.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2052,8 +1838,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-57.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2069,8 +1853,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-58.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2086,8 +1868,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-59.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2103,8 +1883,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-60.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2120,8 +1898,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-61.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2137,8 +1913,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-62.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2154,8 +1928,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-63.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2171,8 +1943,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-64.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2188,8 +1958,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-65.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2205,8 +1973,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-66.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2222,8 +1988,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-67.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2239,8 +2003,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-68.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2256,8 +2018,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-69.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2273,8 +2033,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-70.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2290,8 +2048,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-71.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2307,8 +2063,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-72.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2324,8 +2078,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-73.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2341,8 +2093,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-74.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2358,8 +2108,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-75.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2375,8 +2123,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-76.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2392,8 +2138,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-77.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2409,8 +2153,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-78.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2426,8 +2168,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-79.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2443,8 +2183,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-80.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
             Compiler.InferenceRetries = 20;
 
@@ -2461,8 +2199,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-81.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
             Compiler.InferenceRetries = 20;
 
@@ -2479,8 +2215,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-82.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
             Compiler.InferenceRetries = 20;
 
@@ -2497,8 +2231,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-83.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
             Compiler.InferenceRetries = 20;
 
@@ -2515,8 +2247,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-84.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2532,8 +2262,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-85.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2549,8 +2277,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-86.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
             Compiler.InferenceRetries = 20;
 
@@ -2567,8 +2293,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-87.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
             Compiler.InferenceRetries = 20;
 
@@ -2585,8 +2309,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-88.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
             Compiler.InferenceRetries = 20;
 
@@ -2603,8 +2325,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-89.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
             Compiler.InferenceRetries = 20;
 
@@ -2621,8 +2341,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-90.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
             Compiler.InferenceRetries = 50;
 
@@ -2639,8 +2357,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-91.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2656,8 +2372,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-92.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2673,8 +2387,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-93.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2690,8 +2402,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-94.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2707,8 +2417,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-95.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2724,8 +2432,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-96.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2741,8 +2447,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-97.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
             Compiler.InferenceRetries = 20;
 
@@ -2759,8 +2463,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-98.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2776,8 +2478,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 03-99.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2793,8 +2493,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-00.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2810,8 +2508,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-01.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2827,8 +2523,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-02.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2844,8 +2538,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-03.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2861,8 +2553,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-04.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2878,8 +2568,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-05.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2895,8 +2583,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-06.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2912,8 +2598,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-07.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2929,8 +2613,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-08.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2946,8 +2628,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-09.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2963,8 +2643,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-10.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2980,8 +2658,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-11.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -2997,8 +2673,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-12.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3014,8 +2688,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-13.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3031,8 +2703,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-14.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3048,8 +2718,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-15.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3065,8 +2733,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-16.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3082,8 +2748,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-17.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3099,8 +2763,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-18.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3116,8 +2778,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-19.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3133,8 +2793,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-20.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3150,8 +2808,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-21.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3167,8 +2823,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-22.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3184,8 +2838,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-23.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3201,8 +2853,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-24.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3218,8 +2868,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-25.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3235,8 +2883,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-26.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3252,8 +2898,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-27.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3269,8 +2913,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-28.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3286,8 +2928,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-29.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3303,8 +2943,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-30.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3320,8 +2958,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-31.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3337,8 +2973,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-32.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3354,8 +2988,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-33.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3371,8 +3003,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-34.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3388,8 +3018,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-35.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3405,8 +3033,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-36.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3422,8 +3048,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-37.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3439,8 +3063,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-38.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3456,8 +3078,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-39.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3473,8 +3093,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-40.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3490,8 +3108,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-41.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3507,8 +3123,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-42.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3524,8 +3138,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 04-43.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3543,8 +3155,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-00.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3560,8 +3170,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-01.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3577,8 +3185,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-02.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3594,8 +3200,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-03.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3611,8 +3215,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-04.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3628,8 +3230,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-05.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3645,8 +3245,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-06.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3662,8 +3260,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-07.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3679,8 +3275,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-08.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3696,8 +3290,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-09.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3713,8 +3305,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-10.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3730,8 +3320,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-11.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3747,8 +3335,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-12.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3764,8 +3350,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-13.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3781,8 +3365,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-14.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3798,8 +3380,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-15.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3815,8 +3395,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-16.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3832,8 +3410,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-17.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3849,8 +3425,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-18.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3866,8 +3440,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-19.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3883,8 +3455,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-20.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3900,8 +3470,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-21.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3917,8 +3485,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-22.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3934,8 +3500,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-23.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3951,8 +3515,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-24.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3968,8 +3530,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-25.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -3985,8 +3545,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-26.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4002,8 +3560,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-27.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4019,8 +3575,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-28.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4036,8 +3590,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-29.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4053,8 +3605,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-30.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4070,8 +3620,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-31.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4087,8 +3635,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-32.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4104,8 +3650,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-33.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4121,8 +3665,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-34.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4138,8 +3680,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-35.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4155,8 +3695,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-36.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4172,8 +3710,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-37.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4189,8 +3725,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-38.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4206,8 +3740,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-39.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4223,8 +3755,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-40.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4240,8 +3770,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-41.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4257,8 +3785,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-42.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4274,8 +3800,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-43.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4291,8 +3815,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-44.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4308,8 +3830,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-45.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4325,8 +3845,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-46.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4342,8 +3860,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-47.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4359,8 +3875,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-48.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4376,8 +3890,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-49.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4393,8 +3905,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-50.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4410,8 +3920,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-51.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4427,8 +3935,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-52.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4444,8 +3950,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-53.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4461,8 +3965,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-54.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4478,8 +3980,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-55.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4495,8 +3995,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-56.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4512,8 +4010,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-57.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4529,8 +4025,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-58.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4546,8 +4040,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-59.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4563,8 +4055,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-60.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4580,8 +4070,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-61.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4597,8 +4085,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-62.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4614,8 +4100,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-63.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4631,8 +4115,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-64.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4648,8 +4130,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-65.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4665,8 +4145,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-66.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4682,8 +4160,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-67.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4699,8 +4175,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-68.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4716,8 +4190,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-69.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4733,8 +4205,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-70.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4750,8 +4220,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-71.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4767,8 +4235,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-72.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4784,8 +4250,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-73.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4801,8 +4265,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-74.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4818,8 +4280,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-75.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4835,8 +4295,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-76.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4852,8 +4310,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-77.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4869,8 +4325,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-78.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4886,8 +4340,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-79.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4903,8 +4355,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-80.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4920,8 +4370,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-81.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4937,8 +4385,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-82.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4954,8 +4400,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-83.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4971,8 +4415,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-84.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -4988,8 +4430,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-85.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5005,8 +4445,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-86.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5022,8 +4460,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-87.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5039,8 +4475,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-88.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5056,8 +4490,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-89.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5073,8 +4505,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-90.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5090,8 +4520,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-91.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5107,8 +4535,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-92.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5124,8 +4550,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-93.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5141,8 +4565,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-94.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5158,8 +4580,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-95.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5175,8 +4595,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-96.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5192,8 +4610,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-97.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5209,8 +4625,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-98.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5226,8 +4640,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 05-99.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5243,8 +4655,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 06-00.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5260,8 +4670,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 06-01.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5279,8 +4687,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-00.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5296,8 +4702,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-01.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5313,8 +4717,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-02.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5330,8 +4732,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-03.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5347,8 +4747,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-04.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5364,8 +4762,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-05.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5381,8 +4777,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-06.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5398,8 +4792,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-07.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5415,8 +4807,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-08.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5432,8 +4822,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-09.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5449,8 +4837,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-10.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5466,8 +4852,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-11.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5483,8 +4867,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-12.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5500,8 +4882,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-13.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5517,8 +4897,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-14.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5534,8 +4912,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-15.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5551,8 +4927,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-16.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5568,8 +4942,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-17.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5585,8 +4957,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-18.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5602,8 +4972,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-19.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5619,8 +4987,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-20.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5636,8 +5002,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-21.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5653,8 +5017,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-22.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5670,8 +5032,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-23.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5687,8 +5047,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-24.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5704,8 +5062,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-25.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5721,8 +5077,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-26.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5738,8 +5092,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-27.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5755,8 +5107,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-28.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5772,8 +5122,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-29.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5789,8 +5137,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-30.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5806,8 +5152,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-31.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5823,8 +5167,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-32.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5840,8 +5182,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-33.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5857,8 +5197,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-34.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5874,8 +5212,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-35.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5891,8 +5227,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-36.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5908,8 +5242,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-37.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5925,8 +5257,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-38.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5942,8 +5272,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-39.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5959,8 +5287,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-40.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5976,8 +5302,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-41.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -5993,8 +5317,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-42.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -6010,8 +5332,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-43.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -6027,8 +5347,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-44.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -6044,8 +5362,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-45.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -6061,8 +5377,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-46.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -6078,8 +5392,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-47.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -6095,8 +5407,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-48.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -6112,8 +5422,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-49.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -6129,8 +5437,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-50.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -6146,8 +5452,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-51.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -6163,8 +5467,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-52.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -6180,8 +5482,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-53.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -6197,8 +5497,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-54.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -6214,8 +5512,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-55.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -6231,8 +5527,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-56.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -6248,8 +5542,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-57.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -6265,8 +5557,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-58.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -6282,8 +5572,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-59.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -6299,8 +5587,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-60.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -6316,8 +5602,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-61.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -6333,8 +5617,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-62.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -6350,8 +5632,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-63.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -6367,8 +5647,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-64.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -6384,8 +5662,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-65.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -6401,8 +5677,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-66.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -6418,8 +5692,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-67.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -6435,8 +5707,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-68.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -6452,8 +5722,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-69.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -6469,8 +5737,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-70.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
@@ -6486,8 +5752,6 @@ namespace Coverage
 
             string TestFileName = $"{RootPath}coverage/coverage invalid 07-71.easly";
 
-            Compiler.OutputRootFolder = "./";
-            Compiler.Namespace = "Coverage";
             Compiler.ActivateVerification = false;
 
             //Debug.Assert(false);
