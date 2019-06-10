@@ -91,16 +91,4 @@ if exist "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration
 </PreBuildEvent>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>if not exist "$(SolutionDir)PolySerializer" mkdir "$(SolutionDir)PolySerializer"
-if not exist "$(SolutionDir)PolySerializer\x64" mkdir "$(SolutionDir)PolySerializer\x64"
-if not exist "$(SolutionDir)PolySerializer\x64\$(Configuration)" mkdir "$(SolutionDir)PolySerializer\x64\$(Configuration)"
-copy /Y "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer.dll" "$(SolutionDir)PolySerializer\x64\$(Configuration)"
-if exist "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer.pdb" copy /Y "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer.pdb" "$(SolutionDir)PolySerializer\x64\$(Configuration)"
-if exist "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer.xml" copy /Y "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer.xml" "$(SolutionDir)PolySerializer\x64\$(Configuration)"
-copy /Y "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer-Attributes.dll" "$(SolutionDir)PolySerializer\x64\$(Configuration)"
-if exist "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer-Attributes.pdb" copy /Y "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer-Attributes.pdb" "$(SolutionDir)PolySerializer\x64\$(Configuration)"
-if exist "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer-Attributes.xml" copy /Y "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer-Attributes.xml" "$(SolutionDir)PolySerializer\x64\$(Configuration)"
-</PreBuildEvent>
-  </PropertyGroup>
 </Project>

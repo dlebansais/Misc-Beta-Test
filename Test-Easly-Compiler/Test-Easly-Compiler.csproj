@@ -90,25 +90,4 @@ if exist "$(SolutionDir)..\KeyboardManager\KeyboardManager\bin\x64\$(Configurati
 </PreBuildEvent>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>if not exist "$(SolutionDir)Easly-Compiler" mkdir "$(SolutionDir)Easly-Compiler"
-if not exist "$(SolutionDir)Easly-Compiler\x64" mkdir "$(SolutionDir)Easly-Compiler\x64"
-if not exist "$(SolutionDir)Easly-Compiler\x64\$(Configuration)" mkdir "$(SolutionDir)Easly-Compiler\x64\$(Configuration)"
-if exist "$(SolutionDir)..\Easly-Language\Easly-Language-Helper\bin\x64\$(Configuration)\Easly-Language.dll" copy /Y "$(SolutionDir)..\Easly-Language\Easly-Language-Helper\bin\x64\$(Configuration)\Easly-Language.dll" "$(SolutionDir)Easly-Compiler\x64\$(Configuration)"
-if exist "$(SolutionDir)..\Easly-Language\Easly-Language-Helper\bin\x64\$(Configuration)\Easly-Language.pdb" copy /Y "$(SolutionDir)..\Easly-Language\Easly-Language-Helper\bin\x64\$(Configuration)\Easly-Language.pdb" "$(SolutionDir)Easly-Compiler\x64\$(Configuration)"
-if exist "$(SolutionDir)..\Easly-Language\Easly-Language-Helper\bin\x64\$(Configuration)\Easly-Language-Helper.dll" copy /Y "$(SolutionDir)..\Easly-Language\Easly-Language-Helper\bin\x64\$(Configuration)\Easly-Language-Helper.dll" "$(SolutionDir)Easly-Compiler\x64\$(Configuration)"
-if exist "$(SolutionDir)..\Easly-Language\Easly-Language-Helper\bin\x64\$(Configuration)\Easly-Language-Helper.pdb" copy /Y "$(SolutionDir)..\Easly-Language\Easly-Language-Helper\bin\x64\$(Configuration)\Easly-Language-Helper.pdb" "$(SolutionDir)Easly-Compiler\x64\$(Configuration)"
-if exist "$(SolutionDir)..\Easly-Compiler\Easly-Compiler\bin\x64\$(Configuration)\Easly-Compiler.dll" copy /Y "$(SolutionDir)..\Easly-Compiler\Easly-Compiler\bin\x64\$(Configuration)\Easly-Compiler.dll" "$(SolutionDir)Easly-Compiler\x64\$(Configuration)"
-if exist "$(SolutionDir)..\Easly-Compiler\Easly-Compiler\bin\x64\$(Configuration)\Easly-Compiler.pdb" copy /Y "$(SolutionDir)..\Easly-Compiler\Easly-Compiler\bin\x64\$(Configuration)\Easly-Compiler.pdb" "$(SolutionDir)Easly-Compiler\x64\$(Configuration)"
-if exist "$(SolutionDir)..\Easly-Compiler\Easly-Compiler\bin\x64\$(Configuration)\Easly-Compiler.xml" copy /Y "$(SolutionDir)..\Easly-Compiler\Easly-Compiler\bin\x64\$(Configuration)\Easly-Compiler.xml" "$(SolutionDir)Easly-Compiler\x64\$(Configuration)"
-if exist "$(SolutionDir)..\Easly-Compiler\Easly-Compiler\bin\x64\$(Configuration)\Google.Protobuf.dll" copy /Y "$(SolutionDir)..\Easly-Compiler\Easly-Compiler\bin\x64\$(Configuration)\Google.Protobuf.dll" "$(SolutionDir)Easly-Compiler\x64\$(Configuration)"
-if exist "$(SolutionDir)..\Easly-Compiler\Easly-Compiler\bin\x64\$(Configuration)\MySql.Data.dll" copy /Y "$(SolutionDir)..\Easly-Compiler\Easly-Compiler\bin\x64\$(Configuration)\MySql.Data.dll" "$(SolutionDir)Easly-Compiler\x64\$(Configuration)"
-if exist "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer.dll" copy /Y "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer.dll" "$(SolutionDir)Easly-Compiler\x64\$(Configuration)"
-if exist "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer.pdb" copy /Y "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer.pdb" "$(SolutionDir)Easly-Compiler\x64\$(Configuration)"
-if exist "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer-Attributes.dll" copy /Y "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer-Attributes.dll" "$(SolutionDir)Easly-Compiler\x64\$(Configuration)"
-if exist "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer-Attributes.pdb" copy /Y "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer-Attributes.pdb" "$(SolutionDir)Easly-Compiler\x64\$(Configuration)"
-if exist "$(SolutionDir)..\KeyboardManager\KeyboardManager\bin\x64\$(Configuration)\KeyboardManager.dll" copy /Y "$(SolutionDir)..\KeyboardManager\KeyboardManager\bin\x64\$(Configuration)\KeyboardManager.dll" "$(SolutionDir)Easly-Compiler\x64\$(Configuration)"
-if exist "$(SolutionDir)..\KeyboardManager\KeyboardManager\bin\x64\$(Configuration)\KeyboardManager.pdb" copy /Y "$(SolutionDir)..\KeyboardManager\KeyboardManager\bin\x64\$(Configuration)\KeyboardManager.pdb" "$(SolutionDir)Easly-Compiler\x64\$(Configuration)"
-</PreBuildEvent>
-  </PropertyGroup>
 </Project>

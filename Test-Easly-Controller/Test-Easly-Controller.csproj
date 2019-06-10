@@ -118,25 +118,4 @@ if exist "$(SolutionDir)..\KeyboardManager\KeyboardManager\bin\x64\$(Configurati
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\NUnit.3.11.0\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit.3.11.0\build\NUnit.props'))" />
   </Target>
-  <PropertyGroup>
-    <PreBuildEvent>if not exist "$(SolutionDir)Easly-Controller" mkdir "$(SolutionDir)Easly-Controller"
-if not exist "$(SolutionDir)Easly-Controller\x64" mkdir "$(SolutionDir)Easly-Controller\x64"
-if not exist "$(SolutionDir)Easly-Controller\x64\$(Configuration)" mkdir "$(SolutionDir)Easly-Controller\x64\$(Configuration)"
-if exist "$(SolutionDir)..\Easly-Language\Easly-Language-Helper\bin\x64\$(Configuration)\Easly-Language.dll" copy /Y "$(SolutionDir)..\Easly-Language\Easly-Language-Helper\bin\x64\$(Configuration)\Easly-Language.dll" "$(SolutionDir)Easly-Controller\x64\$(Configuration)"
-if exist "$(SolutionDir)..\Easly-Language\Easly-Language-Helper\bin\x64\$(Configuration)\Easly-Language.pdb" copy /Y "$(SolutionDir)..\Easly-Language\Easly-Language-Helper\bin\x64\$(Configuration)\Easly-Language.pdb" "$(SolutionDir)Easly-Controller\x64\$(Configuration)"
-if exist "$(SolutionDir)..\Easly-Language\Easly-Language-Helper\bin\x64\$(Configuration)\Easly-Language-Helper.dll" copy /Y "$(SolutionDir)..\Easly-Language\Easly-Language-Helper\bin\x64\$(Configuration)\Easly-Language-Helper.dll" "$(SolutionDir)Easly-Controller\x64\$(Configuration)"
-if exist "$(SolutionDir)..\Easly-Language\Easly-Language-Helper\bin\x64\$(Configuration)\Easly-Language-Helper.pdb" copy /Y "$(SolutionDir)..\Easly-Language\Easly-Language-Helper\bin\x64\$(Configuration)\Easly-Language-Helper.pdb" "$(SolutionDir)Easly-Controller\x64\$(Configuration)"
-if exist "$(SolutionDir)..\Easly-Controller\Easly-Controller\bin\x64\$(Configuration)\Easly-Controller.dll" copy /Y "$(SolutionDir)..\Easly-Controller\Easly-Controller\bin\x64\$(Configuration)\Easly-Controller.dll" "$(SolutionDir)Easly-Controller\x64\$(Configuration)"
-if exist "$(SolutionDir)..\Easly-Controller\Easly-Controller\bin\x64\$(Configuration)\Easly-Controller.pdb" copy /Y "$(SolutionDir)..\Easly-Controller\Easly-Controller\bin\x64\$(Configuration)\Easly-Controller.pdb" "$(SolutionDir)Easly-Controller\x64\$(Configuration)"
-if exist "$(SolutionDir)..\Easly-Controller\Easly-Controller\bin\x64\$(Configuration)\Easly-Controller.xml" copy /Y "$(SolutionDir)..\Easly-Controller\Easly-Controller\bin\x64\$(Configuration)\Easly-Controller.xml" "$(SolutionDir)Easly-Controller\x64\$(Configuration)"
-if exist "$(SolutionDir)..\Easly-Controller\Easly-Controller\bin\x64\$(Configuration)\Google.Protobuf.dll" copy /Y "$(SolutionDir)..\Easly-Controller\Easly-Controller\bin\x64\$(Configuration)\Google.Protobuf.dll" "$(SolutionDir)Easly-Controller\x64\$(Configuration)"
-if exist "$(SolutionDir)..\Easly-Controller\Easly-Controller\bin\x64\$(Configuration)\MySql.Data.dll" copy /Y "$(SolutionDir)..\Easly-Controller\Easly-Controller\bin\x64\$(Configuration)\MySql.Data.dll" "$(SolutionDir)Easly-Controller\x64\$(Configuration)"
-if exist "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer.dll" copy /Y "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer.dll" "$(SolutionDir)Easly-Controller\x64\$(Configuration)"
-if exist "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer.pdb" copy /Y "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer.pdb" "$(SolutionDir)Easly-Controller\x64\$(Configuration)"
-if exist "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer-Attributes.dll" copy /Y "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer-Attributes.dll" "$(SolutionDir)Easly-Controller\x64\$(Configuration)"
-if exist "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer-Attributes.pdb" copy /Y "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer-Attributes.pdb" "$(SolutionDir)Easly-Controller\x64\$(Configuration)"
-if exist "$(SolutionDir)..\KeyboardManager\KeyboardManager\bin\x64\$(Configuration)\KeyboardManager.dll" copy /Y "$(SolutionDir)..\KeyboardManager\KeyboardManager\bin\x64\$(Configuration)\KeyboardManager.dll" "$(SolutionDir)Easly-Controller\x64\$(Configuration)"
-if exist "$(SolutionDir)..\KeyboardManager\KeyboardManager\bin\x64\$(Configuration)\KeyboardManager.pdb" copy /Y "$(SolutionDir)..\KeyboardManager\KeyboardManager\bin\x64\$(Configuration)\KeyboardManager.pdb" "$(SolutionDir)Easly-Controller\x64\$(Configuration)"
-</PreBuildEvent>
-  </PropertyGroup>
 </Project>
