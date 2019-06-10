@@ -7047,7 +7047,7 @@ namespace Coverage
                         bool IsItemMergeable = ControllerView0.IsItemMergeable(out BlockListInner, out ExistingBlockNodeIndex);
                         bool IsBlockMoveable = ControllerView0.IsBlockMoveable(-1, out BlockListInner, out BlockIndex);
                         bool IsItemSimplifiable = ControllerView0.IsItemSimplifiable(out Inner, out InsertionIndex);
-                        bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out Inner, out List<IFocusInsertionChildNodeIndex> indexList);
+                        bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out IDictionary<IFocusInner, IList<IFocusInsertionChildNodeIndex>> IndexTable);
                         bool IsIdentifierSplittable = ControllerView0.IsIdentifierSplittable(out ListInner, out ReplacementListNodeIndex, out InsertionListNodeIndex);
 
                         ControllerView0.MoveFocus(+1, true, out IsMoved);
@@ -7092,7 +7092,7 @@ namespace Coverage
                         bool IsItemMergeable = ControllerView0.IsItemMergeable(out BlockListInner, out ExistingBlockNodeIndex);
                         bool IsBlockMoveable = ControllerView0.IsBlockMoveable(-1, out BlockListInner, out BlockIndex);
                         bool IsItemSimplifiable = ControllerView0.IsItemSimplifiable(out Inner, out InsertionIndex);
-                        bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out Inner, out List<IFocusInsertionChildNodeIndex> indexList);
+                        bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out IDictionary<IFocusInner, IList<IFocusInsertionChildNodeIndex>> IndexTable);
                         bool IsIdentifierSplittable = ControllerView0.IsIdentifierSplittable(out ListInner, out ReplacementListNodeIndex, out InsertionListNodeIndex);
 
                         ControllerView0.MoveFocus(+1, true, out IsMoved);
@@ -9457,7 +9457,7 @@ namespace Coverage
                         ControllerView0.Controller.Replace(Inner, InsertionIndex, out IWriteableBrowsingChildIndex nodeIndex);
                     }
 
-                    bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out Inner, out List<IFocusInsertionChildNodeIndex> indexList);
+                    bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out IDictionary<IFocusInner, IList<IFocusInsertionChildNodeIndex>> IndexTable);
                     bool IsIdentifierSplittable = ControllerView0.IsIdentifierSplittable(out ListInner, out ReplacementListNodeIndex, out InsertionListNodeIndex);
                     if (IsIdentifierSplittable && IdentifierSplitCount++ < MaxIdentifierSplit)
                         Controller.SplitIdentifier(ListInner, ReplacementListNodeIndex, InsertionListNodeIndex, out IWriteableBrowsingListNodeIndex FirstIndex, out IWriteableBrowsingListNodeIndex SecondIndex);
@@ -9536,7 +9536,7 @@ namespace Coverage
 
                 Controller.Replace(Inner, Index, out IWriteableBrowsingChildIndex NodeIndex);
 
-                bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out Inner, out List<IFocusInsertionChildNodeIndex> IndexList);
+                bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out IDictionary<IFocusInner, IList<IFocusInsertionChildNodeIndex>> IndexTable);
                 Assert.That(IsItemComplexifiable);
             }
         }
@@ -12096,7 +12096,7 @@ namespace Coverage
                         bool IsItemMergeable = ControllerView0.IsItemMergeable(out BlockListInner, out ExistingBlockNodeIndex);
                         bool IsBlockMoveable = ControllerView0.IsBlockMoveable(-1, out BlockListInner, out BlockIndex);
                         bool IsItemSimplifiable = ControllerView0.IsItemSimplifiable(out Inner, out InsertionIndex);
-                        bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out Inner, out List<IFocusInsertionChildNodeIndex> indexList);
+                        bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out IDictionary<IFocusInner, IList<IFocusInsertionChildNodeIndex>> IndexTable);
                         bool IsIdentifierSplittable = ControllerView0.IsIdentifierSplittable(out ListInner, out ReplacementListNodeIndex, out InsertionListNodeIndex);
 
                         ControllerView0.MoveFocus(+1, true, out IsMoved);
@@ -12139,7 +12139,7 @@ namespace Coverage
                         bool IsItemMergeable = ControllerView0.IsItemMergeable(out BlockListInner, out ExistingBlockNodeIndex);
                         bool IsBlockMoveable = ControllerView0.IsBlockMoveable(-1, out BlockListInner, out BlockIndex);
                         bool IsItemSimplifiable = ControllerView0.IsItemSimplifiable(out Inner, out InsertionIndex);
-                        bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out Inner, out List<IFocusInsertionChildNodeIndex> indexList);
+                        bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out IDictionary<IFocusInner, IList<IFocusInsertionChildNodeIndex>> IndexTable);
                         bool IsIdentifierSplittable = ControllerView0.IsIdentifierSplittable(out ListInner, out ReplacementListNodeIndex, out InsertionListNodeIndex);
 
                         ControllerView0.MoveFocus(+1, true, out IsMoved);
@@ -14462,7 +14462,7 @@ namespace Coverage
                         ControllerView0.Controller.Replace(Inner, InsertionIndex, out IWriteableBrowsingChildIndex nodeIndex);
                     }
 
-                    bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out Inner, out List<IFocusInsertionChildNodeIndex> indexList);
+                    bool IsItemComplexifiable = ControllerView0.IsItemComplexifiable(out IDictionary<IFocusInner, IList<IFocusInsertionChildNodeIndex>> IndexTable);
                     bool IsIdentifierSplittable = ControllerView0.IsIdentifierSplittable(out ListInner, out ReplacementListNodeIndex, out InsertionListNodeIndex);
                     if (IsIdentifierSplittable && IdentifierSplitCount++ < MaxIdentifierSplit)
                     {

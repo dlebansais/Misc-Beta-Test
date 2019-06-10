@@ -5923,6 +5923,66 @@ namespace Coverage
             Compiler.Compile(TestFileName);
             Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorInvalidConversionFeature, ErrorListToString(Compiler));
         }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestInvalid0783_Types()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 07-83.easly";
+
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorUnknownIdentifier, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestInvalid0784_Types()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 07-84.easly";
+
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorUnknownIdentifier, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestInvalid0785_Types()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 07-85.easly";
+
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorUnknownIdentifier, ErrorListToString(Compiler));
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TestInvalid0786_Types()
+        {
+            Compiler Compiler = new Compiler();
+
+            string TestFileName = $"{RootPath}coverage/coverage invalid 07-86.easly";
+
+            Compiler.ActivateVerification = false;
+
+            //Debug.Assert(false);
+            Compiler.Compile(TestFileName);
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorClassTypeRequired, ErrorListToString(Compiler));
+        }
         #endregion
     }
 }

@@ -5789,10 +5789,22 @@ namespace Test
 
                 ControllerView.MoveFocus(Direction, true, out bool IsMoved);
 
-                if (ControllerView.IsItemComplexifiable(out IFocusInner Inner, out List<IFocusInsertionChildNodeIndex> IndexList))
+                if (ControllerView.IsItemComplexifiable(out IDictionary<IFocusInner, IList<IFocusInsertionChildNodeIndex>> IndexTable))
                 {
-                    int Choice = RandNext(IndexList.Count);
-                    Controller.Replace(Inner, IndexList[Choice], out IWriteableBrowsingChildIndex NodeIndex);
+                    int Total = 0;
+                    foreach (KeyValuePair<IFocusInner, IList<IFocusInsertionChildNodeIndex>> Entry in IndexTable)
+                        Total += Entry.Value.Count;
+
+                    int Choice = RandNext(Total);
+                    foreach (KeyValuePair<IFocusInner, IList<IFocusInsertionChildNodeIndex>> Entry in IndexTable)
+                        foreach (IFocusInsertionChildNodeIndex Index in Entry.Value)
+                            if (Choice == 0)
+                            {
+                                Controller.Replace(Entry.Key, Index, out IWriteableBrowsingChildIndex NodeIndex);
+                                break;
+                            }
+                            else
+                                Choice--;
                 }
             }
         }
@@ -7950,10 +7962,22 @@ namespace Test
 
                 ControllerView.MoveFocus(Direction, true, out bool IsMoved);
 
-                if (ControllerView.IsItemComplexifiable(out IFocusInner Inner, out List<IFocusInsertionChildNodeIndex> IndexList))
+                if (ControllerView.IsItemComplexifiable(out IDictionary<IFocusInner, IList<IFocusInsertionChildNodeIndex>> IndexTable))
                 {
-                    int Choice = RandNext(IndexList.Count);
-                    Controller.Replace(Inner, IndexList[Choice], out IWriteableBrowsingChildIndex NodeIndex);
+                    int Total = 0;
+                    foreach (KeyValuePair<IFocusInner, IList<IFocusInsertionChildNodeIndex>> Entry in IndexTable)
+                        Total += Entry.Value.Count;
+
+                    int Choice = RandNext(Total);
+                    foreach (KeyValuePair<IFocusInner, IList<IFocusInsertionChildNodeIndex>> Entry in IndexTable)
+                        foreach (IFocusInsertionChildNodeIndex Index in Entry.Value)
+                            if (Choice == 0)
+                            {
+                                Controller.Replace(Entry.Key, Index, out IWriteableBrowsingChildIndex NodeIndex);
+                                break;
+                            }
+                            else
+                                Choice--;
                 }
             }
         }
