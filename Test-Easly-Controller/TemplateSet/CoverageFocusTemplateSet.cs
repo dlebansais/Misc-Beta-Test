@@ -2259,6 +2259,22 @@ namespace TestDebug
             <FocusInsertFrame CollectionName=""AssignmentBlocks"" />
         </FocusHorizontalPanelFrame>
     </FocusNodeTemplate>
+    <FocusNodeTemplate NodeType=""{xaml:Type easly:IKeywordEntityExpression}"">
+        <FocusHorizontalPanelFrame>
+            <FocusCommentFrame/>
+            <FocusKeywordFrame>entity</FocusKeywordFrame>
+            <FocusDiscreteFrame PropertyName=""Value"">
+                <FocusKeywordFrame>True</FocusKeywordFrame>
+                <FocusKeywordFrame>False</FocusKeywordFrame>
+                <FocusKeywordFrame>Current</FocusKeywordFrame>
+                <FocusKeywordFrame>Value</FocusKeywordFrame>
+                <FocusKeywordFrame>Result</FocusKeywordFrame>
+                <FocusKeywordFrame>Retry</FocusKeywordFrame>
+                <FocusKeywordFrame>Exception</FocusKeywordFrame>
+                <FocusKeywordFrame>Indexer</FocusKeywordFrame>
+            </FocusDiscreteFrame>
+        </FocusHorizontalPanelFrame>
+    </FocusNodeTemplate>
     <FocusNodeTemplate NodeType=""{xaml:Type easly:IKeywordExpression}"">
         <FocusHorizontalPanelFrame>
             <FocusCommentFrame/>
@@ -2270,6 +2286,7 @@ namespace TestDebug
                 <FocusKeywordFrame>Result</FocusKeywordFrame>
                 <FocusKeywordFrame>Retry</FocusKeywordFrame>
                 <FocusKeywordFrame>Exception</FocusKeywordFrame>
+                <FocusKeywordFrame>Indexer</FocusKeywordFrame>
             </FocusDiscreteFrame>
         </FocusHorizontalPanelFrame>
     </FocusNodeTemplate>
@@ -3118,6 +3135,7 @@ namespace TestDebug
                 <FocusKeywordFrame>Result</FocusKeywordFrame>
                 <FocusKeywordFrame>Retry</FocusKeywordFrame>
                 <FocusKeywordFrame>Exception</FocusKeywordFrame>
+                <FocusKeywordFrame>Indexer</FocusKeywordFrame>
             </FocusDiscreteFrame>
             <FocusSymbolFrame Symbol=""{x:Static const:Symbols.LeftArrow}""/>
             <FocusPlaceholderFrame PropertyName=""Source"" />
@@ -3417,6 +3435,7 @@ namespace TestDebug
                 <FocusKeywordFrame>Result</FocusKeywordFrame>
                 <FocusKeywordFrame>Retry</FocusKeywordFrame>
                 <FocusKeywordFrame>Exception</FocusKeywordFrame>
+                <FocusKeywordFrame>Indexer</FocusKeywordFrame>
             </FocusDiscreteFrame>
         </FocusHorizontalPanelFrame>
     </FocusNodeTemplate>

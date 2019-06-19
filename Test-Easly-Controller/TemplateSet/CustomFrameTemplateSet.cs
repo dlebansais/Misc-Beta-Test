@@ -984,6 +984,22 @@ namespace TestDebug
             <FrameInsertFrame CollectionName=""AssignmentBlocks"" />
         </FrameHorizontalPanelFrame>
     </FrameNodeTemplate>
+    <FrameNodeTemplate NodeType=""{xaml:Type easly:IKeywordEntityExpression}"">
+        <FrameHorizontalPanelFrame>
+            <FrameCommentFrame/>
+            <FrameKeywordFrame>entity</FrameKeywordFrame>
+            <FrameDiscreteFrame PropertyName=""Value"">
+                <FrameKeywordFrame>True</FrameKeywordFrame>
+                <FrameKeywordFrame>False</FrameKeywordFrame>
+                <FrameKeywordFrame>Current</FrameKeywordFrame>
+                <FrameKeywordFrame>Value</FrameKeywordFrame>
+                <FrameKeywordFrame>Result</FrameKeywordFrame>
+                <FrameKeywordFrame>Retry</FrameKeywordFrame>
+                <FrameKeywordFrame>Exception</FrameKeywordFrame>
+                <FrameKeywordFrame>Indexer</FrameKeywordFrame>
+            </FrameDiscreteFrame>
+        </FrameHorizontalPanelFrame>
+    </FrameNodeTemplate>
     <FrameNodeTemplate NodeType=""{xaml:Type easly:IKeywordExpression}"">
         <FrameHorizontalPanelFrame>
             <FrameCommentFrame/>
@@ -995,6 +1011,7 @@ namespace TestDebug
                 <FrameKeywordFrame>Result</FrameKeywordFrame>
                 <FrameKeywordFrame>Retry</FrameKeywordFrame>
                 <FrameKeywordFrame>Exception</FrameKeywordFrame>
+                <FrameKeywordFrame>Indexer</FrameKeywordFrame>
             </FrameDiscreteFrame>
         </FrameHorizontalPanelFrame>
     </FrameNodeTemplate>
@@ -1560,6 +1577,7 @@ namespace TestDebug
                 <FrameKeywordFrame>Result</FrameKeywordFrame>
                 <FrameKeywordFrame>Retry</FrameKeywordFrame>
                 <FrameKeywordFrame>Exception</FrameKeywordFrame>
+                <FrameKeywordFrame>Indexer</FrameKeywordFrame>
             </FrameDiscreteFrame>
             <FrameSymbolFrame Symbol=""{x:Static const:Symbols.LeftArrow}""/>
             <FramePlaceholderFrame PropertyName=""Source"" />
@@ -1781,6 +1799,7 @@ namespace TestDebug
                 <FrameKeywordFrame>Result</FrameKeywordFrame>
                 <FrameKeywordFrame>Retry</FrameKeywordFrame>
                 <FrameKeywordFrame>Exception</FrameKeywordFrame>
+                <FrameKeywordFrame>Indexer</FrameKeywordFrame>
             </FrameDiscreteFrame>
         </FrameHorizontalPanelFrame>
     </FrameNodeTemplate>
