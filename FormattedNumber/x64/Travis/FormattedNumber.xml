@@ -1,0 +1,729 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>FormattedNumber</name>
+    </assembly>
+    <members>
+        <member name="T:FormattedNumber.ICanonicalNumber">
+            <summary>
+            Interface to manipulate integer or real numbers of any size.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.ICanonicalNumber.IsNegative">
+            <summary>
+            True if the number is negative.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.ICanonicalNumber.SignificandText">
+            <summary>
+            The significand.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.ICanonicalNumber.IsExponentNegative">
+            <summary>
+            True if the exponent is negative.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.ICanonicalNumber.ExponentText">
+            <summary>
+            The exponent.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.ICanonicalNumber.CanonicRepresentation">
+            <summary>
+            The canonic representation.
+            </summary>
+        </member>
+        <member name="M:FormattedNumber.ICanonicalNumber.IsEqual(FormattedNumber.ICanonicalNumber)">
+            <summary>
+            Checks if two numbers are equal.
+            </summary>
+            <param name="other">The other instance.</param>
+        </member>
+        <member name="M:FormattedNumber.ICanonicalNumber.OppositeOf">
+            <summary>
+            Returns the opposite number.
+            </summary>
+        </member>
+        <member name="M:FormattedNumber.ICanonicalNumber.IsGreater(FormattedNumber.ICanonicalNumber)">
+            <summary>
+            Checks if this instance is greater than another constant.
+            </summary>
+        </member>
+        <member name="M:FormattedNumber.ICanonicalNumber.TryParseInt(System.Int32@)">
+            <summary>
+            Gets the value if it can be represented with a <see cref="T:System.Int32"/>.
+            </summary>
+            <param name="value">The value upon return.</param>
+        </member>
+        <member name="T:FormattedNumber.CanonicalNumber">
+            <summary>
+            Interface to manipulate integer or real numbers of any size.
+            </summary>
+        </member>
+        <member name="F:FormattedNumber.CanonicalNumber.Zero">
+            <summary>
+            The canonical number for zero.
+            </summary>
+        </member>
+        <member name="M:FormattedNumber.CanonicalNumber.#ctor(System.Boolean,System.String,System.Boolean,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FormattedNumber.CanonicalNumber"/> class.
+            </summary>
+            <param name="isNegative">True if the number is negative.</param>
+            <param name="significandText">The significand.</param>
+            <param name="isExponentNegative">True if the exponent is negative.</param>
+            <param name="exponentText">The exponent.</param>
+        </member>
+        <member name="M:FormattedNumber.CanonicalNumber.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FormattedNumber.CanonicalNumber"/> class.
+            </summary>
+            <param name="n">An integer.</param>
+        </member>
+        <member name="P:FormattedNumber.CanonicalNumber.IsNegative">
+            <summary>
+            True if the number is negative.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.CanonicalNumber.SignificandText">
+            <summary>
+            The significand.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.CanonicalNumber.IsExponentNegative">
+            <summary>
+            True if the exponent is negative.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.CanonicalNumber.ExponentText">
+            <summary>
+            The exponent.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.CanonicalNumber.CanonicRepresentation">
+            <summary>
+            The canonic representation.
+            </summary>
+        </member>
+        <member name="M:FormattedNumber.CanonicalNumber.IsEqual(FormattedNumber.ICanonicalNumber)">
+            <summary>
+            Checks if two numbers are equal.
+            </summary>
+            <param name="other">The other instance.</param>
+        </member>
+        <member name="M:FormattedNumber.CanonicalNumber.OppositeOf">
+            <summary>
+            Returns the opposite number.
+            </summary>
+        </member>
+        <member name="M:FormattedNumber.CanonicalNumber.IsGreater(FormattedNumber.ICanonicalNumber)">
+            <summary>
+            Checks if this instance is greater than another constant.
+            </summary>
+        </member>
+        <member name="M:FormattedNumber.CanonicalNumber.TryParseInt(System.Int32@)">
+            <summary>
+            Gets the value if it can be represented with a <see cref="T:System.Int32"/>.
+            </summary>
+            <param name="value">The value upon return.</param>
+        </member>
+        <member name="M:FormattedNumber.CanonicalNumber.op_LessThan(FormattedNumber.CanonicalNumber,FormattedNumber.CanonicalNumber)">
+            <summary>
+            Checks if <paramref name="number1"/> is lesser than <paramref name="number2"/>.
+            </summary>
+            <param name="number1">The first number.</param>
+            <param name="number2">The second number.</param>
+        </member>
+        <member name="M:FormattedNumber.CanonicalNumber.op_GreaterThan(FormattedNumber.CanonicalNumber,FormattedNumber.CanonicalNumber)">
+            <summary>
+            Checks if <paramref name="number1"/> is greater than <paramref name="number2"/>.
+            </summary>
+            <param name="number1">The first number.</param>
+            <param name="number2">The second number.</param>
+        </member>
+        <member name="M:FormattedNumber.CanonicalNumber.ToString">
+            <summary>
+            Returns a string representation of this instance.
+            </summary>
+        </member>
+        <member name="T:FormattedNumber.ExplicitExponents">
+            <summary>
+            Indicates any explicit exponent.
+            </summary>
+        </member>
+        <member name="T:FormattedNumber.IFormattedNumber">
+            <summary>
+            Base interface for a number format that can parse any string.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.IFormattedNumber.SignificandString">
+            <summary>
+            Gets the significand part of the formatted number. Can be empty.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.IFormattedNumber.ExponentString">
+            <summary>
+            Gets the exponent part of the formatted number. Can be empty.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.IFormattedNumber.InvalidText">
+            <summary>
+            The trailing invalid text, if any.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.IFormattedNumber.Canonical">
+            <summary>
+            The canonical form of the parsed number.
+            </summary>
+        </member>
+        <member name="T:FormattedNumber.FormattedNumber">
+            <summary>
+            Base interface for a number format that can parse any string.
+            </summary>
+        </member>
+        <member name="F:FormattedNumber.FormattedNumber.DecimalSeparator">
+            <summary>
+            The decimal separator in numeric values. The dot (unicode U+002E) is also always considered a valid separator.
+            </summary>
+        </member>
+        <member name="M:FormattedNumber.FormattedNumber.Parse(System.String,System.Boolean)">
+            <summary>
+            Parses a string to a formatted number.
+            </summary>
+            <param name="text">The string to parse.</param>
+            <param name="isLeadingZeroSupported">True if <paramref name="text"/> might have leading zeroes.</param>
+            <exception cref="T:System.NullReferenceException"><paramref name="text"/> is null.</exception>
+            <returns>The parsed number upon return.</returns>
+        </member>
+        <member name="M:FormattedNumber.FormattedNumber.#ctor(System.String,FormattedNumber.ICanonicalNumber)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FormattedNumber.FormattedNumber"/> class.
+            </summary>
+            <param name="invalidText">The trailing invalid text, if any.</param>
+            <param name="canonical">The canonical form of the number.</param>
+            <exception cref="T:System.NullReferenceException"><paramref name="invalidText"/> or <paramref name="canonical"/> is null.</exception>
+        </member>
+        <member name="P:FormattedNumber.FormattedNumber.SignificandString">
+            <summary>
+            Gets the significand part of the formatted number. Can be empty.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.FormattedNumber.ExponentString">
+            <summary>
+            Gets the exponent part of the formatted number. Can be empty.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.FormattedNumber.InvalidText">
+            <summary>
+            The trailing invalid text, if any.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.FormattedNumber.Canonical">
+            <summary>
+            The canonical form of the parsed number.
+            </summary>
+        </member>
+        <member name="M:FormattedNumber.FormattedNumber.TryParseAsIntegerWithBase(System.String,FormattedNumber.IIntegerBase,FormattedNumber.IFormattedNumber@)">
+            <summary>
+            Tries to parse a string as an integer of the given base.
+            </summary>
+            <param name="text">The string to parse.</param>
+            <param name="integerBase">The integer base.</param>
+            <param name="number">The parsed number upon return, null on failure.</param>
+            <returns>True if the string was parsed successfully; Otherwise, false.</returns>
+            <exception cref="T:System.NullReferenceException"><paramref name="text"/> or <paramref name="integerBase"/> is null.</exception>
+        </member>
+        <member name="M:FormattedNumber.FormattedNumber.ParseAsIntegerWithBase(System.String,FormattedNumber.IIntegerBase,FormattedNumber.IFormattedNumber@)">
+            <summary>
+            Parse a string as an integer of the given base.
+            </summary>
+            <param name="text">The string to parse. It must end with the suffix of <paramref name="integerBase"/>.</param>
+            <param name="integerBase">The integer base.</param>
+            <param name="number">The parsed number upon return, null on failure.</param>
+        </member>
+        <member name="M:FormattedNumber.FormattedNumber.ParseAsNumber(System.String)">
+            <summary>
+            Parse a string as a number.
+            </summary>
+            <param name="text">The string to parse.</param>
+            <returns>
+            An instance of <see cref="T:FormattedNumber.IntegerNumber"/> if the valid part of the parsed number is an integer.
+            An instance of <see cref="T:FormattedNumber.RealNumber"/> if <paramref name="text"/> can be parsed, but not as an integer.
+            An instance of <see cref="T:FormattedNumber.InvalidNumber"/> if <paramref name="text"/> cannot be parsed as a number.
+            </returns>
+        </member>
+        <member name="M:FormattedNumber.FormattedNumber.TrailingZeroesRemoved(System.String)">
+            <summary>
+            Remove all zeroes at the end of a string. If the string is just made of zeroes, leave the last one untouched.
+            </summary>
+            <param name="text">The string to clean up.</param>
+            <returns>The string with zeroes removed.</returns>
+        </member>
+        <member name="M:FormattedNumber.FormattedNumber.ToString">
+            <summary>
+            Returns the formatted number as a string.
+            </summary>
+        </member>
+        <member name="T:FormattedNumber.BinaryIntegerBase">
+            <summary>
+            Class describing a binary (base 2) integer.
+            </summary>
+        </member>
+        <member name="M:FormattedNumber.BinaryIntegerBase.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FormattedNumber.BinaryIntegerBase"/> class.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.BinaryIntegerBase.Suffix">
+            <summary>
+            The suffix for binary integers.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.BinaryIntegerBase.Radix">
+            <summary>
+            The number of digits for binary integers.
+            </summary>
+        </member>
+        <member name="M:FormattedNumber.BinaryIntegerBase.IsValidDigit(System.Char,System.Int32@)">
+            <summary>
+            Checks if a character is a binary digit, and return the corresponding value.
+            </summary>
+            <param name="digit">The character to check.</param>
+            <param name="value">The digit's value.</param>
+            <returns>True if <paramref name="digit"/> is a valid digit; Otherwise, false.</returns>
+        </member>
+        <member name="M:FormattedNumber.BinaryIntegerBase.ToDigit(System.Int32)">
+            <summary>
+            Returns the digit corresponding to a value.
+            </summary>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:FormattedNumber.BinaryIntegerBase.ToValue(System.Char)">
+            <summary>
+            Returns the value corresponding to a digit.
+            </summary>
+            <param name="digit">The digit.</param>
+        </member>
+        <member name="T:FormattedNumber.DecimalIntegerBase">
+            <summary>
+            Class describing a decimal (base 10) integer.
+            </summary>
+        </member>
+        <member name="M:FormattedNumber.DecimalIntegerBase.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FormattedNumber.DecimalIntegerBase"/> class.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.DecimalIntegerBase.Suffix">
+            <summary>
+            The suffix for decimal integers.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.DecimalIntegerBase.Radix">
+            <summary>
+            The number of digits for decimal integers.
+            </summary>
+        </member>
+        <member name="M:FormattedNumber.DecimalIntegerBase.IsValidDigit(System.Char,System.Int32@)">
+            <summary>
+            Checks if a character is a decimal digit, and return the corresponding value.
+            </summary>
+            <param name="digit">The character to check.</param>
+            <param name="value">The digit's value.</param>
+            <returns>True if <paramref name="digit"/> is a valid digit; Otherwise, false.</returns>
+        </member>
+        <member name="M:FormattedNumber.DecimalIntegerBase.ToDigit(System.Int32)">
+            <summary>
+            Returns the digit corresponding to a value.
+            </summary>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:FormattedNumber.DecimalIntegerBase.ToValue(System.Char)">
+            <summary>
+            Returns the value corresponding to a digit.
+            </summary>
+            <param name="digit">The digit.</param>
+        </member>
+        <member name="T:FormattedNumber.HexadecimalIntegerBase">
+            <summary>
+            Class describing an hexadecimal (base 16) integer.
+            </summary>
+        </member>
+        <member name="M:FormattedNumber.HexadecimalIntegerBase.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FormattedNumber.HexadecimalIntegerBase"/> class.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.HexadecimalIntegerBase.Suffix">
+            <summary>
+            The suffix for hexadecimal integers.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.HexadecimalIntegerBase.Radix">
+            <summary>
+            The number of digits for hexadecimal integers.
+            </summary>
+        </member>
+        <member name="M:FormattedNumber.HexadecimalIntegerBase.IsValidDigit(System.Char,System.Int32@)">
+            <summary>
+            Checks if a character is an hex digit, and return the corresponding value.
+            </summary>
+            <param name="digit">The character to check.</param>
+            <param name="value">The digit's value.</param>
+            <returns>True if <paramref name="digit"/> is a valid digit; Otherwise, false.</returns>
+        </member>
+        <member name="M:FormattedNumber.HexadecimalIntegerBase.ToDigit(System.Int32)">
+            <summary>
+            Returns the digit corresponding to a value.
+            </summary>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:FormattedNumber.HexadecimalIntegerBase.ToValue(System.Char)">
+            <summary>
+            Returns the value corresponding to a digit.
+            </summary>
+            <param name="digit">The digit.</param>
+        </member>
+        <member name="T:FormattedNumber.IIntegerBase">
+            <summary>
+            Interface describing an integer with a specified digits base.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.IIntegerBase.Suffix">
+            <summary>
+            The suffix used to specify the base, null if none.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.IIntegerBase.Radix">
+            <summary>
+            The number of digits in the base.
+            </summary>
+        </member>
+        <member name="M:FormattedNumber.IIntegerBase.IsValidDigit(System.Char,System.Int32@)">
+            <summary>
+            Checks if a character is a digit in this base, and return the corresponding value.
+            </summary>
+            <param name="digit">The character to check.</param>
+            <param name="value">The digit's value.</param>
+            <returns>True if <paramref name="digit"/> is a valid digit; Otherwise, false.</returns>
+        </member>
+        <member name="M:FormattedNumber.IIntegerBase.IsValidNumber(System.String,System.Boolean)">
+            <summary>
+            Checks if a number is made of digits in this base.
+            A valid number must not start with 0 (unless it is zero or <paramref name="supportLeadingZeroes"/> is set), and must not be empty.
+            </summary>
+            <param name="text">The number to check.</param>
+            <param name="supportLeadingZeroes">True if <paramref name="text"/> might have leading zeroes.</param>
+            <returns>True if <paramref name="text"/> is a valid number; Otherwise, false.</returns>
+        </member>
+        <member name="M:FormattedNumber.IIntegerBase.IsValidSignificand(System.String)">
+            <summary>
+            Checks if a number is made of digits in this base.
+            A valid significand must be a valid number and not end with a zero (unless it is zero).
+            </summary>
+            <param name="text">The number to check.</param>
+            <returns>True if <paramref name="text"/> is a valid significand; Otherwise, false.</returns>
+        </member>
+        <member name="M:FormattedNumber.IIntegerBase.ToDigit(System.Int32)">
+            <summary>
+            Returns the digit corresponding to a value.
+            </summary>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:FormattedNumber.IIntegerBase.ToValue(System.Char)">
+            <summary>
+            Returns the value corresponding to a digit.
+            </summary>
+            <param name="digit">The digit.</param>
+        </member>
+        <member name="M:FormattedNumber.IIntegerBase.DividedByTwo(System.String,System.Boolean@)">
+            <summary>
+            Returns the input number divided by two.
+            </summary>
+            <param name="text">The number to divide.</param>
+            <param name="hasCarry">True upon return if <paramref name="text"/> is odd.</param>
+        </member>
+        <member name="M:FormattedNumber.IIntegerBase.MultipliedByTwo(System.String,System.Boolean)">
+            <summary>
+            Returns the input number multiplied by two, with an optional carry to add.
+            </summary>
+            <param name="text">The number to multiply.</param>
+            <param name="addCarry">True if a carry should be added.</param>
+        </member>
+        <member name="T:FormattedNumber.IntegerBase">
+            <summary>
+            Class describing an integer with a specified digits base.
+            </summary>
+        </member>
+        <member name="F:FormattedNumber.IntegerBase.Zero">
+            <summary>
+            The zero.
+            </summary>
+        </member>
+        <member name="F:FormattedNumber.IntegerBase.Hexadecimal">
+            <summary>
+            The hexadecimal base.
+            </summary>
+        </member>
+        <member name="F:FormattedNumber.IntegerBase.Decimal">
+            <summary>
+            The decimal base.
+            </summary>
+        </member>
+        <member name="F:FormattedNumber.IntegerBase.Octal">
+            <summary>
+            The octal base.
+            </summary>
+        </member>
+        <member name="F:FormattedNumber.IntegerBase.Binary">
+            <summary>
+            The binary base.
+            </summary>
+        </member>
+        <member name="M:FormattedNumber.IntegerBase.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FormattedNumber.IntegerBase"/> class.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.IntegerBase.Suffix">
+            <summary>
+            The suffix used to specify the base, null if none.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.IntegerBase.Radix">
+            <summary>
+            The number of digits in the base.
+            </summary>
+        </member>
+        <member name="M:FormattedNumber.IntegerBase.IsValidDigit(System.Char,System.Int32@)">
+            <summary>
+            Checks if a character is a digit in this base, and return the corresponding value.
+            </summary>
+            <param name="digit">The character to check.</param>
+            <param name="value">The digit's value.</param>
+            <returns>True if <paramref name="digit"/> is a valid digit; Otherwise, false.</returns>
+        </member>
+        <member name="M:FormattedNumber.IntegerBase.IsValidNumber(System.String,System.Boolean)">
+            <summary>
+            Checks if a number is made of digits in this base.
+            A valid number must not start with 0 (unless it is zero or <paramref name="supportLeadingZeroes"/> is set), and must not be empty.
+            </summary>
+            <param name="text">The number to check.</param>
+            <param name="supportLeadingZeroes">True if <paramref name="text"/> might have leading zeroes.</param>
+            <returns>True if <paramref name="text"/> is a valid number; Otherwise, false.</returns>
+        </member>
+        <member name="M:FormattedNumber.IntegerBase.IsValidSignificand(System.String)">
+            <summary>
+            Checks if a number is made of digits in this base.
+            A valid significand must be a valid number and not end with a zero (unless it is zero).
+            </summary>
+            <param name="text">The number to check.</param>
+            <returns>True if <paramref name="text"/> is a valid significand; Otherwise, false.</returns>
+        </member>
+        <member name="M:FormattedNumber.IntegerBase.ToDigit(System.Int32)">
+            <summary>
+            Returns the digit corresponding to a value.
+            </summary>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:FormattedNumber.IntegerBase.ToValue(System.Char)">
+            <summary>
+            Returns the value corresponding to a digit.
+            </summary>
+            <param name="digit">The digit.</param>
+        </member>
+        <member name="M:FormattedNumber.IntegerBase.DividedByTwo(System.String,System.Boolean@)">
+            <summary>
+            Returns the input number divided by two.
+            </summary>
+            <param name="text">The number to divide.</param>
+            <param name="hasCarry">True upon return if <paramref name="text"/> is odd.</param>
+        </member>
+        <member name="M:FormattedNumber.IntegerBase.MultipliedByTwo(System.String,System.Boolean)">
+            <summary>
+            Returns the input number multiplied by two, with an optional carry to add.
+            </summary>
+            <param name="text">The number to multiply.</param>
+            <param name="addCarry">True if a carry should be added.</param>
+        </member>
+        <member name="M:FormattedNumber.IntegerBase.Convert(System.String,FormattedNumber.IIntegerBase,FormattedNumber.IIntegerBase)">
+            <summary>
+            Returns the value of <paramref name="text"/> converted to a new base.
+            </summary>
+            <param name="text">The number to convert.</param>
+            <param name="fromBase">The base in which <paramref name="text"/> is encoded.</param>
+            <param name="toBase">The base in which the returned number is encoded.</param>
+        </member>
+        <member name="T:FormattedNumber.OctalIntegerBase">
+            <summary>
+            Class describing an octal (base 8) integer.
+            </summary>
+        </member>
+        <member name="M:FormattedNumber.OctalIntegerBase.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FormattedNumber.OctalIntegerBase"/> class.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.OctalIntegerBase.Suffix">
+            <summary>
+            The suffix for octal integers.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.OctalIntegerBase.Radix">
+            <summary>
+            The number of digits for octal integers.
+            </summary>
+        </member>
+        <member name="M:FormattedNumber.OctalIntegerBase.IsValidDigit(System.Char,System.Int32@)">
+            <summary>
+            Checks if a character is an octal digit, and return the corresponding value.
+            </summary>
+            <param name="digit">The character to check.</param>
+            <param name="value">The digit's value.</param>
+            <returns>True if <paramref name="digit"/> is a valid digit; Otherwise, false.</returns>
+        </member>
+        <member name="M:FormattedNumber.OctalIntegerBase.ToDigit(System.Int32)">
+            <summary>
+            Returns the digit corresponding to a value.
+            </summary>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:FormattedNumber.OctalIntegerBase.ToValue(System.Char)">
+            <summary>
+            Returns the value corresponding to a digit.
+            </summary>
+            <param name="digit">The digit.</param>
+        </member>
+        <member name="T:FormattedNumber.IntegerNumber">
+            <summary>
+            The format for a number parsed as an integer.
+            The default base is decimal, unless subclassed.
+            </summary>
+        </member>
+        <member name="M:FormattedNumber.IntegerNumber.#ctor(System.String,System.String,FormattedNumber.ICanonicalNumber)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FormattedNumber.IntegerNumber"/> class.
+            </summary>
+            <param name="integerText">The integer text.</param>
+            <param name="invalidText">The trailing invalid text, if any.</param>
+            <param name="canonical">The canonical form of the number.</param>
+        </member>
+        <member name="P:FormattedNumber.IntegerNumber.IntegerText">
+            <summary>
+            The integer text.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.IntegerNumber.SignificandString">
+            <summary>
+            Gets the significand part of the formatted number.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.IntegerNumber.ExponentString">
+            <summary>
+            Gets the exponent part of the formatted number.
+            </summary>
+        </member>
+        <member name="M:FormattedNumber.IntegerNumber.ToString">
+            <summary>
+            Returns the invalid number as a string.
+            </summary>
+        </member>
+        <member name="T:FormattedNumber.IntegerNumberWithBase">
+            <summary>
+            The format for a number parsed as an integer, with a base.
+            </summary>
+        </member>
+        <member name="M:FormattedNumber.IntegerNumberWithBase.#ctor(System.String,System.String,FormattedNumber.ICanonicalNumber,FormattedNumber.IIntegerBase)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FormattedNumber.IntegerNumberWithBase"/> class.
+            </summary>
+            <param name="integerText">The integer text.</param>
+            <param name="invalidText">The trailing invalid text, if any.</param>
+            <param name="canonical">The canonical form of the number.</param>
+            <param name="integerBase">The base.</param>
+        </member>
+        <member name="P:FormattedNumber.IntegerNumberWithBase.IntegerBase">
+            <summary>
+            The base.
+            </summary>
+        </member>
+        <member name="M:FormattedNumber.IntegerNumberWithBase.ToString">
+            <summary>
+            Returns the invalid number as a string.
+            </summary>
+        </member>
+        <member name="T:FormattedNumber.InvalidNumber">
+            <summary>
+            The format for a number parsed as totally invalid.
+            </summary>
+        </member>
+        <member name="M:FormattedNumber.InvalidNumber.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FormattedNumber.InvalidNumber"/> class.
+            </summary>
+            <param name="invalidText">The invalid text.</param>
+        </member>
+        <member name="P:FormattedNumber.InvalidNumber.SignificandString">
+            <summary>
+            Gets the significand part of the formatted number.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.InvalidNumber.ExponentString">
+            <summary>
+            Gets the exponent part of the formatted number.
+            </summary>
+        </member>
+        <member name="T:FormattedNumber.RealNumber">
+            <summary>
+            The format for a number parsed as real.
+            </summary>
+        </member>
+        <member name="M:FormattedNumber.RealNumber.#ctor(System.String,System.String,FormattedNumber.ExplicitExponents,System.String,System.String,FormattedNumber.ICanonicalNumber)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FormattedNumber.RealNumber"/> class.
+            </summary>
+            <param name="integerText">The integer part of the the mantissa (before the dot).</param>
+            <param name="fractionalText">The fractional part of the the mantissa (after the dot).</param>
+            <param name="explicitExponent">The exponent, if any.</param>
+            <param name="exponentText">The exponent text.</param>
+            <param name="invalidText">The trailing invalid text, if any.</param>
+            <param name="canonical">The canonical form of the number.</param>
+        </member>
+        <member name="P:FormattedNumber.RealNumber.IntegerText">
+            <summary>
+            The integer part of the the mantissa (before the dot).
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.RealNumber.FractionalText">
+            <summary>
+            The factional part of the the mantissa (after the dot).
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.RealNumber.ExplicitExponent">
+            <summary>
+            The exponent, if any.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.RealNumber.ExponentText">
+            <summary>
+            The exponent text, if <see cref="P:FormattedNumber.RealNumber.ExplicitExponent"/> is not <see cref="F:FormattedNumber.ExplicitExponents.None"/>.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.RealNumber.SignificandString">
+            <summary>
+            Gets the significand part of the formatted number.
+            </summary>
+        </member>
+        <member name="P:FormattedNumber.RealNumber.ExponentString">
+            <summary>
+            Gets the exponent part of the formatted number.
+            </summary>
+        </member>
+        <member name="M:FormattedNumber.RealNumber.ToString">
+            <summary>
+            Returns the invalid number as a string.
+            </summary>
+        </member>
+    </members>
+</doc>

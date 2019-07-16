@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test-Easly-Controller", "Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test-Easly-Compiler", "Test-Easly-Compiler\Test-Easly-Compiler.csproj", "{16B27541-2CE6-4A41-AE77-D6DF7D73A260}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test-FormattedNumber", "Test-FormattedNumber\Test-FormattedNumber.csproj", "{8FA066A2-6B90-4134-B4A3-442A04611137}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -58,6 +60,12 @@ Global
 		{16B27541-2CE6-4A41-AE77-D6DF7D73A260}.Release|x64.Build.0 = Release|x64
 		{16B27541-2CE6-4A41-AE77-D6DF7D73A260}.Travis|x64.ActiveCfg = Travis|x64
 		{16B27541-2CE6-4A41-AE77-D6DF7D73A260}.Travis|x64.Build.0 = Travis|x64
+		{8FA066A2-6B90-4134-B4A3-442A04611137}.Debug|x64.ActiveCfg = Debug|x64
+		{8FA066A2-6B90-4134-B4A3-442A04611137}.Debug|x64.Build.0 = Debug|x64
+		{8FA066A2-6B90-4134-B4A3-442A04611137}.Release|x64.ActiveCfg = Release|x64
+		{8FA066A2-6B90-4134-B4A3-442A04611137}.Release|x64.Build.0 = Release|x64
+		{8FA066A2-6B90-4134-B4A3-442A04611137}.Travis|x64.ActiveCfg = Travis|x64
+		{8FA066A2-6B90-4134-B4A3-442A04611137}.Travis|x64.Build.0 = Travis|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
