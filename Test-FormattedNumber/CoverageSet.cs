@@ -39,7 +39,7 @@ namespace Coverage
         [Category("Coverage")]
         public static void Creation0()
         {
-            IFormattedNumber n = FormattedNumber.FormattedNumber.Parse("0");
+            IFormattedNumber n = Parser.Parse("0");
             Assert.That(n != null, "Sanity Check #0");
         }
         #endregion

@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Threading;
 using System.IO;
+using System.Diagnostics;
 
 namespace Test
 {
@@ -33,6 +34,8 @@ namespace Test
             }
             Assume.That(FormattedNumberAssembly != null);
         }
+
+        static bool SkipFullParse = true;
 
         #region Basic Tests
         [Test]
@@ -323,22 +326,25 @@ namespace Test
         {
             IFormattedNumber Number;
 
-            Number = FormattedNumber.FormattedNumber.Parse("", false);
-            Number = FormattedNumber.FormattedNumber.Parse("0", false);
-            Number = FormattedNumber.FormattedNumber.Parse("0:B", false);
-            Number = FormattedNumber.FormattedNumber.Parse("0:O", false);
-            Number = FormattedNumber.FormattedNumber.Parse("0:H", false);
-            Number = FormattedNumber.FormattedNumber.Parse("5", false);
-            Number = FormattedNumber.FormattedNumber.Parse("1:B", false);
-            Number = FormattedNumber.FormattedNumber.Parse("5:O", false);
-            Number = FormattedNumber.FormattedNumber.Parse("F:H", false);
-            Number = FormattedNumber.FormattedNumber.Parse("468F3ECF:H", false);
-            Number = FormattedNumber.FormattedNumber.Parse("468F3xECF:H", false);
+            Number = Parser.Parse("");
+            Number = Parser.Parse("0");
+            Number = Parser.Parse("0:B");
+            Number = Parser.Parse("0:O");
+            Number = Parser.Parse("0:H");
+            Number = Parser.Parse("5");
+            Number = Parser.Parse("1:B");
+            Number = Parser.Parse("5:O");
+            Number = Parser.Parse("F:H");
+            Number = Parser.Parse("468F3ECF:H");
+            Number = Parser.Parse("468F3xECF:H");
         }
 
         [Test]
         public static void FullParse()
         {
+            if (SkipFullParse)
+                return;
+
             IFormattedNumber Number;
 
             string Charset = "01.e-+";
@@ -349,7 +355,7 @@ namespace Test
             for (long n = 0; n < T; n++)
             {
                 string s = GenerateNumber(Charset, n);
-                Number = FormattedNumber.FormattedNumber.Parse(s, false);
+                Number = Parser.Parse(s);
 
                 double d = (100.0 * ((double)n)) / ((double)T);
                 if (d >= Percent)
@@ -369,6 +375,33 @@ namespace Test
             s += GenerateNumber(charset, pattern / charset.Length);
 
             return s;
+        }
+        #endregion
+
+        #region Arithmetic Tests
+        [Test]
+        public static void Add0()
+        {
+            double d1 = 1.2547856e2;
+            double d2 = 5.478231405e-3;
+
+            Debug.Assert(false);
+            string Text1 = d1.ToString();
+            string Text2 = d2.ToString();
+            PeterO.Numbers.EFloat f1 = PeterO.Numbers.EFloat.FromString(Text1);
+            PeterO.Numbers.EFloat f2 = PeterO.Numbers.EFloat.FromString(Text2);
+
+            IFormattedNumber Number1 = Parser.Parse(Text1);
+            IFormattedNumber Number2 = Parser.Parse(Text2);
+            CanonicalNumber CanonicalNumber1 = (CanonicalNumber)Number1.Canonical;
+            CanonicalNumber CanonicalNumber2 = (CanonicalNumber)Number2.Canonical;
+
+            ICanonicalNumber CanonicalResult = CanonicalNumber1 + CanonicalNumber2;
+            IFormattedNumber Result = FormattedNumber.FormattedNumber.FromCanonical(CanonicalResult);
+
+            string ResultText = Result.ToString();
+            string ExpectedText = (d1 + d2).ToString();
+            Assert.That(ResultText == ExpectedText, $"Result={ResultText}, Expected={ExpectedText}");
         }
         #endregion
     }
