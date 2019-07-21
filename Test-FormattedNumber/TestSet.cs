@@ -35,7 +35,7 @@ namespace Test
             Assume.That(FormattedNumberAssembly != null);
         }
 
-        static bool SkipFullParse = true;
+        static bool SkipFullParse = false;
 
         #region Basic Tests
         [Test]
@@ -324,19 +324,31 @@ namespace Test
         [Test]
         public static void SimpleParse()
         {
-            IFormattedNumber Number;
+            FormattedNumber.FormattedNumber Number;
 
             Number = Parser.Parse("");
+            Assert.That(!Number.IsValid && Number.InvalidText == string.Empty);
             Number = Parser.Parse("0");
+            Assert.That(Number is FormattedInteger AsInteger0 && AsInteger0.IntegerBase == IntegerBase.Decimal && Number.IsValid && Number.SignificandPart == "0" && Number.ExponentPart.Length == 0 && Number.Canonical == CanonicalNumber.Zero, $"Result: {Number.Diagnostic}");
             Number = Parser.Parse("0:B");
+            Assert.That(Number is FormattedInteger AsInteger1 && AsInteger1.IntegerBase == IntegerBase.Binary && Number.IsValid && Number.SignificandPart == "0:B" && Number.ExponentPart.Length == 0 && Number.Canonical == CanonicalNumber.Zero, $"Result: {Number.Diagnostic}");
             Number = Parser.Parse("0:O");
+            Assert.That(Number is FormattedInteger AsInteger2 && AsInteger2.IntegerBase == IntegerBase.Octal && Number.IsValid && Number.SignificandPart == "0:O" && Number.ExponentPart.Length == 0 && Number.Canonical == CanonicalNumber.Zero, $"Result: {Number.Diagnostic}");
             Number = Parser.Parse("0:H");
+            Assert.That(Number is FormattedInteger AsInteger3 && AsInteger3.IntegerBase == IntegerBase.Hexadecimal && Number.IsValid && Number.SignificandPart == "0:H" && Number.ExponentPart.Length == 0 && Number.Canonical == CanonicalNumber.Zero, $"Result: {Number.Diagnostic}");
             Number = Parser.Parse("5");
+            Assert.That(Number is FormattedInteger AsInteger4 && AsInteger4.IntegerBase == IntegerBase.Decimal && Number.IsValid && Number.SignificandPart == "5" && Number.ExponentPart.Length == 0, $"Result: {Number.Diagnostic}");
             Number = Parser.Parse("1:B");
+            Assert.That(Number is FormattedInteger AsInteger5 && AsInteger5.IntegerBase == IntegerBase.Binary && Number.IsValid && Number.SignificandPart == "1:B" && Number.ExponentPart.Length == 0, $"Result: {Number.Diagnostic}");
             Number = Parser.Parse("5:O");
+            Assert.That(Number is FormattedInteger AsInteger6 && AsInteger6.IntegerBase == IntegerBase.Octal && Number.IsValid && Number.SignificandPart == "5:O" && Number.ExponentPart.Length == 0, $"Result: {Number.Diagnostic}");
             Number = Parser.Parse("F:H");
+            Assert.That(Number is FormattedInteger AsInteger7 && AsInteger7.IntegerBase == IntegerBase.Hexadecimal && Number.IsValid && Number.SignificandPart == "F:H" && Number.ExponentPart.Length == 0, $"Result: {Number.Diagnostic}");
             Number = Parser.Parse("468F3ECF:H");
+            Assert.That(Number is FormattedInteger AsInteger8 && AsInteger8.IntegerBase == IntegerBase.Hexadecimal && Number.IsValid && Number.SignificandPart == "468F3ECF:H" && Number.ExponentPart.Length == 0, $"Result: {Number.Diagnostic}");
+            //Debug.Assert(false);
             Number = Parser.Parse("468F3xECF:H");
+            Assert.That(Number is FormattedInteger AsInteger9 && AsInteger9.IntegerBase == IntegerBase.Decimal && !Number.IsValid && Number.SignificandPart == "468" && Number.ExponentPart.Length == 0 && Number.InvalidText == "F3xECF:H", $"Result: {Number.Diagnostic}");
         }
 
         [Test]
@@ -345,7 +357,7 @@ namespace Test
             if (SkipFullParse)
                 return;
 
-            IFormattedNumber Number;
+            FormattedNumber.FormattedNumber Number;
 
             string Charset = "01.e-+";
             long N = Charset.Length;
@@ -355,7 +367,15 @@ namespace Test
             for (long n = 0; n < T; n++)
             {
                 string s = GenerateNumber(Charset, n);
-                Number = Parser.Parse(s);
+                try
+                {
+                    Number = Parser.Parse(s);
+                    Assert.That(Number.ToString() == s || Number is FormattedInvalid, $"#n: {Number.Diagnostic}, Source={s}");
+                }
+                catch (Exception e)
+                {
+                    Assert.That(false, $"#n: Source={s}\n\n{e.Message}");
+                }
 
                 double d = (100.0 * ((double)n)) / ((double)T);
                 if (d >= Percent)
@@ -385,22 +405,59 @@ namespace Test
             double d1 = 1.2547856e2;
             double d2 = 5.478231405e-3;
 
-            Debug.Assert(false);
             string Text1 = d1.ToString();
             string Text2 = d2.ToString();
             PeterO.Numbers.EFloat f1 = PeterO.Numbers.EFloat.FromString(Text1);
             PeterO.Numbers.EFloat f2 = PeterO.Numbers.EFloat.FromString(Text2);
 
-            IFormattedNumber Number1 = Parser.Parse(Text1);
-            IFormattedNumber Number2 = Parser.Parse(Text2);
-            CanonicalNumber CanonicalNumber1 = (CanonicalNumber)Number1.Canonical;
-            CanonicalNumber CanonicalNumber2 = (CanonicalNumber)Number2.Canonical;
+            FormattedNumber.FormattedNumber Number1 = Parser.Parse(Text1);
+            FormattedNumber.FormattedNumber Number2 = Parser.Parse(Text2);
 
-            ICanonicalNumber CanonicalResult = CanonicalNumber1 + CanonicalNumber2;
-            IFormattedNumber Result = FormattedNumber.FormattedNumber.FromCanonical(CanonicalResult);
+            //Debug.Assert(false);
+            FormattedNumber.FormattedNumber Result = Number1 + Number2;
+
+            string ExpectedText = (d1 + d2).ToString();
+            if (ExpectedText.Length > 4)
+                ExpectedText = ExpectedText.Substring(0, ExpectedText.Length - 1);
 
             string ResultText = Result.ToString();
-            string ExpectedText = (d1 + d2).ToString();
+            if (ResultText.Length > ExpectedText.Length)
+                ResultText = ResultText.Substring(0, ExpectedText.Length);
+
+            Assert.That(ResultText == ExpectedText, $"Result={ResultText}, Expected={ExpectedText}");
+        }
+
+        [Test]
+        public static void Divide0()
+        {
+            double d1 = -1.2547856e2;
+            //double d2 = 5.478231405e-3;
+            double d2 = 0;
+
+            string Text1 = d1.ToString();
+            string Text2 = d2.ToString();
+            PeterO.Numbers.EFloat f1 = PeterO.Numbers.EFloat.FromString(Text1);
+            PeterO.Numbers.EFloat f2 = PeterO.Numbers.EFloat.FromString(Text2);
+
+            FormattedNumber.FormattedNumber Number1 = Parser.Parse(Text1);
+            FormattedNumber.FormattedNumber Number2 = Parser.Parse(Text2);
+
+            //Debug.Assert(false);
+            FormattedNumber.FormattedNumber Result = Number1 / Number2;
+            Flags Flags = Arithmetic.Flags;
+            bool DivideByZero = Flags.DivideByZero;
+            Flags.Clear();
+
+            Assert.That(DivideByZero);
+
+            string ExpectedText = (d1 / d2).ToString();
+            if (ExpectedText.Length > 4)
+                ExpectedText = ExpectedText.Substring(0, ExpectedText.Length - 1);
+
+            string ResultText = Result.ToString();
+            if (ResultText.Length > ExpectedText.Length)
+                ResultText = ResultText.Substring(0, ExpectedText.Length);
+
             Assert.That(ResultText == ExpectedText, $"Result={ResultText}, Expected={ExpectedText}");
         }
         #endregion
