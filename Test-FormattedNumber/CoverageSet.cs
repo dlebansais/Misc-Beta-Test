@@ -13,11 +13,11 @@ namespace Coverage
         [OneTimeSetUp]
         public static void InitCoverageSession()
         {
-            CultureInfo enUS = CultureInfo.CreateSpecificCulture("en-US");
-            CultureInfo.DefaultThreadCurrentCulture = enUS;
-            CultureInfo.DefaultThreadCurrentUICulture = enUS;
-            Thread.CurrentThread.CurrentCulture = enUS;
-            Thread.CurrentThread.CurrentUICulture = enUS;
+            CultureInfo frFR = CultureInfo.CreateSpecificCulture("fr-FR");
+            CultureInfo.DefaultThreadCurrentCulture = frFR;
+            CultureInfo.DefaultThreadCurrentUICulture = frFR;
+            Thread.CurrentThread.CurrentCulture = frFR;
+            Thread.CurrentThread.CurrentUICulture = frFR;
 
             Assembly FormattedNumberAssembly;
 

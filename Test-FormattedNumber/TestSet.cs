@@ -1,12 +1,10 @@
 ﻿using FormattedNumber;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 using System.Threading;
-using System.IO;
-using System.Diagnostics;
 
 namespace Test
 {
@@ -16,11 +14,11 @@ namespace Test
         [OneTimeSetUp]
         public static void InitTestSession()
         {
-            CultureInfo enUS = CultureInfo.CreateSpecificCulture("en-US");
-            CultureInfo.DefaultThreadCurrentCulture = enUS;
-            CultureInfo.DefaultThreadCurrentUICulture = enUS;
-            Thread.CurrentThread.CurrentCulture = enUS;
-            Thread.CurrentThread.CurrentUICulture = enUS;
+            CultureInfo frFR = CultureInfo.CreateSpecificCulture("fr-FR");
+            CultureInfo.DefaultThreadCurrentCulture = frFR;
+            CultureInfo.DefaultThreadCurrentUICulture = frFR;
+            Thread.CurrentThread.CurrentCulture = frFR;
+            Thread.CurrentThread.CurrentUICulture = frFR;
 
             Assembly FormattedNumberAssembly;
 
@@ -35,7 +33,7 @@ namespace Test
             Assume.That(FormattedNumberAssembly != null);
         }
 
-        static bool SkipFullParse = false;
+        static bool SkipFullParse = true;
 
         #region Basic Tests
         [Test]
@@ -328,6 +326,7 @@ namespace Test
 
             Number = Parser.Parse("");
             Assert.That(!Number.IsValid && Number.InvalidText == string.Empty);
+            //Debug.Assert(false);
             Number = Parser.Parse("0");
             Assert.That(Number is FormattedInteger AsInteger0 && AsInteger0.IntegerBase == IntegerBase.Decimal && Number.IsValid && Number.SignificandPart == "0" && Number.ExponentPart.Length == 0 && Number.Canonical == CanonicalNumber.Zero, $"Result: {Number.Diagnostic}");
             Number = Parser.Parse("0:B");
@@ -346,7 +345,6 @@ namespace Test
             Assert.That(Number is FormattedInteger AsInteger7 && AsInteger7.IntegerBase == IntegerBase.Hexadecimal && Number.IsValid && Number.SignificandPart == "F:H" && Number.ExponentPart.Length == 0, $"Result: {Number.Diagnostic}");
             Number = Parser.Parse("468F3ECF:H");
             Assert.That(Number is FormattedInteger AsInteger8 && AsInteger8.IntegerBase == IntegerBase.Hexadecimal && Number.IsValid && Number.SignificandPart == "468F3ECF:H" && Number.ExponentPart.Length == 0, $"Result: {Number.Diagnostic}");
-            //Debug.Assert(false);
             Number = Parser.Parse("468F3xECF:H");
             Assert.That(Number is FormattedInteger AsInteger9 && AsInteger9.IntegerBase == IntegerBase.Decimal && !Number.IsValid && Number.SignificandPart == "468" && Number.ExponentPart.Length == 0 && Number.InvalidText == "F3xECF:H", $"Result: {Number.Diagnostic}");
         }
@@ -370,10 +368,12 @@ namespace Test
                 try
                 {
                     Number = Parser.Parse(s);
+                    Debug.Assert(Number.ToString() == s || Number is FormattedInvalid);
                     Assert.That(Number.ToString() == s || Number is FormattedInvalid, $"#n: {Number.Diagnostic}, Source={s}");
                 }
                 catch (Exception e)
                 {
+                    Debug.Assert(false);
                     Assert.That(false, $"#n: Source={s}\n\n{e.Message}");
                 }
 
@@ -407,8 +407,6 @@ namespace Test
 
             string Text1 = d1.ToString();
             string Text2 = d2.ToString();
-            PeterO.Numbers.EFloat f1 = PeterO.Numbers.EFloat.FromString(Text1);
-            PeterO.Numbers.EFloat f2 = PeterO.Numbers.EFloat.FromString(Text2);
 
             FormattedNumber.FormattedNumber Number1 = Parser.Parse(Text1);
             FormattedNumber.FormattedNumber Number2 = Parser.Parse(Text2);
@@ -416,7 +414,10 @@ namespace Test
             //Debug.Assert(false);
             FormattedNumber.FormattedNumber Result = Number1 + Number2;
 
-            string ExpectedText = (d1 + d2).ToString();
+            double d = d1 + d2;
+
+            string ExpectedText = d.ToString();
+
             if (ExpectedText.Length > 4)
                 ExpectedText = ExpectedText.Substring(0, ExpectedText.Length - 1);
 
@@ -436,8 +437,6 @@ namespace Test
 
             string Text1 = d1.ToString();
             string Text2 = d2.ToString();
-            PeterO.Numbers.EFloat f1 = PeterO.Numbers.EFloat.FromString(Text1);
-            PeterO.Numbers.EFloat f2 = PeterO.Numbers.EFloat.FromString(Text2);
 
             FormattedNumber.FormattedNumber Number1 = Parser.Parse(Text1);
             FormattedNumber.FormattedNumber Number2 = Parser.Parse(Text2);
@@ -450,7 +449,9 @@ namespace Test
 
             Assert.That(DivideByZero);
 
-            string ExpectedText = (d1 / d2).ToString();
+            double d = d1 / d2;
+            string ExpectedText = d.ToString();
+
             if (ExpectedText.Length > 4)
                 ExpectedText = ExpectedText.Substring(0, ExpectedText.Length - 1);
 
