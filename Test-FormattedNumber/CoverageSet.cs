@@ -34,6 +34,8 @@ namespace Coverage
             Assume.That(FormattedNumberAssembly != null);
 
         }
+
+        private static string NewLine = Environment.NewLine;
         #endregion
 
         #region Tools
@@ -63,7 +65,7 @@ namespace Coverage
 
             Assert.That(Number == null);
             Assert.That(LastException is ArgumentNullException);
-            Assert.That(LastException.Message == "Value cannot be null.\r\nParameter name: integerText");
+            Assert.That(LastException.Message == $"Value cannot be null.{NewLine}Parameter name: integerText");
 
             try
             {
@@ -78,7 +80,7 @@ namespace Coverage
 
             Assert.That(Number == null);
             Assert.That(LastException is ArgumentNullException);
-            Assert.That(LastException.Message == "Value cannot be null.\r\nParameter name: invalidText");
+            Assert.That(LastException.Message == $"Value cannot be null.{NewLine}Parameter name: invalidText");
 
             try
             {
@@ -93,7 +95,7 @@ namespace Coverage
 
             Assert.That(Number == null);
             Assert.That(LastException is ArgumentNullException);
-            Assert.That(LastException.Message == "Value cannot be null.\r\nParameter name: canonical");
+            Assert.That(LastException.Message == $"Value cannot be null.{NewLine}Parameter name: canonical");
 
             try
             {
@@ -108,7 +110,7 @@ namespace Coverage
 
             Assert.That(Number == null);
             Assert.That(LastException is ArgumentOutOfRangeException);
-            Assert.That(LastException.Message == "Specified argument was out of the range of valid values.\r\nParameter name: leadingZeroCount");
+            Assert.That(LastException.Message == $"Specified argument was out of the range of valid values.{NewLine}Parameter name: leadingZeroCount");
 
             Number = new FormattedInteger(IntegerBase.Decimal, OptionalSign.None, 0, "1", string.Empty, Canonical);
             Assert.That(Number != null);
@@ -140,7 +142,7 @@ namespace Coverage
 
             Assert.That(Number == null);
             Assert.That(LastException is ArgumentNullException);
-            Assert.That(LastException.Message == "Value cannot be null.\r\nParameter name: invalidText");
+            Assert.That(LastException.Message == $"Value cannot be null.{NewLine}Parameter name: invalidText");
 
             try
             {
@@ -155,7 +157,7 @@ namespace Coverage
 
             Assert.That(Number == null);
             Assert.That(LastException is ArgumentNullException);
-            Assert.That(LastException.Message == "Value cannot be null.\r\nParameter name: canonical");
+            Assert.That(LastException.Message == $"Value cannot be null.{NewLine}Parameter name: canonical");
 
             Number = new FormattedInvalid(string.Empty, Canonical);
             Assert.That(Number != null);
@@ -187,7 +189,7 @@ namespace Coverage
 
             Assert.That(Number == null);
             Assert.That(LastException is ArgumentNullException);
-            Assert.That(LastException.Message == "Value cannot be null.\r\nParameter name: integerText");
+            Assert.That(LastException.Message == $"Value cannot be null.{NewLine}Parameter name: integerText");
 
             try
             {
@@ -202,7 +204,7 @@ namespace Coverage
 
             Assert.That(Number == null);
             Assert.That(LastException is ArgumentNullException);
-            Assert.That(LastException.Message == "Value cannot be null.\r\nParameter name: fractionalText");
+            Assert.That(LastException.Message == $"Value cannot be null.{NewLine}Parameter name: fractionalText");
 
             try
             {
@@ -217,7 +219,7 @@ namespace Coverage
 
             Assert.That(Number == null);
             Assert.That(LastException is ArgumentNullException);
-            Assert.That(LastException.Message == "Value cannot be null.\r\nParameter name: exponentText");
+            Assert.That(LastException.Message == $"Value cannot be null.{NewLine}Parameter name: exponentText");
 
             try
             {
@@ -232,7 +234,7 @@ namespace Coverage
 
             Assert.That(Number == null);
             Assert.That(LastException is ArgumentNullException);
-            Assert.That(LastException.Message == "Value cannot be null.\r\nParameter name: invalidText");
+            Assert.That(LastException.Message == $"Value cannot be null.{NewLine}Parameter name: invalidText");
 
             try
             {
@@ -247,7 +249,7 @@ namespace Coverage
 
             Assert.That(Number == null);
             Assert.That(LastException is ArgumentNullException);
-            Assert.That(LastException.Message == "Value cannot be null.\r\nParameter name: canonical");
+            Assert.That(LastException.Message == $"Value cannot be null.{NewLine}Parameter name: canonical");
 
             try
             {
@@ -262,7 +264,7 @@ namespace Coverage
 
             Assert.That(Number == null);
             Assert.That(LastException is ArgumentOutOfRangeException);
-            Assert.That(LastException.Message == "Specified argument was out of the range of valid values.\r\nParameter name: leadingZeroCount");
+            Assert.That(LastException.Message == $"Specified argument was out of the range of valid values.{NewLine}Parameter name: leadingZeroCount");
 
             try
             {
@@ -337,7 +339,7 @@ namespace Coverage
 
             Assert.That(Number == null);
             Assert.That(LastException is ArgumentNullException);
-            Assert.That(LastException.Message == "Value cannot be null.\r\nParameter name: canonical");
+            Assert.That(LastException.Message == $"Value cannot be null.{NewLine}Parameter name: canonical");
 
             Number = FormattedNumber.FormattedNumber.FromCanonical(CanonicalNumber.NaN);
             Assert.That(Number == FormattedNumber.FormattedNumber.NaN);
@@ -368,7 +370,7 @@ namespace Coverage
             }
             catch (Exception e)
             {
-                Assert.That(e is ArgumentOutOfRangeException && e.Message == "Specified argument was out of the range of valid values.\r\nParameter name: value");
+                Assert.That(e is ArgumentOutOfRangeException && e.Message == $"Specified argument was out of the range of valid values.{NewLine}Parameter name: value");
             }
         }
         #endregion
@@ -1361,6 +1363,210 @@ namespace Coverage
             Assert.That(!DivideByZero);
 
             double d = Math.Sqrt(d1);
+            string ExpectedText = d.ToString();
+
+            if (ExpectedText.Length > 4)
+                ExpectedText = ExpectedText.Substring(0, ExpectedText.Length - 1);
+
+            string ResultText = Result.ToString();
+            if (ResultText.Length > ExpectedText.Length)
+                ResultText = ResultText.Substring(0, ExpectedText.Length);
+
+            Assert.That(ResultText == ExpectedText, $"Result={ResultText}, Expected={ExpectedText}");
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void ShiftLeft0()
+        {
+            double d1 = 1.2547856e2;
+            double d2 = 3.478231405e0;
+
+            string Text1 = d1.ToString();
+            string Text2 = d2.ToString();
+
+            FormattedNumber.FormattedNumber Number1 = Parser.Parse(Text1);
+            FormattedNumber.FormattedNumber Number2 = Parser.Parse(Text2);
+
+            //Debug.Assert(false);
+            FormattedNumber.FormattedNumber Result = Number1.ShiftLeft(Number2);
+            Flags Flags = Arithmetic.Flags;
+            bool Inexact = Flags.Inexact;
+            Flags.Clear();
+
+            Assert.That(Inexact);
+
+            double d = ((int)d1) << ((int)d2);
+            string ExpectedText = d.ToString();
+
+            if (ExpectedText.Length > 4)
+                ExpectedText = ExpectedText.Substring(0, ExpectedText.Length - 1);
+
+            string ResultText = Result.ToString();
+            if (ResultText.Length > ExpectedText.Length)
+                ResultText = ResultText.Substring(0, ExpectedText.Length);
+
+            Assert.That(ResultText == ExpectedText, $"Result={ResultText}, Expected={ExpectedText}");
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void ShiftRight0()
+        {
+            double d1 = 1.2547856e2;
+            double d2 = 3.478231405e0;
+
+            string Text1 = d1.ToString();
+            string Text2 = d2.ToString();
+
+            FormattedNumber.FormattedNumber Number1 = Parser.Parse(Text1);
+            FormattedNumber.FormattedNumber Number2 = Parser.Parse(Text2);
+
+            //Debug.Assert(false);
+            FormattedNumber.FormattedNumber Result = Number1.ShiftRight(Number2);
+            Flags Flags = Arithmetic.Flags;
+            bool Inexact = Flags.Inexact;
+            Flags.Clear();
+
+            Assert.That(Inexact);
+
+            double d = ((int)d1) >> ((int)d2);
+            string ExpectedText = d.ToString();
+
+            if (ExpectedText.Length > 4)
+                ExpectedText = ExpectedText.Substring(0, ExpectedText.Length - 1);
+
+            string ResultText = Result.ToString();
+            if (ResultText.Length > ExpectedText.Length)
+                ResultText = ResultText.Substring(0, ExpectedText.Length);
+
+            Assert.That(ResultText == ExpectedText, $"Result={ResultText}, Expected={ExpectedText}");
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void Remainder0()
+        {
+            double d1 = 1.2547856e2;
+            double d2 = 3.478231405e0;
+
+            string Text1 = d1.ToString();
+            string Text2 = d2.ToString();
+
+            FormattedNumber.FormattedNumber Number1 = Parser.Parse(Text1);
+            FormattedNumber.FormattedNumber Number2 = Parser.Parse(Text2);
+
+            //Debug.Assert(false);
+            FormattedNumber.FormattedNumber Result = Number1.Remainder(Number2);
+            Flags Flags = Arithmetic.Flags;
+            bool Inexact = Flags.Inexact;
+            Flags.Clear();
+
+            Assert.That(Inexact);
+
+            double d = ((int)d1) % ((int)d2);
+            string ExpectedText = d.ToString();
+
+            if (ExpectedText.Length > 4)
+                ExpectedText = ExpectedText.Substring(0, ExpectedText.Length - 1);
+
+            string ResultText = Result.ToString();
+            if (ResultText.Length > ExpectedText.Length)
+                ResultText = ResultText.Substring(0, ExpectedText.Length);
+
+            Assert.That(ResultText == ExpectedText, $"Result={ResultText}, Expected={ExpectedText}");
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void BitwiseAnd0()
+        {
+            double d1 = 1.2547856e2;
+            double d2 = 3.478231405e0;
+
+            string Text1 = d1.ToString();
+            string Text2 = d2.ToString();
+
+            FormattedNumber.FormattedNumber Number1 = Parser.Parse(Text1);
+            FormattedNumber.FormattedNumber Number2 = Parser.Parse(Text2);
+
+            //Debug.Assert(false);
+            FormattedNumber.FormattedNumber Result = Number1.BitwiseAnd(Number2);
+            Flags Flags = Arithmetic.Flags;
+            bool Inexact = Flags.Inexact;
+            Flags.Clear();
+
+            Assert.That(Inexact);
+
+            double d = ((int)d1) & ((int)d2);
+            string ExpectedText = d.ToString();
+
+            if (ExpectedText.Length > 4)
+                ExpectedText = ExpectedText.Substring(0, ExpectedText.Length - 1);
+
+            string ResultText = Result.ToString();
+            if (ResultText.Length > ExpectedText.Length)
+                ResultText = ResultText.Substring(0, ExpectedText.Length);
+
+            Assert.That(ResultText == ExpectedText, $"Result={ResultText}, Expected={ExpectedText}");
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void BitwiseOr0()
+        {
+            double d1 = 1.2547856e2;
+            double d2 = 3.478231405e0;
+
+            string Text1 = d1.ToString();
+            string Text2 = d2.ToString();
+
+            FormattedNumber.FormattedNumber Number1 = Parser.Parse(Text1);
+            FormattedNumber.FormattedNumber Number2 = Parser.Parse(Text2);
+
+            //Debug.Assert(false);
+            FormattedNumber.FormattedNumber Result = Number1.BitwiseOr(Number2);
+            Flags Flags = Arithmetic.Flags;
+            bool Inexact = Flags.Inexact;
+            Flags.Clear();
+
+            Assert.That(Inexact);
+
+            double d = ((int)d1) | ((int)d2);
+            string ExpectedText = d.ToString();
+
+            if (ExpectedText.Length > 4)
+                ExpectedText = ExpectedText.Substring(0, ExpectedText.Length - 1);
+
+            string ResultText = Result.ToString();
+            if (ResultText.Length > ExpectedText.Length)
+                ResultText = ResultText.Substring(0, ExpectedText.Length);
+
+            Assert.That(ResultText == ExpectedText, $"Result={ResultText}, Expected={ExpectedText}");
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void BitwiseXor0()
+        {
+            double d1 = 1.2547856e2;
+            double d2 = 3.478231405e0;
+
+            string Text1 = d1.ToString();
+            string Text2 = d2.ToString();
+
+            FormattedNumber.FormattedNumber Number1 = Parser.Parse(Text1);
+            FormattedNumber.FormattedNumber Number2 = Parser.Parse(Text2);
+
+            //Debug.Assert(false);
+            FormattedNumber.FormattedNumber Result = Number1.BitwiseXor(Number2);
+            Flags Flags = Arithmetic.Flags;
+            bool Inexact = Flags.Inexact;
+            Flags.Clear();
+
+            Assert.That(Inexact);
+
+            double d = ((int)d1) ^ ((int)d2);
             string ExpectedText = d.ToString();
 
             if (ExpectedText.Length > 4)
