@@ -13,6 +13,7 @@ script:
 - cp ./Test-Easly-Controller/bin/x64/Travis/Test-Easly-Controller.dll ./Misc-Beta-Test/bin/x64/Travis
 - cp ./Test-Easly-Compiler/bin/x64/Travis/Test-Easly-Compiler.dll ./Misc-Beta-Test/bin/x64/Travis
 - cp ./Test-FormattedNumber/bin/x64/Travis/Test-FormattedNumber.dll ./Misc-Beta-Test/bin/x64/Travis
+- cp ./Test-Easly-Number/bin/x64/Travis/Test-FormattedNumber.dll ./Misc-Beta-Test/bin/x64/Travis
 
 deploy:
   provider: pages
