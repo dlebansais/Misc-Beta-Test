@@ -95,7 +95,7 @@ if exist "$(SolutionDir)..\KeyboardManager\KeyboardManager\bin\x64\$(Configurati
 </PreBuildEvent>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' != 'Travis|x64'">
     <PreBuildEvent>if not exist "$(SolutionDir)Easly-Compiler" mkdir "$(SolutionDir)Easly-Compiler"
 if not exist "$(SolutionDir)Easly-Compiler\x64" mkdir "$(SolutionDir)Easly-Compiler\x64"
 if not exist "$(SolutionDir)Easly-Compiler\x64\$(Configuration)" mkdir "$(SolutionDir)Easly-Compiler\x64\$(Configuration)"
