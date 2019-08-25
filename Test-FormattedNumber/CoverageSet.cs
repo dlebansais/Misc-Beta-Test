@@ -1010,7 +1010,7 @@ namespace Coverage
             FormattedNumber.FormattedNumber Number1 = Parser.Parse(Text1);
             FormattedNumber.FormattedNumber Number2 = Parser.Parse(Text2);
 
-            //Debug.Assert(false);
+            Debug.Assert(false);
             FormattedNumber.FormattedNumber Result = Number1 + Number2;
 
             double d = d1 + d2;

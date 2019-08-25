@@ -1074,7 +1074,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorMoreBasicParameter, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorEqualParameters, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -1091,7 +1091,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorMoreBasicParameter, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorEqualParameters, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -2172,7 +2172,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorMoreBasicParameter, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorEqualParameters, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -2527,7 +2527,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorMoreBasicParameter, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorEqualParameters, ErrorListToString(Compiler));
         }
 
         [Test]
@@ -2812,7 +2812,7 @@ namespace Coverage
 
             //Debug.Assert(false);
             Compiler.Compile(TestFileName);
-            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorMoreBasicParameter, ErrorListToString(Compiler));
+            Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorEqualParameters, ErrorListToString(Compiler));
         }
 
         [Test]
