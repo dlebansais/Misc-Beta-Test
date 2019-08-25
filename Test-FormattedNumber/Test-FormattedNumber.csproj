@@ -8,7 +8,7 @@
     <ProjectGuid>{8FA066A2-6B90-4134-B4A3-442A04611137}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Test_FormattedNumber</RootNamespace>
+    <RootNamespace>Test</RootNamespace>
     <AssemblyName>Test-FormattedNumber</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
