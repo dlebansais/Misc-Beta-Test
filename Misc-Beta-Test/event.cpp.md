@@ -34,9 +34,9 @@ The class has only one constructor. The `mode` parameter indicates if the event 
 CEvent::CEvent(Mode mode)
     : m_Mode(mode)
 {
-	assert(mode == Manual || mode == AutoReset);
+    assert(mode == Manual || mode == AutoReset);
 
-	m_EventHandle.store(NotSignaledValue);
+    m_EventHandle.store(NotSignaledValue);
 }
 
 CEvent::~CEvent()
@@ -57,13 +57,13 @@ This is done by setting an atomic bool. In manual mode, the atomic bool is not r
 ````cpp
 void CEvent::Signal()
 {
-	m_EventHandle.store(SignaledValue);
+    m_EventHandle.store(SignaledValue);
 }
 ````
 
 ### Reset: resets a signaled event.
 
-The event reset to the non signaled state. If the event as already in the non signaled state, it does nothing.
+The event is reset to the non signaled state. If the event was already in the non signaled state, it does nothing.
 
 ````cpp
 void CEvent::Reset()
@@ -79,9 +79,9 @@ bool CEvent::IsSignaled() const
 {
     EVENT_SUPPORT_TYPE OldValue;
 
-	if (IsManual())
+    if (IsManual())
         OldValue = m_EventHandle.load();
-	else
+    else
         OldValue = m_EventHandle.exchange(NotSignaledValue);
 
     bool Result = (OldValue == SignaledValue);
@@ -92,7 +92,7 @@ bool CEvent::IsSignaled() const
 
 ### WaitSignaled: waits for an event to be signaled.
 
-This method exists in two overloads. The second overload reports how long the method had to wait for the event to be signaled in observedDelay `output` parameter.
+This method exists in two overloads. The second overload reports how long the method had to wait for the event to be signaled in the `observedDelay` output parameter.
 
 ````cpp
 void CEvent::WaitSignaled()
