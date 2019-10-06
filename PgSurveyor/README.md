@@ -23,9 +23,9 @@ Then, the program should be used as follow:
 6. Drag the top-left and bottom-right corner of each border to align them with the corresponding window in the game. The border around the map window should adjust exactly around the zoomed map, and the border for the inventory window exactly around survey maps that will be clicked. The screenshot below demonstrates a game all set and ready to start.
 7. Select the zone being surveyed, and the location from where you're starting (note: Kur Mountain will be added in a future release). Make sure your actual location in the game and the one selected in PgSurveyor match, otherwise the program will be completely lost and visual clues won't make any sense...
 
-![Border around the map windows](https://github.com/dlebansais/Misc-Beta-Test/blob/master/PgSurveyor/MapBorder.png?raw=true "Border around the map windows")
+![Border around the map window](https://github.com/dlebansais/Misc-Beta-Test/blob/master/PgSurveyor/MapBorder.png?raw=true "Border around the map window")
 
-![Border around the inventory windows](https://github.com/dlebansais/Misc-Beta-Test/blob/master/PgSurveyor/InventoryBorder.png?raw=true "Border around the inventory windows")
+![Border around the inventory window](https://github.com/dlebansais/Misc-Beta-Test/blob/master/PgSurveyor/InventoryBorder.png?raw=true "Border around the inventory window")
 
 Next instructions depend on the type of survey: regular, or motherlodes.
   
