@@ -17,15 +17,15 @@ Then, the program should be used as follow:
 
 1. Launch the game and log in with your character. Move to the zone where you will survey, with your surveying maps.
 2. Open the map window and resize it to make it relatively large, as PgSurveyor will display information over it.
-3. Zoom (with the slider at the bottom of the map window) to make entire the zone visible.
+3. Zoom (with the slider at the bottom of the map window) to make the entire zone visible.
 4. Open the inventory, and resize it so that all survey maps are visible, aligned in rows starting at the first slot in the row. The program assumes a row is made of 10 maps, but this can be changed in the settings (see below). Also the game assumes all maps are visible and that no scrolling will be necessary to show them all.
 5. Launch PgSurveyor. Two shiny, colored borders are displayed. The red border is for the map window, the purple border for the inventory window.
 6. Drag the top-left and bottom-right corner of each border to align them with the corresponding window in the game. The border around the map window should adjust exactly around the zoomed map, and the border for the inventory window exactly around survey maps that will be clicked. The screenshot below demonstrates a game all set and ready to start.
 7. Select the zone being surveyed, and the location from where you're starting (note: Kur Mountain will be added in a future release). Make sure your actual location in the game and the one selected in PgSurveyor match, otherwise the program will be completely lost and visual clues won't make any sense...
 
-![Border around the map windows](/Screenshots/MapBorder.png?raw=true "Border around the map windows")
+![Border around the map windows](https://github.com/dlebansais/Misc-Beta-Test/blob/master/PgSurveyor/MapBorder.png?raw=true "Border around the map windows")
 
-![Border around the inventory windows](/Screenshots/InventoryBorder.png?raw=true "Border around the inventory windows")
+![Border around the inventory windows](https://github.com/dlebansais/Misc-Beta-Test/blob/master/PgSurveyor/InventoryBorder.png?raw=true "Border around the inventory windows")
 
 Next instructions depend on the type of survey: regular, or motherlodes.
   
