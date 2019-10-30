@@ -280,10 +280,15 @@
             string Text1 = d1.ToString();
             string Text2 = d2.ToString();
 
+            //Debug.Assert(false);
             FormattedNumber FormattedNumber1 = new FormattedNumber(Text1);
             FormattedNumber FormattedNumber2 = new FormattedNumber(Text2);
 
-            //Debug.Assert(false);
+            Number Value1 = FormattedNumber1.Value;
+            Number Value2 = FormattedNumber2.Value;
+            Assert.That(Value1.ToString() == d1.ToString(), $"Result={Value1}, Expected={d1}");
+            Assert.That(Value2.ToString() == d2.ToString(), $"Result={Value2}, Expected={d2}");
+
             Number Result = FormattedNumber1.Value + FormattedNumber2.Value;
 
             double d = d1 + d2;
