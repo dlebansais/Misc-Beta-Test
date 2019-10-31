@@ -171,6 +171,7 @@
             Assert.That(Number.IsValidOctalNumber("01"));
             Assert.That(!Number.IsValidOctalNumber("8"));
             Assert.That(!Number.IsValidOctalNumber("0180"));
+            //Debug.Assert(false);
             Assert.That(!Number.IsValidOctalNumber("10"));
             Assert.That(!Number.IsValidOctalNumber("11"));
             Assert.That(Number.IsValidOctalNumber("0111"));
@@ -198,27 +199,26 @@
 
             FormattedNumber = new FormattedNumber(string.Empty);
             Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsNaN && FormattedNumber.InvalidPart == string.Empty);
-            //Debug.Assert(false);
             FormattedNumber = new FormattedNumber("0");
             Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.BeforeExponent == "0" && FormattedNumber.Exponent.Length == 0 && FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
             FormattedNumber = new FormattedNumber("0:B");
-            Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.BeforeExponent == "0:B" && FormattedNumber.Exponent.Length == 0 && FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
+            Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.BeforeExponent == "0" && FormattedNumber.Exponent.Length == 0 && FormattedNumber.Suffix == ":B" && FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
             FormattedNumber = new FormattedNumber("0:O");
-            Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.BeforeExponent == "0:O" && FormattedNumber.Exponent.Length == 0 && FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
+            Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.BeforeExponent == "0" && FormattedNumber.Exponent.Length == 0 && FormattedNumber.Suffix == ":O" && FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
             FormattedNumber = new FormattedNumber("0:H");
-            Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.BeforeExponent == "0:H" && FormattedNumber.Exponent.Length == 0 && FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
+            Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.BeforeExponent == "0" && FormattedNumber.Exponent.Length == 0 && FormattedNumber.Suffix == ":H" && FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
             FormattedNumber = new FormattedNumber("5");
             Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.BeforeExponent == "5" && FormattedNumber.Exponent.Length == 0 && !FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
             FormattedNumber = new FormattedNumber("1:B");
-            Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.BeforeExponent == "1:B" && FormattedNumber.Exponent.Length == 0 && !FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
+            Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.BeforeExponent == "1" && FormattedNumber.Exponent.Length == 0 && FormattedNumber.Suffix == ":B" && !FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
             FormattedNumber = new FormattedNumber("5:O");
-            Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.BeforeExponent == "5:O" && FormattedNumber.Exponent.Length == 0 && !FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
+            Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.BeforeExponent == "5" && FormattedNumber.Exponent.Length == 0 && FormattedNumber.Suffix == ":O" && !FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
             FormattedNumber = new FormattedNumber("F:H");
-            Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.BeforeExponent == "F:H" && FormattedNumber.Exponent.Length == 0 && !FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
+            Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.BeforeExponent == "F" && FormattedNumber.Exponent.Length == 0 && FormattedNumber.Suffix == ":H" && !FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
             FormattedNumber = new FormattedNumber("468F3ECF:H");
-            Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.BeforeExponent == "468F3ECF:H" && FormattedNumber.Exponent.Length == 0 && !FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
+            Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.BeforeExponent == "468F3ECF" && FormattedNumber.Exponent.Length == 0 && FormattedNumber.Suffix == ":H" && !FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
             FormattedNumber = new FormattedNumber("468F3xECF:H");
-            Assert.That(!FormattedNumber.IsValid && FormattedNumber.BeforeExponent.Length == 0 && FormattedNumber.Exponent.Length == 0 && FormattedNumber.InvalidPart == "468F3xECF:H", $"Result: {FormattedNumber}");
+            Assert.That(!FormattedNumber.IsValid && FormattedNumber.BeforeExponent == "468" && FormattedNumber.Exponent.Length == 0 && FormattedNumber.Suffix.Length == 0 && FormattedNumber.InvalidPart == "F3xECF:H", $"Result: {FormattedNumber}");
         }
 
         [Test]
