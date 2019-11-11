@@ -60,8 +60,26 @@
             }
             while (IntegerString != "0");
 
+            Assert.That(IntegerField.IsEqual(IntegerField));
+
+            BitField OtherField = new BitField();
+            Assert.That(!IntegerField.IsEqual(OtherField));
+            Assert.That(!OtherField.IsEqual(IntegerField));
+
+            OtherField = (BitField)IntegerField.Clone();
+            Assert.That(IntegerField.IsEqual(OtherField));
+
+            bool OldBit = OtherField.GetBit(0);
+            Assert.That(OldBit == false);
+
+            OtherField.SetBit(0, !OldBit);
+            Assert.That(!IntegerField.IsEqual(OtherField));
+
+            Assert.That(IntegerField < OtherField);
+            Assert.That(OtherField > IntegerField);
+
             for (int i = 0; i < BitIndex; i++)
-                IntegerField.ShiftRight();
+                IntegerField.DecreasePrecision();
 
             Assert.That(IntegerField.SignificantBits == 0);
             Assert.That(IntegerField.ShiftBits == BitIndex);
@@ -89,8 +107,26 @@
             }
             while (IntegerString != "0");
 
+            Assert.That(IntegerField.IsEqual(IntegerField));
+
+            BitField_byte OtherField = new BitField_byte();
+            Assert.That(!IntegerField.IsEqual(OtherField));
+            Assert.That(!OtherField.IsEqual(IntegerField));
+
+            OtherField = (BitField_byte)IntegerField.Clone();
+            Assert.That(IntegerField.IsEqual(OtherField));
+
+            bool OldBit = OtherField.GetBit(0);
+            Assert.That(OldBit == false);
+
+            OtherField.SetBit(0, !OldBit);
+            Assert.That(!IntegerField.IsEqual(OtherField));
+
+            Assert.That(IntegerField < OtherField);
+            Assert.That(OtherField > IntegerField);
+
             for (int i = 0; i < BitIndex; i++)
-                IntegerField.ShiftRight();
+                IntegerField.DecreasePrecision();
 
             Assert.That(IntegerField.SignificantBits == 0);
             Assert.That(IntegerField.ShiftBits == BitIndex);
@@ -118,8 +154,26 @@
             }
             while (IntegerString != "0");
 
+            Assert.That(IntegerField.IsEqual(IntegerField));
+
+            BitField_uint OtherField = new BitField_uint();
+            Assert.That(!IntegerField.IsEqual(OtherField));
+            Assert.That(!OtherField.IsEqual(IntegerField));
+
+            OtherField = (BitField_uint)IntegerField.Clone();
+            Assert.That(IntegerField.IsEqual(OtherField));
+
+            bool OldBit = OtherField.GetBit(0);
+            Assert.That(OldBit == false);
+
+            OtherField.SetBit(0, !OldBit);
+            Assert.That(!IntegerField.IsEqual(OtherField));
+
+            Assert.That(IntegerField < OtherField);
+            Assert.That(OtherField > IntegerField);
+
             for (int i = 0; i < BitIndex; i++)
-                IntegerField.ShiftRight();
+                IntegerField.DecreasePrecision();
 
             Assert.That(IntegerField.SignificantBits == 0);
             Assert.That(IntegerField.ShiftBits == BitIndex);

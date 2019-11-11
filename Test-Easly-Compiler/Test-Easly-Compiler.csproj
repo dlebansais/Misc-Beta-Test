@@ -56,8 +56,8 @@
     <Reference Include="PolySerializer">
       <HintPath>..\Easly-Compiler\$(Platform)\$(Configuration)\PolySerializer.dll</HintPath>
     </Reference>
-    <Reference Include="FormattedNumber">
-      <HintPath>..\Easly-Compiler\$(Platform)\$(Configuration)\FormattedNumber.dll</HintPath>
+    <Reference Include="Easly-Number">
+      <HintPath>..\Easly-Compiler\$(Platform)\$(Configuration)\Easly-Number.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -114,7 +114,7 @@ if exist "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration
 if exist "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer-Attributes.pdb" copy /Y "$(SolutionDir)..\PolySerializer\PolySerializer\bin\x64\$(Configuration)\PolySerializer-Attributes.pdb" "$(SolutionDir)Easly-Compiler\x64\$(Configuration)"
 if exist "$(SolutionDir)..\KeyboardManager\KeyboardManager\bin\x64\$(Configuration)\KeyboardManager.dll" copy /Y "$(SolutionDir)..\KeyboardManager\KeyboardManager\bin\x64\$(Configuration)\KeyboardManager.dll" "$(SolutionDir)Easly-Compiler\x64\$(Configuration)"
 if exist "$(SolutionDir)..\KeyboardManager\KeyboardManager\bin\x64\$(Configuration)\KeyboardManager.pdb" copy /Y "$(SolutionDir)..\KeyboardManager\KeyboardManager\bin\x64\$(Configuration)\KeyboardManager.pdb" "$(SolutionDir)Easly-Compiler\x64\$(Configuration)"
-if exist "$(SolutionDir)..\FormattedNumber\FormattedNumber\bin\x64\$(Configuration)\FormattedNumber.dll" copy /Y "$(SolutionDir)..\FormattedNumber\FormattedNumber\bin\x64\$(Configuration)\FormattedNumber.dll" "$(SolutionDir)Easly-Compiler\x64\$(Configuration)"
-if exist "$(SolutionDir)..\FormattedNumber\FormattedNumber\bin\x64\$(Configuration)\FormattedNumber.pdb" copy /Y "$(SolutionDir)..\FormattedNumber\FormattedNumber\bin\x64\$(Configuration)\FormattedNumber.pdb" "$(SolutionDir)Easly-Compiler\x64\$(Configuration)"</PreBuildEvent>
+if exist "$(SolutionDir)..\Easly-Number\Easly-Number\bin\x64\$(Configuration)\Easly-Number.dll" copy /Y "$(SolutionDir)..\Easly-Number\Easly-Number\bin\x64\$(Configuration)\Easly-Number.dll" "$(SolutionDir)Easly-Compiler\x64\$(Configuration)"
+if exist "$(SolutionDir)..\Easly-Number\Easly-Number\bin\x64\$(Configuration)\Easly-Number.pdb" copy /Y "$(SolutionDir)..\Easly-Number\Easly-Number\bin\x64\$(Configuration)\Easly-Number.pdb" "$(SolutionDir)Easly-Compiler\x64\$(Configuration)"</PreBuildEvent>
   </PropertyGroup>
 </Project>
