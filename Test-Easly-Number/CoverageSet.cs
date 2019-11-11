@@ -42,27 +42,15 @@
         [Category("Coverage")]
         public void TestBitField()
         {
-            long BitIndex;
-
-            string IntegerString = "123456789012345678901234567890";
             BitField IntegerField = new BitField();
-            BitIndex = 0;
-
             IntegerField.SetZero();
-            IntegerField = new BitField();
 
-            do
-            {
-                IntegerString = NumberTextPartition.DividedByTwo(IntegerString, 10, IsValidDecimalDigit, ToDecimalDigit, out bool HasCarry);
-                IntegerField.SetBit(BitIndex, HasCarry);
-                Assert.That(IntegerField.GetBit(BitIndex) == HasCarry);
-                BitIndex++;
-            }
-            while (IntegerString != "0");
+            IntegerField = CreateBitFieldFromString("123456789012345678901234567890", out long BitIndex);
 
             Assert.That(IntegerField.IsEqual(IntegerField));
 
             BitField OtherField = new BitField();
+            Assert.That(OtherField.IsEqual(OtherField));
             Assert.That(!IntegerField.IsEqual(OtherField));
             Assert.That(!OtherField.IsEqual(IntegerField));
 
@@ -83,33 +71,39 @@
 
             Assert.That(IntegerField.SignificantBits == 0);
             Assert.That(IntegerField.ShiftBits == BitIndex);
+            Assert.That(IntegerField.GetBit(0) == false);
+        }
+
+        private BitField CreateBitFieldFromString(string integerString, out long bitIndex)
+        {
+            BitField IntegerField = new BitField();
+            bitIndex = 0;
+
+            do
+            {
+                integerString = NumberTextPartition.DividedByTwo(integerString, 10, IsValidDecimalDigit, ToDecimalDigit, out bool HasCarry);
+                IntegerField.SetBit(bitIndex, HasCarry);
+                Assert.That(IntegerField.GetBit(bitIndex) == HasCarry);
+                bitIndex++;
+            }
+            while (integerString != "0");
+
+            return IntegerField;
         }
 
         [Test]
         [Category("Coverage")]
         public void TestBitField_byte()
         {
-            long BitIndex;
-
-            string IntegerString = "123456789012345678901234567890";
             BitField_byte IntegerField = new BitField_byte();
-            BitIndex = 0;
-
             IntegerField.SetZero();
-            IntegerField = new BitField_byte();
 
-            do
-            {
-                IntegerString = NumberTextPartition.DividedByTwo(IntegerString, 10, IsValidDecimalDigit, ToDecimalDigit, out bool HasCarry);
-                IntegerField.SetBit(BitIndex, HasCarry);
-                Assert.That(IntegerField.GetBit(BitIndex) == HasCarry);
-                BitIndex++;
-            }
-            while (IntegerString != "0");
+            IntegerField = CreateBitField_byteFromString("123456789012345678901234567890", out long BitIndex);
 
             Assert.That(IntegerField.IsEqual(IntegerField));
 
             BitField_byte OtherField = new BitField_byte();
+            Assert.That(OtherField.IsEqual(OtherField));
             Assert.That(!IntegerField.IsEqual(OtherField));
             Assert.That(!OtherField.IsEqual(IntegerField));
 
@@ -130,33 +124,39 @@
 
             Assert.That(IntegerField.SignificantBits == 0);
             Assert.That(IntegerField.ShiftBits == BitIndex);
+            Assert.That(IntegerField.GetBit(0) == false);
+        }
+
+        private BitField_byte CreateBitField_byteFromString(string integerString, out long bitIndex)
+        {
+            BitField_byte IntegerField = new BitField_byte();
+            bitIndex = 0;
+
+            do
+            {
+                integerString = NumberTextPartition.DividedByTwo(integerString, 10, IsValidDecimalDigit, ToDecimalDigit, out bool HasCarry);
+                IntegerField.SetBit(bitIndex, HasCarry);
+                Assert.That(IntegerField.GetBit(bitIndex) == HasCarry);
+                bitIndex++;
+            }
+            while (integerString != "0");
+
+            return IntegerField;
         }
 
         [Test]
         [Category("Coverage")]
         public void TestBitField_uint()
         {
-            long BitIndex;
-
-            string IntegerString = "123456789012345678901234567890";
             BitField_uint IntegerField = new BitField_uint();
-            BitIndex = 0;
-
             IntegerField.SetZero();
-            IntegerField = new BitField_uint();
 
-            do
-            {
-                IntegerString = NumberTextPartition.DividedByTwo(IntegerString, 10, IsValidDecimalDigit, ToDecimalDigit, out bool HasCarry);
-                IntegerField.SetBit(BitIndex, HasCarry);
-                Assert.That(IntegerField.GetBit(BitIndex) == HasCarry);
-                BitIndex++;
-            }
-            while (IntegerString != "0");
+            IntegerField = CreateBitField_uintFromString("123456789012345678901234567890", out long BitIndex);
 
             Assert.That(IntegerField.IsEqual(IntegerField));
 
             BitField_uint OtherField = new BitField_uint();
+            Assert.That(OtherField.IsEqual(OtherField));
             Assert.That(!IntegerField.IsEqual(OtherField));
             Assert.That(!OtherField.IsEqual(IntegerField));
 
@@ -177,6 +177,24 @@
 
             Assert.That(IntegerField.SignificantBits == 0);
             Assert.That(IntegerField.ShiftBits == BitIndex);
+            Assert.That(IntegerField.GetBit(0) == false);
+        }
+
+        private BitField_uint CreateBitField_uintFromString(string integerString, out long bitIndex)
+        {
+            BitField_uint IntegerField = new BitField_uint();
+            bitIndex = 0;
+
+            do
+            {
+                integerString = NumberTextPartition.DividedByTwo(integerString, 10, IsValidDecimalDigit, ToDecimalDigit, out bool HasCarry);
+                IntegerField.SetBit(bitIndex, HasCarry);
+                Assert.That(IntegerField.GetBit(bitIndex) == HasCarry);
+                bitIndex++;
+            }
+            while (integerString != "0");
+
+            return IntegerField;
         }
 
         public static bool IsValidDecimalDigit(char digit, out int value)
