@@ -240,7 +240,6 @@
             Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.BeforeExponent == "0" && FormattedNumber.Exponent.Length == 0 && FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
             FormattedNumber = new FormattedNumber("0:B");
             Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.BeforeExponent == "0" && FormattedNumber.Exponent.Length == 0 && FormattedNumber.Suffix == ":B" && FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
-            //Debug.Assert(false);
             FormattedNumber = new FormattedNumber("0b0");
             Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.Prefix == "0b" && FormattedNumber.BeforeExponent == "0" && FormattedNumber.Exponent.Length == 0 && FormattedNumber.Suffix.Length == 0 && FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
             FormattedNumber = new FormattedNumber("0:O");
@@ -253,12 +252,21 @@
             Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.BeforeExponent == "5" && FormattedNumber.Exponent.Length == 0 && !FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
             FormattedNumber = new FormattedNumber("1:B");
             Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.BeforeExponent == "1" && FormattedNumber.Exponent.Length == 0 && FormattedNumber.Suffix == ":B" && !FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
+            //Debug.Assert(false);
+            FormattedNumber = new FormattedNumber("-1:B");
+            Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.BeforeExponent == "-1" && FormattedNumber.Exponent.Length == 0 && FormattedNumber.Suffix == ":B" && !FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
+            FormattedNumber = new FormattedNumber("+1:B");
+            Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.BeforeExponent == "+1" && FormattedNumber.Exponent.Length == 0 && FormattedNumber.Suffix == ":B" && !FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
             FormattedNumber = new FormattedNumber("0b1");
             Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.Prefix == "0b" && FormattedNumber.BeforeExponent == "1" && FormattedNumber.Exponent.Length == 0 && FormattedNumber.Suffix.Length == 0 && !FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
             FormattedNumber = new FormattedNumber("5:O");
             Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.BeforeExponent == "5" && FormattedNumber.Exponent.Length == 0 && FormattedNumber.Suffix == ":O" && !FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
             FormattedNumber = new FormattedNumber("F:H");
             Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.BeforeExponent == "F" && FormattedNumber.Exponent.Length == 0 && FormattedNumber.Suffix == ":H" && !FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
+            FormattedNumber = new FormattedNumber("+F:H");
+            Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.BeforeExponent == "+F" && FormattedNumber.Exponent.Length == 0 && FormattedNumber.Suffix == ":H" && !FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
+            FormattedNumber = new FormattedNumber("-F:H");
+            Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.BeforeExponent == "-F" && FormattedNumber.Exponent.Length == 0 && FormattedNumber.Suffix == ":H" && !FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
             FormattedNumber = new FormattedNumber("0xF");
             Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.Prefix == "0x" && FormattedNumber.BeforeExponent == "F" && FormattedNumber.Exponent.Length == 0 && FormattedNumber.Suffix.Length == 0 && !FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
             FormattedNumber = new FormattedNumber("468F3ECF:H");
@@ -305,9 +313,9 @@
             Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.BeforeExponent == "1.0e" && FormattedNumber.Exponent == "0" && FormattedNumber.Suffix.Length == 0 && !FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
             FormattedNumber = new FormattedNumber("1.0e1");
             Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.BeforeExponent == "1.0e" && FormattedNumber.Exponent == "1" && FormattedNumber.Suffix.Length == 0 && !FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
-            FormattedNumber = new FormattedNumber("1.0e10");
-            Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.BeforeExponent == "1.0e" && FormattedNumber.Exponent == "10" && FormattedNumber.Suffix.Length == 0 && !FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
             //Debug.Assert(false);
+            FormattedNumber = new FormattedNumber("1.0E10");
+            Assert.That(FormattedNumber.IsValid && FormattedNumber.Value.IsInteger && FormattedNumber.BeforeExponent == "1.0E" && FormattedNumber.Exponent == "10" && FormattedNumber.Suffix.Length == 0 && !FormattedNumber.Value.IsZero, $"Result: {FormattedNumber}");
             FormattedNumber = new FormattedNumber("1.0xe1");
             Assert.That(!FormattedNumber.IsValid, $"Result: {FormattedNumber}");
             FormattedNumber = new FormattedNumber("1.0e1x");
@@ -459,6 +467,555 @@
             string ResultText = Result.ToString();
             if (ResultText.Length > ExpectedText.Length)
                 ResultText = ResultText.Substring(0, ExpectedText.Length);
+
+            //Assert.That(ResultText == ExpectedText, $"Result={ResultText}, Expected={ExpectedText}");
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void Subtract0()
+        {
+            double d1 = 1.2547856e2;
+            double d2 = 5.478231405e-3;
+
+            string Text1 = d1.ToString();
+            string Text2 = d2.ToString();
+
+            //Debug.Assert(false);
+            FormattedNumber FormattedNumber1 = new FormattedNumber(Text1);
+            FormattedNumber FormattedNumber2 = new FormattedNumber(Text2);
+
+            Number Value1 = FormattedNumber1.Value;
+            Number Value2 = FormattedNumber2.Value;
+            Assert.That(Value1.ToString() == d1.ToString(), $"Result={Value1}, Expected={d1}");
+            Assert.That(Value2.ToString() == d2.ToString(), $"Result={Value2}, Expected={d2}");
+
+            Number Result = FormattedNumber1.Value - FormattedNumber2.Value;
+
+            double d = d1 - d2;
+
+            string ExpectedText = d.ToString();
+
+            if (ExpectedText.Length > 4)
+                ExpectedText = ExpectedText.Substring(0, ExpectedText.Length - 1);
+
+            string ResultText = Result.ToString();
+            if (ResultText.Length > ExpectedText.Length)
+                ResultText = ResultText.Substring(0, ExpectedText.Length);
+
+            //Assert.That(ResultText == ExpectedText, $"Result={ResultText}, Expected={ExpectedText}");
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void Multiply0()
+        {
+            double d1 = 1.2547856e2;
+            double d2 = 5.478231405e-3;
+
+            string Text1 = d1.ToString();
+            string Text2 = d2.ToString();
+
+            //Debug.Assert(false);
+            FormattedNumber FormattedNumber1 = new FormattedNumber(Text1);
+            FormattedNumber FormattedNumber2 = new FormattedNumber(Text2);
+
+            Number Value1 = FormattedNumber1.Value;
+            Number Value2 = FormattedNumber2.Value;
+            Assert.That(Value1.ToString() == d1.ToString(), $"Result={Value1}, Expected={d1}");
+            Assert.That(Value2.ToString() == d2.ToString(), $"Result={Value2}, Expected={d2}");
+
+            Number Result = FormattedNumber1.Value * FormattedNumber2.Value;
+
+            double d = d1 * d2;
+
+            string ExpectedText = d.ToString();
+
+            if (ExpectedText.Length > 4)
+                ExpectedText = ExpectedText.Substring(0, ExpectedText.Length - 1);
+
+            string ResultText = Result.ToString();
+            if (ResultText.Length > ExpectedText.Length)
+                ResultText = ResultText.Substring(0, ExpectedText.Length);
+
+            //Assert.That(ResultText == ExpectedText, $"Result={ResultText}, Expected={ExpectedText}");
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void Divide0()
+        {
+            double d1 = 1.2547856e2;
+            double d2 = 5.478231405e-3;
+
+            string Text1 = d1.ToString();
+            string Text2 = d2.ToString();
+
+            //Debug.Assert(false);
+            FormattedNumber FormattedNumber1 = new FormattedNumber(Text1);
+            FormattedNumber FormattedNumber2 = new FormattedNumber(Text2);
+
+            Number Value1 = FormattedNumber1.Value;
+            Number Value2 = FormattedNumber2.Value;
+            Assert.That(Value1.ToString() == d1.ToString(), $"Result={Value1}, Expected={d1}");
+            Assert.That(Value2.ToString() == d2.ToString(), $"Result={Value2}, Expected={d2}");
+
+            Number Result = FormattedNumber1.Value / FormattedNumber2.Value;
+
+            double d = d1 / d2;
+
+            string ExpectedText = d.ToString();
+
+            if (ExpectedText.Length > 4)
+                ExpectedText = ExpectedText.Substring(0, ExpectedText.Length - 1);
+
+            string ResultText = Result.ToString();
+            if (ResultText.Length > ExpectedText.Length)
+                ResultText = ResultText.Substring(0, ExpectedText.Length);
+
+            //Assert.That(ResultText == ExpectedText, $"Result={ResultText}, Expected={ExpectedText}");
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void Negate0()
+        {
+            double d1 = 1.2547856e2;
+
+            string Text1 = d1.ToString();
+
+            //Debug.Assert(false);
+            FormattedNumber FormattedNumber1 = new FormattedNumber(Text1);
+
+            Number Value1 = FormattedNumber1.Value;
+            Assert.That(Value1.ToString() == d1.ToString(), $"Result={Value1}, Expected={d1}");
+
+            Number Result = -FormattedNumber1.Value;
+
+            double d = -d1;
+
+            string ExpectedText = d.ToString();
+
+            if (ExpectedText.Length > 4)
+                ExpectedText = ExpectedText.Substring(0, ExpectedText.Length - 1);
+
+            string ResultText = Result.ToString();
+            if (ResultText.Length > ExpectedText.Length)
+                ResultText = ResultText.Substring(0, ExpectedText.Length);
+
+            //Assert.That(ResultText == ExpectedText, $"Result={ResultText}, Expected={ExpectedText}");
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void Abs0()
+        {
+            double d1 = 1.2547856e2;
+
+            string Text1 = d1.ToString();
+
+            //Debug.Assert(false);
+            FormattedNumber FormattedNumber1 = new FormattedNumber(Text1);
+
+            Number Value1 = FormattedNumber1.Value;
+            Assert.That(Value1.ToString() == d1.ToString(), $"Result={Value1}, Expected={d1}");
+
+            Number Result = FormattedNumber1.Value.Abs();
+
+            double d = Math.Abs(d1);
+
+            string ExpectedText = d.ToString();
+
+            if (ExpectedText.Length > 4)
+                ExpectedText = ExpectedText.Substring(0, ExpectedText.Length - 1);
+
+            string ResultText = Result.ToString();
+            if (ResultText.Length > ExpectedText.Length)
+                ResultText = ResultText.Substring(0, ExpectedText.Length);
+
+            //Assert.That(ResultText == ExpectedText, $"Result={ResultText}, Expected={ExpectedText}");
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void Exp0()
+        {
+            double d1 = 1.2547856e2;
+
+            string Text1 = d1.ToString();
+
+            //Debug.Assert(false);
+            FormattedNumber FormattedNumber1 = new FormattedNumber(Text1);
+
+            Number Value1 = FormattedNumber1.Value;
+            Assert.That(Value1.ToString() == d1.ToString(), $"Result={Value1}, Expected={d1}");
+
+            Number Result = FormattedNumber1.Value.Exp();
+
+            double d = Math.Exp(d1);
+
+            string ExpectedText = d.ToString();
+
+            if (ExpectedText.Length > 4)
+                ExpectedText = ExpectedText.Substring(0, ExpectedText.Length - 1);
+
+            string ResultText = Result.ToString();
+            if (ResultText.Length > ExpectedText.Length)
+                ResultText = ResultText.Substring(0, ExpectedText.Length);
+
+            //Assert.That(ResultText == ExpectedText, $"Result={ResultText}, Expected={ExpectedText}");
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void Log0()
+        {
+            double d1 = 1.2547856e2;
+
+            string Text1 = d1.ToString();
+
+            //Debug.Assert(false);
+            FormattedNumber FormattedNumber1 = new FormattedNumber(Text1);
+
+            Number Value1 = FormattedNumber1.Value;
+            Assert.That(Value1.ToString() == d1.ToString(), $"Result={Value1}, Expected={d1}");
+
+            Number Result = FormattedNumber1.Value.Log();
+
+            double d = Math.Log(d1);
+
+            string ExpectedText = d.ToString();
+
+            if (ExpectedText.Length > 4)
+                ExpectedText = ExpectedText.Substring(0, ExpectedText.Length - 1);
+
+            string ResultText = Result.ToString();
+            if (ResultText.Length > ExpectedText.Length)
+                ResultText = ResultText.Substring(0, ExpectedText.Length);
+
+            //Assert.That(ResultText == ExpectedText, $"Result={ResultText}, Expected={ExpectedText}");
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void Log10_0()
+        {
+            double d1 = 1.2547856e2;
+
+            string Text1 = d1.ToString();
+
+            //Debug.Assert(false);
+            FormattedNumber FormattedNumber1 = new FormattedNumber(Text1);
+
+            Number Value1 = FormattedNumber1.Value;
+            Assert.That(Value1.ToString() == d1.ToString(), $"Result={Value1}, Expected={d1}");
+
+            Number Result = FormattedNumber1.Value.Log10();
+
+            double d = Math.Log10(d1);
+
+            string ExpectedText = d.ToString();
+
+            if (ExpectedText.Length > 4)
+                ExpectedText = ExpectedText.Substring(0, ExpectedText.Length - 1);
+
+            string ResultText = Result.ToString();
+            if (ResultText.Length > ExpectedText.Length)
+                ResultText = ResultText.Substring(0, ExpectedText.Length);
+
+            //Assert.That(ResultText == ExpectedText, $"Result={ResultText}, Expected={ExpectedText}");
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void Pow0()
+        {
+            double d1 = 1.2547856e2;
+            double d2 = 5.478231405e-3;
+
+            string Text1 = d1.ToString();
+            string Text2 = d2.ToString();
+
+            //Debug.Assert(false);
+            FormattedNumber FormattedNumber1 = new FormattedNumber(Text1);
+            FormattedNumber FormattedNumber2 = new FormattedNumber(Text2);
+
+            Number Value1 = FormattedNumber1.Value;
+            Number Value2 = FormattedNumber2.Value;
+            Assert.That(Value1.ToString() == d1.ToString(), $"Result={Value1}, Expected={d1}");
+            Assert.That(Value2.ToString() == d2.ToString(), $"Result={Value2}, Expected={d2}");
+
+            Number Result = FormattedNumber1.Value.Pow(FormattedNumber2.Value);
+
+            double d = Math.Pow(d1, d2);
+
+            string ExpectedText = d.ToString();
+
+            if (ExpectedText.Length > 4)
+                ExpectedText = ExpectedText.Substring(0, ExpectedText.Length - 1);
+
+            string ResultText = Result.ToString();
+            if (ResultText.Length > ExpectedText.Length)
+                ResultText = ResultText.Substring(0, ExpectedText.Length);
+
+            //Assert.That(ResultText == ExpectedText, $"Result={ResultText}, Expected={ExpectedText}");
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void Sqrt0()
+        {
+            double d1 = 1.2547856e2;
+
+            string Text1 = d1.ToString();
+
+            //Debug.Assert(false);
+            FormattedNumber FormattedNumber1 = new FormattedNumber(Text1);
+
+            Number Value1 = FormattedNumber1.Value;
+            Assert.That(Value1.ToString() == d1.ToString(), $"Result={Value1}, Expected={d1}");
+
+            Number Result = FormattedNumber1.Value.Sqrt();
+
+            double d = Math.Sqrt(d1);
+
+            string ExpectedText = d.ToString();
+
+            if (ExpectedText.Length > 4)
+                ExpectedText = ExpectedText.Substring(0, ExpectedText.Length - 1);
+
+            string ResultText = Result.ToString();
+            if (ResultText.Length > ExpectedText.Length)
+                ResultText = ResultText.Substring(0, ExpectedText.Length);
+
+            //Assert.That(ResultText == ExpectedText, $"Result={ResultText}, Expected={ExpectedText}");
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void ShiftLeft0()
+        {
+            double d1 = 125478;
+            double d2 = 5;
+
+            string Text1 = d1.ToString();
+            string Text2 = d2.ToString();
+
+            //Debug.Assert(false);
+            FormattedNumber FormattedNumber1 = new FormattedNumber(Text1);
+            FormattedNumber FormattedNumber2 = new FormattedNumber(Text2);
+
+            Number Value1 = FormattedNumber1.Value;
+            Number Value2 = FormattedNumber2.Value;
+            Assert.That(Value1.ToString() == d1.ToString(), $"Result={Value1}, Expected={d1}");
+            Assert.That(Value2.ToString() == d2.ToString(), $"Result={Value2}, Expected={d2}");
+
+            Number Result = FormattedNumber1.Value.ShiftLeft(FormattedNumber2.Value);
+
+            double d = (int)d1 << (int)d2;
+
+            string ExpectedText = d.ToString();
+
+            if (ExpectedText.Length > 4)
+                ExpectedText = ExpectedText.Substring(0, ExpectedText.Length - 1);
+
+            string ResultText = Result.ToString();
+            if (ResultText.Length > ExpectedText.Length)
+                ResultText = ResultText.Substring(0, ExpectedText.Length);
+
+            //Assert.That(ResultText == ExpectedText, $"Result={ResultText}, Expected={ExpectedText}");
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void ShiftRight0()
+        {
+            double d1 = 125478;
+            double d2 = 5;
+
+            string Text1 = d1.ToString();
+            string Text2 = d2.ToString();
+
+            //Debug.Assert(false);
+            FormattedNumber FormattedNumber1 = new FormattedNumber(Text1);
+            FormattedNumber FormattedNumber2 = new FormattedNumber(Text2);
+
+            Number Value1 = FormattedNumber1.Value;
+            Number Value2 = FormattedNumber2.Value;
+            Assert.That(Value1.ToString() == d1.ToString(), $"Result={Value1}, Expected={d1}");
+            Assert.That(Value2.ToString() == d2.ToString(), $"Result={Value2}, Expected={d2}");
+
+            Number Result = FormattedNumber1.Value.ShiftRight(FormattedNumber2.Value);
+
+            double d = (int)d1 >> (int)d2;
+
+            string ExpectedText = d.ToString();
+
+            if (ExpectedText.Length > 4)
+                ExpectedText = ExpectedText.Substring(0, ExpectedText.Length - 1);
+
+            string ResultText = Result.ToString();
+            if (ResultText.Length > ExpectedText.Length)
+                ResultText = ResultText.Substring(0, ExpectedText.Length);
+
+            //Assert.That(ResultText == ExpectedText, $"Result={ResultText}, Expected={ExpectedText}");
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void Remainder0()
+        {
+            double d1 = 1.2547856e2;
+            double d2 = 5.478231405e-3;
+
+            string Text1 = d1.ToString();
+            string Text2 = d2.ToString();
+
+            //Debug.Assert(false);
+            FormattedNumber FormattedNumber1 = new FormattedNumber(Text1);
+            FormattedNumber FormattedNumber2 = new FormattedNumber(Text2);
+
+            Number Value1 = FormattedNumber1.Value;
+            Number Value2 = FormattedNumber2.Value;
+            Assert.That(Value1.ToString() == d1.ToString(), $"Result={Value1}, Expected={d1}");
+            Assert.That(Value2.ToString() == d2.ToString(), $"Result={Value2}, Expected={d2}");
+
+            Number Result = FormattedNumber1.Value.Remainder(FormattedNumber2.Value);
+
+            double d = Math.IEEERemainder(d1, d2);
+
+            string ExpectedText = d.ToString();
+
+            if (ExpectedText.Length > 4)
+                ExpectedText = ExpectedText.Substring(0, ExpectedText.Length - 1);
+
+            string ResultText = Result.ToString();
+            if (ResultText.Length > ExpectedText.Length)
+                ResultText = ResultText.Substring(0, ExpectedText.Length);
+
+            //Assert.That(ResultText == ExpectedText, $"Result={ResultText}, Expected={ExpectedText}");
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void BitwiseAnd0()
+        {
+            double d1 = 125478;
+            double d2 = 5;
+
+            string Text1 = d1.ToString();
+            string Text2 = d2.ToString();
+
+            //Debug.Assert(false);
+            FormattedNumber FormattedNumber1 = new FormattedNumber(Text1);
+            FormattedNumber FormattedNumber2 = new FormattedNumber(Text2);
+
+            Number Value1 = FormattedNumber1.Value;
+            Number Value2 = FormattedNumber2.Value;
+            Assert.That(Value1.ToString() == d1.ToString(), $"Result={Value1}, Expected={d1}");
+            Assert.That(Value2.ToString() == d2.ToString(), $"Result={Value2}, Expected={d2}");
+
+            Number Result = FormattedNumber1.Value.BitwiseAnd(FormattedNumber2.Value);
+
+            double d = (int)d1 & (int)d2;
+
+            string ExpectedText = d.ToString();
+
+            if (ExpectedText.Length > 4)
+                ExpectedText = ExpectedText.Substring(0, ExpectedText.Length - 1);
+
+            string ResultText = Result.ToString();
+            if (ResultText.Length > ExpectedText.Length)
+                ResultText = ResultText.Substring(0, ExpectedText.Length);
+
+            //Assert.That(ResultText == ExpectedText, $"Result={ResultText}, Expected={ExpectedText}");
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void BitwiseOr0()
+        {
+            double d1 = 125478;
+            double d2 = 5;
+
+            string Text1 = d1.ToString();
+            string Text2 = d2.ToString();
+
+            //Debug.Assert(false);
+            FormattedNumber FormattedNumber1 = new FormattedNumber(Text1);
+            FormattedNumber FormattedNumber2 = new FormattedNumber(Text2);
+
+            Number Value1 = FormattedNumber1.Value;
+            Number Value2 = FormattedNumber2.Value;
+            Assert.That(Value1.ToString() == d1.ToString(), $"Result={Value1}, Expected={d1}");
+            Assert.That(Value2.ToString() == d2.ToString(), $"Result={Value2}, Expected={d2}");
+
+            Number Result = FormattedNumber1.Value.BitwiseOr(FormattedNumber2.Value);
+
+            double d = (int)d1 & (int)d2;
+
+            string ExpectedText = d.ToString();
+
+            if (ExpectedText.Length > 4)
+                ExpectedText = ExpectedText.Substring(0, ExpectedText.Length - 1);
+
+            string ResultText = Result.ToString();
+            if (ResultText.Length > ExpectedText.Length)
+                ResultText = ResultText.Substring(0, ExpectedText.Length);
+
+            //Assert.That(ResultText == ExpectedText, $"Result={ResultText}, Expected={ExpectedText}");
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void BitwiseXor0()
+        {
+            double d1 = 125478;
+            double d2 = 5;
+
+            string Text1 = d1.ToString();
+            string Text2 = d2.ToString();
+
+            //Debug.Assert(false);
+            FormattedNumber FormattedNumber1 = new FormattedNumber(Text1);
+            FormattedNumber FormattedNumber2 = new FormattedNumber(Text2);
+
+            Number Value1 = FormattedNumber1.Value;
+            Number Value2 = FormattedNumber2.Value;
+            Assert.That(Value1.ToString() == d1.ToString(), $"Result={Value1}, Expected={d1}");
+            Assert.That(Value2.ToString() == d2.ToString(), $"Result={Value2}, Expected={d2}");
+
+            Number Result = FormattedNumber1.Value.BitwiseXor(FormattedNumber2.Value);
+
+            double d = (int)d1 ^ (int)d2;
+
+            string ExpectedText = d.ToString();
+
+            if (ExpectedText.Length > 4)
+                ExpectedText = ExpectedText.Substring(0, ExpectedText.Length - 1);
+
+            string ResultText = Result.ToString();
+            if (ResultText.Length > ExpectedText.Length)
+                ResultText = ResultText.Substring(0, ExpectedText.Length);
+
+            //Assert.That(ResultText == ExpectedText, $"Result={ResultText}, Expected={ExpectedText}");
+        }
+
+        [Test]
+        [Category("Coverage")]
+        public static void TryParseInt0()
+        {
+            double d1 = 125478;
+
+            string Text1 = d1.ToString();
+
+            //Debug.Assert(false);
+            FormattedNumber FormattedNumber1 = new FormattedNumber(Text1);
+
+            Number Value1 = FormattedNumber1.Value;
+            Assert.That(Value1.ToString() == d1.ToString(), $"Result={Value1}, Expected={d1}");
+
+            FormattedNumber1.Value.TryParseInt(out int Result);
 
             //Assert.That(ResultText == ExpectedText, $"Result={ResultText}, Expected={ExpectedText}");
         }

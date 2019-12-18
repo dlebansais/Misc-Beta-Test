@@ -11,10 +11,10 @@ using EaslyCompiler;
 using NUnit.Framework;
 using PolySerializer;
 
-namespace Coverage
+namespace ACoverage
 {
     [TestFixture]
-    public class CoverageSet
+    public class ACoverageSet
     {
         #region Setup
         [OneTimeSetUp]
@@ -3224,7 +3224,7 @@ namespace Coverage
 
         [Test]
         [Category("Coverage")]
-        public static void TestInvalid0505_Types()
+        public static void ATestInvalid0505_Types()
         {
             Compiler Compiler = new Compiler();
 
@@ -3232,7 +3232,7 @@ namespace Coverage
 
             Compiler.ActivateVerification = false;
 
-            //Debug.Assert(false);
+            Debug.Assert(false);
             Compiler.Compile(TestFileName);
             Assert.That(!Compiler.ErrorList.IsEmpty && Compiler.ErrorList.At(0) is IErrorInvalidExpression, ErrorListToString(Compiler));
         }
